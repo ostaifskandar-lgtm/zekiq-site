@@ -223,6 +223,7 @@
           <a href="https://github.com/ostaifskandar-lgtm/zekiq-site/releases/download/installer/ZEKiQ-POS-Setup.exe" id="downloadBtn" class="btn btn-gold" download>⬇️ تحميل البرنامج الآن</a>
           <a href="#" class="btn btn-wa js-wa">💬 تواصل عبر واتساب</a>
         </div>
+        <p class="cta-note dl-version" id="dlVersionHero" aria-live="polite">جاري تحميل رقم الإصدار…</p>
         <div class="plat">
           <span>🪟 Windows</span><span>🤖 Android</span><span> Apple</span><span>☁️ Cloud</span>
         </div>
@@ -260,6 +261,7 @@
       <div class="cta-row">
         <a href="https://github.com/ostaifskandar-lgtm/zekiq-site/releases/download/installer/ZEKiQ-POS-Setup.exe" class="btn btn-gold" download>⬇️ تحميل وتثبيت ZEKiQ POS</a>
       </div>
+      <p class="cta-note dl-version" id="dlVersionMain" aria-live="polite">جاري تحميل رقم الإصدار…</p>
       <div class="check-list" style="max-width:600px;margin:20px auto 0;text-align:right">
         <div style="font-weight:800;color:var(--gold);margin-bottom:6px">التثبيت بنقرة واحدة:</div>
         <div><span class="c">1</span> حمّل الملف ثم افتحه (نقرتان).</div>
@@ -293,6 +295,20 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    fetch('version.json?_=' + Date.now())
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (v) {
+        if (!v) return;
+        var line = 'الإصدار ' + (v.displayVersion || v.productVersion || '') +
+          (v.installerSizeMb ? ' · ملف التثبيت ~' + v.installerSizeMb + ' MB' : '') +
+          ' · التحديثات داخل البرنامج بعد التثبيت';
+        ['dlVersionHero', 'dlVersionMain'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.textContent = line;
+        });
+      })
+      .catch(function () {});
 
     /* ====== رقم الواتساب — غيّره من هنا فقط (دولي بدون + أو مسافات) ====== */
     var WA_NUMBER = "905555555555";
