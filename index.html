@@ -78,6 +78,12 @@
 
     .honest{max-width:760px;margin:28px auto 0;padding:18px 20px;border-radius:14px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);font-size:.92rem;color:var(--muted);text-align:center}
     .honest b{color:var(--ok)}
+    .repair{max-width:760px;margin:22px auto 0;padding:20px 22px;border-radius:16px;background:rgba(231,182,73,.08);border:1px solid rgba(231,182,73,.35);text-align:right;line-height:1.85}
+    .repair h3{color:var(--gold);font-size:1.05rem;margin-bottom:8px}
+    .repair p{color:var(--muted);font-size:.92rem}
+    .repair ul{margin:10px 0 0;padding:0 1.1rem 0 0;list-style:none}
+    .repair li{margin:6px 0;color:var(--txt);font-size:.9rem}
+    .repair li::before{content:"✓ ";color:var(--ok);font-weight:900}
 
     .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:s}
     @media(max-width:880px){.steps{grid-template-columns:repeat(2,1fr)}}
@@ -124,6 +130,7 @@
         <a href="#how">كيف يعمل</a>
         <a href="#trial">التجربة</a>
         <a href="#pricing">الأسعار</a>
+        <a href="#repair">صيانة</a>
         <a href="#download">تحميل</a>
       </nav>
       <a href="#download" class="btn btn-gold" style="padding:10px 20px;font-size:.95rem">حمّل الآن</a>
@@ -140,6 +147,17 @@
         <a href="#how" class="btn btn-ghost">كيف يعمل؟</a>
       </div>
       <p class="cta-note">شهر أول <b>مجاني</b> — الدفع لاحقاً عبر واتساب (تحويل أو نقدي).</p>
+
+      <div class="repair" id="repair">
+        <h3>🔧 توقف البرنامج أو خلل بعد تحديث قديم؟</h3>
+        <p>لا تحذف المبيعات يدوياً. حمّل المثبّت من الموقع — يوقف النسخة المعطوبة، يمسح بقايا التثبيت القديم، ويثبّت نسخة نظيفة مع <b>الاحتفاظ بملف الفواتير</b>.</p>
+        <ul>
+          <li>أغلق ZEKiQ POS من أيقونة الدرج (أسفل الشاشة) إن أمكن</li>
+          <li>حمّل من <a href="download.html" style="color:var(--gold);font-weight:700">صفحة التحميل</a> وشغّل الملف</li>
+          <li>وافق على التثبيت — إن طلب Windows صلاحية مسح C:\ToninoPOS اضغط نعم</li>
+        </ul>
+        <p style="margin-top:10px"><a href="download.html" class="btn btn-gold" style="padding:10px 18px;font-size:.9rem">إصلاح وتثبيت نظيف</a></p>
+      </div>
 
       <div class="poster">
         <img src="assets/zekiq-poster.png" alt="ZEKiQ POS — لقطات من النظام" loading="lazy" />
@@ -181,7 +199,7 @@
         <p>من التحميل إلى أول فاتورة — بدون بطاقة بنكية.</p>
       </div>
       <div class="steps">
-        <div class="step"><h3>حمّل وثبّت</h3><p>نزّل ZEKiQ POS لـ Windows وثبّته — أيقونة على سطح المكتب.</p></div>
+        <div class="step"><h3>حمّل وثبّت</h3><p>من <a href="download.html" style="color:var(--gold)">صفحة التحميل</a> — تثبيت نظيف أو إصلاح بعد خلل.</p></div>
         <div class="step"><h3>شهر مجاني</h3><p>يبدأ البرنامج ويُسجّل جهازك — التجربة تُفعَّل تلقائياً عند الاتصال بالإنترنت.</p></div>
         <div class="step"><h3>بعد الدفع</h3><p>تواصل واتساب — البائع يفعّل اشتراكك من لوحته (لا حاجة لكود جديد في العادة).</p></div>
         <div class="step"><h3>اعمل يومياً</h3><p>كاشير + جرسون + تحديثات — الدعم عبر واتساب في أوقات العمل.</p></div>
@@ -245,9 +263,8 @@
       </div>
       <p class="cta-note dl-version" id="dlVersionMain" aria-live="polite">جاري تحميل رقم الإصدار…</p>
       <p class="cta-note" style="margin-top:10px;max-width:640px;margin-left:auto;margin-right:auto">
-        <b>إصلاح توقف البرنامج:</b> افتح <a href="download.html" style="color:var(--gold)">صفحة التحميل</a> وشغّل المثبّت — يمسح القديم ويثبّت من جديد مع الاحتفاظ بالمبيعات.
+        <b>صيانة وإصلاح:</b> نفس رابط التحميل يصلح التوقف — المثبّت يحذف النسخة القديمة بالكامل ويستعيد قاعدة المبيعات تلقائياً.
       </p>
-      <p class="cta-note" style="margin-top:6px;font-size:.82rem">رابط واتساب للعميل: <code dir="ltr">ostaifskandar-lgtm.github.io/zekiq-site/download.html</code></p>
       <div class="check-list" style="max-width:600px;margin:20px auto 0;text-align:right">
         <div style="font-weight:800;color:var(--gold);margin-bottom:6px">التثبيت:</div>
         <div><span class="c">1</span> حمّل الملف وافتحه.</div>
