@@ -4,16 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ZEKiQ POS — النظام الذكي لإدارة المطاعم والكافيهات</title>
-  <meta name="description" content="ZEKiQ: نظام نقاط بيع ذكي للمطاعم والكافيهات — كاشير سريع، محاسبة آلية، قارئ فواتير بالذكاء الاصطناعي، تقارير لحظية. جرّب شهراً كاملاً مجاناً بدون بطاقة بنكية، ثم 150$ سنوياً." />
+  <meta name="description" content="ZEKiQ: كاشير، محاسبة، مساعد ذكي، QR من الطاولة، تكامل توصيل، مسح فواتير AI، جرسون أندرويد. شهر مجاني ثم 150$ سنوياً." />
 
-  <!-- ============================================================
-       عدّل هذه الروابط الثلاثة فقط ثم ارفع المجلد:
-       1) رابط تحميل البرنامج (.exe)
-       2) رقم واتساب (بصيغة دولية بلا + أو 00، مثال: 905xxxxxxxxx)
-       3) رابط الدليل (اختياري)
-       ابحث عن:  #download  /  WHATSAPP_NUMBER  /  GUIDE_URL
-       ============================================================ -->
-
+  <!-- عدّل رقم الواتساب من: config/vendor-public.json ثم npm run site:sync -->
   <style>
     :root{
       --gold:#e7b649; --gold-2:#caa23a; --bg:#0b0d12; --bg-2:#11141c;
@@ -41,7 +34,6 @@
     .btn-wa{background:#25d366;color:#04210f}
     .btn-wa:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(37,211,102,.35)}
 
-    /* Header */
     header{position:sticky;top:0;z-index:50;background:rgba(11,13,18,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
     .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;max-width:1120px;margin:0 auto}
     .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.5rem}
@@ -51,44 +43,29 @@
     .nav-links a:hover{color:var(--gold)}
     @media(max-width:760px){.nav-links{display:none}}
 
-    /* Hero */
     .hero{padding:70px 0 40px;text-align:center}
     .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(231,182,73,.1);border:1px solid rgba(231,182,73,.3);color:var(--gold);padding:7px 16px;border-radius:999px;font-size:.88rem;font-weight:700;margin-bottom:22px}
     .hero h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:900;line-height:1.25;margin-bottom:18px}
     .hero h1 .hl{background:linear-gradient(135deg,var(--gold),#f4d27a);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .hero p.sub{color:var(--muted);font-size:clamp(1rem,2.2vw,1.25rem);max-width:680px;margin:0 auto 30px}
+    .hero p.sub{color:var(--muted);font-size:clamp(1rem,2.2vw,1.25rem);max-width:720px;margin:0 auto 30px}
     .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
     .cta-note{color:var(--muted);font-size:.9rem}
     .cta-note b{color:var(--ok)}
 
-    /* Poster */
     .poster{margin:46px auto 0;max-width:1000px;border-radius:20px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.55)}
     .poster img{width:100%;display:block}
 
-    /* Stats */
     .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:54px 0}
     .stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;text-align:center}
     .stat .n{font-size:1.9rem;font-weight:900;color:var(--gold)}
     .stat .l{color:var(--muted);font-size:.9rem;margin-top:4px}
     @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
 
-    /* Sections */
     section{padding:56px 0}
     .sec-title{text-align:center;margin-bottom:40px}
     .sec-title h2{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;margin-bottom:10px}
-    .sec-title p{color:var(--muted);max-width:560px;margin:0 auto}
-    .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;max-width:980px;margin:0 auto}
-    .plan{position:relative;background:var(--bg-2);border:1px solid var(--line);border-radius:18px;padding:30px 24px;text-align:center;transition:transform .2s,border-color .2s}
-    .plan:hover{transform:translateY(-4px)}
-    .plan.best{border-color:var(--gold);box-shadow:0 10px 40px rgba(212,175,55,.15)}
-    .plan .tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gold);color:#1a1300;font-weight:800;font-size:.78rem;padding:5px 14px;border-radius:999px;white-space:nowrap}
-    .plan h3{font-size:1.15rem;font-weight:800;margin-bottom:8px}
-    .plan .price{font-size:2rem;font-weight:900;margin:8px 0}
-    .plan .price small{font-size:.85rem;color:var(--muted);font-weight:600}
-    .plan .desc{color:var(--muted);font-size:.92rem;margin-bottom:18px;min-height:42px}
-    .plan .btn{width:100%}
+    .sec-title p{color:var(--muted);max-width:620px;margin:0 auto}
 
-    /* Features */
     .features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
     @media(max-width:880px){.features{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:560px){.features{grid-template-columns:1fr}}
@@ -97,8 +74,11 @@
     .feat .ic{width:48px;height:48px;border-radius:12px;background:rgba(231,182,73,.12);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:14px}
     .feat h3{font-size:1.15rem;margin-bottom:8px}
     .feat p{color:var(--muted);font-size:.95rem}
+    .feat .tag{display:inline-block;margin-top:10px;font-size:.75rem;color:var(--gold);border:1px solid rgba(231,182,73,.35);padding:3px 10px;border-radius:999px}
 
-    /* Steps */
+    .honest{max-width:760px;margin:28px auto 0;padding:18px 20px;border-radius:14px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);font-size:.92rem;color:var(--muted);text-align:center}
+    .honest b{color:var(--ok)}
+
     .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:s}
     @media(max-width:880px){.steps{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:520px){.steps{grid-template-columns:1fr}}
@@ -107,7 +87,6 @@
     .step h3{margin:10px 0 8px;font-size:1.1rem}
     .step p{color:var(--muted);font-size:.93rem}
 
-    /* Pricing / trial */
     .trial{background:linear-gradient(135deg,#161a24,#1d2230);border:1px solid rgba(231,182,73,.35);border-radius:24px;padding:46px 30px;text-align:center;max-width:760px;margin:0 auto}
     .trial h2{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:900;margin-bottom:10px}
     .trial .big{color:var(--gold)}
@@ -116,15 +95,21 @@
     .check-list div{display:flex;align-items:center;gap:8px;color:var(--txt)}
     .check-list .c{color:var(--ok);font-weight:900}
 
-    /* Platforms */
+    .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;max-width:420px;margin:0 auto}
+    .plan{position:relative;background:var(--bg-2);border:1px solid var(--line);border-radius:18px;padding:30px 24px;text-align:center}
+    .plan.best{border-color:var(--gold);box-shadow:0 10px 40px rgba(212,175,55,.15)}
+    .plan .tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gold);color:#1a1300;font-weight:800;font-size:.78rem;padding:5px 14px;border-radius:999px;white-space:nowrap}
+    .plan h3{font-size:1.15rem;font-weight:800;margin-bottom:8px}
+    .plan .price{font-size:2rem;font-weight:900;margin:8px 0}
+    .plan .price small{font-size:.85rem;color:var(--muted);font-weight:600}
+    .plan .desc{color:var(--muted);font-size:.92rem;margin-bottom:18px;min-height:42px}
+    .plan .btn{width:100%}
+
     .plat{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;color:var(--muted);font-weight:700;margin-top:18px}
     .plat span{display:inline-flex;align-items:center;gap:8px}
 
-    /* Footer */
     footer{border-top:1px solid var(--line);padding:40px 0;text-align:center;color:var(--muted)}
     .foot-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
-
-    /* Floating WhatsApp */
     .fab{position:fixed;inset-inline-end:20px;bottom:20px;z-index:60;background:#25d366;color:#04210f;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 10px 30px rgba(37,211,102,.5);transition:.2s}
     .fab:hover{transform:scale(1.08)}
   </style>
@@ -137,7 +122,7 @@
       <nav class="nav-links">
         <a href="#features">المزايا</a>
         <a href="#how">كيف يعمل</a>
-        <a href="#trial">التجربة المجانية</a>
+        <a href="#trial">التجربة</a>
         <a href="#pricing">الأسعار</a>
         <a href="#download">تحميل</a>
       </nav>
@@ -145,79 +130,75 @@
     </div>
   </header>
 
-  <!-- HERO -->
   <section class="hero">
     <div class="wrap">
-      <div class="badge">🔥 موثوق من أكثر من 10,000 مطعم وكافيه</div>
+      <div class="badge">نظام متكامل — كاشير · محاسبة · ذكاء · توصيل</div>
       <h1>النظام الذكي لإدارة<br><span class="hl">المطاعم والكافيهات</span></h1>
-      <p class="sub">كاشير سريع، محاسبة آلية، قارئ فواتير بالذكاء الاصطناعي، وتقارير لحظية — كل ما يحتاجه مطعمك في نظام واحد ذكي.</p>
+      <p class="sub">كاشير سريع، محاسبة آلية، مساعد ذكي للتنبيهات، طلبات QR من الطاولة، ربط Trendyol وYemeksepeti وGetir، مسح فواتير بالذكاء الاصطناعي — على Windows مع جرسون أندرويد ونسخ احتياطي تلقائي.</p>
       <div class="cta-row">
         <a href="#download" class="btn btn-gold">⬇️ ابدأ تجربتك المجانية</a>
-        <a href="#how" class="btn btn-ghost">شاهد كيف يعمل</a>
+        <a href="#how" class="btn btn-ghost">كيف يعمل؟</a>
       </div>
-      <p class="cta-note">شهر أول <b>مجاني</b> — بدون بطاقة بنكية، بدون التزام.</p>
+      <p class="cta-note">شهر أول <b>مجاني</b> — الدفع لاحقاً عبر واتساب (تحويل أو نقدي).</p>
 
       <div class="poster">
         <img src="assets/zekiq-poster.png" alt="ZEKiQ POS — لقطات من النظام" loading="lazy" />
       </div>
 
       <div class="stats">
-        <div class="stat"><div class="n">99.9%</div><div class="l">دقة قراءة الفواتير</div></div>
-        <div class="stat"><div class="n">+10,000</div><div class="l">يثقون في ZEKiQ</div></div>
-        <div class="stat"><div class="n">24/7</div><div class="l">دعم فني متواصل</div></div>
-        <div class="stat"><div class="n">شهر</div><div class="l">مجاني بالكامل</div></div>
+        <div class="stat"><div class="n">AI</div><div class="l">مسح فواتير + مساعد ذكي</div></div>
+        <div class="stat"><div class="n">QR</div><div class="l">طلب من الطاولة</div></div>
+        <div class="stat"><div class="n">شهر</div><div class="l">مجاني للتجربة</div></div>
+        <div class="stat"><div class="n">$150</div><div class="l">سنوياً بعد التجربة</div></div>
       </div>
     </div>
   </section>
 
-  <!-- FEATURES -->
   <section id="features">
     <div class="wrap">
       <div class="sec-title">
         <h2>كل ما يحتاجه مطعمك</h2>
-        <p>منظومة متكاملة تربط الكاشير بالمحاسبة والمخزون والذكاء الاصطناعي.</p>
+        <p>منظومة واحدة تربط الكاشير بالمحاسبة والمخزون والذكاء والتوصيل.</p>
       </div>
       <div class="features">
-        <div class="feat"><div class="ic">🧾</div><h3>قارئ فواتير ذكي</h3><p>صوّر أي فاتورة، فيستخرج البيانات وينظّم المخزون والمصروفات ويصنّف الموردين تلقائياً بدقة 99.9%.</p></div>
-        <div class="feat"><div class="ic">🤖</div><h3>مساعد ذكي متكامل</h3><p>يحلّل المبيعات، يتوقّع الطلب، يقترح أسعاراً لزيادة الأرباح، وينبّهك للمشاكل قبل وقوعها.</p></div>
-        <div class="feat"><div class="ic">💳</div><h3>كاشير سريع وسهل</h3><p>إدارة طاولات وأقسام، طلبات سريعة، طباعة مطبخ/بار، دفع مقسّم، وكل ذلك بواجهة عربية بسيطة.</p></div>
-        <div class="feat"><div class="ic">📊</div><h3>محاسبة وتقارير لحظية</h3><p>تصنيف تلقائي، قيود دقيقة، تقارير أرباح تفصيلية، ولوحات تحكّم لحظية لقراراتك.</p></div>
-        <div class="feat"><div class="ic">📦</div><h3>إدارة مخزون وموظفين</h3><p>جرد آلي، تنبيهات نقص ذكية، رواتب ودوام وعمولات وتقييم أداء — في مكان واحد.</p></div>
-        <div class="feat"><div class="ic">🔗</div><h3>تكامل مباشر</h3><p>ربط مع Trendyol وYemeksepeti وGOĞTUR والفاتورة الإلكترونية والضريبة والجمارك بسلاسة.</p></div>
-        <div class="feat"><div class="ic">📱</div><h3>طلبات QR وأونلاين</h3><p>مبيعات أونلاين وتوصيل، وطلبات عبر رمز QR من الطاولة مباشرة.</p></div>
-        <div class="feat"><div class="ic">🔐</div><h3>أمان ونسخ احتياطي</h3><p>حماية بياناتك على مدار الساعة ونسخ احتياطي تلقائي — بياناتك دائماً بأمان.</p></div>
-        <div class="feat"><div class="ic">💻</div><h3>يعمل على كل الأجهزة</h3><p>متوافق مع Windows وAndroid وApple والسحابة — استخدمه أينما كنت.</p></div>
+        <div class="feat"><div class="ic">🧾</div><h3>قارئ فواتير ذكي</h3><p>صوّر أي فاتورة — يستخرج البيانات ويربط المخزون والموردين تلقائياً.</p></div>
+        <div class="feat"><div class="ic">🤖</div><h3>مساعد ذكي</h3><p>تنبيهات مخزون، مقارنة مبيعات، اقتراحات يومية من بياناتك الحقيقية.</p></div>
+        <div class="feat"><div class="ic">💳</div><h3>كاشير سريع</h3><p>طاولات، مطبخ/بار، دفع مقسّم، X/Z، باكيت، PIN محاسبين.</p></div>
+        <div class="feat"><div class="ic">📊</div><h3>محاسبة وتقارير</h3><p>مصروفات، موردون، KDV، تصدير، رسوم بيانية لحظية.</p></div>
+        <div class="feat"><div class="ic">📦</div><h3>مخزون وموظفون</h3><p>تنبيهات نقص، رواتب، عمولات، تقييم أداء من المبيعات.</p></div>
+        <div class="feat"><div class="ic">🔗</div><h3>تكامل توصيل</h3><p>Webhook لـ Trendyol وYemeksepeti وGetir — طلبات باكيت تلقائية في الكاشير.</p></div>
+        <div class="feat"><div class="ic">📱</div><h3>QR من الطاولة</h3><p>الزبون يطلب من هاتفه — يصل للمطبخ والكاشير فوراً.</p></div>
+        <div class="feat"><div class="ic">🔐</div><h3>أمان ونسخ احتياطي</h3><p>نسخ تلقائي لقاعدة البيانات كل 6 ساعات — بياناتك في محلّك.</p></div>
+        <div class="feat"><div class="ic">💻</div><h3>Windows + جرسون</h3><p>كاشير Electron + تطبيق أندرويد للجرسون + متصفح للإدارة.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- HOW IT WORKS -->
   <section id="how" style="background:var(--bg-2);border-block:1px solid var(--line)">
     <div class="wrap">
       <div class="sec-title">
         <h2>ابدأ في 4 خطوات</h2>
-        <p>من التحميل إلى أول فاتورة في دقائق.</p>
+        <p>من التحميل إلى أول فاتورة — بدون بطاقة بنكية.</p>
       </div>
       <div class="steps">
-        <div class="step"><h3>حمّل وثبّت</h3><p>نزّل البرنامج من الزر بالأسفل وثبّته بنقرة واحدة.</p></div>
-        <div class="step"><h3>جرّب شهراً مجاناً</h3><p>يبدأ النظام فوراً بشهر مجاني كامل — بلا بطاقة بنكية.</p></div>
-        <div class="step"><h3>فعّل اشتراكك</h3><p>أعجبك؟ تواصل عبر واتساب لإتمام الدفع واستلام كود التفعيل.</p></div>
-        <div class="step"><h3>اعمل بثقة</h3><p>تحديثات مستمرة ودعم 24/7 — ونحن معك في كل خطوة.</p></div>
+        <div class="step"><h3>حمّل وثبّت</h3><p>نزّل ZEKiQ POS لـ Windows وثبّته — أيقونة على سطح المكتب.</p></div>
+        <div class="step"><h3>شهر مجاني</h3><p>يبدأ البرنامج ويُسجّل جهازك — التجربة تُفعَّل تلقائياً عند الاتصال بالإنترنت.</p></div>
+        <div class="step"><h3>بعد الدفع</h3><p>تواصل واتساب — البائع يفعّل اشتراكك من لوحته (لا حاجة لكود جديد في العادة).</p></div>
+        <div class="step"><h3>اعمل يومياً</h3><p>كاشير + جرسون + تحديثات — الدعم عبر واتساب في أوقات العمل.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- TRIAL / CTA -->
   <section id="trial">
     <div class="wrap">
       <div class="trial">
         <h2>جرّب <span class="big">شهراً كاملاً</span> مجاناً</h2>
-        <p>بدون بطاقة بنكية · بدون التزام · كل المزايا مفتوحة</p>
+        <p>بدون بطاقة بنكية · كل مزايا الكاشير والمحاسبة · مسح الفواتير يحتاج تفعيل API من البائع</p>
         <div class="check-list">
-          <div><span class="c">✓</span> كل مزايا الكاشير والمحاسبة</div>
-          <div><span class="c">✓</span> قارئ الفواتير بالذكاء الاصطناعي</div>
-          <div><span class="c">✓</span> تقارير ولوحات لحظية</div>
-          <div><span class="c">✓</span> دعم فني عبر واتساب</div>
+          <div><span class="c">✓</span> كاشير وطاولات وطباعة</div>
+          <div><span class="c">✓</span> محاسبة وتقارير</div>
+          <div><span class="c">✓</span> تطبيق جرسون (أندرويد)</div>
+          <div><span class="c">✓</span> دعم واتساب</div>
         </div>
         <div class="cta-row">
           <a href="https://github.com/ostaifskandar-lgtm/zekiq-site/releases/download/installer/ZEKiQ-POS-Setup.exe" id="downloadBtn" class="btn btn-gold" download>⬇️ تحميل البرنامج الآن</a>
@@ -225,57 +206,54 @@
         </div>
         <p class="cta-note dl-version" id="dlVersionHero" aria-live="polite">جاري تحميل رقم الإصدار…</p>
         <div class="plat">
-          <span>🪟 Windows</span><span>🤖 Android</span><span> Apple</span><span>☁️ Cloud</span>
+          <span>🪟 Windows</span>
+          <span>🤖 Android</span>
+          <span>📱 Safari / Chrome</span>
+          <span>☁️ شبكة محلية</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PRICING -->
   <section id="pricing" style="background:var(--bg-2);border-block:1px solid var(--line)">
     <div class="wrap">
       <div class="sec-title">
-        <h2>أسعار بسيطة وواضحة</h2>
-        <p>جرّب شهراً كاملاً مجاناً، ثم 150$ سنوياً فقط. التحديثات والدعم مشمولة.</p>
+        <h2>سعر واحد واضح</h2>
+        <p>شهر مجاني، ثم 150$ سنوياً — التحديثات والدعم مشمولان.</p>
       </div>
-      <div class="plans" style="max-width:420px">
+      <div class="plans">
         <div class="plan best">
           <div class="tag">⭐ شهر أول مجاني</div>
           <h3>اشتراك سنوي</h3>
           <div class="price">$150<small> / سنة</small></div>
-          <div class="desc">كل المزايا مفتوحة · تحديثات مستمرة · دعم فني عبر واتساب · نسخ احتياطي تلقائي.</div>
+          <div class="desc">كل المزايا · تحديثات · دعم واتساب · تفعيل عن بُعد بعد الدفع.</div>
           <a href="#" class="btn btn-gold js-wa" data-plan="سنوي 150$">💬 اشترك عبر واتساب</a>
         </div>
       </div>
-      <p class="cta-note" style="margin-top:22px;text-align:center">جرّب شهراً كاملاً مجاناً، ثم 150$ سنوياً فقط · شامل الدعم والتحديثات · الدفع عبر واتساب (تحويل بنكي أو نقدي).</p>
+      <p class="cta-note" style="margin-top:22px;text-align:center">الدفع: تحويل بنكي أو نقدي عبر واتساب — ليس اشتراكاً تلقائياً ببطاقة.</p>
     </div>
   </section>
 
-  <!-- DOWNLOAD ANCHOR + GUIDE -->
   <section id="download" style="padding-top:10px">
     <div class="wrap" style="text-align:center">
       <div class="sec-title">
         <h2>حمّل ZEKiQ POS</h2>
-        <p>لـ Windows · شهر أول مجاني · بدون بطاقة بنكية.</p>
+        <p>Windows 10/11 · شهر أول مجاني.</p>
       </div>
       <div class="cta-row">
         <a href="https://github.com/ostaifskandar-lgtm/zekiq-site/releases/download/installer/ZEKiQ-POS-Setup.exe" class="btn btn-gold" download>⬇️ تحميل وتثبيت ZEKiQ POS</a>
       </div>
       <p class="cta-note dl-version" id="dlVersionMain" aria-live="polite">جاري تحميل رقم الإصدار…</p>
       <div class="check-list" style="max-width:600px;margin:20px auto 0;text-align:right">
-        <div style="font-weight:800;color:var(--gold);margin-bottom:6px">التثبيت بنقرة واحدة:</div>
-        <div><span class="c">1</span> حمّل الملف ثم افتحه (نقرتان).</div>
-        <div><span class="c">2</span> يثبّت نفسه تلقائياً ويضيف أيقونة <b>ZEKiQ POS</b> على سطح المكتب.</div>
-        <div><span class="c">3</span> يفتح البرنامج بملء الشاشة كتطبيق حقيقي — ابدأ إعداد محلّك.</div>
+        <div style="font-weight:800;color:var(--gold);margin-bottom:6px">التثبيت:</div>
+        <div><span class="c">1</span> حمّل الملف وافتحه.</div>
+        <div><span class="c">2</span> يثبّت تلقائياً ويضيف أيقونة <b>ZEKiQ POS</b>.</div>
+        <div><span class="c">3</span> أعد إعداد المحل — اربط الجرسون من الإعدادات (QR).</div>
       </div>
       <div style="max-width:600px;margin:18px auto 0;text-align:right;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.35);border-radius:12px;padding:14px 16px;font-size:.92rem;line-height:1.9">
-        <b>🛡️ تحذير ويندوز «ناشر غير معروف» — طبيعي وآمن:</b>
-        <div style="margin-top:6px">عند فتح الملف قد تظهر نافذة <b>«فتح ملف — تحذير أمان»</b> وتقول إن الناشر غير معروف. هذا لأن البرنامج جديد ولم يُوقَّع بعد — وليس خطأً في الملف.</div>
-        <div style="margin-top:8px;font-weight:700;color:var(--gold)">اضغط <b>«تشغيل»</b> (Run) — ثم أكمل التثبيت.</div>
-        <div style="margin-top:6px">إن ظهرت شاشة زرقاء <b>Windows protected your PC</b>: اضغط <b>More info</b> ثم <b>Run anyway</b>.</div>
-        <div style="margin-top:6px;color:var(--muted)">في المتصفّح، إن ظهر تنبيه بجانب التحميل اختر <b>«الاحتفاظ / Keep»</b>.</div>
+        <b>🛡️ تحذير ويندوز «ناشر غير معروف»:</b>
+        <div style="margin-top:6px">طبيعي للبرامج الجديدة. اضغط <b>تشغيل / Run</b> — أو <b>More info</b> ثم <b>Run anyway</b>.</div>
       </div>
-      <p class="cta-note" style="margin-top:16px">بعد انتهاء التجربة، تواصل معنا لتفعيل اشتراكك ومتابعة العمل.</p>
     </div>
   </section>
 
@@ -286,37 +264,33 @@
         <a href="#" class="btn btn-wa js-wa" style="padding:12px 22px">💬 واتساب</a>
       </div>
       <div class="logo" style="justify-content:center;margin-bottom:10px"><span class="z">Z</span>ZEKiQ</div>
-      <p>النظام الذكي لإدارة المطاعم والكافيهات</p>
-      <p style="margin-top:8px;font-size:.85rem">© <span id="year"></span> ZEKiQ — جميع الحقوق محفوظة.</p>
+      <p>كاشير ومحاسبة للمطاعم والكافيهات</p>
+      <p style="margin-top:8px;font-size:.85rem">© <span id="year"></span> ZEKiQ</p>
     </div>
   </footer>
 
-  <a href="#" class="fab js-wa" title="تواصل عبر واتساب" aria-label="واتساب">💬</a>
+  <a href="#" class="fab js-wa" title="واتساب" aria-label="واتساب">💬</a>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
-
     fetch('version.json?_=' + Date.now())
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (v) {
         if (!v) return;
         var line = 'الإصدار ' + (v.displayVersion || v.productVersion || '') +
-          (v.installerSizeMb ? ' · ملف التثبيت ~' + v.installerSizeMb + ' MB' : '') +
-          ' · التحديثات داخل البرنامج بعد التثبيت';
+          (v.installerSizeMb ? ' · ~' + v.installerSizeMb + ' MB' : '') +
+          ' · تحديثات من داخل البرنامج';
         ['dlVersionHero', 'dlVersionMain'].forEach(function (id) {
           var el = document.getElementById(id);
           if (el) el.textContent = line;
         });
       })
       .catch(function () {});
-
-    /* ====== رقم الواتساب — غيّره من هنا فقط (دولي بدون + أو مسافات) ====== */
     var WA_NUMBER = "905555555555";
-    /* ================================================================== */
     document.querySelectorAll('.js-wa').forEach(function (a) {
       var plan = a.getAttribute('data-plan');
       var msg = plan
-        ? "مرحباً، أريد الاشتراك في ZEKiQ POS — الخطة: " + plan
+        ? "مرحباً، أريد الاشتراك في ZEKiQ POS — " + plan
         : "مرحباً، أريد معرفة المزيد عن ZEKiQ POS";
       a.href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(msg);
       a.target = "_blank";
