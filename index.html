@@ -130,10 +130,8 @@
         <a href="#how">كيف يعمل</a>
         <a href="#trial">التجربة</a>
         <a href="#pricing">الأسعار</a>
-        <a href="#repair">صيانة</a>
         <a href="#download">تحميل</a>
       </nav>
-      <a href="#download" class="btn btn-gold" style="padding:10px 20px;font-size:.95rem">حمّل الآن</a>
     </div>
   </header>
 
@@ -143,21 +141,10 @@
       <h1>النظام الذكي لإدارة<br><span class="hl">المطاعم والكافيهات</span></h1>
       <p class="sub">كاشير سريع، محاسبة آلية، مساعد ذكي للتنبيهات، طلبات QR من الطاولة، ربط Trendyol وYemeksepeti وGetir، مسح فواتير بالذكاء الاصطناعي — على Windows مع جرسون أندرويد ونسخ احتياطي تلقائي.</p>
       <div class="cta-row">
-        <a href="#download" class="btn btn-gold">⬇️ ابدأ تجربتك المجانية</a>
+        <a href="#download" class="btn btn-gold">⬇️ تحميل البرنامج</a>
         <a href="#how" class="btn btn-ghost">كيف يعمل؟</a>
       </div>
       <p class="cta-note">شهر أول <b>مجاني</b> — الدفع لاحقاً عبر واتساب (تحويل أو نقدي).</p>
-
-      <div class="repair" id="repair">
-        <h3>🔧 توقف البرنامج أو خلل بعد تحديث قديم؟</h3>
-        <p>لا تحذف المبيعات يدوياً. حمّل المثبّت من الموقع — يوقف النسخة المعطوبة، يمسح بقايا التثبيت القديم، ويثبّت نسخة نظيفة مع <b>الاحتفاظ بملف الفواتير</b>.</p>
-        <ul>
-          <li>أغلق ZEKiQ POS من أيقونة الدرج (أسفل الشاشة) إن أمكن</li>
-          <li>حمّل من <a href="download.html" style="color:var(--gold);font-weight:700">صفحة التحميل</a> وشغّل الملف</li>
-          <li>وافق على التثبيت — إن طلب Windows صلاحية مسح C:\ToninoPOS اضغط نعم</li>
-        </ul>
-        <p style="margin-top:10px"><a href="download.html" class="btn btn-gold" style="padding:10px 18px;font-size:.9rem">إصلاح وتثبيت نظيف</a></p>
-      </div>
 
       <div class="poster">
         <img src="assets/zekiq-poster.png" alt="ZEKiQ POS — لقطات من النظام" loading="lazy" />
@@ -219,10 +206,9 @@
           <div><span class="c">✓</span> دعم واتساب</div>
         </div>
         <div class="cta-row">
-          <a href="download.html" id="downloadBtn" class="btn btn-gold">⬇️ تحميل البرنامج الآن</a>
+          <a href="#download" class="btn btn-gold">⬇️ تحميل البرنامج</a>
           <a href="#" class="btn btn-wa js-wa">💬 تواصل عبر واتساب</a>
         </div>
-        <p class="cta-note dl-version" id="dlVersionHero" aria-live="polite">جاري تحميل رقم الإصدار…</p>
         <div class="plat">
           <span>🪟 Windows</span>
           <span>🤖 Android</span>
@@ -255,16 +241,13 @@
   <section id="download" style="padding-top:10px">
     <div class="wrap" style="text-align:center">
       <div class="sec-title">
-        <h2>حمّل ZEKiQ POS</h2>
-        <p>Windows 10/11 · شهر أول مجاني.</p>
+        <h2>تحميل ZEKiQ POS</h2>
+        <p>Windows 10/11 · شهر أول مجاني · تثبيت واحد يصلح النسخة القديمة.</p>
       </div>
       <div class="cta-row">
-        <a href="download.html" class="btn btn-gold">⬇️ تحميل وتثبيت ZEKiQ POS</a>
+        <a href="download.html" class="btn btn-gold" style="font-size:1.15rem;padding:18px 36px">⬇️ تحميل ZEKiQ-POS-Setup.exe</a>
       </div>
       <p class="cta-note dl-version" id="dlVersionMain" aria-live="polite">جاري تحميل رقم الإصدار…</p>
-      <p class="cta-note" style="margin-top:10px;max-width:640px;margin-left:auto;margin-right:auto">
-        <b>صيانة وإصلاح:</b> نفس رابط التحميل يصلح التوقف — المثبّت يحذف النسخة القديمة بالكامل ويستعيد قاعدة المبيعات تلقائياً.
-      </p>
       <div class="check-list" style="max-width:600px;margin:20px auto 0;text-align:right">
         <div style="font-weight:800;color:var(--gold);margin-bottom:6px">التثبيت:</div>
         <div><span class="c">1</span> حمّل الملف وافتحه.</div>
@@ -281,7 +264,6 @@
   <footer>
     <div class="wrap">
       <div class="foot-cta">
-        <a href="#download" class="btn btn-gold" style="padding:12px 22px">ابدأ الآن</a>
         <a href="#" class="btn btn-wa js-wa" style="padding:12px 22px">💬 واتساب</a>
       </div>
       <div class="logo" style="justify-content:center;margin-bottom:10px"><span class="z">Z</span>ZEKiQ</div>
@@ -301,10 +283,8 @@
         var line = 'الإصدار ' + (v.displayVersion || v.productVersion || '') +
           (v.installerSizeMb ? ' · ~' + v.installerSizeMb + ' MB' : '') +
           ' · تحديثات من داخل البرنامج';
-        ['dlVersionHero', 'dlVersionMain'].forEach(function (id) {
-          var el = document.getElementById(id);
-          if (el) el.textContent = line;
-        });
+        var el = document.getElementById('dlVersionMain');
+        if (el) el.textContent = line;
       })
       .catch(function () {});
     var WA_NUMBER = "905555555555";
