@@ -19,85 +19,57 @@
       padding: 24px;
       text-align: center;
     }
-    .card {
-      max-width: 480px;
-      background: #161a24;
-      border: 1px solid #262b38;
-      border-radius: 20px;
-      padding: 36px 28px;
-    }
+    .card { max-width: 440px; background: #161a24; border: 1px solid #262b38; border-radius: 20px; padding: 36px 28px; }
     .logo { font-size: 2rem; font-weight: 900; margin-bottom: 8px; }
     .logo span { color: var(--gold); }
-    h1 { font-size: 1.25rem; margin-bottom: 12px; }
-    p { color: var(--muted); font-size: .95rem; line-height: 1.7; margin-bottom: 20px; }
+    h1 { font-size: 1.2rem; margin-bottom: 12px; }
+    p { color: var(--muted); font-size: .92rem; line-height: 1.7; margin-bottom: 22px; }
     .btn {
       display: inline-block;
-      padding: 14px 28px;
+      padding: 16px 32px;
       border-radius: 14px;
       font-weight: 800;
       background: linear-gradient(135deg, var(--gold), #caa23a);
       color: #1a1300;
       text-decoration: none;
-      cursor: pointer;
-      border: none;
-      font-size: 1rem;
+      font-size: 1.05rem;
     }
     .btn:hover { opacity: .92; }
-    .hint { margin-top: 18px; font-size: .82rem; color: var(--muted); }
-    .spin {
-      width: 36px; height: 36px;
-      border: 3px solid rgba(231,182,73,.25);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin: 0 auto 16px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .hint { margin-top: 20px; font-size: .82rem; color: var(--muted); line-height: 1.6; }
+    #ver { margin-top: 10px; font-size: .8rem; color: var(--muted); }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="spin" id="spin"></div>
     <div class="logo"><span>Z</span>ZEKiQ POS</div>
-    <h1 id="title">جاري بدء التحميل…</h1>
-    <p id="msg">لا حاجة لفتح GitHub — اضغط الزر إن لم يبدأ التحميل تلقائياً.</p>
-    <a href="#" id="btn" class="btn" download>⬇️ تحميل ZEKiQ-POS-Setup.exe</a>
-    <p class="hint"><a href="index.html" style="color:var(--gold)">العودة للموقع</a></p>
+    <h1>تحميل البرنامج لـ Windows</h1>
+    <p>اضغط الزر مرة واحدة فقط. بعد التحميل شغّل <b>ZEKiQ-POS-Setup.exe</b> — يثبّت نسخة نظيفة ويحافظ على المبيعات.</p>
+    <a id="btn" class="btn" href="#">⬇️ تحميل ZEKiQ-POS-Setup.exe</a>
+    <p id="ver"></p>
+    <p class="hint">1) حمّل · 2) شغّل المثبّت · 3) افتح أيقونة ZEKiQ POS<br><a href="index.html" style="color:var(--gold)">العودة للموقع</a></p>
   </div>
   <script>
     (function () {
       var DEFAULT = {
-        fileName: "ZEKiQ-POS-Setup.exe",
-        setupUrl: "https://github.com/ostaifskandar-lgtm/zekiq-site/releases/download/installer/ZEKiQ-POS-Setup.exe"
+        setupUrl: "https://github.com/ostaifskandar-lgtm/zekiq-site/releases/download/installer/ZEKiQ-POS-Setup.exe",
+        fileName: "ZEKiQ-POS-Setup.exe"
       };
-      var btn = document.getElementById("btn");
-      var started = false;
-
-      function startDownload(url, fileName) {
-        if (started) return;
-        started = true;
-        btn.href = url;
-        btn.setAttribute("download", fileName);
-        document.getElementById("title").textContent = "اضغط للتحميل إن لزم";
-        document.getElementById("spin").style.display = "none";
-        try { btn.click(); } catch (e) {}
-        setTimeout(function () {
-          var f = document.createElement("iframe");
-          f.style.display = "none";
-          f.src = url;
-          document.body.appendChild(f);
-        }, 400);
-      }
-
       fetch("dl.json?_=" + Date.now())
         .then(function (r) { return r.ok ? r.json() : DEFAULT; })
         .catch(function () { return DEFAULT; })
         .then(function (cfg) {
-          var url = cfg.setupUrl || DEFAULT.setupUrl;
-          var name = cfg.fileName || DEFAULT.fileName;
-          btn.addEventListener("click", function () { startDownload(url, name); });
-          setTimeout(function () { startDownload(url, name); }, 600);
-        });
+          var btn = document.getElementById("btn");
+          btn.href = cfg.setupUrl || DEFAULT.setupUrl;
+          btn.textContent = "⬇️ تحميل " + (cfg.fileName || DEFAULT.fileName);
+          return fetch("version.json?_=" + Date.now()).then(function (r) { return r.ok ? r.json() : null; });
+        })
+        .then(function (v) {
+          if (!v) return;
+          document.getElementById("ver").textContent =
+            "الإصدار " + (v.displayVersion || v.productVersion || "") +
+            (v.installerSizeMb ? " · ~" + v.installerSizeMb + " MB" : "");
+        })
+        .catch(function () {});
     })();
   </script>
 </body>
