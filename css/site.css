@@ -294,12 +294,6 @@ html[dir="rtl"] body {
   border-color: rgba(248, 113, 113, 0.35);
 }
 
-@media (max-width: 900px) {
-  .lang-switch {
-    display: none;
-  }
-}
-
 .nav-links {
   display: flex;
   align-items: center;
@@ -318,8 +312,49 @@ html[dir="rtl"] body {
 }
 
 @media (max-width: 820px) {
+  .nav {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  .brand {
+    font-size: 1.05rem;
+    gap: 8px;
+  }
+
+  .brand img {
+    width: 34px;
+    height: 34px;
+  }
+
   .nav-links {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .nav-links a[href^="#"] {
     display: none;
+  }
+
+  .nav-links .btn-sm {
+    padding: 8px 11px;
+    font-size: 0.78rem;
+  }
+
+  .lang-switch {
+    display: inline-flex !important;
+    padding: 2px;
+  }
+
+  .lang-switch button {
+    padding: 5px 7px;
+    font-size: 0.65rem;
+  }
+
+  body {
+    padding-bottom: 72px;
   }
 }
 
