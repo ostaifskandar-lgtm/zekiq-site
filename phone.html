@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZEKiQ Garson — ربط الهاتف</title>
+  <meta name="description" content="كيف تربط تطبيق الجرسون على Android بكاشير ZEKiQ — عبر QR وشبكة المحل فقط." />
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+  <link rel="stylesheet" href="css/site.css" />
+</head>
+<body data-page="phone">
+
+  <header>
+    <div class="nav">
+      <a href="index.html" class="brand">
+        <img src="assets/logo.svg" width="40" height="40" alt="" />
+        <span>Z</span>EKiQ POS
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" data-nav="home">الرئيسية</a>
+        <a href="phone.html" data-nav="phone" class="active">الهاتف</a>
+        <a href="download.html" data-nav="download">تحميل</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-center">
+    <div class="page-card wide">
+      <div style="text-align:center;margin-bottom:20px">
+        <img src="assets/logo.svg" width="64" height="64" alt="" style="margin:0 auto 12px;border-radius:16px" />
+        <h1>تطبيق الجرسون على الهاتف</h1>
+        <p style="margin-bottom:0">Android — يعمل على <b>نفس شبكة الواي فاي</b> مع كاشير Windows</p>
+      </div>
+
+      <div class="warn-box">
+        <b>مهم — اقرأ قبل المحاولة:</b><br />
+        لا يوجد رابط عام على الإنترنت لتحميل الجرسون. ملف APK والواجهة يُقدّمان من
+        <b>جهاز الكاشير داخل مطعمك</b> فقط (مثال: <code style="color:var(--gold-soft)">192.168.1.x:3000</code>).
+        هذا تصميم مقصود للأمان وسرعة الشبكة المحلية.
+      </div>
+
+      <div class="flow">
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <div>
+            <h3>ثبّت الكاشير أولاً</h3>
+            <p>حمّل ZEKiQ POS على Windows من <a href="download.html" style="color:var(--gold-soft)">صفحة التحميل</a> وشغّل البرنامج حتى يعمل يومياً.</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <div>
+            <h3>وصّل الهاتف بنفس الواي فاي</h3>
+            <p>هاتف الجرسون والكاشير على <b>نفس شبكة المحل</b> — ليس بيانات الجوال فقط.</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <div>
+            <h3>افتح الإعدادات → غارسون</h3>
+            <p>من الكاشير: الإعدادات → غارسون — ستجد <b>QR</b> ورابط التثبيت.</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <div>
+            <h3>امسح QR أو افتح الرابط على الهاتف</h3>
+            <p>يفتح صفحة التثبيت على الكاشير — اختر «فتح Garson» (موصى به) أو حمّل APK إن رغبت.</p>
+            <span class="code">http://IP-المحل:3000/garson/install?host=IP&port=3000</span>
+            <p style="margin-top:8px;font-size:0.85rem">استبدل <b>IP-المحل</b> بالرقم الظاهر في إعدادات الكاشير (مثل 192.168.1.49).</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">5</div>
+          <div>
+            <h3>تحديث التطبيق</h3>
+            <p>عند نشر تحديث جديد يظهر شريط على هاتف الجرسون — اضغط للتثبيت. أو أعد فتح نفس رابط QR من الكاشير.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="warn-box" style="margin-top:24px;background:rgba(239,68,68,0.08);border-color:rgba(248,113,113,0.35)">
+        <b>لا يعمل؟</b>
+        <ul class="checklist">
+          <li>تأكد أن الكاشير يعمل (أيقونة ZEKiQ POS مفتوحة)</li>
+          <li>الهاتف والكاشير على نفس الواي فاي</li>
+          <li>جرب فتح الرابط يدوياً في Chrome على الهاتف</li>
+          <li>Play Protect → ⋮ → «تثبيت على أي حال» إن ظهر تحذير</li>
+          <li>تواصل واتساب مع الدعم — أرسل IP الظاهر في الإعدادات</li>
+        </ul>
+      </div>
+
+      <div class="cta-row" style="margin-top:24px;justify-content:center">
+        <a href="download.html" class="btn btn-gold">⬇️ تحميل الكاشير أولاً</a>
+        <a href="#" class="btn btn-wa js-wa">💬 مساعدة واتساب</a>
+      </div>
+    </div>
+  </main>
+
+  <a href="#" class="fab js-wa" title="واتساب">💬</a>
+
+  <script src="js/site.js"></script>
+  <script>
+    ZekiqSite.bindWhatsApp(".js-wa", function () {
+      return "مرحباً، أحتاج مساعدة في ربط تطبيق الجرسون على الهاتف";
+    });
+  </script>
+</body>
+</html>
