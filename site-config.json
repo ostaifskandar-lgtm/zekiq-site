@@ -1,10 +1,14 @@
 {
   "brandName": "ZEKiQ",
+  "siteUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/",
+  "statsApiUrl": "",
   "whatsapp": "905555555555",
   "annualPriceUsd": 150,
-  "annualPriceLabel": "$150 / سنة",
+  "annualPriceLabel": "$150 / year",
   "trialDays": 30,
   "trialNote": "أول شهر مجاني — جرّب قبل الدفع",
-  "supportHours": "دعم واتساب في أوقات العمل",
-  "productTagline": "كاشير ومحاسبة للمطاعم والكافيهات — Windows + جرسون"
+  "trialNoteEn": "First month free — try before you pay",
+  "trialNoteTr": "İlk ay ücretsiz — ödemeden dene",
+  "supportHours": "WhatsApp support during business hours",
+  "productTagline": "Restaurant & café POS — Windows + Android waiter"
 }
