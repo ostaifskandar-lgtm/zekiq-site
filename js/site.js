@@ -23,7 +23,6 @@
         cache.config = {
           brandName: "ZEKiQ",
           siteUrl: "",
-          whatsapp: "",
           annualPriceUsd: 150,
           trialDays: 30,
         };
@@ -127,34 +126,6 @@
     fetch(base + "/track-download", { method: "POST", mode: "cors" }).catch(function () {});
   }
 
-  function waLink(number, message) {
-    var n = String(number || "").replace(/\D/g, "");
-    if (!n) return "#";
-    return "https://wa.me/" + n + "?text=" + encodeURIComponent(message || "");
-  }
-
-  function waMessage(cfg, plan) {
-    if (!global.ZekiqI18n) return "ZEKiQ POS";
-    if (plan) return global.ZekiqI18n.tr("wa_plan", { plan: plan });
-    return global.ZekiqI18n.tr("wa_default");
-  }
-
-  function bindWhatsApp(selector, messageBuilder) {
-    return loadConfig().then(function (cfg) {
-      var nodes = document.querySelectorAll(selector);
-      nodes.forEach(function (a) {
-        var plan = a.getAttribute("data-plan");
-        var msg =
-          typeof messageBuilder === "function"
-            ? messageBuilder(cfg, plan, a)
-            : waMessage(cfg, plan);
-        a.href = waLink(cfg.whatsapp, msg);
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-      });
-    });
-  }
-
   function formatVersion(v) {
     if (!v) return "";
     var prefix = global.ZekiqI18n ? global.ZekiqI18n.tr("ver_prefix") : "Version";
@@ -238,19 +209,10 @@
           btn.href = "#";
           btn.removeAttribute("target");
           btn.classList.add("btn-ghost");
+          btn.setAttribute("aria-disabled", "true");
           btn.textContent = global.ZekiqI18n ? global.ZekiqI18n.tr("dl_no_url") : "…";
-          if (!btn.dataset.dlBound) {
-            btn.dataset.dlBound = "1";
-            btn.addEventListener("click", function (e) {
-              e.preventDefault();
-              window.open(
-                waLink(cfg.whatsapp, global.ZekiqI18n ? global.ZekiqI18n.tr("wa_dl_help") : ""),
-                "_blank",
-                "noopener,noreferrer"
-              );
-            });
-          }
         } else {
+          btn.removeAttribute("aria-disabled");
           btn.href = dl.setupUrl;
           btn.target = "_blank";
           btn.rel = "noopener noreferrer";
@@ -308,7 +270,6 @@
   function onLangChange() {
     applyPricing();
     applyInstallStats();
-    bindWhatsApp(".js-wa");
     var verId = document.body.getAttribute("data-version-id");
     var verExtra = document.body.getAttribute("data-version-extra");
     if (verId) setVersionText(verId, verExtra || "");
@@ -323,7 +284,6 @@
     initMeta();
     applyPricing();
     applyInstallStats();
-    bindWhatsApp(".js-wa");
     var verId = document.body.getAttribute("data-version-id");
     var verExtra = document.body.getAttribute("data-version-extra");
     if (verId) setVersionText(verId, verExtra || "");
@@ -336,7 +296,6 @@
     loadStats: function () {
       return loadConfig().then(loadStats);
     },
-    bindWhatsApp: bindWhatsApp,
     setVersionText: setVersionText,
     bindDownloadButton: bindDownloadButton,
     applyPricing: applyPricing,
@@ -345,6 +304,5 @@
     markActiveNav: markActiveNav,
     onLangChange: onLangChange,
     init: init,
-    waLink: waLink,
   };
 })(window);
