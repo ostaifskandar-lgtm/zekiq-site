@@ -97,10 +97,17 @@
         });
         document.querySelectorAll("[data-install-raw]").forEach(function (el) {
           el.textContent = String(n);
+          el.style.display = n > 0 ? "" : "none";
+        });
+        document.querySelectorAll(".install-badge").forEach(function (el) {
+          el.style.display = n > 0 ? "" : "none";
         });
         document.querySelectorAll("[data-i18n-trust]").forEach(function (el) {
           if (global.ZekiqI18n) {
-            el.innerHTML = global.ZekiqI18n.tr("trust_installs", { n: n > 0 ? display : "0" });
+            el.innerHTML =
+              n > 0
+                ? global.ZekiqI18n.tr("trust_installs", { n: display })
+                : global.ZekiqI18n.tr("trust_installs_zero");
           }
         });
         document.querySelectorAll("[data-i18n-dl-counter]").forEach(function (el) {
@@ -143,7 +150,7 @@
             : waMessage(cfg, plan);
         a.href = waLink(cfg.whatsapp, msg);
         a.target = "_blank";
-        a.rel = "noreferrer";
+        a.rel = "noopener noreferrer";
       });
     });
   }
@@ -211,6 +218,14 @@
     });
   }
 
+  function downloadButtonLabel(dl) {
+    var file = dl.fileName || "ZEKiQ-POS-Setup.exe";
+    return (
+      "⬇️ " +
+      (global.ZekiqI18n ? global.ZekiqI18n.tr("dl_btn_file", { file: file }) : file)
+    );
+  }
+
   function bindDownloadButton(buttonId, versionId) {
     return Promise.all([loadConfig(), loadDl(), loadVersion()]).then(function (res) {
       var cfg = res[0];
@@ -218,24 +233,34 @@
       var v = res[2];
       var btn = document.getElementById(buttonId);
       if (btn) {
+        btn.classList.remove("btn-ghost");
         if (!dl.setupUrl) {
           btn.href = "#";
+          btn.removeAttribute("target");
           btn.classList.add("btn-ghost");
           btn.textContent = global.ZekiqI18n ? global.ZekiqI18n.tr("dl_no_url") : "…";
-          btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            window.open(waLink(cfg.whatsapp, global.ZekiqI18n ? global.ZekiqI18n.tr("wa_dl_help") : ""), "_blank");
-          });
+          if (!btn.dataset.dlBound) {
+            btn.dataset.dlBound = "1";
+            btn.addEventListener("click", function (e) {
+              e.preventDefault();
+              window.open(
+                waLink(cfg.whatsapp, global.ZekiqI18n ? global.ZekiqI18n.tr("wa_dl_help") : ""),
+                "_blank",
+                "noopener,noreferrer"
+              );
+            });
+          }
         } else {
           btn.href = dl.setupUrl;
-          btn.addEventListener("click", function () {
-            trackWebsiteDownload(cfg);
-          });
-          btn.textContent =
-            "⬇️ " +
-            (global.ZekiqI18n
-              ? global.ZekiqI18n.tr("dl_btn_file", { file: dl.fileName || "ZEKiQ-POS-Setup.exe" })
-              : dl.fileName || "ZEKiQ-POS-Setup.exe");
+          btn.target = "_blank";
+          btn.rel = "noopener noreferrer";
+          btn.textContent = downloadButtonLabel(dl);
+          if (!btn.dataset.dlBound) {
+            btn.dataset.dlBound = "1";
+            btn.addEventListener("click", function () {
+              trackWebsiteDownload(cfg);
+            });
+          }
         }
       }
       if (versionId) {
@@ -259,7 +284,11 @@
         link.href = cfg.siteUrl.replace(/\/$/, "") + "/" + (paths[page] || "");
       }
       var og = document.querySelector('meta[property="og:url"]');
-      if (og && cfg.siteUrl) og.content = cfg.siteUrl;
+      if (og && cfg.siteUrl) {
+        var page = document.body.getAttribute("data-page") || "home";
+        var paths = { home: "", download: "download.html", phone: "phone.html" };
+        og.content = cfg.siteUrl.replace(/\/$/, "") + "/" + (paths[page] || "");
+      }
     });
   }
 
@@ -283,6 +312,8 @@
     var verId = document.body.getAttribute("data-version-id");
     var verExtra = document.body.getAttribute("data-version-extra");
     if (verId) setVersionText(verId, verExtra || "");
+    var dlBtnId = document.body.getAttribute("data-dl-btn");
+    if (dlBtnId) bindDownloadButton(dlBtnId, verId || "");
   }
 
   function init() {
