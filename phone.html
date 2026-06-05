@@ -1,108 +1,101 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZEKiQ Garson — ربط الهاتف</title>
-  <meta name="description" content="كيف تربط تطبيق الجرسون على Android بكاشير ZEKiQ — عبر QR وشبكة المحل فقط." />
+  <title>ZEKiQ Garson — Mobile</title>
+  <meta name="description" content="Pair Android waiter app with ZEKiQ POS" />
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Noto+Sans+Arabic:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/site.css" />
 </head>
-<body data-page="phone">
+<body data-page="phone" data-i18n-title="phone_title" data-i18n-meta="phone_meta">
 
   <header>
     <div class="nav">
       <a href="index.html" class="brand">
-        <img src="assets/logo.svg" width="40" height="40" alt="" />
-        <span>Z</span>EKiQ POS
+        <img src="assets/logo.svg" width="40" height="40" alt="ZEKiQ" />
+        <span>Z</span>EKiQ <span class="brand-sub">POS</span>
       </a>
       <nav class="nav-links">
-        <a href="index.html" data-nav="home">الرئيسية</a>
-        <a href="phone.html" data-nav="phone" class="active">الهاتف</a>
-        <a href="download.html" data-nav="download">تحميل</a>
+        <a href="index.html" data-nav="home" data-i18n="nav_features">Features</a>
+        <a href="phone.html" data-nav="phone" data-i18n="nav_phone">Mobile</a>
+        <a href="download.html" data-nav="download" data-i18n="nav_download">Download</a>
+        <div class="lang-switch" role="group">
+          <button type="button" data-lang="en" class="on">EN</button>
+          <button type="button" data-lang="tr">TR</button>
+          <button type="button" data-lang="ar">AR</button>
+        </div>
       </nav>
     </div>
   </header>
 
   <main class="page-center">
     <div class="page-card wide">
-      <div style="text-align:center;margin-bottom:20px">
-        <img src="assets/logo.svg" width="64" height="64" alt="" style="margin:0 auto 12px;border-radius:16px" />
-        <h1>تطبيق الجرسون على الهاتف</h1>
-        <p style="margin-bottom:0">Android — يعمل على <b>نفس شبكة الواي فاي</b> مع كاشير Windows</p>
+      <div class="page-head">
+        <img src="assets/logo.svg" width="64" height="64" alt="" class="page-logo" />
+        <h1 data-i18n="phone_h1">Waiter app on your phone</h1>
+        <p data-i18n-html-only="phone_sub"></p>
       </div>
 
-      <div class="warn-box">
-        <b>مهم — اقرأ قبل المحاولة:</b><br />
-        لا يوجد رابط عام على الإنترنت لتحميل الجرسون. ملف APK والواجهة يُقدّمان من
-        <b>جهاز الكاشير داخل مطعمك</b> فقط (مثال: <code style="color:var(--gold-soft)">192.168.1.x:3000</code>).
-        هذا تصميم مقصود للأمان وسرعة الشبكة المحلية.
-      </div>
+      <div class="warn-box" data-i18n-html-only="phone_warn"></div>
 
       <div class="flow">
         <div class="flow-item">
           <div class="flow-num">1</div>
-          <div>
-            <h3>ثبّت الكاشير أولاً</h3>
-            <p>حمّل ZEKiQ POS على Windows من <a href="download.html" style="color:var(--gold-soft)">صفحة التحميل</a> وشغّل البرنامج حتى يعمل يومياً.</p>
-          </div>
+          <div><h3 data-i18n="phone_s1_t"></h3><p data-i18n-html-only="phone_s1_d"></p></div>
         </div>
         <div class="flow-item">
           <div class="flow-num">2</div>
-          <div>
-            <h3>وصّل الهاتف بنفس الواي فاي</h3>
-            <p>هاتف الجرسون والكاشير على <b>نفس شبكة المحل</b> — ليس بيانات الجوال فقط.</p>
-          </div>
+          <div><h3 data-i18n="phone_s2_t"></h3><p data-i18n-html-only="phone_s2_d"></p></div>
         </div>
         <div class="flow-item">
           <div class="flow-num">3</div>
-          <div>
-            <h3>افتح الإعدادات → غارسون</h3>
-            <p>من الكاشير: الإعدادات → غارسون — ستجد <b>QR</b> ورابط التثبيت.</p>
-          </div>
+          <div><h3 data-i18n="phone_s3_t"></h3><p data-i18n="phone_s3_d"></p></div>
         </div>
         <div class="flow-item">
           <div class="flow-num">4</div>
           <div>
-            <h3>امسح QR أو افتح الرابط على الهاتف</h3>
-            <p>يفتح صفحة التثبيت على الكاشير — اختر «فتح Garson» (موصى به) أو حمّل APK إن رغبت.</p>
-            <span class="code">http://IP-المحل:3000/garson/install?host=IP&port=3000</span>
-            <p style="margin-top:8px;font-size:0.85rem">استبدل <b>IP-المحل</b> بالرقم الظاهر في إعدادات الكاشير (مثل 192.168.1.49).</p>
+            <h3 data-i18n="phone_s4_t"></h3>
+            <p data-i18n="phone_s4_d"></p>
+            <span class="code">http://SHOP-IP:3000/garson/install?host=SHOP-IP&port=3000</span>
+            <p class="flow-note" data-i18n-html-only="phone_s4_ip"></p>
           </div>
         </div>
         <div class="flow-item">
           <div class="flow-num">5</div>
-          <div>
-            <h3>تحديث التطبيق</h3>
-            <p>عند نشر تحديث جديد يظهر شريط على هاتف الجرسون — اضغط للتثبيت. أو أعد فتح نفس رابط QR من الكاشير.</p>
-          </div>
+          <div><h3 data-i18n="phone_s5_t"></h3><p data-i18n="phone_s5_d"></p></div>
         </div>
       </div>
 
-      <div class="warn-box" style="margin-top:24px;background:rgba(239,68,68,0.08);border-color:rgba(248,113,113,0.35)">
-        <b>لا يعمل؟</b>
+      <div class="warn-box warn-danger">
+        <div data-i18n-html-only="phone_fix"></div>
         <ul class="checklist">
-          <li>تأكد أن الكاشير يعمل (أيقونة ZEKiQ POS مفتوحة)</li>
-          <li>الهاتف والكاشير على نفس الواي فاي</li>
-          <li>جرب فتح الرابط يدوياً في Chrome على الهاتف</li>
-          <li>Play Protect → ⋮ → «تثبيت على أي حال» إن ظهر تحذير</li>
-          <li>تواصل واتساب مع الدعم — أرسل IP الظاهر في الإعدادات</li>
+          <li data-i18n="phone_fix_1"></li>
+          <li data-i18n="phone_fix_2"></li>
+          <li data-i18n="phone_fix_3"></li>
+          <li data-i18n="phone_fix_4"></li>
+          <li data-i18n="phone_fix_5"></li>
         </ul>
       </div>
 
-      <div class="cta-row" style="margin-top:24px;justify-content:center">
-        <a href="download.html" class="btn btn-gold">⬇️ تحميل الكاشير أولاً</a>
-        <a href="#" class="btn btn-wa js-wa">💬 مساعدة واتساب</a>
+      <div class="cta-row center">
+        <a href="download.html" class="btn btn-gold" data-i18n="phone_dl_first">Download cashier first</a>
+        <a href="#" class="btn btn-wa js-wa" data-i18n="phone_wa">WhatsApp help</a>
       </div>
     </div>
   </main>
 
-  <a href="#" class="fab js-wa" title="واتساب">💬</a>
+  <a href="#" class="fab js-wa">💬</a>
 
+  <script src="js/i18n.js"></script>
   <script src="js/site.js"></script>
   <script>
+    ZekiqSite.init();
     ZekiqSite.bindWhatsApp(".js-wa", function () {
-      return "مرحباً، أحتاج مساعدة في ربط تطبيق الجرسون على الهاتف";
+      return ZekiqI18n.tr("wa_phone_help");
     });
   </script>
 </body>
