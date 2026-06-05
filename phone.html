@@ -83,20 +83,12 @@
 
       <div class="cta-row center">
         <a href="download.html" class="btn btn-gold" data-i18n="phone_dl_first">Download cashier first</a>
-        <a href="#" class="btn btn-wa js-wa" data-i18n="phone_wa">WhatsApp help</a>
       </div>
     </div>
   </main>
 
-  <a href="#" class="fab js-wa">💬</a>
-
   <script src="js/i18n.js"></script>
   <script src="js/site.js"></script>
-  <script>
-    ZekiqSite.init();
-    ZekiqSite.bindWhatsApp(".js-wa", function () {
-      return ZekiqI18n.tr("wa_phone_help");
-    });
-  </script>
+  <script>ZekiqSite.init();</script>
 </body>
 </html>
