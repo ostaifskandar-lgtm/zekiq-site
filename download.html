@@ -3,74 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>تحميل ZEKiQ POS</title>
+  <title>تحميل ZEKiQ POS — Windows</title>
+  <meta name="description" content="تحميل مثبّت ZEKiQ POS لـ Windows — تثبيت نظيف مع الحفاظ على المبيعات." />
   <meta name="robots" content="noindex" />
-  <style>
-    :root { --gold:#e7b649; --bg:#0b0d12; --txt:#f3f4f6; --muted:#9aa3b2; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: "Segoe UI", Tahoma, system-ui, Arial, sans-serif;
-      background: radial-gradient(900px 500px at 50% -20%, #1a1f2e 0%, var(--bg) 60%);
-      color: var(--txt);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
-    }
-    .card { max-width: 440px; background: #161a24; border: 1px solid #262b38; border-radius: 20px; padding: 36px 28px; }
-    .logo { font-size: 2rem; font-weight: 900; margin-bottom: 8px; }
-    .logo span { color: var(--gold); }
-    h1 { font-size: 1.2rem; margin-bottom: 12px; }
-    p { color: var(--muted); font-size: .92rem; line-height: 1.7; margin-bottom: 22px; }
-    .btn {
-      display: inline-block;
-      padding: 16px 32px;
-      border-radius: 14px;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--gold), #caa23a);
-      color: #1a1300;
-      text-decoration: none;
-      font-size: 1.05rem;
-    }
-    .btn:hover { opacity: .92; }
-    .hint { margin-top: 20px; font-size: .82rem; color: var(--muted); line-height: 1.6; }
-    #ver { margin-top: 10px; font-size: .8rem; color: var(--muted); }
-  </style>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+  <link rel="stylesheet" href="css/site.css" />
 </head>
-<body>
-  <div class="card">
-    <div class="logo"><span>Z</span>ZEKiQ POS</div>
-    <h1>تحميل البرنامج لـ Windows</h1>
-    <p>اضغط الزر مرة واحدة فقط. بعد التحميل شغّل <b>ZEKiQ-POS-Setup.exe</b> — يثبّت نسخة نظيفة ويحافظ على المبيعات.</p>
-    <a id="btn" class="btn" href="#">⬇️ تحميل ZEKiQ-POS-Setup.exe</a>
-    <p id="ver"></p>
-    <p class="hint">1) حمّل · 2) شغّل المثبّت · 3) افتح أيقونة ZEKiQ POS<br><a href="index.html" style="color:var(--gold)">العودة للموقع</a></p>
-  </div>
+<body data-page="download">
+
+  <header>
+    <div class="nav">
+      <a href="index.html" class="brand">
+        <img src="assets/logo.svg" width="40" height="40" alt="" />
+        <span>Z</span>EKiQ POS
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" data-nav="home">الرئيسية</a>
+        <a href="phone.html" data-nav="phone">الهاتف</a>
+        <a href="download.html" data-nav="download" class="active">تحميل</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-center">
+    <div class="page-card">
+      <img src="assets/logo.svg" width="72" height="72" alt="" style="margin:0 auto 16px;border-radius:18px" />
+      <h1>تحميل ZEKiQ POS لـ Windows</h1>
+      <p>اضغط مرة واحدة. بعد التحميل شغّل <b>ZEKiQ-POS-Setup.exe</b> — يثبّت نسخة نظيفة ويحافظ على المبيعات إن وُجدت.</p>
+
+      <a id="dlBtn" class="btn btn-gold" href="#" style="width:100%;font-size:1.05rem;padding:16px">⬇️ جاري تجهيز الرابط…</a>
+      <p class="ver-line" id="dlVersion" aria-live="polite"></p>
+
+      <ul class="checklist" style="text-align:right;margin-top:22px">
+        <li>Windows 10 أو 11 (64-bit)</li>
+        <li>اتصال إنترنت للتفعيل الأول فقط</li>
+        <li>بعد التثبيت: أيقونة <b>ZEKiQ POS</b> على سطح المكتب</li>
+        <li>التحديثات اللاحقة من داخل البرنامج</li>
+      </ul>
+
+      <div class="warn-box">
+        <b>تنبيه Windows «ناشر غير معروف»:</b><br />
+        طبيعي للبرامج الجديدة. اختر <b>More info</b> ثم <b>Run anyway</b> أو <b>تشغيل</b>.
+      </div>
+
+      <p class="note" style="margin-top:20px;text-align:center">
+        <a href="phone.html" style="color:var(--gold-soft)">ربط هاتف الجرسون ←</a>
+        ·
+        <a href="index.html" style="color:var(--gold-soft)">العودة للرئيسية</a>
+      </p>
+    </div>
+  </main>
+
+  <a href="#" class="fab js-wa" title="واتساب">💬</a>
+
+  <script src="js/site.js"></script>
   <script>
-    (function () {
-      var DEFAULT = {
-        setupUrl: "https://github.com/ostaifskandar-lgtm/zekiq-site/releases/download/installer/ZEKiQ-POS-Setup.exe",
-        fileName: "ZEKiQ-POS-Setup.exe"
-      };
-      fetch("dl.json?_=" + Date.now())
-        .then(function (r) { return r.ok ? r.json() : DEFAULT; })
-        .catch(function () { return DEFAULT; })
-        .then(function (cfg) {
-          var btn = document.getElementById("btn");
-          btn.href = cfg.setupUrl || DEFAULT.setupUrl;
-          btn.textContent = "⬇️ تحميل " + (cfg.fileName || DEFAULT.fileName);
-          return fetch("version.json?_=" + Date.now()).then(function (r) { return r.ok ? r.json() : null; });
-        })
-        .then(function (v) {
-          if (!v) return;
-          document.getElementById("ver").textContent =
-            "الإصدار " + (v.displayVersion || v.productVersion || "") +
-            (v.installerSizeMb ? " · ~" + v.installerSizeMb + " MB" : "");
-        })
-        .catch(function () {});
-    })();
+    ZekiqSite.bindWhatsApp(".js-wa", function () {
+      return "مرحباً، أحتاج مساعدة في تحميل ZEKiQ POS";
+    });
+    ZekiqSite.bindDownloadButton("dlBtn", "dlVersion");
   </script>
 </body>
 </html>
