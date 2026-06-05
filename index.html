@@ -1,27 +1,38 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZEKiQ POS — كاشير ومحاسبة للمطاعم</title>
-  <meta name="description" content="ZEKiQ POS: كاشير Windows، محاسبة، جرسون أندرويد، طاولات، مطبخ/بار، QR من الطاولة. شهر مجاني ثم اشتراك سنوي." />
+  <title>ZEKiQ POS</title>
+  <meta name="description" content="ZEKiQ POS — restaurant & café POS for Windows" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ZEKiQ POS" />
+  <meta property="og:url" content="https://ostaifskandar-lgtm.github.io/zekiq-site/" />
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Noto+Sans+Arabic:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/site.css" />
 </head>
-<body data-page="home">
+<body data-page="home" data-i18n-title="meta_title" data-i18n-meta="meta_desc" data-version-id="homeVersion" data-version-extra="dl_ver_extra">
 
   <header>
     <div class="nav">
       <a href="index.html" class="brand">
-        <img src="assets/logo.svg" width="40" height="40" alt="" />
-        <span>Z</span>EKiQ POS
+        <img src="assets/logo.svg" width="40" height="40" alt="ZEKiQ" />
+        <span>Z</span>EKiQ <span class="brand-sub">POS</span>
       </a>
       <nav class="nav-links">
-        <a href="#features" data-nav="home">المزايا</a>
-        <a href="#how" data-nav="home">كيف يعمل</a>
-        <a href="phone.html" data-nav="phone">الهاتف</a>
-        <a href="download.html" data-nav="download">تحميل</a>
-        <a href="#" class="btn btn-wa btn-sm js-wa">واتساب</a>
+        <a href="#features" data-nav="home" data-i18n="nav_features">Features</a>
+        <a href="#how" data-nav="home" data-i18n="nav_how">How it works</a>
+        <a href="phone.html" data-nav="phone" data-i18n="nav_phone">Mobile</a>
+        <a href="download.html" data-nav="download" data-i18n="nav_download">Download</a>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" data-lang="en" class="on">EN</button>
+          <button type="button" data-lang="tr">TR</button>
+          <button type="button" data-lang="ar">AR</button>
+        </div>
+        <a href="#" class="btn btn-wa btn-sm js-wa" data-i18n="nav_wa">WhatsApp</a>
       </nav>
     </div>
   </header>
@@ -29,17 +40,25 @@
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <div class="badge">Windows · شبكة محلية · 3 لغات</div>
-        <h1>كاشير سريع<br><span class="hl">ومحاسبة واضحة</span><br>لمطعمك</h1>
-        <p class="lead">
-          ZEKiQ POS يجمع الطاولات، المطبخ والبار، المحاسبة، والجرسون على أندرويد —
-          بدون اشتراك شهري مخفي. <span data-trial-note>أول شهر مجاني</span>.
+        <div class="badge" data-i18n="hero_badge">Windows · Local network · 3 languages</div>
+        <div class="trust-bar" id="trustBar">
+          <span class="trust-dot" aria-hidden="true"></span>
+          <span data-i18n-trust="trust_installs">0+ venues installed ZEKiQ on a registered device</span>
+        </div>
+        <h1>
+          <span data-i18n="hero_h1_a">Fast POS</span><br />
+          <span class="hl" data-i18n="hero_h1_b">clear accounting</span><br />
+          <span data-i18n="hero_h1_c">for your venue</span>
+        </h1>
+        <p class="lead" data-i18n="hero_lead" data-i18n-html="1">
+          ZEKiQ POS unites tables, kitchen & bar, accounting, and Android waiters.
         </p>
         <div class="cta-row">
-          <a href="download.html" class="btn btn-gold">⬇️ تحميل Windows</a>
-          <a href="phone.html" class="btn btn-ghost">📱 ربط الهاتف</a>
+          <a href="download.html" class="btn btn-gold" data-i18n="hero_dl">Download for Windows</a>
+          <a href="phone.html" class="btn btn-ghost" data-i18n="hero_phone">Connect mobile app</a>
         </div>
-        <p class="note">بعد التثبيت: التحديثات من داخل البرنامج (شريط أصفر) — لا حاجة لإعادة التحميل كل أسبوع.</p>
+        <p class="note" data-i18n="hero_note">After install: updates inside the app.</p>
+        <p class="note subtle" data-i18n="trust_devices">Each install is counted once per device fingerprint</p>
       </div>
       <div class="preview" aria-hidden="true">
         <div class="preview-card">
@@ -62,59 +81,45 @@
       </div>
     </div>
     <div class="wrap stats">
-      <div class="stat"><div class="n" data-trial-days>30</div><div class="l">يوم تجربة مجانية</div></div>
-      <div class="stat"><div class="n">3</div><div class="l">لغات الواجهة</div></div>
-      <div class="stat"><div class="n" data-price>$150</div><div class="l">سنوياً بعد التجربة</div></div>
-      <div class="stat"><div class="n">LAN</div><div class="l">يعمل بدون إنترنت دائم</div></div>
+      <div class="stat"><div class="n" data-trial-days>30</div><div class="l" data-i18n="stat_trial">days free trial</div></div>
+      <div class="stat"><div class="n" id="statInstalls">0</div><div class="l" data-i18n="stat_installs">verified installs</div></div>
+      <div class="stat"><div class="n">3</div><div class="l" data-i18n="stat_langs">UI languages</div></div>
+      <div class="stat"><div class="n" data-price>$150</div><div class="l" data-i18n="stat_price">per year</div></div>
     </div>
   </section>
 
   <section id="features">
     <div class="wrap">
       <div class="section-head">
-        <h2>ما الذي تحصل عليه فعلاً</h2>
-        <p>مزايا موجودة في النسخة الحالية — بدون وعود تسويقية فارغة.</p>
+        <h2 data-i18n="feat_h2">What you actually get</h2>
+        <p data-i18n="feat_sub">Features in the current release.</p>
       </div>
       <div class="grid-3">
-        <div class="card"><div class="ic">💳</div><h3>كاشير Windows</h3><p>طاولات، باكيت، دفع، X/Z، طابعات مطبخ/بار، PIN للمحاسبين.</p></div>
-        <div class="card"><div class="ic">📊</div><h3>محاسبة</h3><p>مبيعات، مصروفات، موردون، مخزون، رواتب، تقارير وتصدير.</p></div>
-        <div class="card"><div class="ic">📱</div><h3>جرسون Android</h3><p>طلبات من الهاتف على شبكة المحل — يُربط عبر QR من الكاشير (ليس من هذا الموقع).</p></div>
-        <div class="card"><div class="ic">🍽️</div><h3>QR من الطاولة</h3><p>الزبون يطلب من متصفح هاتفه — يصل للمطبخ والكاشير.</p></div>
-        <div class="card"><div class="ic">🔐</div><h3>ترخيص وتجربة</h3><p>شهر مجاني، تفعيل عن بُعد بعد الدفع — بدون بطاقة بنكية.</p></div>
-        <div class="card"><div class="ic">🔄</div><h3>تحديثات آمنة</h3><p>تحديث من داخل البرنامج مع الحفاظ على قاعدة المبيعات.</p></div>
-        <div class="card"><div class="ic">💾</div><h3>نسخ احتياطي</h3><p>نسخ تلقائي لقاعدة البيانات على جهاز الكاشير.</p></div>
-        <div class="card"><div class="ic">🌐</div><h3>عربي / تركي / إنجليزي</h3><p>واجهة متعددة اللغات من الإعدادات.</p></div>
-        <div class="card"><div class="ic">💬</div><h3>دعم مباشر</h3><p>تواصل واتساب مع البائع للتفعيل والمساعدة.</p></div>
+        <div class="card"><div class="ic">💳</div><h3 data-i18n="feat_1_t">Windows POS</h3><p data-i18n="feat_1_d"></p></div>
+        <div class="card"><div class="ic">📊</div><h3 data-i18n="feat_2_t">Accounting</h3><p data-i18n="feat_2_d"></p></div>
+        <div class="card"><div class="ic">📱</div><h3 data-i18n="feat_3_t">Android waiter</h3><p data-i18n="feat_3_d"></p></div>
+        <div class="card"><div class="ic">🍽️</div><h3 data-i18n="feat_4_t">Table QR</h3><p data-i18n="feat_4_d"></p></div>
+        <div class="card"><div class="ic">🔐</div><h3 data-i18n="feat_5_t">License & trial</h3><p data-i18n="feat_5_d"></p></div>
+        <div class="card"><div class="ic">🔄</div><h3 data-i18n="feat_6_t">Safe updates</h3><p data-i18n="feat_6_d"></p></div>
+        <div class="card"><div class="ic">💾</div><h3 data-i18n="feat_7_t">Backup</h3><p data-i18n="feat_7_d"></p></div>
+        <div class="card"><div class="ic">🌐</div><h3 data-i18n="feat_8_t">AR / TR / EN</h3><p data-i18n="feat_8_d"></p></div>
+        <div class="card"><div class="ic">💬</div><h3 data-i18n="feat_9_t">Direct support</h3><p data-i18n="feat_9_d"></p></div>
       </div>
-      <div class="alert">
-        <b>شفافية:</b> تطبيق الجرسون وملف APK يُحمّلان من <b>شبكة مطعمك</b> (IP الكاشير) — ليس رابطاً عاماً من الإنترنت. التفاصيل في <a href="phone.html" style="color:var(--gold-soft)">صفحة الهاتف</a>.
-      </div>
+      <div class="alert" data-i18n-html-only="alert_trans"></div>
     </div>
   </section>
 
   <section id="how" class="panel">
     <div class="wrap">
       <div class="section-head">
-        <h2>من التحميل إلى أول طلب</h2>
-        <p>أربع خطوات واضحة — بدون تعقيد.</p>
+        <h2 data-i18n="how_h2">From download to first order</h2>
+        <p data-i18n="how_sub">Four clear steps.</p>
       </div>
       <div class="steps">
-        <div class="step">
-          <h3>حمّل وثبّت</h3>
-          <p>من <a href="download.html" style="color:var(--gold-soft)">صفحة التحميل</a> — ملف Setup واحد لـ Windows 10/11.</p>
-        </div>
-        <div class="step">
-          <h3>ابدأ التجربة</h3>
-          <p>الشهر الأول مجاني. التفعيل يصل تلقائياً عند اتصال الإنترنت (أو عبر واتساب).</p>
-        </div>
-        <div class="step">
-          <h3>اربط الجرسون</h3>
-          <p>نفس شبكة الواي فاي → الإعدادات → غارسون → امسح QR أو افتح الرابط على الهاتف.</p>
-        </div>
-        <div class="step">
-          <h3>اعمل يومياً</h3>
-          <p>كاشير + محاسبة + تحديثات من الشريط الأصفر داخل البرنامج.</p>
-        </div>
+        <div class="step"><h3 data-i18n="how_1_t">Download & install</h3><p data-i18n-html-only="how_1_d"></p></div>
+        <div class="step"><h3 data-i18n="how_2_t">Start trial</h3><p data-i18n="how_2_d"></p></div>
+        <div class="step"><h3 data-i18n="how_3_t">Pair waiter app</h3><p data-i18n="how_3_d"></p></div>
+        <div class="step"><h3 data-i18n="how_4_t">Run daily</h3><p data-i18n="how_4_d"></p></div>
       </div>
     </div>
   </section>
@@ -122,27 +127,27 @@
   <section id="pricing">
     <div class="wrap">
       <div class="section-head">
-        <h2>سعر واحد واضح</h2>
-        <p>لا اشتراك شهري تلقائي ببطاقة — الدفع عبر واتساب.</p>
+        <h2 data-i18n="price_h2">One clear price</h2>
+        <p data-i18n="price_sub">No auto-charged card.</p>
       </div>
       <div class="pricing-box">
-        <div class="tag">شهر أول مجاني</div>
-        <h3>اشتراك سنوي</h3>
-        <div class="price" data-price>$150 / سنة</div>
-        <p>كل مزايا الكاشير والمحاسبة · تحديثات · دعم واتساب · تفعيل عن بُعد.</p>
-        <a href="#" class="btn btn-gold js-wa" data-plan="سنوي">💬 اشترك عبر واتساب</a>
+        <div class="tag" data-i18n="price_tag">First month free</div>
+        <h3 data-i18n="price_plan">Annual plan</h3>
+        <div class="price" data-price>$150 / year</div>
+        <p data-i18n="price_inc">Full POS & accounting.</p>
+        <a href="#" class="btn btn-gold js-wa" data-plan="Annual" data-i18n="price_wa">Subscribe via WhatsApp</a>
       </div>
     </div>
   </section>
 
   <section id="download">
-    <div class="wrap" style="text-align:center">
+    <div class="wrap section-center">
       <div class="section-head">
-        <h2>جاهز للتثبيت؟</h2>
-        <p>Windows فقط — للهاتف راجع <a href="phone.html" style="color:var(--gold-soft)">دليل الجرسون</a>.</p>
+        <h2 data-i18n="dl_h2">Ready to install?</h2>
+        <p data-i18n-html-only="dl_sub"></p>
       </div>
-      <div class="cta-row" style="justify-content:center">
-        <a href="download.html" class="btn btn-gold" style="font-size:1.1rem;padding:16px 32px">⬇️ تحميل ZEKiQ-POS-Setup.exe</a>
+      <div class="cta-row center">
+        <a href="download.html" class="btn btn-gold btn-lg" data-i18n="dl_btn">Download ZEKiQ-POS-Setup.exe</a>
       </div>
       <p class="ver-line" id="homeVersion" aria-live="polite">…</p>
     </div>
@@ -151,28 +156,23 @@
   <footer>
     <div class="wrap">
       <div class="foot-links">
-        <a href="download.html">تحميل Windows</a>
-        <a href="phone.html">الجرسون — الهاتف</a>
-        <a href="#" class="js-wa">واتساب</a>
+        <a href="download.html" data-i18n="foot_dl">Download</a>
+        <a href="phone.html" data-i18n="foot_phone">Mobile</a>
+        <a href="#" class="js-wa" data-i18n="nav_wa">WhatsApp</a>
       </div>
-      <div class="brand" style="justify-content:center;margin-bottom:8px">
+      <div class="brand brand-center">
         <img src="assets/logo.svg" width="32" height="32" alt="" />
         <span>Z</span>EKiQ POS
       </div>
-      <p>كاشير ومحاسبة للمطاعم والكافيهات</p>
-      <p style="margin-top:8px;font-size:0.85rem">© <span id="year"></span> ZEKiQ</p>
+      <p data-i18n="foot_tag">POS & accounting for restaurants</p>
+      <p class="copy">© <span id="year"></span> ZEKiQ</p>
     </div>
   </footer>
 
-  <a href="#" class="fab js-wa" title="واتساب" aria-label="واتساب">💬</a>
+  <a href="#" class="fab js-wa" title="WhatsApp" aria-label="WhatsApp">💬</a>
 
+  <script src="js/i18n.js"></script>
   <script src="js/site.js"></script>
-  <script>
-    ZekiqSite.setYear();
-    ZekiqSite.markActiveNav();
-    ZekiqSite.applyPricing();
-    ZekiqSite.bindWhatsApp(".js-wa");
-    ZekiqSite.setVersionText("homeVersion", "تحديثات من داخل البرنامج");
-  </script>
+  <script>ZekiqSite.init();</script>
 </body>
 </html>
