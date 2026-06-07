@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Noto+Sans+Arabic:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/site.css" />
 </head>
-<body data-page="phone" data-i18n-title="phone_title" data-i18n-meta="phone_meta">
+<body data-page="phone" data-i18n-title="phone_title" data-i18n-meta="phone_meta" data-garson-dl-btn="phoneGarsonBtn" data-garson-version-id="phoneGarsonVersion">
 
   <header>
     <div class="nav">
@@ -21,7 +21,8 @@
       </a>
       <nav class="nav-links">
         <a href="index.html" data-nav="home" data-i18n="nav_features">Features</a>
-        <a href="phone.html" data-nav="phone" data-i18n="nav_phone">Mobile</a>
+        <a href="garson.html" data-nav="garson" data-i18n="nav_garson">Garson app</a>
+        <a href="phone.html" data-nav="phone" data-i18n="nav_phone">Pair</a>
         <a href="download.html" data-nav="download" data-i18n="nav_download">Download</a>
         <div class="lang-switch" role="group">
           <button type="button" data-lang="en" class="on">EN</button>
@@ -60,7 +61,6 @@
           <div>
             <h3 data-i18n="phone_s4_t"></h3>
             <p data-i18n="phone_s4_d"></p>
-            <span class="code">http://SHOP-IP:3000/garson/install?host=SHOP-IP&port=3000</span>
             <p class="flow-note" data-i18n-html-only="phone_s4_ip"></p>
           </div>
         </div>
@@ -82,8 +82,10 @@
       </div>
 
       <div class="cta-row center">
-        <a href="download.html" class="btn btn-gold" data-i18n="phone_dl_first">Download cashier first</a>
+        <a id="phoneGarsonBtn" class="btn btn-gold" href="#" data-i18n="garson_preparing">Preparing link…</a>
+        <a href="download.html" class="btn btn-ghost" data-i18n="phone_dl_first">Download Windows cashier</a>
       </div>
+      <p class="ver-line" id="phoneGarsonVersion" aria-live="polite"></p>
     </div>
   </main>
 
