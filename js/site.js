@@ -106,6 +106,7 @@
           btn.href = url;
           btn.removeAttribute("target");
           btn.removeAttribute("rel");
+          btn.removeAttribute("download");
           btn.textContent = garsonDownloadButtonLabel(dl);
         } else if (!url || url === "#") {
           btn.href = "#";
