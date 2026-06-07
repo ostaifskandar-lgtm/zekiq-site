@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Download ZEKiQ Garson</title>
+  <meta name="description" content="Download ZEKiQ Garson — standalone Android waiter app" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Noto+Sans+Arabic:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/site.css" />
+</head>
+<body data-page="garson" data-i18n-title="garson_page_title" data-i18n-meta="garson_page_meta" data-garson-dl-btn="garsonDlBtn" data-garson-version-id="garsonVersion">
+
+  <header>
+    <div class="nav">
+      <a href="index.html" class="brand">
+        <img src="assets/logo.svg" width="40" height="40" alt="ZEKiQ" />
+        <span>Z</span>EKiQ <span class="brand-sub">Garson</span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" data-nav="home" data-i18n="nav_features">Features</a>
+        <a href="garson.html" data-nav="garson" data-i18n="nav_garson">Garson app</a>
+        <a href="phone.html" data-nav="phone" data-i18n="nav_phone">Pair cashier</a>
+        <a href="download.html" data-nav="download" data-i18n="nav_download">Windows</a>
+        <div class="lang-switch" role="group">
+          <button type="button" data-lang="en" class="on">EN</button>
+          <button type="button" data-lang="tr">TR</button>
+          <button type="button" data-lang="ar">AR</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-center">
+    <div class="page-card">
+      <img src="assets/logo.svg" width="72" height="72" alt="" class="page-logo" />
+      <h1 data-i18n="garson_h1">Download ZEKiQ Garson for Android</h1>
+      <p data-i18n-html-only="garson_p"></p>
+
+      <a id="garsonDlBtn" class="btn btn-gold btn-block" href="#" data-i18n="garson_preparing">Preparing link…</a>
+      <p class="ver-line" id="garsonVersion" aria-live="polite"></p>
+
+      <ul class="checklist align-start">
+        <li data-i18n="garson_li_1">Android 8 or newer</li>
+        <li data-i18n="garson_li_2">No cashier link required to install</li>
+        <li data-i18n="garson_li_3">Link your shop cashier later in Settings ⚙️</li>
+        <li data-i18n="garson_li_4">Same Wi‑Fi as cashier for live orders</li>
+      </ul>
+
+      <div class="warn-box" data-i18n-html-only="garson_warn"></div>
+
+      <p class="note center-links">
+        <a href="phone.html" data-i18n="garson_pair_guide">How to pair with cashier →</a>
+        ·
+        <a href="download.html" data-i18n="garson_win_dl">Windows cashier →</a>
+        ·
+        <a href="index.html" data-i18n="dl_back_home">Back to home</a>
+      </p>
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/site.js"></script>
+  <script>ZekiqSite.init();</script>
+</body>
+</html>
