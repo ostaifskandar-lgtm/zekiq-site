@@ -99,8 +99,9 @@
         } else {
           btn.removeAttribute("aria-disabled");
           btn.href = dl.setupUrl;
-          btn.target = "_blank";
-          btn.rel = "noopener noreferrer";
+          btn.removeAttribute("target");
+          btn.removeAttribute("rel");
+          btn.setAttribute("download", dl.fileName || "ToninoStaff.apk");
           btn.textContent = garsonDownloadButtonLabel(dl);
         }
       }
