@@ -1,6 +1,7 @@
 {
   "brandName": "ZEKiQ",
   "siteUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/",
+  "customDomain": "",
   "statsApiUrl": "",
   "annualPriceUsd": 150,
   "annualPriceLabel": "$150 / year",
