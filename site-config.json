@@ -1,6 +1,7 @@
 {
   "brandName": "ZEKiQ",
-  "siteUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/",
+  "siteUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/",
+  "garsonDownloadUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/g/",
   "customDomain": "",
   "statsApiUrl": "",
   "annualPriceUsd": 150,
