@@ -2,7 +2,7 @@
  * ZEKiQ public site — config, i18n, stats, download (device-linked counts).
  */
 (function (global) {
-  var cache = { config: null, dl: null, version: null, stats: null };
+  var cache = { config: null, dl: null, version: null, stats: null, garsonDl: null };
 
   function fetchJson(url) {
     return fetch(url + "?_=" + Date.now())
@@ -54,6 +54,61 @@
         cache.version = null;
         return null;
       });
+  }
+
+  function loadGarsonDl() {
+    if (cache.garsonDl) return Promise.resolve(cache.garsonDl);
+    return fetchJson("garson-dl.json")
+      .then(function (cfg) {
+        cache.garsonDl = cfg;
+        return cfg;
+      })
+      .catch(function () {
+        cache.garsonDl = { fileName: "ToninoStaff.apk", setupUrl: "" };
+        return cache.garsonDl;
+      });
+  }
+
+  function formatGarsonVersion(dl) {
+    if (!dl || !dl.versionName) return "";
+    var prefix = global.ZekiqI18n ? global.ZekiqI18n.tr("garson_ver_prefix") : "Garson version";
+    var extra = dl.versionCode ? " · build " + dl.versionCode : "";
+    var size = dl.sizeMb ? " · ~" + dl.sizeMb + " MB" : "";
+    return prefix + " " + dl.versionName + extra + size;
+  }
+
+  function garsonDownloadButtonLabel(dl) {
+    var file = dl.fileName || "ToninoStaff.apk";
+    return (
+      "⬇️ " +
+      (global.ZekiqI18n ? global.ZekiqI18n.tr("garson_btn_file", { file: file }) : file)
+    );
+  }
+
+  function bindGarsonDownloadButton(buttonId, versionId) {
+    return loadGarsonDl().then(function (dl) {
+      var btn = document.getElementById(buttonId);
+      if (btn) {
+        btn.classList.remove("btn-ghost");
+        if (!dl.setupUrl) {
+          btn.href = "#";
+          btn.removeAttribute("target");
+          btn.classList.add("btn-ghost");
+          btn.setAttribute("aria-disabled", "true");
+          btn.textContent = global.ZekiqI18n ? global.ZekiqI18n.tr("garson_no_url") : "…";
+        } else {
+          btn.removeAttribute("aria-disabled");
+          btn.href = dl.setupUrl;
+          btn.target = "_blank";
+          btn.rel = "noopener noreferrer";
+          btn.textContent = garsonDownloadButtonLabel(dl);
+        }
+      }
+      if (versionId) {
+        var el = document.getElementById(versionId);
+        if (el) el.textContent = formatGarsonVersion(dl);
+      }
+    });
   }
 
   function loadStats(cfg) {
@@ -242,13 +297,13 @@
           document.head.appendChild(link);
         }
         var page = document.body.getAttribute("data-page") || "home";
-        var paths = { home: "", download: "download.html", phone: "phone.html" };
+        var paths = { home: "", download: "download.html", phone: "phone.html", garson: "garson.html" };
         link.href = cfg.siteUrl.replace(/\/$/, "") + "/" + (paths[page] || "");
       }
       var og = document.querySelector('meta[property="og:url"]');
       if (og && cfg.siteUrl) {
         var page = document.body.getAttribute("data-page") || "home";
-        var paths = { home: "", download: "download.html", phone: "phone.html" };
+        var paths = { home: "", download: "download.html", phone: "phone.html", garson: "garson.html" };
         og.content = cfg.siteUrl.replace(/\/$/, "") + "/" + (paths[page] || "");
       }
     });
@@ -275,6 +330,9 @@
     if (verId) setVersionText(verId, verExtra || "");
     var dlBtnId = document.body.getAttribute("data-dl-btn");
     if (dlBtnId) bindDownloadButton(dlBtnId, verId || "");
+    var garsonBtnId = document.body.getAttribute("data-garson-dl-btn");
+    var garsonVerId = document.body.getAttribute("data-garson-version-id");
+    if (garsonBtnId) bindGarsonDownloadButton(garsonBtnId, garsonVerId || "");
   }
 
   function init() {
@@ -289,15 +347,20 @@
     if (verId) setVersionText(verId, verExtra || "");
     var dlBtn = document.body.getAttribute("data-dl-btn");
     if (dlBtn) bindDownloadButton(dlBtn, verId || "");
+    var garsonBtn = document.body.getAttribute("data-garson-dl-btn");
+    var garsonVer = document.body.getAttribute("data-garson-version-id");
+    if (garsonBtn) bindGarsonDownloadButton(garsonBtn, garsonVer || "");
   }
 
   global.ZekiqSite = {
     loadConfig: loadConfig,
+    loadGarsonDl: loadGarsonDl,
     loadStats: function () {
       return loadConfig().then(loadStats);
     },
     setVersionText: setVersionText,
     bindDownloadButton: bindDownloadButton,
+    bindGarsonDownloadButton: bindGarsonDownloadButton,
     applyPricing: applyPricing,
     applyInstallStats: applyInstallStats,
     setYear: setYear,
