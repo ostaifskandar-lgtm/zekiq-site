@@ -85,24 +85,33 @@
     );
   }
 
+  function isSameOriginUrl(url) {
+    if (!url || url.startsWith("#")) return false;
+    if (!/^https?:\/\//i.test(url)) return true;
+    try {
+      return new URL(url, window.location.href).origin === window.location.origin;
+    } catch {
+      return false;
+    }
+  }
+
   function bindGarsonDownloadButton(buttonId, versionId) {
     return loadGarsonDl().then(function (dl) {
       var btn = document.getElementById(buttonId);
       if (btn) {
-        btn.classList.remove("btn-ghost");
-        if (!dl.setupUrl) {
-          btn.href = "#";
+        var url = dl.setupUrl || btn.getAttribute("href") || "";
+        if (url && url !== "#") {
+          btn.classList.remove("btn-ghost");
+          btn.removeAttribute("aria-disabled");
+          btn.href = url;
           btn.removeAttribute("target");
+          btn.removeAttribute("rel");
+          btn.textContent = garsonDownloadButtonLabel(dl);
+        } else if (!url || url === "#") {
+          btn.href = "#";
           btn.classList.add("btn-ghost");
           btn.setAttribute("aria-disabled", "true");
           btn.textContent = global.ZekiqI18n ? global.ZekiqI18n.tr("garson_no_url") : "…";
-        } else {
-          btn.removeAttribute("aria-disabled");
-          btn.href = dl.setupUrl;
-          btn.removeAttribute("target");
-          btn.removeAttribute("rel");
-          btn.setAttribute("download", dl.fileName || "ToninoStaff.apk");
-          btn.textContent = garsonDownloadButtonLabel(dl);
         }
       }
       if (versionId) {
@@ -270,8 +279,13 @@
         } else {
           btn.removeAttribute("aria-disabled");
           btn.href = dl.setupUrl;
-          btn.target = "_blank";
-          btn.rel = "noopener noreferrer";
+          if (isSameOriginUrl(dl.setupUrl)) {
+            btn.removeAttribute("target");
+            btn.removeAttribute("rel");
+          } else {
+            btn.target = "_blank";
+            btn.rel = "noopener noreferrer";
+          }
           btn.textContent = downloadButtonLabel(dl);
           if (!btn.dataset.dlBound) {
             btn.dataset.dlBound = "1";
