@@ -11,6 +11,6 @@
   "trialNoteEn": "First month free — try before you pay",
   "trialNoteTr": "İlk ay ücretsiz — ödemeden dene",
   "productTagline": "Restaurant & café POS — Windows + Android waiter",
-  "guestOrderPageUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/table/index.html",
-  "guestApiUrl": "http://192.168.1.64:8790"
+  "guestOrderPageUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/table/index.html",
+  "guestApiUrl": ""
 }
