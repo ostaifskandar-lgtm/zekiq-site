@@ -40,6 +40,27 @@
     const params = new URLSearchParams(location.search);
     const SHOP = (params.get("shop") || "").trim();
     const TOKEN = (params.get("t") || "").trim();
+    const API_PARAM = (params.get("api") || "").trim();
+
+    function isPrivateHost(url) {
+      try {
+        const h = new URL(url).hostname;
+        if (h === "localhost" || h === "127.0.0.1") return true;
+        if (/^192\.168\./.test(h)) return true;
+        if (/^10\./.test(h)) return true;
+        if (/^172\.(1[6-9]|2\d|3[01])\./.test(h)) return true;
+        return false;
+      } catch (_) { return true; }
+    }
+
+    function pickApi(j) {
+      let url = (j && (j.guestApiUrl || j.apiUrl)) ? String(j.guestApiUrl || j.apiUrl) : "";
+      if (!url && j && j.statsApiUrl) {
+        url = String(j.statsApiUrl).replace(/\/api\/license\/?$/i, "");
+      }
+      url = url.replace(/\/+$/, "");
+      return url && !isPrivateHost(url) ? url : "";
+    }
     const cart = [];
     let menu = [];
     let shopName = "";
@@ -49,18 +70,18 @@
     let done = false;
 
     async function loadApiBase() {
-      const pick = j => (j && j.apiUrl ? String(j.apiUrl).replace(/\/+$/, "") : "");
+      if (API_PARAM && !isPrivateHost(API_PARAM)) return API_PARAM.replace(/\/+$/, "");
       try {
         const r = await fetch(new URL("../guest-api.json", location.href).href + "?v=" + Date.now(), { cache: "no-store" });
         if (r.ok) {
-          const url = pick(await r.json());
-          if (url && !/^https?:\/\/127\.0\.0\.1/i.test(url)) return url;
+          const url = pickApi(await r.json());
+          if (url) return url;
         }
       } catch (_) {}
       try {
         const r2 = await fetch(new URL("../site-config.json", location.href).href + "?v=" + Date.now(), { cache: "no-store" });
         if (r2.ok) {
-          const url = pick(await r2.json());
+          const url = pickApi(await r2.json());
           if (url) return url;
         }
       } catch (_) {}
@@ -81,7 +102,7 @@
       }
       if (!apiBase) {
         root.className = "center";
-        root.innerHTML = "<p>خادم الطلبات غير مضبوط. تواصل مع المطعم.</p>";
+        root.innerHTML = "<p>خادم الطلبات غير متاح من الإنترنت.<br/>المطعم يحتاج ضبط IP عام لخادم ZEKiQ (منفذ 8790).</p>";
         return;
       }
       if (done) {
