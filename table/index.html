@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#020617" />
+  <title>طلب من الطاولة — ZEKiQ</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { min-height: 100dvh; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #020617; color: #f8fafc; }
+    .wrap { max-width: 520px; margin: 0 auto; padding: 12px 12px 120px; }
+    .hdr { position: sticky; top: 0; z-index: 10; background: rgba(2,6,23,.92); backdrop-filter: blur(8px); padding: 12px 4px 10px; border-bottom: 1px solid #1e293b; }
+    .hdr h1 { font-size: 1.15rem; font-weight: 800; }
+    .hdr p { font-size: .82rem; color: #94a3b8; margin-top: 2px; }
+    .cat { margin-top: 16px; font-weight: 800; font-size: .95rem; color: #34d399; }
+    .item { display: flex; gap: 10px; align-items: center; padding: 12px 8px; border-bottom: 1px solid #1e293b; }
+    .item img, .ph { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: #1e293b; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+    .item .n { flex: 1; font-weight: 700; font-size: .95rem; }
+    .item .p { color: #fbbf24; font-weight: 800; font-size: .88rem; margin-top: 2px; }
+    .add { width: 40px; height: 40px; border-radius: 12px; border: none; background: #059669; color: #fff; font-size: 1.4rem; font-weight: 900; cursor: pointer; }
+    .cart { position: fixed; left: 0; right: 0; bottom: 0; background: #0f172a; border-top: 1px solid #334155; padding: 12px 14px calc(12px + env(safe-area-inset-bottom)); z-index: 20; }
+    .cart .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .cart .total { font-weight: 800; color: #fbbf24; }
+    .note { width: 100%; border-radius: 10px; border: 1px solid #334155; background: #020617; color: #fff; padding: 10px; font-size: .9rem; margin-bottom: 8px; }
+    .send { width: 100%; border: none; border-radius: 14px; padding: 14px; font-size: 1rem; font-weight: 800; background: linear-gradient(135deg,#059669,#047857); color: #fff; cursor: pointer; }
+    .send:disabled { opacity: .5; cursor: not-allowed; }
+    .center { min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 24px; text-align: center; }
+    .ok { background: #022c22; }
+    .ok h2 { font-size: 1.6rem; margin: 12px 0 8px; }
+    .ok p { color: #a7f3d0; }
+    .again { margin-top: 16px; padding: 12px 20px; border-radius: 12px; border: 1px solid #34d399; background: transparent; color: #fff; font-weight: 700; cursor: pointer; }
+    .line { display: flex; justify-content: space-between; font-size: .85rem; padding: 4px 0; color: #cbd5e1; }
+    .qty { display: flex; align-items: center; gap: 6px; }
+    .qty button { width: 28px; height: 28px; border-radius: 8px; border: 1px solid #475569; background: #1e293b; color: #fff; font-weight: 800; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div id="app" class="center">جارٍ التحميل…</div>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const SHOP = (params.get("shop") || "").trim();
+    const TOKEN = (params.get("t") || "").trim();
+    const cart = [];
+    let menu = [];
+    let shopName = "";
+    let section = "";
+    let tableNum = 0;
+    let apiBase = "";
+    let done = false;
+
+    async function loadApiBase() {
+      const pick = j => (j && j.apiUrl ? String(j.apiUrl).replace(/\/+$/, "") : "");
+      try {
+        const r = await fetch("../guest-api.json?v=" + Date.now(), { cache: "no-store" });
+        if (r.ok) {
+          const url = pick(await r.json());
+          if (url && !/^https?:\/\/127\.0\.0\.1/i.test(url)) return url;
+        }
+      } catch (_) {}
+      try {
+        const r2 = await fetch("../site-config.json?v=" + Date.now(), { cache: "no-store" });
+        if (r2.ok) {
+          const url = pick(await r2.json());
+          if (url) return url;
+        }
+      } catch (_) {}
+      return "";
+    }
+
+    function money(n) {
+      const v = Number(n) || 0;
+      return v.toFixed(0) + " ₺";
+    }
+
+    function render() {
+      const root = document.getElementById("app");
+      if (!SHOP || !TOKEN) {
+        root.className = "center";
+        root.innerHTML = "<p>رابط الطاولة غير صالح — امسح رمز QR من الطاولة.</p>";
+        return;
+      }
+      if (!apiBase) {
+        root.className = "center";
+        root.innerHTML = "<p>خادم الطلبات غير مضبوط. تواصل مع المطعم.</p>";
+        return;
+      }
+      if (done) {
+        root.className = "center ok";
+        root.innerHTML = '<div><div style="font-size:3rem">✓</div><h2>شكراً!</h2><p>وصل طلبك إلى الكاشير والمطبخ.</p><button class="again" onclick="window.__again()">طلب إضافي</button></div>';
+        return;
+      }
+      const cats = new Map();
+      for (const it of menu) {
+        const c = it.category || "أخرى";
+        if (!cats.has(c)) cats.set(c, []);
+        cats.get(c).push(it);
+      }
+      let html = '<div class="wrap"><div class="hdr"><h1>' + esc(shopName) + '</h1><p>' + esc(section) + ' — طاولة ' + tableNum + '</p></div>';
+      for (const [cat, items] of cats) {
+        html += '<div class="cat">' + esc(cat) + '</div>';
+        for (const it of items) {
+          const img = it.imageUrl ? '<img src="' + esc(it.imageUrl) + '" alt=""/>' : '<div class="ph">' + esc(it.icon || "🍽") + '</div>';
+          html += '<div class="item">' + img + '<div><div class="n">' + esc(it.name) + '</div><div class="p">' + money(it.price) + '</div></div><button class="add" data-id="' + it.id + '">+</button></div>';
+        }
+      }
+      html += '</div>';
+      const total = cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0);
+      html += '<div class="cart"><div class="row"><span>السلة (' + cart.length + ')</span><span class="total">' + money(total) + '</span></div>';
+      for (const l of cart) {
+        html += '<div class="line"><span>' + esc(l.item.name) + '</span><span class="qty"><button data-dec="' + l.item.id + '">−</button>' + l.qty + '<button data-inc="' + l.item.id + '">+</button></span></div>';
+      }
+      html += '<input class="note" id="note" placeholder="ملاحظة (اختياري)" maxlength="200"/><button class="send" id="sendBtn"' + (cart.length ? "" : " disabled") + '>إرسال الطلب</button></div>';
+      root.className = "";
+      root.innerHTML = html;
+      root.querySelectorAll(".add").forEach(b => b.onclick = () => addItem(Number(b.dataset.id)));
+      root.querySelectorAll("[data-inc]").forEach(b => b.onclick = () => chQty(Number(b.dataset.inc), 1));
+      root.querySelectorAll("[data-dec]").forEach(b => b.onclick = () => chQty(Number(b.dataset.dec), -1));
+      const sb = document.getElementById("sendBtn");
+      if (sb) sb.onclick = sendOrder;
+    }
+
+    function esc(s) {
+      return String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    function addItem(id) {
+      const item = menu.find(m => m.id === id);
+      if (!item) return;
+      const i = cart.findIndex(x => x.item.id === id);
+      if (i >= 0) cart[i].qty++;
+      else cart.push({ item, qty: 1 });
+      render();
+    }
+
+    function chQty(id, d) {
+      const i = cart.findIndex(x => x.item.id === id);
+      if (i < 0) return;
+      cart[i].qty += d;
+      if (cart[i].qty <= 0) cart.splice(i, 1);
+      render();
+    }
+
+    window.__again = function () {
+      done = false;
+      cart.length = 0;
+      render();
+    };
+
+    async function sendOrder() {
+      if (!cart.length) return;
+      const btn = document.getElementById("sendBtn");
+      if (btn) btn.disabled = true;
+      const note = (document.getElementById("note") || {}).value || "";
+      try {
+        const res = await fetch(apiBase + "/api/guest/v1/orders", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            shop: SHOP,
+            token: TOKEN,
+            note: note.trim() || undefined,
+            items: cart.map(l => ({
+              menuItemId: l.item.id,
+              name: l.item.name,
+              category: l.item.category,
+              price: String(l.item.price),
+              qty: String(l.qty),
+              dept: l.item.dept,
+            })),
+          }),
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error("fail");
+        done = true;
+        cart.length = 0;
+        render();
+      } catch (_) {
+        alert("تعذّر الإرسال — تحقق من الإنترنت وحاول مرة أخرى");
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function boot() {
+      apiBase = await loadApiBase();
+      if (!SHOP || !TOKEN) { render(); return; }
+      if (!apiBase) { render(); return; }
+      try {
+        const url = apiBase + "/api/guest/v1/menu?shop=" + encodeURIComponent(SHOP) + "&token=" + encodeURIComponent(TOKEN);
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data.ok) {
+          const msg = data.error === "disabled" ? "طلبات QR معطّلة في المطعم." :
+            data.error === "invalid_token" ? "رمز الطاولة غير صالح — امسح QR من الطاولة." :
+            data.error === "shop_not_found" ? "المطعم غير متصل — حاول بعد قليل." :
+            "تعذّر تحميل القائمة.";
+          document.getElementById("app").innerHTML = "<p>" + msg + "</p>";
+          return;
+        }
+        shopName = data.shopName || "ZEKiQ";
+        section = data.section;
+        tableNum = data.tableNum;
+        menu = data.items || [];
+        render();
+      } catch (_) {
+        document.getElementById("app").innerHTML = "<p>لا يوجد إنترنت أو الخادم غير متاح. تحقق من بيانات الجوال.</p>";
+      }
+    }
+    boot();
+  </script>
+</body>
+</html>
