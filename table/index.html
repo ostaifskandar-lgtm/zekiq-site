@@ -51,14 +51,14 @@
     async function loadApiBase() {
       const pick = j => (j && j.apiUrl ? String(j.apiUrl).replace(/\/+$/, "") : "");
       try {
-        const r = await fetch("../guest-api.json?v=" + Date.now(), { cache: "no-store" });
+        const r = await fetch(new URL("../guest-api.json", location.href).href + "?v=" + Date.now(), { cache: "no-store" });
         if (r.ok) {
           const url = pick(await r.json());
           if (url && !/^https?:\/\/127\.0\.0\.1/i.test(url)) return url;
         }
       } catch (_) {}
       try {
-        const r2 = await fetch("../site-config.json?v=" + Date.now(), { cache: "no-store" });
+        const r2 = await fetch(new URL("../site-config.json", location.href).href + "?v=" + Date.now(), { cache: "no-store" });
         if (r2.ok) {
           const url = pick(await r2.json());
           if (url) return url;
