@@ -3,7 +3,7 @@
   "siteUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/",
   "garsonDownloadUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/g/",
   "customDomain": "",
-  "statsApiUrl": "",
+  "statsApiUrl": "http://212.156.209.82:8790/api/license",
   "annualPriceUsd": 150,
   "annualPriceLabel": "$150 / year",
   "trialDays": 30,
@@ -12,5 +12,5 @@
   "trialNoteTr": "İlk ay ücretsiz — ödemeden dene",
   "productTagline": "Restaurant & café POS — Windows + Android waiter",
   "guestOrderPageUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/table/index.html",
-  "guestApiUrl": ""
+  "guestApiUrl": "http://212.156.209.82:8790"
 }
