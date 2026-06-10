@@ -37,9 +37,30 @@
 <body>
   <div id="app" class="center">جارٍ التحميل…</div>
   <script>
-    const params = new URLSearchParams(location.search);
-    const SHOP = (params.get("shop") || "").trim();
-    const TOKEN = (params.get("t") || "").trim();
+    function readParams() {
+      const q = new URLSearchParams(location.search);
+      if (q.get("t") || q.get("token") || q.get("shop")) return q;
+      const h = location.hash.replace(/^#\??/, "");
+      if (h && h.includes("=")) return new URLSearchParams(h);
+      return q;
+    }
+
+    function shopFromToken(token) {
+      try {
+        const body = token.split(".")[0];
+        const pad = body.length % 4 ? "=".repeat(4 - (body.length % 4)) : "";
+        const b64 = (body + pad).replace(/-/g, "+").replace(/_/g, "/");
+        const bin = atob(b64);
+        const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+        const raw = JSON.parse(new TextDecoder().decode(bytes));
+        return raw.d ? String(raw.d).trim() : "";
+      } catch (_) { return ""; }
+    }
+
+    const params = readParams();
+    const TOKEN = (params.get("t") || params.get("token") || "").trim();
+    let SHOP = (params.get("shop") || "").trim();
+    if (!SHOP && TOKEN) SHOP = shopFromToken(TOKEN);
     const API_PARAM = (params.get("api") || "").trim();
 
     function isPrivateHost(url) {
@@ -95,9 +116,14 @@
 
     function render() {
       const root = document.getElementById("app");
-      if (!SHOP || !TOKEN) {
+      if (!TOKEN) {
         root.className = "center";
-        root.innerHTML = "<p>رابط الطاولة غير صالح — امسح رمز QR من الطاولة.</p>";
+        root.innerHTML = "<p>امسح <strong>رمز QR</strong> من الطاولة — لا تفتح الرابط بدون الرمز.</p>";
+        return;
+      }
+      if (!SHOP) {
+        root.className = "center";
+        root.innerHTML = "<p>رمز QR قديم — من الكاشير: <strong>إعدادات → QR الطاولات → تحديث</strong> ثم امسح الرمز الجديد.</p>";
         return;
       }
       if (!apiBase) {
