@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ZEKiQ — جاري التوجيه…</title>
+  <script>
+    (function () {
+      var target = "../table/index.html";
+      var q = location.search || "";
+      var h = location.hash.replace(/^#\??/, "").trim();
+      if (!q && h && h.indexOf("=") >= 0) q = "?" + h;
+      location.replace(target + q);
+    })();
+  </script>
+</head>
+<body style="margin:0;background:#0e0a02;color:#f5d878;font-family:system-ui;text-align:center;padding:48px 24px">
+  <p>جاري فتح قائمة الطاولة…</p>
+  <p style="opacity:.6;font-size:13px"><a href="../table/index.html" style="color:#b8860b">اضغط هنا</a> إن لم يتم التوجيه.</p>
+</body>
+</html>
