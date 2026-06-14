@@ -476,10 +476,24 @@
             items: cart.map(l => ({ menuItemId: l.item.id, name: l.item.name, category: l.item.category, price: String(l.item.price), qty: String(l.qty), dept: l.item.dept })),
           }),
         });
-        const data = await res.json();
-        if (!data.ok) throw new Error("fail");
-        done = true; cart = []; modalOpen = false;
-      } catch (_) { alert("تعذّر الإرسال — تحقق من الإنترنت"); }
+        let data = {};
+        try { data = await res.json(); } catch (_) {}
+        if (data.ok) {
+          done = true; cart = []; modalOpen = false;
+        } else if (data.error === "table_not_active") {
+          alert("الطاولة غير مفتوحة على الكاشير.\n\nافتح الطاولة من ZEKiQ POS (أو اطلب من المحل)، ثم أعد إرسال الطلب.\n\nأو من الإعدادات → QR: أوقف «الطلب فقط للطاولة المفتوحة».");
+        } else if (data.error === "table_qr_disabled") {
+          alert("طلبات QR متوقفة لهذه الطاولة — فعّلها من إعدادات الكاشير.");
+        } else if (data.error === "invalid_token") {
+          alert("رمز QR قديم — اطبع QR جديد من إعدادات الكاشير.");
+        } else if (data.error === "disabled") {
+          alert("طلبات QR معطّلة — فعّلها من إعدادات الكاشير.");
+        } else if (data.error === "rate_limit") {
+          alert("محاولات كثيرة — انتظر دقيقة ثم أعد الإرسال.");
+        } else {
+          alert("تعذّر الإرسال — تحقق من الإنترنت أو أن ZEKiQ POS شغّال.");
+        }
+      } catch (_) { alert("تعذّر الاتصال — تحقق من الإنternet وأن الكاشير يعمل."); }
       sending = false; render();
     }
 
@@ -518,7 +532,13 @@
           if (data.error === "shop_not_found" && b < unique.length - 1) continue;
           if (data.error === "disabled") { errBox("طلبات QR معطّلة", "فعّلها من إعدادات الكاشير → QR الزبون."); return; }
           if (data.error === "table_qr_disabled") { errBox("QR هذه الطاولة متوقف", "تم إيقاف الطلب من هذه الطاولة — اطلب من المحل تفعيلها."); return; }
-          if (data.error === "invalid_token") { errBox("رمز QR قديم", "اطبع رموز جديدة من إعدادات الكاشير."); return; }
+          if (data.error === "invalid_token") {
+            errBox(
+              "رمز QR قديم",
+              "اطبع QR جديد من الكاشير → إعدادات → طلبات QR. الرموز المطبوعة قبل التحديث لا تعمل."
+            );
+            return;
+          }
         } catch (_) { /* try next base */ }
       }
       errBox(
