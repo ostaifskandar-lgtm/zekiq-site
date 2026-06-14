@@ -3,39 +3,160 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#020617" />
+  <meta name="theme-color" content="#0e0a02" />
   <title>طلب من الطاولة — ZEKiQ</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { min-height: 100dvh; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #020617; color: #f8fafc; }
-    .wrap { max-width: 520px; margin: 0 auto; padding: 12px 12px 120px; }
-    .hdr { position: sticky; top: 0; z-index: 10; background: rgba(2,6,23,.92); backdrop-filter: blur(8px); padding: 12px 4px 10px; border-bottom: 1px solid #1e293b; }
-    .hdr h1 { font-size: 1.15rem; font-weight: 800; }
-    .hdr p { font-size: .82rem; color: #94a3b8; margin-top: 2px; }
-    .cat { margin-top: 16px; font-weight: 800; font-size: .95rem; color: #34d399; }
-    .item { display: flex; gap: 10px; align-items: center; padding: 12px 8px; border-bottom: 1px solid #1e293b; }
-    .item img, .ph { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: #1e293b; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
-    .item .n { flex: 1; font-weight: 700; font-size: .95rem; }
-    .item .p { color: #fbbf24; font-weight: 800; font-size: .88rem; margin-top: 2px; }
-    .add { width: 40px; height: 40px; border-radius: 12px; border: none; background: #059669; color: #fff; font-size: 1.4rem; font-weight: 900; cursor: pointer; }
-    .cart { position: fixed; left: 0; right: 0; bottom: 0; background: #0f172a; border-top: 1px solid #334155; padding: 12px 14px calc(12px + env(safe-area-inset-bottom)); z-index: 20; }
-    .cart .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
-    .cart .total { font-weight: 800; color: #fbbf24; }
-    .note { width: 100%; border-radius: 10px; border: 1px solid #334155; background: #020617; color: #fff; padding: 10px; font-size: .9rem; margin-bottom: 8px; }
-    .send { width: 100%; border: none; border-radius: 14px; padding: 14px; font-size: 1rem; font-weight: 800; background: linear-gradient(135deg,#059669,#047857); color: #fff; cursor: pointer; }
-    .send:disabled { opacity: .5; cursor: not-allowed; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #0e0a02; }
+    body {
+      min-height: 100dvh;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: #0e0a02;
+      color: #f5d878;
+      -webkit-font-smoothing: antialiased;
+      overscroll-behavior-y: none;
+    }
+    .glow {
+      pointer-events: none;
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(184,134,11,.14) 0%, transparent 70%);
+    }
+    .page { position: relative; z-index: 1; min-height: 100dvh; padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
     .center { min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 24px; text-align: center; }
-    .ok { background: #022c22; }
-    .ok h2 { font-size: 1.6rem; margin: 12px 0 8px; }
-    .ok p { color: #a7f3d0; }
-    .again { margin-top: 16px; padding: 12px 20px; border-radius: 12px; border: 1px solid #34d399; background: transparent; color: #fff; font-weight: 700; cursor: pointer; }
-    .line { display: flex; justify-content: space-between; font-size: .85rem; padding: 4px 0; color: #cbd5e1; }
+    .hero { position: relative; overflow: hidden; padding: 24px 16px 18px; text-align: center; }
+    .logo {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.75rem; font-weight: 700; letter-spacing: 2px; line-height: 1;
+      background: linear-gradient(140deg, #f5d878 0%, #c9982a 45%, #e8c05a 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .sub { display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 4px; max-width: 240px; margin-inline: auto; }
+    .sub span { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(232,192,90,.5); }
+    .sub .line { flex: 1; height: 1px; background: rgba(184,134,11,.32); max-width: 55px; }
+    .table-badge { margin-top: 10px; font-size: 11px; color: rgba(232,192,90,.38); }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+      padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(184,134,11,.28);
+      background: rgba(184,134,11,.1); font-size: 11px; color: #e8c05a;
+    }
+    .toolbar { border-bottom: 1px solid rgba(184,134,11,.07); background: #120d02; padding: 10px 12px; }
+    .search {
+      width: 100%; border-radius: 20px; border: 1px solid rgba(184,134,11,.17);
+      background: rgba(184,134,11,.07) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%23b8860b' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='16.5' y1='16.5' x2='22' y2='22'/%3E%3C/svg%3E") no-repeat 12px center;
+      padding: 10px 14px 10px 38px; font-size: 13px; color: #f5d878; outline: none;
+    }
+    .search::placeholder { color: rgba(245,216,120,.28); }
+    .cats {
+      display: flex; gap: 6px; overflow-x: auto; padding: 10px 12px;
+      border-bottom: 1px solid rgba(184,134,11,.06); background: #100c02;
+      scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    }
+    .cats::-webkit-scrollbar { display: none; }
+    .cat {
+      flex-shrink: 0; white-space: nowrap; border-radius: 20px; border: 1px solid rgba(184,134,11,.2);
+      padding: 6px 14px; font-size: 11.5px; color: rgba(232,192,90,.56); background: transparent; cursor: pointer;
+    }
+    .cat.on { background: #b8860b; border-color: #b8860b; color: #0e0a02; font-weight: 700; }
+    .main { padding: 4px 10px 16px; }
+    .cat-h {
+      display: flex; align-items: center; gap: 8px; margin: 16px 2px 10px;
+      font-size: 10px; text-transform: uppercase; letter-spacing: 2.5px; color: rgba(184,134,11,.46);
+    }
+    .cat-h .bar { width: 3px; height: 14px; border-radius: 2px; background: #b8860b; flex-shrink: 0; }
+    .cat-h .rule { flex: 1; height: 1px; background: rgba(184,134,11,.1); }
+    .card {
+      display: flex; overflow: hidden; border-radius: 16px; border: 1px solid rgba(184,134,11,.13);
+      background: #1a1203; margin-bottom: 10px; transition: transform .12s, border-color .12s;
+    }
+    .card:active { transform: scale(.99); }
+    .card.in-cart { border-color: rgba(184,134,11,.55); background: #1e1504; }
+    .photo {
+      width: 118px; min-height: 118px; flex-shrink: 0; background: #120900; position: relative; overflow: hidden;
+    }
+    .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .photo .ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+    .photo .zoom-hint {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0); transition: background .15s; pointer-events: none;
+    }
+    .card.has-img .photo { cursor: zoom-in; }
+    .body { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 12px; }
+    .name { font-size: 13px; font-weight: 600; line-height: 1.35; color: #f5d878; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; gap: 8px; }
+    .price { font-size: 16px; font-weight: 700; color: #b8860b; letter-spacing: .02em; }
+    .price small { font-size: 10px; font-weight: 400; opacity: .5; margin-inline-start: 2px; }
+    .btn-add {
+      width: 34px; height: 34px; border-radius: 50%; border: none; background: #b8860b; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .btn-add svg { stroke: #0e0a02; stroke-width: 2.5; fill: none; }
     .qty { display: flex; align-items: center; gap: 6px; }
-    .qty button { width: 28px; height: 28px; border-radius: 8px; border: 1px solid #475569; background: #1e293b; color: #fff; font-weight: 800; cursor: pointer; }
+    .qty button {
+      width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(184,134,11,.3);
+      background: rgba(184,134,11,.1); color: #b8860b; font-size: 18px; font-weight: 700; cursor: pointer;
+    }
+    .qty span { min-width: 20px; text-align: center; font-size: 14px; font-weight: 600; }
+    .cart-bar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      background: #b8860b; padding: 14px 20px max(14px, env(safe-area-inset-bottom));
+      box-shadow: 0 -4px 20px rgba(0,0,0,.4);
+      transform: translateY(110%); transition: transform .35s cubic-bezier(.34,1.26,.64,1);
+    }
+    .cart-bar.show { transform: translateY(0); }
+    .cart-bar .meta { font-size: 10.5px; color: rgba(14,10,2,.65); }
+    .cart-bar .total { font-size: 18px; font-weight: 700; color: #0e0a02; }
+    .cart-bar .go {
+      border: none; border-radius: 11px; background: #0e0a02; color: #e8c05a;
+      padding: 10px 20px; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .overlay {
+      position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,.82);
+      display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+    .sheet {
+      width: 100%; max-height: 88vh; overflow-y: auto; border-radius: 24px 24px 0 0;
+      border: 1px solid rgba(184,134,11,.18); background: #0f0b02; padding: 16px 16px 32px;
+      transform: translateY(100%); transition: transform .35s cubic-bezier(.34,1.26,.64,1);
+    }
+    .overlay.open .sheet { transform: translateY(0); }
+    .handle { width: 38px; height: 3.5px; border-radius: 2px; background: rgba(184,134,11,.2); margin: 0 auto 18px; }
+    .sheet h3 { font-size: 15px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .line { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(184,134,11,.08); gap: 10px; }
+    .line .n { font-size: 12.5px; font-weight: 500; color: #e8c05a; }
+    .line .sub { font-size: 11px; color: rgba(184,134,11,.42); margin-top: 2px; }
+    .note { width: 100%; margin: 8px 0 12px; resize: none; border-radius: 12px; border: 1px solid rgba(184,134,11,.18); background: rgba(184,134,11,.05); padding: 10px 12px; font-size: 12.5px; color: #f5d878; outline: none; font-family: inherit; }
+    .note::placeholder { color: rgba(184,134,11,.26); }
+    .btn-primary { width: 100%; border: none; border-radius: 14px; background: #b8860b; color: #0e0a02; padding: 14px; font-size: 14.5px; font-weight: 700; cursor: pointer; }
+    .btn-primary:disabled { opacity: .5; }
+    .btn-cancel { width: 100%; border: none; background: transparent; color: rgba(184,134,11,.4); padding: 12px; font-size: 12px; cursor: pointer; margin-top: 4px; }
+    .ok-screen { text-align: center; padding: 32px 24px; }
+    .ok-ring { width: 68px; height: 68px; border-radius: 50%; border: 2px solid #b8860b; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .lightbox {
+      position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.92);
+      display: flex; align-items: center; justify-content: center; padding: 16px;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .lightbox.open { opacity: 1; pointer-events: auto; }
+    .lightbox img { max-width: 100%; max-height: 90dvh; object-fit: contain; border-radius: 12px; }
+    .lightbox button { position: absolute; top: 16px; left: 16px; border: none; background: rgba(255,255,255,.12); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; }
+    .empty { text-align: center; padding: 56px 16px; color: rgba(184,134,11,.28); font-size: 13px; }
+    .skel { animation: pulse 1.5s ease-in-out infinite; background: rgba(184,134,11,.08); border-radius: 16px; height: 118px; margin-bottom: 10px; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
   </style>
 </head>
 <body>
-  <div id="app" class="center">جارٍ التحميل…</div>
+  <div id="app" class="center"><p style="color:rgba(245,216,120,.5)">جارٍ التحميل…</p></div>
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true"><button type="button" id="lbClose">×</button><img id="lbImg" alt="" /></div>
+  <script>
+    (function () {
+      var h = location.hash.replace(/^#\??/, "").trim();
+      if (!h || h.indexOf("=") < 0) return;
+      if (new URLSearchParams(location.search).get("t")) return;
+      location.replace(location.pathname + "?" + h);
+    })();
+  </script>
   <script>
     function readParams() {
       const q = new URLSearchParams(location.search);
@@ -44,141 +165,296 @@
       if (h && h.includes("=")) return new URLSearchParams(h);
       return q;
     }
-
     function shopFromToken(token) {
       try {
         const body = token.split(".")[0];
         const pad = body.length % 4 ? "=".repeat(4 - (body.length % 4)) : "";
         const b64 = (body + pad).replace(/-/g, "+").replace(/_/g, "/");
-        const bin = atob(b64);
-        const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-        const raw = JSON.parse(new TextDecoder().decode(bytes));
+        const raw = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0))));
         return raw.d ? String(raw.d).trim() : "";
       } catch (_) { return ""; }
     }
-
     const params = readParams();
     const TOKEN = (params.get("t") || params.get("token") || "").trim();
     let SHOP = (params.get("shop") || "").trim();
     if (!SHOP && TOKEN) SHOP = shopFromToken(TOKEN);
-    const API_PARAM = (params.get("api") || "").trim();
 
-    function isPrivateHost(url) {
+    let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "", done = false;
+    let search = "", activeCat = null, modalOpen = false, sending = false;
+
+    function esc(s) {
+      return String(s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+    }
+    function money(n) { return (Math.round(Number(n) || 0)).toLocaleString("tr-TR") + " ₺"; }
+    function catEmoji(c) {
+      const x = (c || "").toLowerCase();
+      if (x.includes("kahvalt")) return "☕";
+      if (x.includes("burger")) return "🍔";
+      if (x.includes("pizza")) return "🍕";
+      if (x.includes("salata")) return "🥗";
+      if (x.includes("tatlı") || x.includes("tatli")) return "🍰";
+      if (x.includes("içecek") || x.includes("icecek")) return "🧋";
+      return "🍽";
+    }
+    function deptEmoji(d) {
+      if (d === "kitchen") return "🍳";
+      if (d === "barista") return "☕";
+      if (d === "nargile") return "💨";
+      return "🍽";
+    }
+    function qtyOf(id) { const l = cart.find(x => x.item.id === id); return l ? l.qty : 0; }
+    function fixImgUrl(url) {
+      if (!url) return url;
       try {
-        const h = new URL(url).hostname;
-        if (h === "localhost" || h === "127.0.0.1") return true;
-        if (/^192\.168\./.test(h)) return true;
-        if (/^10\./.test(h)) return true;
-        if (/^172\.(1[6-9]|2\d|3[01])\./.test(h)) return true;
-        return false;
+        const u = new URL(url, apiBase || location.origin);
+        if (u.hostname === "127.0.0.1" || u.hostname === "localhost") {
+          const base = (apiBase || location.origin).replace(/\/+$/, "");
+          return base + u.pathname + u.search;
+        }
+        if (u.pathname.startsWith("/invoice-images/") && apiBase && u.origin !== apiBase.replace(/\/+$/, "")) {
+          return apiBase.replace(/\/+$/, "") + u.pathname + u.search;
+        }
+      } catch (_) {}
+      return url;
+    }
+    function imgTag(it) {
+      if (!it.imageUrl) return '<div class="ph">' + esc(it.icon || deptEmoji(it.dept)) + '</div>';
+      return '<img src="' + esc(fixImgUrl(it.imageUrl)) + '" alt="" loading="lazy" />';
+    }
+
+    async function loadManifestApis() {
+      const out = [];
+      const add = u => {
+        u = String(u || "").trim().replace(/\/+$/, "");
+        if (u && isSafeApiUrl(u) && !out.includes(u)) out.push(u);
+      };
+      for (const base of apiCandidates()) {
+        try {
+          const j = await fetch(base + "/guest-api.json?t=" + Date.now(), { cache: "no-store" });
+          if (!j.ok) continue;
+          const data = await j.json();
+          add(data.tunnelUrl);
+          add(data.apiUrl);
+        } catch (_) {}
+      }
+      const urls = [
+        "https://raw.githubusercontent.com/ostaifskandar-lgtm/zekiq-site/main/guest-api.json",
+        "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api.json",
+        "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/guest-api.json",
+      ];
+      for (const u of urls) {
+        try {
+          const j = await fetch(u + "?t=" + Date.now(), { cache: "no-store" });
+          if (!j.ok) continue;
+          const data = await j.json();
+          add(data.tunnelUrl);
+          add(data.apiUrl);
+        } catch (_) {}
+      }
+      return out;
+    }
+
+    function isSafeApiUrl(u) {
+      u = String(u || "").trim().replace(/\/+$/, "");
+      if (!u) return false;
+      if (/\.loca\.lt$/i.test(u)) return false;
+      try {
+        const url = new URL(u.includes("://") ? u : "http://" + u);
+        if (url.port === "8790") return false;
+        if (url.protocol === "http:" && !isPrivateApi(u)) return false;
+      } catch (_) { return false; }
+      return true;
+    }
+    function isPrivateApi(u) {
+      try {
+        const h = new URL(u.includes("://") ? u : "http://" + u).hostname;
+        return h === "localhost" || h === "127.0.0.1" || /^192\.168\./.test(h) || /^10\./.test(h);
       } catch (_) { return true; }
     }
-
-    function pickApi(j) {
-      let url = (j && (j.guestApiUrl || j.apiUrl)) ? String(j.guestApiUrl || j.apiUrl) : "";
-      if (!url && j && j.statsApiUrl) {
-        url = String(j.statsApiUrl).replace(/\/api\/license\/?$/i, "");
+    function apiCandidates() {
+      const out = [];
+      const add = u => {
+        u = String(u || "").trim().replace(/\/+$/, "");
+        if (u && isSafeApiUrl(u) && !out.includes(u)) out.push(u);
+      };
+      const apiParam = params.get("api")?.trim();
+      const lanParam = params.get("lan")?.trim();
+      const onGithub = /github\.io$/i.test(location.hostname);
+      // 4G/5G: try public HTTPS API first; LAN only on shop Wi-Fi.
+      if (onGithub || navigator.connection?.type === "cellular") {
+        add(apiParam);
+        if (apiParam) {
+          try {
+            const u = new URL(apiParam.includes("://") ? apiParam : "http://" + apiParam);
+            add(u.origin);
+          } catch (_) {}
+        }
+        add(lanParam);
+      } else {
+        add(lanParam);
+        add(apiParam);
+        if (apiParam) {
+          try {
+            const u = new URL(apiParam.includes("://") ? apiParam : "http://" + apiParam);
+            add(u.origin);
+          } catch (_) {}
+        }
       }
-      url = url.replace(/\/+$/, "");
-      return url && !isPrivateHost(url) ? url : "";
+      if (location.protocol === "https:" && !location.hostname.includes("github.io")) {
+        add(location.origin.replace(/\/+$/, ""));
+      }
+      const onPosGuest =
+        location.pathname.includes("/guest") ||
+        location.pathname.includes("/table") ||
+        location.port === "3000";
+      if (onPosGuest && location.hostname !== "localhost" && location.hostname !== "127.0.0.1")
+        add(location.origin.replace(/\/+$/, ""));
+      if (onPosGuest && (location.hostname === "localhost" || location.hostname === "127.0.0.1"))
+        add("http://127.0.0.1:3000");
+      return out;
     }
-    const cart = [];
-    let menu = [];
-    let shopName = "";
-    let section = "";
-    let tableNum = 0;
-    let apiBase = "";
-    let done = false;
 
     async function loadApiBase() {
-      if (API_PARAM && !isPrivateHost(API_PARAM)) return API_PARAM.replace(/\/+$/, "");
-      try {
-        const r = await fetch(new URL("../guest-api.json", location.href).href + "?v=" + Date.now(), { cache: "no-store" });
-        if (r.ok) {
-          const url = pickApi(await r.json());
-          if (url) return url;
-        }
-      } catch (_) {}
-      try {
-        const r2 = await fetch(new URL("../site-config.json", location.href).href + "?v=" + Date.now(), { cache: "no-store" });
-        if (r2.ok) {
-          const url = pickApi(await r2.json());
-          if (url) return url;
-        }
-      } catch (_) {}
-      return "";
+      return apiCandidates()[0] || location.origin.replace(/\/+$/, "");
     }
 
-    function money(n) {
-      const v = Number(n) || 0;
-      return v.toFixed(0) + " ₺";
+    function showConnecting() {
+      const root = document.getElementById("app");
+      root.className = "center page";
+      root.innerHTML =
+        '<div class="glow"></div><div style="text-align:center;padding:28px;max-width:300px">' +
+        '<p style="font-size:18px;font-weight:700;color:#f5d878;margin-bottom:6px">جاري الاتصال بالكاشير…</p>' +
+        '<p style="font-size:12px;line-height:1.6;color:rgba(184,134,11,.58)">تحميل قائمة الطعام مباشرة بعد QR</p>' +
+        '<div class="skel" style="height:6px;max-width:180px;margin:18px auto 0;border-radius:3px"></div></div>';
+    }
+
+    function filtered() {
+      const q = search.trim().toLowerCase();
+      return menu.filter(it => {
+        if (activeCat && (it.category || "أخرى") !== activeCat) return false;
+        if (!q) return true;
+        return (it.name || "").toLowerCase().includes(q) || (it.category || "").toLowerCase().includes(q);
+      });
+    }
+
+    function categories() {
+      const o = [], s = new Set();
+      for (const it of menu) {
+        const c = it.category || "أخرى";
+        if (!s.has(c)) { s.add(c); o.push(c); }
+      }
+      return o;
     }
 
     function render() {
       const root = document.getElementById("app");
-      if (!TOKEN) {
-        root.className = "center";
-        root.innerHTML = "<p>امسح <strong>رمز QR</strong> من الطاولة — لا تفتح الرابط بدون الرمز.</p>";
-        return;
-      }
-      if (!SHOP) {
-        root.className = "center";
-        root.innerHTML = "<p>رمز QR قديم — من الكاشير: <strong>إعدادات → QR الطاولات → تحديث</strong> ثم امسح الرمز الجديد.</p>";
-        return;
-      }
-      if (!apiBase) {
-        root.className = "center";
-        root.innerHTML = "<p>خادم الطلبات غير متاح من الإنترنت.<br/>المطعم يحتاج ضبط IP عام لخادم ZEKiQ (منفذ 8790).</p>";
-        return;
-      }
+      if (!TOKEN) { root.className = "center"; root.innerHTML = "<p>امسح <strong>رمز QR</strong> من الطاولة.</p>"; return; }
+      if (!SHOP) { root.className = "center"; root.innerHTML = "<p>رمز QR قديم — حدّث الرموز من إعدادات الكاشير.</p>"; return; }
+      if (!apiBase) { root.className = "center"; root.innerHTML = "<p>الخادم غير متاح.</p>"; return; }
       if (done) {
-        root.className = "center ok";
-        root.innerHTML = '<div><div style="font-size:3rem">✓</div><h2>شكراً!</h2><p>وصل طلبك إلى الكاشير والمطبخ.</p><button class="again" onclick="window.__again()">طلب إضافي</button></div>';
+        root.className = "center page";
+        root.innerHTML = '<div class="glow"></div><div class="ok-screen"><div class="ok-ring"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><h2 style="font-size:19px;margin-bottom:8px">شكراً! ✓</h2><p style="font-size:13px;color:rgba(184,134,11,.58);line-height:1.6">وصل طلبك إلى الكاشير والمطبخ<br/><strong style="color:#b8860b">' + esc(shopName) + '</strong></p><button type="button" class="btn-primary" style="max-width:200px;margin:20px auto 0" onclick="window.__again()">طلب إضافي</button></div>';
         return;
       }
-      const cats = new Map();
-      for (const it of menu) {
-        const c = it.category || "أخرى";
-        if (!cats.has(c)) cats.set(c, []);
-        cats.get(c).push(it);
-      }
-      let html = '<div class="wrap"><div class="hdr"><h1>' + esc(shopName) + '</h1><p>' + esc(section) + ' — طاولة ' + tableNum + '</p></div>';
-      for (const [cat, items] of cats) {
-        html += '<div class="cat">' + esc(cat) + '</div>';
+
+      const items = filtered();
+      const cats = categories();
+      const grouped = activeCat ? [[activeCat, items]] : (() => {
+        const m = new Map();
         for (const it of items) {
-          const img = it.imageUrl ? '<img src="' + esc(it.imageUrl) + '" alt=""/>' : '<div class="ph">' + esc(it.icon || "🍽") + '</div>';
-          html += '<div class="item">' + img + '<div><div class="n">' + esc(it.name) + '</div><div class="p">' + money(it.price) + '</div></div><button class="add" data-id="' + it.id + '">+</button></div>';
+          const c = it.category || "أخرى";
+          if (!m.has(c)) m.set(c, []);
+          m.get(c).push(it);
+        }
+        return [...m.entries()];
+      })();
+
+      let html = '<div class="page"><div class="glow"></div>';
+      html += '<header class="hero"><div class="logo">' + esc(shopName || "ZEKiQ") + '</div>';
+      html += '<div class="sub"><span class="line"></span><span>Cafe & Restaurant</span><span class="line"></span></div>';
+      html += '<p class="table-badge">' + esc(section) + ' — طاولة ' + tableNum + '</p>';
+      html += '<div class="chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="4" rx="1"/><line x1="6" y1="12" x2="6" y2="19"/><line x1="18" y1="12" x2="18" y2="19"/></svg>اطلب من طاولتك</div></header>';
+      html += '<div class="toolbar"><input class="search" type="search" placeholder="ابحث عن طبق… / Ara" value="' + esc(search) + '" id="searchInp" /></div>';
+      html += '<div class="cats" id="catBar"><button type="button" class="cat' + (activeCat ? "" : " on") + '" data-cat="">✦ الكل</button>';
+      for (const c of cats) html += '<button type="button" class="cat' + (activeCat === c ? " on" : "") + '" data-cat="' + esc(c) + '">' + catEmoji(c) + ' ' + esc(c) + '</button>';
+      html += '</div><main class="main">';
+
+      if (!grouped.length) {
+        html += '<div class="empty"><div style="font-size:38px;opacity:.4;margin-bottom:12px">🔍</div>لا نتائج</div>';
+      } else {
+        for (const [cat, list] of grouped) {
+          if (!activeCat) html += '<div class="cat-h"><span class="bar"></span>' + esc(cat) + '<span class="rule"></span></div>';
+          for (const it of list) {
+            const q = qtyOf(it.id);
+            const hasImg = !!it.imageUrl;
+            html += '<article class="card' + (q ? " in-cart" : "") + (hasImg ? " has-img" : "") + '" data-img="' + esc(it.imageUrl || "") + '">';
+            html += '<div class="photo">' + imgTag(it) + (hasImg ? '<span class="zoom-hint"></span>' : '') + '</div>';
+            html += '<div class="body"><div class="name">' + esc(it.name) + '</div><div class="row"><div class="price">' + money(it.price).replace(" ₺","") + '<small>₺</small></div>';
+            if (!q) html += '<button type="button" class="btn-add" data-add="' + it.id + '"><svg width="16" height="16" viewBox="0 0 16 16"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg></button>';
+            else html += '<div class="qty"><button type="button" data-dec="' + it.id + '">−</button><span>' + q + '</span><button type="button" data-inc="' + it.id + '">+</button></div>';
+            html += '</div></div></article>';
+          }
         }
       }
-      html += '</div>';
+      html += '</main></div>';
+
       const total = cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0);
-      html += '<div class="cart"><div class="row"><span>السلة (' + cart.length + ')</span><span class="total">' + money(total) + '</span></div>';
+      const count = cart.reduce((s, l) => s + l.qty, 0);
+      html += '<div class="cart-bar' + (count ? " show" : "") + '" id="cartBar"><div><div class="meta">' + count + ' منتج</div><div class="total">' + money(total) + '</div></div><button type="button" class="go" id="openModal">عرض السلة ←</button></div>';
+      html += '<div class="overlay' + (modalOpen ? " open" : "") + '" id="overlay"><div class="sheet" id="sheet"><div class="handle"></div><h3>🛒 ملخص الطلب</h3>';
       for (const l of cart) {
-        html += '<div class="line"><span>' + esc(l.item.name) + '</span><span class="qty"><button data-dec="' + l.item.id + '">−</button>' + l.qty + '<button data-inc="' + l.item.id + '">+</button></span></div>';
+        html += '<div class="line"><div><div class="n">' + esc(l.item.name) + '</div><div class="sub">' + l.qty + ' × ' + money(l.item.price) + '</div></div><div class="price" style="font-size:13px">' + money(Number(l.item.price) * l.qty) + '</div></div>';
       }
-      html += '<input class="note" id="note" placeholder="ملاحظة (اختياري)" maxlength="200"/><button class="send" id="sendBtn"' + (cart.length ? "" : " disabled") + '>إرسال الطلب</button></div>';
+      html += '<div class="line" style="border:none;font-weight:600;font-size:16px"><span>المجموع</span><span class="price">' + money(total) + '</span></div>';
+      html += '<textarea class="note" id="noteInp" rows="2" placeholder="ملاحظة (حساسية، طلب خاص…)" maxlength="200"></textarea>';
+      html += '<button type="button" class="btn-primary" id="sendBtn"' + (cart.length ? "" : " disabled") + '>' + (sending ? "جاري الإرسال…" : "✓ تأكيد الطلب") + '</button>';
+      html += '<button type="button" class="btn-cancel" id="closeModal">إلغاء</button></div></div>';
+
       root.className = "";
       root.innerHTML = html;
-      root.querySelectorAll(".add").forEach(b => b.onclick = () => addItem(Number(b.dataset.id)));
-      root.querySelectorAll("[data-inc]").forEach(b => b.onclick = () => chQty(Number(b.dataset.inc), 1));
-      root.querySelectorAll("[data-dec]").forEach(b => b.onclick = () => chQty(Number(b.dataset.dec), -1));
-      const sb = document.getElementById("sendBtn");
-      if (sb) sb.onclick = sendOrder;
+
+      document.querySelectorAll(".photo img").forEach(img => {
+        img.onerror = function () {
+          const ph = document.createElement("div");
+          ph.className = "ph";
+          ph.textContent = "🍽";
+          this.replaceWith(ph);
+        };
+      });
+      document.getElementById("searchInp")?.addEventListener("input", e => { search = e.target.value; if (search.trim()) activeCat = null; render(); document.getElementById("searchInp")?.focus(); });
+      document.querySelectorAll(".cat").forEach(b => b.onclick = () => { activeCat = b.dataset.cat || null; search = ""; render(); });
+      document.querySelectorAll("[data-add]").forEach(b => b.onclick = () => addItem(Number(b.dataset.add)));
+      document.querySelectorAll("[data-inc]").forEach(b => b.onclick = () => chQty(Number(b.dataset.inc), 1));
+      document.querySelectorAll("[data-dec]").forEach(b => b.onclick = () => chQty(Number(b.dataset.dec), -1));
+      document.querySelectorAll(".card.has-img .photo").forEach(el => {
+        el.onclick = e => {
+          if (e.target.closest("button")) return;
+          const url = el.closest(".card")?.dataset.img;
+          if (url) openLightbox(url);
+        };
+      });
+      document.getElementById("openModal")?.addEventListener("click", () => { modalOpen = true; render(); });
+      document.getElementById("closeModal")?.addEventListener("click", () => { modalOpen = false; render(); });
+      document.getElementById("overlay")?.addEventListener("click", e => { if (e.target.id === "overlay") { modalOpen = false; render(); } });
+      document.getElementById("sendBtn")?.addEventListener("click", sendOrder);
     }
 
-    function esc(s) {
-      return String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    function openLightbox(src) {
+      const lb = document.getElementById("lightbox");
+      document.getElementById("lbImg").src = src;
+      lb.classList.add("open");
     }
+    document.getElementById("lbClose").onclick = () => document.getElementById("lightbox").classList.remove("open");
+    document.getElementById("lightbox").onclick = e => { if (e.target.id === "lightbox") e.currentTarget.classList.remove("open"); };
 
     function addItem(id) {
       const item = menu.find(m => m.id === id);
       if (!item) return;
       const i = cart.findIndex(x => x.item.id === id);
-      if (i >= 0) cart[i].qty++;
-      else cart.push({ item, qty: 1 });
+      if (i >= 0) cart[i].qty++; else cart.push({ item, qty: 1 });
+      if (navigator.vibrate) navigator.vibrate(12);
       render();
     }
-
     function chQty(id, d) {
       const i = cart.findIndex(x => x.item.id === id);
       if (i < 0) return;
@@ -186,71 +462,69 @@
       if (cart[i].qty <= 0) cart.splice(i, 1);
       render();
     }
-
-    window.__again = function () {
-      done = false;
-      cart.length = 0;
-      render();
-    };
+    window.__again = () => { done = false; cart = []; render(); };
 
     async function sendOrder() {
-      if (!cart.length) return;
-      const btn = document.getElementById("sendBtn");
-      if (btn) btn.disabled = true;
-      const note = (document.getElementById("note") || {}).value || "";
+      if (!cart.length || sending) return;
+      sending = true; render();
+      const note = document.getElementById("noteInp")?.value || "";
       try {
         const res = await fetch(apiBase + "/api/guest/v1/orders", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
+          method: "POST", headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            shop: SHOP,
-            token: TOKEN,
-            note: note.trim() || undefined,
-            items: cart.map(l => ({
-              menuItemId: l.item.id,
-              name: l.item.name,
-              category: l.item.category,
-              price: String(l.item.price),
-              qty: String(l.qty),
-              dept: l.item.dept,
-            })),
+            shop: SHOP, token: TOKEN, note: note.trim() || undefined,
+            items: cart.map(l => ({ menuItemId: l.item.id, name: l.item.name, category: l.item.category, price: String(l.item.price), qty: String(l.qty), dept: l.item.dept })),
           }),
         });
         const data = await res.json();
         if (!data.ok) throw new Error("fail");
-        done = true;
-        cart.length = 0;
-        render();
-      } catch (_) {
-        alert("تعذّر الإرسال — تحقق من الإنترنت وحاول مرة أخرى");
-        if (btn) btn.disabled = false;
-      }
+        done = true; cart = []; modalOpen = false;
+      } catch (_) { alert("تعذّر الإرسال — تحقق من الإنترنت"); }
+      sending = false; render();
     }
 
     async function boot() {
-      apiBase = await loadApiBase();
-      if (!SHOP || !TOKEN) { render(); return; }
-      if (!apiBase) { render(); return; }
-      try {
-        const url = apiBase + "/api/guest/v1/menu?shop=" + encodeURIComponent(SHOP) + "&token=" + encodeURIComponent(TOKEN);
-        const res = await fetch(url);
-        const data = await res.json();
-        if (!data.ok) {
-          const msg = data.error === "disabled" ? "طلبات QR معطّلة في المطعم." :
-            data.error === "invalid_token" ? "رمز الطاولة غير صالح — امسح QR من الطاولة." :
-            data.error === "shop_not_found" ? "المطعم غير متصل — حاول بعد قليل." :
-            "تعذّر تحميل القائمة.";
-          document.getElementById("app").innerHTML = "<p>" + msg + "</p>";
-          return;
-        }
-        shopName = data.shopName || "ZEKiQ";
-        section = data.section;
-        tableNum = data.tableNum;
-        menu = data.items || [];
-        render();
-      } catch (_) {
-        document.getElementById("app").innerHTML = "<p>لا يوجد إنترنت أو الخادم غير متاح. تحقق من بيانات الجوال.</p>";
+      if (!TOKEN) { render(); return; }
+      showConnecting();
+      const errBox = (title, detail) => {
+        document.getElementById("app").className = "center page";
+        document.getElementById("app").innerHTML =
+          '<div class="glow"></div><div style="max-width:320px;padding:24px;text-align:center">' +
+          '<p style="font-size:17px;font-weight:700;margin-bottom:10px;color:#f5d878">' + esc(title) + '</p>' +
+          '<p style="font-size:13px;line-height:1.65;color:rgba(184,134,11,.65)">' + esc(detail) + '</p></div>';
+      };
+      const onGithub = /github\.io$/i.test(location.hostname);
+      const manifestBases = await loadManifestApis();
+      const localBases = apiCandidates();
+      const bases = onGithub ? [...manifestBases, ...localBases] : [...localBases, ...manifestBases];
+      const seen = new Set();
+      const unique = bases.filter(b => { if (seen.has(b)) return false; seen.add(b); return true; });
+      for (let b = 0; b < unique.length; b++) {
+        apiBase = unique[b];
+        try {
+          const ctrl = new AbortController();
+          const timeoutMs = isPrivateApi(apiBase) ? 2500 : 8000;
+          const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+          const res = await fetch(apiBase + "/api/guest/v1/menu?t=" + encodeURIComponent(TOKEN) + "&shop=" + encodeURIComponent(SHOP), { cache: "no-store", signal: ctrl.signal });
+          clearTimeout(timer);
+          const data = await res.json();
+          if (data.ok) {
+            shopName = data.shopName || "ZEKiQ";
+            section = data.section; tableNum = data.tableNum;
+            menu = (data.items || []).map(it => ({ ...it, imageUrl: fixImgUrl(it.imageUrl) }));
+            document.title = shopName + " — طاولة " + tableNum;
+            render(); return;
+          }
+          if (data.error === "shop_not_found" && b < unique.length - 1) continue;
+          if (data.error === "disabled") { errBox("طلبات QR معطّلة", "فعّلها من إعدادات الكاشير → QR الزبون."); return; }
+          if (data.error === "table_qr_disabled") { errBox("QR هذه الطاولة متوقف", "تم إيقاف الطلب من هذه الطاولة — اطلب من المحل تفعيلها."); return; }
+          if (data.error === "invalid_token") { errBox("رمز QR قديم", "اطبع رموز جديدة من إعدادات الكاشير."); return; }
+        } catch (_) { /* try next base */ }
       }
+      errBox(
+        "تعذّر الاتصال بالكاشير",
+        "تأكد أن ZEKiQ POS شغّال. للبيانات (4G): انتظر 30 دقيقة ثم من الكاشير → إعدادات → QR الزبون → تحديث المينو، واطبع QR جديد. لا تعيد تشغيل النفق كثيراً."
+      );
     }
     boot();
   </script>
