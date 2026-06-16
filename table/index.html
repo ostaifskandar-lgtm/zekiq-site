@@ -200,6 +200,51 @@
     .empty { text-align: center; padding: 60px 16px; color: var(--ink-dim); font-size: 13.5px; }
     .skel { animation: pulse 1.5s ease-in-out infinite; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; height: 124px; margin-bottom: 12px; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+    /* ===== Flipbook (الكتاب الخيالي) ===== */
+    .book-app { display: flex; flex-direction: column; min-height: 100dvh; padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+    .bk-top { display: flex; align-items: center; gap: 12px; padding: 18px 16px 6px; }
+    .bk-cart { position: relative; width: 44px; height: 44px; border-radius: 14px; border: 1px solid rgba(212,175,55,.3); background: linear-gradient(180deg, rgba(212,175,55,.14), rgba(212,175,55,.04)); color: var(--gold-soft); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); transition: transform .12s; }
+    .bk-cart:active { transform: scale(.9); }
+    .bk-badge { position: absolute; top: -7px; left: -7px; min-width: 21px; height: 21px; padding: 0 5px; border-radius: 11px; background: #e53935; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 9px rgba(229,57,53,.55); }
+    .bk-brand { flex: 1; text-align: center; font-family: Georgia, "Times New Roman", serif; font-size: 2rem; font-weight: 700; line-height: 1.05; letter-spacing: .5px; background: linear-gradient(135deg,#fdeeb8,#f0d27e 38%,#d4a02a 72%,#fbe6a6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 0 16px rgba(240,210,126,.5)); }
+    .bk-tbl { display: block; -webkit-text-fill-color: initial; background: none; -webkit-background-clip: initial; font-family: "Segoe UI", sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: .05em; color: var(--ink-dim); margin-top: 5px; filter: none; }
+    .bk-deco { width: 44px; text-align: center; color: rgba(240,210,126,.55); font-size: 17px; }
+    .bk-search { padding: 6px 16px 8px; }
+    .book { position: relative; flex: 1; perspective: 1500px; overflow-x: hidden; overflow-y: auto; padding: 4px 14px 10px; -webkit-overflow-scrolling: touch; }
+    .leaf { transform-origin: center; }
+    .leaf.in-next { animation: flipNext .55s cubic-bezier(.34,1,.4,1) both; }
+    .leaf.in-prev { animation: flipPrev .55s cubic-bezier(.34,1,.4,1) both; }
+    @keyframes flipNext { from { transform: translateX(-46%) rotateY(34deg); opacity: 0; } to { transform: none; opacity: 1; } }
+    @keyframes flipPrev { from { transform: translateX(46%) rotateY(-34deg); opacity: 0; } to { transform: none; opacity: 1; } }
+    .pcat { display: flex; align-items: center; gap: 10px; margin: 8px 2px 14px; font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-soft); text-shadow: 0 0 18px rgba(232,200,115,.35); }
+    .pbar { width: 16px; height: 2px; border-radius: 2px; background: linear-gradient(90deg,var(--gold),transparent); flex-shrink: 0; }
+    .prule { flex: 1; height: 1px; background: linear-gradient(90deg,rgba(212,175,55,.32),transparent); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .dish { display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); box-shadow: 0 10px 26px -14px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.03); transition: transform .14s, border-color .2s, box-shadow .2s; }
+    .dish:active { transform: scale(.97); }
+    .dish.in-cart { border-color: rgba(212,175,55,.55); box-shadow: 0 12px 28px -12px rgba(0,0,0,.8), 0 0 0 1px rgba(212,175,55,.3); }
+    .dimg { position: relative; aspect-ratio: 1/1; background: #120c04; overflow: hidden; }
+    .dimg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .dimg .ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.4rem; opacity: .82; }
+    .dish.has-img .dimg { cursor: zoom-in; }
+    .dq { position: absolute; top: 8px; right: 8px; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 12px; background: linear-gradient(135deg,#e8c873,#c8860a); color: #1a1206; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,.45); }
+    .dbody { padding: 10px 11px 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .dname { font-size: 13px; font-weight: 600; line-height: 1.35; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .dfoot { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: auto; }
+    .dprice { font-size: 16px; font-weight: 800; color: var(--gold-soft); }
+    .dprice small { font-size: 10px; font-weight: 500; opacity: .6; margin-inline-start: 2px; }
+    .dadd { width: 34px; height: 34px; border-radius: 50%; border: none; flex-shrink: 0; cursor: pointer; background: linear-gradient(135deg,#e8c873,#d4af37 55%,#b8860b); display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 14px rgba(212,175,55,.45), inset 0 1px 0 rgba(255,255,255,.4); transition: transform .12s; }
+    .dadd:active { transform: scale(.84); }
+    .dadd svg { stroke: #1a1206; stroke-width: 2.6; fill: none; }
+    .bk-bot { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 8px 16px 2px; }
+    .bk-arrow { width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer; font-size: 28px; font-weight: 700; color: #1a1206; background: linear-gradient(135deg,#e8c873,#d4af37 55%,#b8860b); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(212,175,55,.42); transition: transform .12s; }
+    .bk-arrow:active { transform: scale(.9); }
+    .bk-arrow:disabled { background: #241a0a; color: #5a4a28; box-shadow: none; cursor: default; }
+    .bk-dots { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 58%; }
+    .bk-dot { width: 8px; height: 8px; border-radius: 50%; border: none; background: rgba(212,175,55,.28); cursor: pointer; padding: 0; transition: all .2s; }
+    .bk-dot.on { width: 22px; border-radius: 5px; background: linear-gradient(90deg,#e8c873,#c8860a); box-shadow: 0 0 10px rgba(232,200,115,.5); }
+    .bk-pageno { text-align: center; font-size: 10.5px; letter-spacing: .12em; color: var(--ink-dim); padding: 3px 0 6px; }
   </style>
 </head>
 <body>
@@ -236,7 +281,7 @@
     if (!SHOP && TOKEN) SHOP = shopFromToken(TOKEN);
 
     let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "", done = false;
-    let search = "", activeCat = null, modalOpen = false, sending = false;
+    let search = "", activeCat = null, modalOpen = false, sending = false, cur = 0, flipDir = 0;
 
     function esc(s) {
       return String(s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
@@ -413,89 +458,108 @@
         return;
       }
 
-      const items = filtered();
-      const cats = categories();
-      const grouped = activeCat ? [[activeCat, items]] : (() => {
-        const m = new Map();
-        for (const it of items) {
-          const c = it.category || "أخرى";
-          if (!m.has(c)) m.set(c, []);
-          m.get(c).push(it);
-        }
-        return [...m.entries()];
-      })();
-
-      let html = '<div class="page"><div class="glow"></div>';
-      html += '<header class="hero"><div class="logo">' + esc(shopName || "ZEKiQ") + '</div>';
-      html += '<div class="sub"><span class="line"></span><span>Cafe & Restaurant</span><span class="line"></span></div>';
-      html += '<p class="table-badge">' + esc(section) + ' — طاولة ' + tableNum + '</p>';
-      html += '<div class="chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="4" rx="1"/><line x1="6" y1="12" x2="6" y2="19"/><line x1="18" y1="12" x2="18" y2="19"/></svg>اطلب من طاولتك</div></header>';
-      html += '<div class="stickwrap"><div class="toolbar"><input class="search" type="search" placeholder="ابحث عن طبق… / Ara" value="' + esc(search) + '" id="searchInp" /></div>';
-      html += '<div class="cats" id="catBar"><button type="button" class="cat' + (activeCat ? "" : " on") + '" data-cat="">✦ الكل</button>';
-      for (const c of cats) html += '<button type="button" class="cat' + (activeCat === c ? " on" : "") + '" data-cat="' + esc(c) + '">' + catEmoji(c) + ' ' + esc(c) + '</button>';
-      html += '</div></div><main class="main">';
-
-      if (!grouped.length) {
-        html += '<div class="empty"><div style="font-size:38px;opacity:.4;margin-bottom:12px">🔍</div>لا نتائج</div>';
+      const q = search.trim().toLowerCase();
+      let pages;
+      if (q) {
+        const res = menu.filter(it => (it.name || "").toLowerCase().includes(q) || (it.category || "").toLowerCase().includes(q));
+        pages = [{ cat: "نتائج: " + search.trim(), items: res }];
       } else {
-        for (const [cat, list] of grouped) {
-          if (!activeCat) html += '<div class="cat-h"><span class="bar"></span>' + esc(cat) + '<span class="rule"></span></div>';
-          for (const it of list) {
-            const q = qtyOf(it.id);
-            const hasImg = !!it.imageUrl;
-            html += '<article class="card' + (q ? " in-cart" : "") + (hasImg ? " has-img" : "") + '" data-img="' + esc(it.imageUrl || "") + '">';
-            html += '<div class="photo">' + imgTag(it) + (hasImg ? '<span class="zoom-hint"></span>' : '') + '</div>';
-            html += '<div class="body"><div class="name">' + esc(it.name) + '</div><div class="row"><div class="price">' + money(it.price).replace(" ₺","") + '<small>₺</small></div>';
-            if (!q) html += '<button type="button" class="btn-add" data-add="' + it.id + '"><svg width="16" height="16" viewBox="0 0 16 16"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg></button>';
-            else html += '<div class="qty"><button type="button" data-dec="' + it.id + '">−</button><span>' + q + '</span><button type="button" data-inc="' + it.id + '">+</button></div>';
-            html += '</div></div></article>';
-          }
-        }
+        const m = new Map();
+        for (const it of menu) { const c = it.category || "أخرى"; if (!m.has(c)) m.set(c, []); m.get(c).push(it); }
+        pages = [...m.entries()].map(e => ({ cat: e[0], items: e[1] }));
       }
-      html += '</main></div>';
-
+      if (!pages.length) pages = [{ cat: "", items: [] }];
+      if (cur >= pages.length) cur = pages.length - 1;
+      if (cur < 0) cur = 0;
+      const page = pages[cur];
       const total = cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0);
       const count = cart.reduce((s, l) => s + l.qty, 0);
-      html += '<div class="cart-bar' + (count ? " show" : "") + '" id="cartBar"><div><div class="meta">' + count + ' منتج</div><div class="total">' + money(total) + '</div></div><button type="button" class="go" id="openModal">عرض السلة ←</button></div>';
-      html += '<div class="overlay' + (modalOpen ? " open" : "") + '" id="overlay"><div class="sheet" id="sheet"><div class="handle"></div><h3>🛒 ملخص الطلب</h3>';
+
+      let html = '<div class="book-app">';
+      html += '<header class="bk-top">';
+      html += '<button type="button" class="bk-cart" id="openCart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.4 12.4a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.2L22 7H6"/></svg>' + (count ? '<span class="bk-badge">' + count + '</span>' : '') + '</button>';
+      html += '<div class="bk-brand">' + esc(shopName || "ZEKiQ") + '<span class="bk-tbl">' + esc(section) + ' · طاولة ' + tableNum + '</span></div>';
+      html += '<div class="bk-deco">✦</div>';
+      html += '</header>';
+      html += '<div class="bk-search"><input class="search" type="search" placeholder="ابحث عن طبق… / Ara" value="' + esc(search) + '" id="searchInp" /></div>';
+      html += '<div class="book" id="bookStage"><section class="leaf ' + (flipDir > 0 ? "in-next" : flipDir < 0 ? "in-prev" : "") + '"><div class="pcat"><span class="pbar"></span>' + esc(page.cat) + '<span class="prule"></span></div>';
+      if (!page.items.length) {
+        html += '<div class="empty"><div style="font-size:40px;opacity:.35;margin-bottom:10px">🍽</div>لا أصناف</div>';
+      } else {
+        html += '<div class="grid">';
+        for (const it of page.items) {
+          const qn = qtyOf(it.id);
+          const hasImg = !!it.imageUrl;
+          html += '<article class="dish' + (qn ? " in-cart" : "") + (hasImg ? " has-img" : "") + '" data-img="' + esc(it.imageUrl || "") + '">';
+          html += '<div class="dimg">' + imgTag(it) + (qn ? '<span class="dq">' + qn + '</span>' : '') + '</div>';
+          html += '<div class="dbody"><div class="dname">' + esc(it.name) + '</div><div class="dfoot"><span class="dprice">' + money(it.price).replace(" ₺", "") + '<small>₺</small></span>';
+          if (!qn) html += '<button type="button" class="dadd" data-add="' + it.id + '"><svg width="16" height="16" viewBox="0 0 16 16"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg></button>';
+          else html += '<div class="qty"><button type="button" data-dec="' + it.id + '">−</button><span>' + qn + '</span><button type="button" data-inc="' + it.id + '">+</button></div>';
+          html += '</div></div></article>';
+        }
+        html += '</div>';
+      }
+      html += '</section></div>';
+      if (pages.length > 1) {
+        html += '<nav class="bk-bot"><button type="button" class="bk-arrow" id="prevPg"' + (cur <= 0 ? " disabled" : "") + '>›</button><div class="bk-dots">';
+        for (let i = 0; i < pages.length; i++) html += '<button type="button" class="bk-dot' + (i === cur ? " on" : "") + '" data-pg="' + i + '"></button>';
+        html += '</div><button type="button" class="bk-arrow" id="nextPg"' + (cur >= pages.length - 1 ? " disabled" : "") + '>‹</button></nav>';
+      }
+      html += '<div class="bk-pageno">' + (cur + 1) + ' / ' + pages.length + '</div>';
+      html += '</div>';
+
+      html += '<div class="cart-bar' + (count ? " show" : "") + '" id="cartBar"><div><div class="meta">' + count + ' منتج</div><div class="total">' + money(total) + '</div></div><button type="button" class="go" id="openCart2">عرض السلة ←</button></div>';
+      html += '<div class="overlay' + (modalOpen ? " open" : "") + '" id="overlay"><div class="sheet"><div class="handle"></div><h3>🛒 ملخص الطلب</h3>';
       for (const l of cart) {
         const th = l.item.imageUrl
           ? '<img class="thumb" src="' + esc(fixImgUrl(l.item.imageUrl)) + '" alt="" />'
           : '<div class="thumb">' + esc(l.item.icon || deptEmoji(l.item.dept)) + '</div>';
         html += '<div class="line"><div style="display:flex;align-items:center;gap:11px;min-width:0">' + th + '<div style="min-width:0"><div class="n">' + esc(l.item.name) + '</div><div class="sub">' + l.qty + ' × ' + money(l.item.price) + '</div></div></div><div class="price" style="font-size:14px">' + money(Number(l.item.price) * l.qty) + '</div></div>';
       }
-      html += '<div class="line" style="border:none;font-weight:600;font-size:16px"><span>المجموع</span><span class="price">' + money(total) + '</span></div>';
+      html += '<div class="line" style="border:none;font-weight:700;font-size:16px"><span>المجموع</span><span class="price">' + money(total) + '</span></div>';
       html += '<textarea class="note" id="noteInp" rows="2" placeholder="ملاحظة (حساسية، طلب خاص…)" maxlength="200"></textarea>';
       html += '<button type="button" class="btn-primary" id="sendBtn"' + (cart.length ? "" : " disabled") + '>' + (sending ? "جاري الإرسال…" : "✓ تأكيد الطلب") + '</button>';
       html += '<button type="button" class="btn-cancel" id="closeModal">إلغاء</button></div></div>';
 
       root.className = "";
       root.innerHTML = html;
+      flipDir = 0;
 
-      document.querySelectorAll(".photo img").forEach(img => {
-        img.onerror = function () {
-          const ph = document.createElement("div");
-          ph.className = "ph";
-          ph.textContent = "🍽";
-          this.replaceWith(ph);
-        };
+      document.querySelectorAll(".dimg img").forEach(img => {
+        img.onerror = function () { const ph = document.createElement("div"); ph.className = "ph"; ph.textContent = "🍽"; this.replaceWith(ph); };
       });
-      document.getElementById("searchInp")?.addEventListener("input", e => { search = e.target.value; if (search.trim()) activeCat = null; render(); document.getElementById("searchInp")?.focus(); });
-      document.querySelectorAll(".cat").forEach(b => b.onclick = () => { activeCat = b.dataset.cat || null; search = ""; render(); });
-      document.querySelectorAll("[data-add]").forEach(b => b.onclick = () => addItem(Number(b.dataset.add)));
-      document.querySelectorAll("[data-inc]").forEach(b => b.onclick = () => chQty(Number(b.dataset.inc), 1));
-      document.querySelectorAll("[data-dec]").forEach(b => b.onclick = () => chQty(Number(b.dataset.dec), -1));
-      document.querySelectorAll(".card.has-img .photo").forEach(el => {
-        el.onclick = e => {
-          if (e.target.closest("button")) return;
-          const url = el.closest(".card")?.dataset.img;
-          if (url) openLightbox(url);
-        };
+      const si = document.getElementById("searchInp");
+      if (si) si.addEventListener("input", e => { search = e.target.value; cur = 0; flipDir = 0; render(); document.getElementById("searchInp")?.focus(); });
+      document.querySelectorAll("[data-add]").forEach(b => b.onclick = ev => { ev.stopPropagation(); addItem(Number(b.dataset.add)); });
+      document.querySelectorAll("[data-inc]").forEach(b => b.onclick = ev => { ev.stopPropagation(); chQty(Number(b.dataset.inc), 1); });
+      document.querySelectorAll("[data-dec]").forEach(b => b.onclick = ev => { ev.stopPropagation(); chQty(Number(b.dataset.dec), -1); });
+      document.querySelectorAll(".dish.has-img").forEach(el => {
+        el.onclick = e => { if (e.target.closest("button")) return; const url = el.dataset.img; if (url) openLightbox(fixImgUrl(url)); };
       });
-      document.getElementById("openModal")?.addEventListener("click", () => { modalOpen = true; render(); });
-      document.getElementById("closeModal")?.addEventListener("click", () => { modalOpen = false; render(); });
-      document.getElementById("overlay")?.addEventListener("click", e => { if (e.target.id === "overlay") { modalOpen = false; render(); } });
+      document.getElementById("prevPg")?.addEventListener("click", () => goPage(-1));
+      document.getElementById("nextPg")?.addEventListener("click", () => goPage(1));
+      document.querySelectorAll(".bk-dot").forEach(b => b.onclick = () => { const i = Number(b.dataset.pg); flipDir = i > cur ? 1 : i < cur ? -1 : 0; cur = i; render(); });
+      const oc = () => { modalOpen = true; flipDir = 0; render(); };
+      document.getElementById("openCart")?.addEventListener("click", oc);
+      document.getElementById("openCart2")?.addEventListener("click", oc);
+      document.getElementById("closeModal")?.addEventListener("click", () => { modalOpen = false; flipDir = 0; render(); });
+      document.getElementById("overlay")?.addEventListener("click", e => { if (e.target.id === "overlay") { modalOpen = false; flipDir = 0; render(); } });
       document.getElementById("sendBtn")?.addEventListener("click", sendOrder);
+      const bk = document.getElementById("bookStage");
+      if (bk) {
+        let sx = 0, sy = 0;
+        bk.addEventListener("touchstart", e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+        bk.addEventListener("touchend", e => {
+          const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+          if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) goPage(dx < 0 ? 1 : -1);
+        }, { passive: true });
+      }
+    }
+
+    function goPage(d) {
+      flipDir = d > 0 ? 1 : -1;
+      cur += d;
+      render();
     }
 
     function openLightbox(src) {
@@ -512,16 +576,16 @@
       const i = cart.findIndex(x => x.item.id === id);
       if (i >= 0) cart[i].qty++; else cart.push({ item, qty: 1 });
       if (navigator.vibrate) navigator.vibrate(12);
-      render();
+      flipDir = 0; render();
     }
     function chQty(id, d) {
       const i = cart.findIndex(x => x.item.id === id);
       if (i < 0) return;
       cart[i].qty += d;
       if (cart[i].qty <= 0) cart.splice(i, 1);
-      render();
+      flipDir = 0; render();
     }
-    window.__again = () => { done = false; cart = []; render(); };
+    window.__again = () => { done = false; cart = []; cur = 0; flipDir = 0; render(); };
 
     async function sendOrder() {
       if (!cart.length || sending) return;
