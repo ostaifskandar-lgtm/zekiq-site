@@ -3,7 +3,12 @@
   "verifiedInstalls": 2,
   "websiteDownloads": 0,
   "activeDevices30d": 2,
+  "pageViewsTotal": 0,
+  "pageViewsUnique": 0,
+  "pageViewsToday": 0,
+  "pageViews7d": 0,
+  "pageViewsByPage": {},
   "source": "device_registry",
-  "note": "Each count is tied to a unique device fingerprint reported on first install.",
-  "updatedAt": "2026-06-10T18:27:12.063Z"
+  "note": "pageViews = website visitors (home/download/garson/phone). installs = registered POS devices.",
+  "updatedAt": "2026-06-17T20:17:06.696Z"
 }
