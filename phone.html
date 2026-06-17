@@ -89,8 +89,9 @@
     </div>
   </main>
 
+  <script src="js/site-gate.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/site.js"></script>
-  <script>ZekiqSite.init();</script>
+  <script>ZekiqSiteGate.run(function () { ZekiqSite.init(); });</script>
 </body>
 </html>
