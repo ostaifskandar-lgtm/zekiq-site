@@ -2,254 +2,420 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0e0a02" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d0500" />
   <title>طلب من الطاولة — ZEKiQ</title>
   <style>
-    /* ===== ZEKiQ guest menu — "Gold Ledger" premium identity ===== */
-    :root {
-      --bg: #0b0805;
-      --gold: #d4af37;
-      --gold-soft: #e8c873;
-      --gold-deep: #b8860b;
-      --ink: #f3ead2;          /* warm off-white for readability */
-      --ink-dim: rgba(243,234,210,.52);
-      --line: rgba(212,175,55,.14);
-      --surface: linear-gradient(160deg,#1a140a 0%,#15100828 100%);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html { background: #0b0805; }
-    body {
-      min-height: 100dvh;
-      font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
-      background:
-        radial-gradient(1100px 520px at 50% -160px, rgba(212,175,55,.13) 0%, transparent 68%),
-        radial-gradient(800px 400px at 100% 8%, rgba(184,134,11,.06) 0%, transparent 60%),
-        #0b0805;
-      background-attachment: fixed;
-      color: var(--ink);
-      -webkit-font-smoothing: antialiased;
-      overscroll-behavior-y: none;
-    }
-    .glow { display: none; }
-    .page { position: relative; z-index: 1; min-height: 100dvh; padding-bottom: calc(6rem + env(safe-area-inset-bottom)); }
-    .center { min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 24px; text-align: center; }
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    html,body{width:100%;height:100%;overflow:hidden;background:#0d0500;font-family:"Segoe UI",system-ui,Arial,sans-serif;touch-action:none;color:#fff;}
 
-    /* ---- Hero ---- */
-    .hero { position: relative; overflow: hidden; padding: 30px 16px 16px; text-align: center; }
-    .logo {
-      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-      font-size: 3.1rem; font-weight: 700; letter-spacing: 1.5px; line-height: 1;
-      background: linear-gradient(135deg,#fbe6a6 0%,#d4af37 38%,#9c7415 64%,#e8c873 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      filter: drop-shadow(0 2px 14px rgba(212,175,55,.22));
+    #loadScreen{
+      position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;
+      background:radial-gradient(ellipse at center,#1a0800 0%,#0d0500 100%);
+      text-align:center;padding:24px;
     }
-    .sub { display: flex; align-items: center; gap: 12px; justify-content: center; margin-top: 9px; max-width: 260px; margin-inline: auto; }
-    .sub span { font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: rgba(232,200,115,.62); font-weight: 600; }
-    .sub .line { flex: 1; height: 1px; background: linear-gradient(90deg,transparent,rgba(212,175,55,.5),transparent); max-width: 60px; }
-    .table-badge { margin-top: 12px; font-size: 11px; letter-spacing: .04em; color: var(--ink-dim); }
-    .chip {
-      display: inline-flex; align-items: center; gap: 7px; margin-top: 12px;
-      padding: 7px 16px; border-radius: 100px; border: 1px solid rgba(212,175,55,.34);
-      background: linear-gradient(180deg, rgba(212,175,55,.16), rgba(212,175,55,.05));
-      font-size: 11.5px; font-weight: 600; color: var(--gold-soft);
-      box-shadow: 0 4px 18px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+    #loadScreen p{color:rgba(200,134,10,.75);font-size:15px;line-height:1.6;}
+    #loadScreen .title{color:#f0a820;font-size:20px;font-weight:800;margin-bottom:10px;}
+
+    #okScreen{
+      position:fixed;inset:0;z-index:850;display:none;align-items:center;justify-content:center;
+      background:#0d0500;text-align:center;padding:24px;
+    }
+    #okScreen.show{display:flex;}
+    .ok-ring{
+      width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
+      border:2px solid #c8860a;box-shadow:0 0 30px rgba(200,134,10,.35);
     }
 
-    /* ---- Sticky search + categories ---- */
-    .stickwrap { position: sticky; top: 0; z-index: 30; background: rgba(11,8,5,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
-    .toolbar { padding: 10px 12px 8px; }
-    .search {
-      width: 100%; border-radius: 100px; border: 1px solid rgba(212,175,55,.2);
-      background: rgba(212,175,55,.06) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='16.5' y1='16.5' x2='22' y2='22'/%3E%3C/svg%3E") no-repeat 14px center;
-      padding: 11px 16px 11px 42px; font-size: 13px; color: var(--ink); outline: none; transition: border-color .2s, background-color .2s;
+    #header{
+      position:fixed;top:0;left:0;right:0;height:44px;z-index:200;
+      padding-top:env(safe-area-inset-top);
+      background:linear-gradient(180deg,rgba(13,5,0,.88) 0%,rgba(13,5,0,.45) 70%,transparent 100%);
+      border:none;box-shadow:none;
+      display:flex;align-items:center;justify-content:space-between;padding:env(safe-area-inset-top) 10px 0 10px;
     }
-    .search:focus { border-color: rgba(212,175,55,.5); background-color: rgba(212,175,55,.1); }
-    .search::placeholder { color: rgba(243,234,210,.3); }
-    .cats { display: flex; gap: 7px; overflow-x: auto; padding: 6px 12px 11px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-    .cats::-webkit-scrollbar { display: none; }
-    .cat {
-      flex-shrink: 0; white-space: nowrap; border-radius: 100px; border: 1px solid rgba(212,175,55,.22);
-      padding: 7px 15px; font-size: 12px; font-weight: 600; color: rgba(232,200,115,.66); background: rgba(212,175,55,.03); cursor: pointer;
-      transition: transform .12s, background .2s, color .2s, box-shadow .2s;
+    .logo{color:#c8860a;font-size:15px;font-weight:900;letter-spacing:1px;text-shadow:0 0 15px rgba(200,134,10,.5);max-width:28%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .tbl{font-size:10px;color:rgba(200,134,10,.55);display:block;font-weight:600;letter-spacing:.04em;margin-top:2px;}
+    .pg-num{color:rgba(200,134,10,.7);font-size:12px;background:rgba(200,134,10,.1);padding:3px 10px;border-radius:20px;border:1px solid rgba(200,134,10,.25);unicode-bidi:plaintext;}
+    .list-btn{
+      background:rgba(200,134,10,.15);border:1.5px solid rgba(200,134,10,.45);border-radius:20px;
+      color:#f0a820;font-weight:800;font-size:12px;padding:7px 12px;cursor:pointer;
+      display:flex;align-items:center;gap:4px;flex-shrink:0;
     }
-    .cat:active { transform: scale(.95); }
-    .cat.on {
-      background: linear-gradient(135deg,#e8c873,#d4af37 55%,#b8860b);
-      border-color: transparent; color: #1a1206; font-weight: 800;
-      box-shadow: 0 4px 16px rgba(212,175,55,.35);
+    .list-btn:active{transform:scale(.95);}
+    .cart-btn{
+      background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:20px;
+      color:#0d0500;font-weight:800;font-size:12px;padding:7px 14px;cursor:pointer;
+      display:flex;align-items:center;gap:5px;box-shadow:0 3px 12px rgba(200,134,10,.35);flex-shrink:0;
+    }
+    .cart-btn:active{transform:scale(.95);}
+    .cbadge{background:#e53935;color:#fff;border-radius:50%;min-width:18px;height:18px;font-size:10px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+
+    .list-btn,.cart-btn{padding:6px 10px;font-size:11px;}
+    .pg-num{font-size:11px;padding:2px 8px;}
+
+    #scene{
+      position:fixed;inset:0;z-index:1;
+      display:flex;align-items:center;justify-content:center;overflow:hidden;
+      background:#0d0500;
+      perspective:2400px;
+      padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    }
+    #book{
+      position:relative;width:100%;height:100%;max-width:100vw;
+      transform-style:preserve-3d;transform:translateZ(0);
+    }
+    #book::before{display:none;}
+    .pw{
+      position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;
+      cursor:pointer;user-select:none;will-change:opacity,transform;
+      transition:opacity .28s ease;opacity:0;pointer-events:none;
+    }
+    .pw.page-current{opacity:1;pointer-events:auto;z-index:50!important;}
+    .pw.page-leave{opacity:0!important;}
+    .pw.flipped{transform:none!important;}
+    .pb{display:none!important;}
+    .pw.turn-next{animation:pageTurnNext .92s cubic-bezier(.42,.08,.22,1) forwards;}
+    .pw.turn-prev{animation:pageTurnPrev .92s cubic-bezier(.42,.08,.22,1) forwards;}
+    @keyframes pageTurnNext{
+      0%  {transform:rotateY(0deg) rotateX(0deg) translateZ(0) scaleX(1);}
+      14% {transform:rotateY(-22deg) rotateX(5deg) translateZ(22px) scaleX(.996);}
+      32% {transform:rotateY(-58deg) rotateX(10deg) translateZ(52px) scaleX(.978);}
+      52% {transform:rotateY(-98deg) rotateX(11deg) translateZ(62px) scaleX(.968);}
+      72% {transform:rotateY(-138deg) rotateX(6deg) translateZ(38px) scaleX(.982);}
+      88% {transform:rotateY(-168deg) rotateX(2deg) translateZ(10px) scaleX(.994);}
+      100%{transform:rotateY(-180deg) rotateX(0deg) translateZ(0) scaleX(1);}
+    }
+    @keyframes pageTurnPrev{
+      0%  {transform:rotateY(-180deg) rotateX(0deg) translateZ(0) scaleX(1);}
+      14% {transform:rotateY(-158deg) rotateX(-5deg) translateZ(22px) scaleX(.996);}
+      32% {transform:rotateY(-122deg) rotateX(-10deg) translateZ(52px) scaleX(.978);}
+      52% {transform:rotateY(-82deg) rotateX(-11deg) translateZ(62px) scaleX(.968);}
+      72% {transform:rotateY(-42deg) rotateX(-6deg) translateZ(38px) scaleX(.982);}
+      88% {transform:rotateY(-12deg) rotateX(-2deg) translateZ(10px) scaleX(.994);}
+      100%{transform:rotateY(0deg) rotateX(0deg) translateZ(0) scaleX(1);}
+    }
+    .pf,.pb{
+      position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;
+      border-radius:0;box-shadow:none;
+    }
+    .pb{transform:rotateY(180deg);border-radius:14px 3px 3px 14px;box-shadow:-6px 0 30px rgba(0,0,0,.7);}
+    .page-shade{
+      position:absolute;inset:0;z-index:6;pointer-events:none;opacity:0;border-radius:inherit;
+      background:linear-gradient(to left,rgba(0,0,0,.58) 0%,rgba(0,0,0,.22) 32%,transparent 62%);
+    }
+    .pw.turn-next .pf .page-shade,.pw.turn-prev .pf .page-shade{
+      animation:pageShadeFold .92s ease forwards;
+    }
+    @keyframes pageShadeFold{
+      0%,100%{opacity:0;}
+      20%,80%{opacity:1;}
+    }
+    .page-edge{
+      position:absolute;top:0;right:-2px;width:5px;height:100%;z-index:7;pointer-events:none;
+      opacity:0;border-radius:1px;
+      background:linear-gradient(to bottom,#faf0d0,#c9a04a 18%,#8b6914 50%,#c9a04a 82%,#faf0d0);
+      box-shadow:2px 0 8px rgba(0,0,0,.45);
+      transform-origin:left center;
+    }
+    .pw.turn-next .page-edge,.pw.turn-prev .page-edge{
+      animation:pageEdgeFold .92s ease forwards;
+    }
+    @keyframes pageEdgeFold{
+      0%,100%{opacity:0;transform:rotateY(0deg);}
+      35%,65%{opacity:.92;transform:rotateY(-28deg);}
+    }
+    .pw.turning .hotspot{pointer-events:none!important;opacity:.35;}
+    .pf img,.pb img{width:100%;height:100%;object-fit:contain;background:#1a0800;display:block;pointer-events:none;}
+    .pf-overlay,.pb-overlay{position:absolute;inset:0;pointer-events:none;z-index:12;}
+    .pf-overlay .price-hotspot,.pb-overlay .price-hotspot{pointer-events:auto;}
+    .pf::after{display:none;}
+    .hotspot{
+      position:absolute;border:none;background:transparent;cursor:pointer;z-index:10;padding:0;
+      display:inline-flex;align-items:center;justify-content:center;
+      width:auto!important;height:auto!important;min-width:0;min-height:0;
+    }
+    .hotspot:active .price-cover{transform:scale(.93);filter:brightness(.95);}
+    .price-mask{
+      position:absolute;inset:-1px -3px;z-index:0;border-radius:3px;
+      background:#ebe4d3;
+    }
+    .price-hotspot[data-paper="dark"] .price-mask{background:#241008;}
+    .price-cover{
+      position:relative;z-index:1;
+      display:inline-flex;align-items:center;gap:3px;
+      background:linear-gradient(180deg,#fff8e0,#f0a820 45%,#c8860a);
+      border:1.5px solid rgba(255,255,255,.9);
+      border-radius:4px;padding:2px 5px 2px 6px;
+      box-shadow:0 1px 6px rgba(0,0,0,.45);
+      white-space:nowrap;pointer-events:none;line-height:1.15;
+      transition:transform .1s ease;
+    }
+    .price-cover.in-cart{
+      background:linear-gradient(180deg,#ffcdd2,#e53935 50%,#b71c1c);
+      border-color:rgba(255,255,255,.85);
+    }
+    .pc-price{font-size:clamp(9px,2.55vw,12px);font-weight:900;color:#1a0a00;}
+    .pc-cur{font-size:clamp(7px,2vw,9px);font-weight:800;color:#5a3a00;}
+    .price-cover.in-cart .pc-price,.price-cover.in-cart .pc-cur{color:#fff;}
+    .pc-plus{
+      flex-shrink:0;width:16px;height:16px;border-radius:50%;
+      background:#1a0a00;color:#ffe082;font-size:11px;font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .price-cover.in-cart .pc-plus{background:#fff;color:#c62828;font-size:10px;}
+    .price-cover.pulse{animation:pricePulse 1.35s ease-in-out 2;}
+    @keyframes pricePulse{
+      0%,100%{transform:scale(1);}
+      50%{transform:scale(1.05);}
     }
 
-    /* ---- Menu ---- */
-    .main { padding: 8px 12px 16px; }
-    .cat-h {
-      display: flex; align-items: center; gap: 9px; margin: 20px 2px 12px;
-      font-size: 10px; text-transform: uppercase; letter-spacing: 3px; font-weight: 700; color: rgba(212,175,55,.6);
-    }
-    .cat-h .bar { width: 14px; height: 2px; border-radius: 2px; background: linear-gradient(90deg,var(--gold),transparent); flex-shrink: 0; }
-    .cat-h .rule { flex: 1; height: 1px; background: linear-gradient(90deg,rgba(212,175,55,.18),transparent); }
-    .card {
-      display: flex; gap: 12px; overflow: hidden; border-radius: 20px; border: 1px solid var(--line);
-      background: var(--surface); margin-bottom: 12px; padding: 10px;
-      box-shadow: 0 8px 24px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.03);
-      transition: transform .14s ease, border-color .2s, box-shadow .2s;
-    }
-    .card:active { transform: scale(.985); }
-    .card.in-cart { border-color: rgba(212,175,55,.55); box-shadow: 0 10px 26px -10px rgba(0,0,0,.7), 0 0 0 1px rgba(212,175,55,.25), inset 0 1px 0 rgba(255,255,255,.04); }
-    .photo {
-      width: 104px; height: 104px; flex-shrink: 0; border-radius: 14px; background: #120c04; position: relative; overflow: hidden;
-      box-shadow: inset 0 0 0 1px rgba(212,175,55,.08);
-    }
-    .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .photo .ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; opacity: .85; }
-    .photo .zoom-hint {
-      position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.45)); pointer-events: none;
-    }
-    .card.has-img .photo { cursor: zoom-in; }
-    .body { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 3px 2px; }
-    .name { font-size: 14px; font-weight: 600; line-height: 1.4; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 8px; }
-    .price { font-size: 17px; font-weight: 800; color: var(--gold-soft); letter-spacing: .01em; }
-    .price small { font-size: 10px; font-weight: 500; opacity: .6; margin-inline-start: 3px; }
-    .btn-add {
-      width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer; flex-shrink: 0;
-      background: linear-gradient(135deg,#e8c873,#d4af37 55%,#b8860b);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 6px 16px rgba(212,175,55,.4), inset 0 1px 0 rgba(255,255,255,.4);
-      transition: transform .12s;
-    }
-    .btn-add:active { transform: scale(.88); }
-    .btn-add svg { stroke: #1a1206; stroke-width: 2.6; fill: none; }
-    .qty { display: flex; align-items: center; gap: 4px; background: rgba(212,175,55,.08); border: 1px solid rgba(212,175,55,.22); border-radius: 100px; padding: 3px; }
-    .qty button {
-      width: 30px; height: 30px; border-radius: 50%; border: none;
-      background: rgba(212,175,55,.14); color: var(--gold-soft); font-size: 18px; font-weight: 700; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; transition: transform .1s, background .15s;
-    }
-    .qty button:active { transform: scale(.85); }
-    .qty span { min-width: 22px; text-align: center; font-size: 14px; font-weight: 700; color: var(--ink); }
+    #pageDock{display:none!important;}
 
-    /* ---- Cart bar ---- */
-    .cart-bar {
-      position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 50;
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      background: linear-gradient(135deg,#e8c873,#d4af37 52%,#b8860b);
-      border-radius: 18px; padding: 13px 16px;
-      box-shadow: 0 14px 36px -8px rgba(212,175,55,.45), 0 6px 18px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.4);
-      transform: translateY(160%); transition: transform .42s cubic-bezier(.34,1.36,.64,1);
-      padding-bottom: max(13px, env(safe-area-inset-bottom));
+    #coach{
+      position:fixed;inset:0;z-index:800;display:none;align-items:center;justify-content:center;
+      background:rgba(0,0,0,.78);padding:20px;
     }
-    .cart-bar.show { transform: translateY(0); }
-    .cart-bar .meta { font-size: 10.5px; font-weight: 700; color: rgba(26,18,6,.62); letter-spacing: .04em; }
-    .cart-bar .total { font-size: 19px; font-weight: 800; color: #1a1206; margin-top: 1px; }
-    .cart-bar .go {
-      border: none; border-radius: 12px; background: #120c04; color: var(--gold-soft);
-      padding: 11px 18px; font-size: 13px; font-weight: 800; cursor: pointer; white-space: nowrap;
-      box-shadow: 0 4px 12px rgba(0,0,0,.3); transition: transform .12s;
+    #coach.show{display:flex;}
+    #coach-card{
+      max-width:340px;width:100%;background:linear-gradient(160deg,#1f0c00,#2d1400);
+      border:2px solid #e6a817;border-radius:22px;padding:26px 22px 22px;
+      box-shadow:0 20px 60px rgba(230,168,23,.25);text-align:center;
     }
-    .cart-bar .go:active { transform: scale(.95); }
+    #coach-card h2{color:#ffe082;font-size:20px;margin-bottom:16px;}
+    .coach-step{
+      display:flex;align-items:flex-start;gap:12px;text-align:right;
+      margin-bottom:14px;color:rgba(255,255,255,.88);font-size:14px;line-height:1.5;
+    }
+    .coach-num{
+      flex-shrink:0;width:28px;height:28px;border-radius:50%;
+      background:linear-gradient(135deg,#e6a817,#b87200);color:#1a0a00;
+      font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;
+    }
+    #coachOk{
+      margin-top:8px;width:100%;border:none;border-radius:14px;padding:14px;
+      background:linear-gradient(135deg,#e6a817,#b87200);color:#1a0a00;
+      font-size:16px;font-weight:900;cursor:pointer;
+    }
 
-    /* ---- Cart sheet ---- */
-    .overlay {
-      position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,.7); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-      display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity .3s;
+    #hint{display:none;}
+    .add-pin{
+      position:relative;width:22px;height:22px;border-radius:50%;flex-shrink:0;pointer-events:none;
+      background:linear-gradient(145deg,#ffe082,#e6a817);
+      color:#1a0a00;font-size:15px;font-weight:900;line-height:1;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 2px 10px rgba(0,0,0,.45),0 0 0 2px #fff;
     }
-    .overlay.open { opacity: 1; pointer-events: auto; }
-    .sheet {
-      width: 100%; max-height: 88vh; overflow-y: auto; border-radius: 26px 26px 0 0;
-      border-top: 1px solid rgba(212,175,55,.22);
-      background: linear-gradient(180deg,#16110a,#0d0a05); padding: 14px 16px 32px;
-      box-shadow: 0 -16px 40px rgba(0,0,0,.6);
-      transform: translateY(100%); transition: transform .42s cubic-bezier(.34,1.36,.64,1);
+    .add-pin .pin-tag{display:none;}
+    .add-pin.in-cart{
+      background:linear-gradient(145deg,#ff5252,#c62828);color:#fff;font-size:13px;
+      box-shadow:0 2px 12px rgba(229,57,53,.55),0 0 0 2px rgba(255,255,255,.3);
     }
-    .overlay.open .sheet { transform: translateY(0); }
-    .handle { width: 42px; height: 4px; border-radius: 2px; background: rgba(212,175,55,.28); margin: 0 auto 18px; }
-    .sheet h3 { font-size: 16px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; color: var(--ink); }
-    .line { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); gap: 12px; }
-    .line .thumb { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: #120c04; display:flex; align-items:center; justify-content:center; font-size:18px; }
-    .line .n { font-size: 13px; font-weight: 600; color: var(--ink); }
-    .line .sub { font-size: 11px; color: var(--ink-dim); margin-top: 2px; }
-    .note { width: 100%; margin: 12px 0; resize: none; border-radius: 14px; border: 1px solid rgba(212,175,55,.2); background: rgba(212,175,55,.05); padding: 12px 14px; font-size: 13px; color: var(--ink); outline: none; font-family: inherit; }
-    .note:focus { border-color: rgba(212,175,55,.45); }
-    .note::placeholder { color: rgba(243,234,210,.3); }
-    .btn-primary {
-      width: 100%; border: none; border-radius: 16px; padding: 15px; font-size: 15px; font-weight: 800; cursor: pointer;
-      background: linear-gradient(135deg,#e8c873,#d4af37 52%,#b8860b); color: #1a1206;
-      box-shadow: 0 10px 26px -6px rgba(212,175,55,.5), inset 0 1px 0 rgba(255,255,255,.4);
-      transition: transform .12s;
+    .add-pin.pulse{animation:pinPulse 1.4s ease-in-out 2;}
+    @keyframes pinPulse{
+      0%,100%{transform:scale(1);}
+      50%{transform:scale(1.12);}
     }
-    .btn-primary:active { transform: scale(.98); }
-    .btn-primary:disabled { opacity: .45; box-shadow: none; }
-    .btn-cancel { width: 100%; border: none; background: transparent; color: var(--ink-dim); padding: 13px; font-size: 12.5px; cursor: pointer; margin-top: 6px; }
-    .ok-screen { text-align: center; padding: 32px 24px; }
-    .ok-ring {
-      width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
-      background: radial-gradient(circle, rgba(212,175,55,.16), transparent 70%);
-      border: 2px solid var(--gold); box-shadow: 0 0 30px rgba(212,175,55,.35);
-      animation: pop .5s cubic-bezier(.34,1.56,.64,1) both;
-    }
-    @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .lightbox {
-      position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.94);
-      display: flex; align-items: center; justify-content: center; padding: 16px;
-      opacity: 0; pointer-events: none; transition: opacity .2s;
-    }
-    .lightbox.open { opacity: 1; pointer-events: auto; }
-    .lightbox img { max-width: 100%; max-height: 90dvh; object-fit: contain; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
-    .lightbox button { position: absolute; top: 16px; left: 16px; border: none; background: rgba(255,255,255,.14); color: #fff; width: 42px; height: 42px; border-radius: 50%; font-size: 22px; cursor: pointer; backdrop-filter: blur(6px); }
-    .empty { text-align: center; padding: 60px 16px; color: var(--ink-dim); font-size: 13.5px; }
-    .skel { animation: pulse 1.5s ease-in-out infinite; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; height: 124px; margin-bottom: 12px; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .hotspot:active .add-pin{filter:brightness(.95);}
 
-    /* ===== Flipbook (الكتاب الخيالي) ===== */
-    .book-app { display: flex; flex-direction: column; min-height: 100dvh; padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
-    .bk-top { display: flex; align-items: center; gap: 12px; padding: 18px 16px 6px; }
-    .bk-cart { position: relative; width: 44px; height: 44px; border-radius: 14px; border: 1px solid rgba(212,175,55,.3); background: linear-gradient(180deg, rgba(212,175,55,.14), rgba(212,175,55,.04)); color: var(--gold-soft); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); transition: transform .12s; }
-    .bk-cart:active { transform: scale(.9); }
-    .bk-badge { position: absolute; top: -7px; left: -7px; min-width: 21px; height: 21px; padding: 0 5px; border-radius: 11px; background: #e53935; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 9px rgba(229,57,53,.55); }
-    .bk-brand { flex: 1; text-align: center; font-family: Georgia, "Times New Roman", serif; font-size: 2rem; font-weight: 700; line-height: 1.05; letter-spacing: .5px; background: linear-gradient(135deg,#fdeeb8,#f0d27e 38%,#d4a02a 72%,#fbe6a6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 0 16px rgba(240,210,126,.5)); }
-    .bk-tbl { display: block; -webkit-text-fill-color: initial; background: none; -webkit-background-clip: initial; font-family: "Segoe UI", sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: .05em; color: var(--ink-dim); margin-top: 5px; filter: none; }
-    .bk-deco { width: 44px; text-align: center; color: rgba(240,210,126,.55); font-size: 17px; }
-    .bk-search { padding: 6px 16px 8px; }
-    .book { position: relative; flex: 1; perspective: 1500px; overflow-x: hidden; overflow-y: auto; padding: 4px 14px 10px; -webkit-overflow-scrolling: touch; }
-    .leaf { transform-origin: center; }
-    .leaf.in-next { animation: flipNext .55s cubic-bezier(.34,1,.4,1) both; }
-    .leaf.in-prev { animation: flipPrev .55s cubic-bezier(.34,1,.4,1) both; }
-    @keyframes flipNext { from { transform: translateX(-46%) rotateY(34deg); opacity: 0; } to { transform: none; opacity: 1; } }
-    @keyframes flipPrev { from { transform: translateX(46%) rotateY(-34deg); opacity: 0; } to { transform: none; opacity: 1; } }
-    .pcat { display: flex; align-items: center; gap: 10px; margin: 8px 2px 14px; font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-soft); text-shadow: 0 0 18px rgba(232,200,115,.35); }
-    .pbar { width: 16px; height: 2px; border-radius: 2px; background: linear-gradient(90deg,var(--gold),transparent); flex-shrink: 0; }
-    .prule { flex: 1; height: 1px; background: linear-gradient(90deg,rgba(212,175,55,.32),transparent); }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .dish { display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); box-shadow: 0 10px 26px -14px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.03); transition: transform .14s, border-color .2s, box-shadow .2s; }
-    .dish:active { transform: scale(.97); }
-    .dish.in-cart { border-color: rgba(212,175,55,.55); box-shadow: 0 12px 28px -12px rgba(0,0,0,.8), 0 0 0 1px rgba(212,175,55,.3); }
-    .dimg { position: relative; aspect-ratio: 1/1; background: #120c04; overflow: hidden; }
-    .dimg img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .dimg .ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.4rem; opacity: .82; }
-    .dish.has-img .dimg { cursor: zoom-in; }
-    .dq { position: absolute; top: 8px; right: 8px; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 12px; background: linear-gradient(135deg,#e8c873,#c8860a); color: #1a1206; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,.45); }
-    .dbody { padding: 10px 11px 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-    .dname { font-size: 13px; font-weight: 600; line-height: 1.35; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .dfoot { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: auto; }
-    .dprice { font-size: 16px; font-weight: 800; color: var(--gold-soft); }
-    .dprice small { font-size: 10px; font-weight: 500; opacity: .6; margin-inline-start: 2px; }
-    .dadd { width: 34px; height: 34px; border-radius: 50%; border: none; flex-shrink: 0; cursor: pointer; background: linear-gradient(135deg,#e8c873,#d4af37 55%,#b8860b); display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 14px rgba(212,175,55,.45), inset 0 1px 0 rgba(255,255,255,.4); transition: transform .12s; }
-    .dadd:active { transform: scale(.84); }
-    .dadd svg { stroke: #1a1206; stroke-width: 2.6; fill: none; }
-    .bk-bot { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 8px 16px 2px; }
-    .bk-arrow { width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer; font-size: 28px; font-weight: 700; color: #1a1206; background: linear-gradient(135deg,#e8c873,#d4af37 55%,#b8860b); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(212,175,55,.42); transition: transform .12s; }
-    .bk-arrow:active { transform: scale(.9); }
-    .bk-arrow:disabled { background: #241a0a; color: #5a4a28; box-shadow: none; cursor: default; }
-    .bk-dots { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 58%; }
-    .bk-dot { width: 8px; height: 8px; border-radius: 50%; border: none; background: rgba(212,175,55,.28); cursor: pointer; padding: 0; transition: all .2s; }
-    .bk-dot.on { width: 22px; border-radius: 5px; background: linear-gradient(90deg,#e8c873,#c8860a); box-shadow: 0 0 10px rgba(232,200,115,.5); }
-    .bk-pageno { text-align: center; font-size: 10.5px; letter-spacing: .12em; color: var(--ink-dim); padding: 3px 0 6px; }
+    #item-popup{
+      position:fixed;inset:0;z-index:400;display:flex;align-items:flex-end;justify-content:center;
+      opacity:0;pointer-events:none;transition:opacity .25s;background:rgba(0,0,0,0);
+    }
+    #item-popup.show{opacity:1;pointer-events:all;background:rgba(0,0,0,.65);}
+    #popup-card{
+      width:min(420px,100vw);background:linear-gradient(160deg,#1f0c00,#2d1400);
+      border:1.5px solid #c8860a;border-radius:24px 24px 0 0;padding:28px 24px 34px;
+      transform:translateY(100%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+      box-shadow:0 -10px 50px rgba(200,134,10,.2);
+    }
+    #item-popup.show #popup-card{transform:translateY(0);}
+    .popup-emoji{font-size:48px;text-align:center;display:block;margin-bottom:10px;}
+    .popup-name{color:#fff;font-size:20px;font-weight:800;text-align:center;margin-bottom:6px;}
+    .popup-cat{color:rgba(255,255,255,.45);font-size:12px;text-align:center;margin-bottom:8px;}
+    .popup-price{color:#c8860a;font-size:28px;font-weight:900;text-align:center;margin-bottom:20px;}
+    .popup-qty{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:16px;}
+    .qty-btn{background:rgba(200,134,10,.2);border:1.5px solid #c8860a;border-radius:50%;width:38px;height:38px;color:#c8860a;font-size:20px;cursor:pointer;}
+    .qty-num{color:#fff;font-size:22px;font-weight:800;min-width:30px;text-align:center;}
+    .popup-actions{display:flex;gap:12px;}
+    .popup-close{flex:1;background:rgba(200,134,10,.12);border:1.5px solid rgba(200,134,10,.4);color:#c8860a;border-radius:14px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;}
+    .popup-add{flex:2;background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:900;color:#0d0500;cursor:pointer;}
+
+    #cart-panel{
+      position:fixed;top:0;right:-105%;width:min(390px,100vw);height:100vh;
+      background:linear-gradient(180deg,#0d0500,#1f0c00);border-left:1.5px solid #c8860a;z-index:350;
+      transition:right .4s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;
+    }
+    #cart-panel.open{right:0;}
+    .cart-hd{padding:18px 20px;border-bottom:1px solid rgba(200,134,10,.25);display:flex;align-items:center;justify-content:space-between;}
+    .cart-title{color:#c8860a;font-size:19px;font-weight:800;}
+    .close-c{background:rgba(200,134,10,.15);border:1px solid #c8860a;border-radius:50%;width:34px;height:34px;color:#c8860a;font-size:18px;cursor:pointer;}
+    #cart-items{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+    .ci{background:rgba(200,134,10,.08);border:1px solid rgba(200,134,10,.25);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;}
+    .ci-name{color:#fff;font-size:13px;font-weight:700;}
+    .ci-price{color:#c8860a;font-size:13px;margin-top:2px;}
+    .ci-qty{display:flex;align-items:center;gap:8px;}
+    .ci-btn{background:rgba(200,134,10,.2);border:1px solid #c8860a;border-radius:50%;width:28px;height:28px;color:#c8860a;font-size:16px;cursor:pointer;}
+    .ci-n{color:#fff;font-size:15px;font-weight:800;min-width:18px;text-align:center;}
+    .empty-c{text-align:center;color:rgba(200,134,10,.4);padding:50px 20px;}
+    .cart-ft{padding:18px 20px;border-top:1px solid rgba(200,134,10,.25);}
+    .total-row{display:flex;justify-content:space-between;margin-bottom:14px;}
+    .total-row .tv{color:#c8860a;font-weight:900;font-size:18px;}
+    .order-btn{width:100%;background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:900;color:#0d0500;cursor:pointer;}
+    .order-btn:disabled{opacity:.45;}
+    .note{width:100%;margin:0 0 12px;resize:none;border-radius:12px;border:1px solid rgba(200,134,10,.3);background:rgba(200,134,10,.06);padding:10px 12px;font-size:13px;color:#fff;outline:none;font-family:inherit;}
+
+    #overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s;}
+    #overlay.show{opacity:1;pointer-events:all;}
+
+    #toast{
+      position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-120px);
+      background:linear-gradient(135deg,#155715,#1e8a1e);color:#fff;padding:14px 26px;border-radius:14px;
+      font-size:14px;font-weight:700;z-index:500;transition:transform .5s cubic-bezier(.34,1.56,.64,1);
+      box-shadow:0 8px 25px rgba(0,150,0,.4);text-align:center;white-space:pre-line;
+    }
+    #toast.show{transform:translateX(-50%) translateY(0);}
+
+    #menu-panel{
+      position:fixed;inset:0;z-index:360;display:flex;flex-direction:column;
+      background:linear-gradient(180deg,#0d0500,#1a0800);
+      transform:translateY(100%);transition:transform .38s cubic-bezier(.25,.46,.45,.94);
+    }
+    #menu-panel.open{transform:translateY(0);}
+    .menu-hd{padding:16px 18px 10px;border-bottom:1px solid rgba(200,134,10,.25);display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:calc(12px + env(safe-area-inset-top));}
+    .menu-title{color:#c8860a;font-size:18px;font-weight:800;}
+    .menu-sub{color:rgba(200,134,10,.55);font-size:11px;margin-top:2px;}
+    #menuSearch{
+      margin:10px 14px 0;width:calc(100% - 28px);border-radius:12px;border:1px solid rgba(200,134,10,.35);
+      background:rgba(200,134,10,.08);padding:11px 14px;font-size:14px;color:#fff;outline:none;font-family:inherit;
+    }
+    #menuSearch::placeholder{color:rgba(200,134,10,.45);}
+    #menu-list{flex:1;overflow-y:auto;padding:10px 14px 24px;-webkit-overflow-scrolling:touch;}
+    .ml-cat{color:#ffe082;font-size:12px;font-weight:800;margin:14px 0 8px;letter-spacing:.04em;}
+    .ml-row{
+      display:grid;grid-template-columns:1fr auto 36px;gap:10px;align-items:center;
+      background:rgba(200,134,10,.07);
+      border:1px solid rgba(200,134,10,.22);border-radius:12px;padding:10px 12px;margin-bottom:8px;
+    }
+    .ml-body{min-width:0;text-align:right;grid-column:1;}
+    .ml-name{color:#fff;font-size:13px;font-weight:700;line-height:1.35;word-break:break-word;}
+    .ml-hint{color:rgba(255,255,255,.45);font-size:10px;margin-top:2px;}
+    .ml-price{color:#c8860a;font-size:13px;font-weight:800;white-space:nowrap;grid-column:2;}
+    .ml-add{
+      grid-column:3;
+      width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;
+      background:linear-gradient(145deg,#ffe082,#e6a817);color:#1a0a00;font-size:20px;font-weight:900;
+      box-shadow:0 2px 10px rgba(0,0,0,.35);
+    }
+    .ml-add.in-cart{background:linear-gradient(145deg,#ff5252,#c62828);color:#fff;font-size:13px;}
+    .ml-empty{text-align:center;color:rgba(200,134,10,.45);padding:40px 16px;font-size:14px;}
+
+    #nav{
+      position:fixed;bottom:0;left:0;right:0;height:44px;z-index:200;
+      padding-bottom:env(safe-area-inset-bottom);
+      background:linear-gradient(0deg,rgba(13,5,0,.9) 0%,rgba(13,5,0,.5) 65%,transparent 100%);
+      border:none;
+      display:flex;align-items:center;gap:6px;padding:0 10px;
+    }
+    .nav-arrow{
+      background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:50%;
+      width:34px;height:34px;font-size:14px;color:#0d0500;font-weight:900;cursor:pointer;flex-shrink:0;
+    }
+    .nav-arrow:disabled{background:rgba(42,24,0,.75);color:#5a3a00;cursor:default;}
+    #thumbs{flex:1;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;align-items:center;}
+    #thumbs::-webkit-scrollbar{display:none;}
+    .th{flex-shrink:0;width:26px;height:34px;border-radius:3px;overflow:hidden;border:1.5px solid transparent;cursor:pointer;opacity:.55;}
+    .th.active{border-color:#c8860a;opacity:1;box-shadow:0 0 8px rgba(200,134,10,.6);}
+    .th img{width:100%;height:100%;object-fit:cover;display:block;}
+
   </style>
 </head>
 <body>
-  <div id="app" class="center"><p style="color:rgba(245,216,120,.5)">جارٍ التحميل…</p></div>
-  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true"><button type="button" id="lbClose">×</button><img id="lbImg" alt="" /></div>
+  <div id="loadScreen"><div><p class="title">جاري تحميل المينو…</p><p>صفحات الكتاب الحقيقي</p></div></div>
+
+  <div id="okScreen">
+    <div>
+      <div class="ok-ring"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c8860a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h2 style="font-size:19px;margin-bottom:8px">شكراً! ✓</h2>
+      <p id="okDetail" style="font-size:13px;color:rgba(200,134,10,.65);line-height:1.6"></p>
+      <button type="button" class="order-btn" style="max-width:220px;margin:20px auto 0" id="againBtn">طلب إضافي</button>
+    </div>
+  </div>
+
+  <div id="header">
+    <div class="logo"><span id="shopLabel">ZEKiQ</span><span class="tbl" id="tblLabel"></span></div>
+    <div class="pg-num"><bdi id="pgnum" dir="ltr">1 / 1</bdi></div>
+    <button type="button" class="list-btn" id="menuListBtn">📋 قائمة</button>
+    <button type="button" class="cart-btn" id="cartBtn">🛒 <span class="cbadge" id="cbadge">0</span></button>
+  </div>
+
+  <div id="scene"><div id="book"></div></div>
+
+  <div id="pageDock">
+    <div class="dock-head">
+      <div class="dock-title"><span id="dockTitle">اطلب من هذه الصفحة</span><div class="dock-sub" id="dockSub">السعر التفاعلي الذهبي · اضغط للطلب</div></div>
+      <span class="dock-badge" id="dockCount">0</span>
+    </div>
+    <div id="dockList"></div>
+  </div>
+
+  <div id="orderStrip" aria-hidden="true"></div>
+
+  <div id="coach">
+    <div id="coach-card">
+      <h2>كيف تطلب؟</h2>
+      <div class="coach-step"><span class="coach-num">1</span><span>تصفّح صفحات الكتاب</span></div>
+      <div class="coach-step"><span class="coach-num">2</span><span>اضغط <strong>السعر نفسه</strong> على الصورة — يستبدل المطبوع ويدخل السلة</span></div>
+      <div class="coach-step"><span class="coach-num">3</span><span>🛒 السلة → تأكيد · أو <strong>📋 قائمة</strong> للبحث</span></div>
+      <button type="button" id="coachOk">فهمت — ابدأ الطلب ✓</button>
+    </div>
+  </div>
+
+  <div id="nav">
+    <button type="button" class="nav-arrow" id="prevBtn">◀</button>
+    <div id="thumbs"></div>
+    <button type="button" class="nav-arrow" id="nextBtn">▶</button>
+  </div>
+
+  <div id="item-popup">
+    <div id="popup-card">
+      <span class="popup-emoji" id="p-emoji">🍽</span>
+      <div class="popup-name" id="p-name"></div>
+      <div class="popup-cat" id="p-cat"></div>
+      <div class="popup-price" id="p-price"></div>
+      <div class="popup-qty">
+        <button type="button" class="qty-btn" id="pqDec">−</button>
+        <span class="qty-num" id="p-qty">1</span>
+        <button type="button" class="qty-btn" id="pqInc">+</button>
+      </div>
+      <div class="popup-actions">
+        <button type="button" class="popup-close" id="popupClose">إلغاء</button>
+        <button type="button" class="popup-add" id="popupAdd">أضف للسلة</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="menu-panel">
+    <div class="menu-hd">
+      <div><div class="menu-title">📋 قائمة الأطباق</div><div class="menu-sub">ابحث واطلب من أي صفحة</div></div>
+      <button type="button" class="close-c" id="closeMenuList">×</button>
+    </div>
+    <input type="search" id="menuSearch" placeholder="ابحث… Türk kahve, menemen, pasta…" autocomplete="off" enterkeyhint="search" />
+    <div id="menu-list"></div>
+  </div>
+
+  <div id="cart-panel">
+    <div class="cart-hd"><span class="cart-title">🛒 السلة</span><button type="button" class="close-c" id="closeCart">×</button></div>
+    <div id="cart-items"></div>
+    <div class="cart-ft">
+      <div class="total-row"><span>المجموع</span><span class="tv" id="total">0 ₺</span></div>
+      <textarea class="note" id="noteInp" rows="2" placeholder="ملاحظة (حساسية، طلب خاص…)" maxlength="200"></textarea>
+      <button type="button" class="order-btn" id="sendBtn">✓ تأكيد الطلب</button>
+    </div>
+  </div>
+  <div id="overlay"></div>
+  <div id="toast"></div>
+
   <script>
     (function () {
       var h = location.hash.replace(/^#\??/, "").trim();
@@ -280,394 +446,813 @@
     let SHOP = (params.get("shop") || "").trim();
     if (!SHOP && TOKEN) SHOP = shopFromToken(TOKEN);
 
-    let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "", done = false;
-    let search = "", activeCat = null, modalOpen = false, sending = false, cur = 0, flipDir = 0;
+    let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "";
+    let bookPages = [], pageCategories = {}, pageHotspots = {}, manualSpots = {};
+    let cur = 0, animating = false, popupItem = null, popupQty = 1, sending = false, done = false;
+    let coachDone = false, orderOn = false;
 
     function esc(s) {
       return String(s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
     }
     function money(n) { return (Math.round(Number(n) || 0)).toLocaleString("tr-TR") + " ₺"; }
-    function catEmoji(c) {
-      const x = (c || "").toLowerCase();
-      if (x.includes("kahvalt")) return "☕";
-      if (x.includes("burger")) return "🍔";
-      if (x.includes("pizza")) return "🍕";
-      if (x.includes("salata")) return "🥗";
-      if (x.includes("tatlı") || x.includes("tatli")) return "🍰";
-      if (x.includes("içecek") || x.includes("icecek")) return "🧋";
-      return "🍽";
-    }
     function deptEmoji(d) {
       if (d === "kitchen") return "🍳";
       if (d === "barista") return "☕";
       if (d === "nargile") return "💨";
       return "🍽";
     }
-    function qtyOf(id) { const l = cart.find(x => x.item.id === id); return l ? l.qty : 0; }
+    const CAT_AR = {
+      "kahvalti": "إفطار", "baslangic": "مقبلات", "lavas tost": "توست", "makarnalar": "معكرونة",
+      "salatalar": "سلطات", "tavuk": "دجاج", "pizza": "بيتza", "kofte & burger": "كفتة وبرجر",
+      "tatlilar": "حلويات", "cay": "شاي", "kahve": "قهوة", "soguk icecek": "مشروبات باردة",
+      "icecek": "مشروبات", "nargile": "أرجيلة",
+    };
+    const SERPME_PRICES = new Set([1250, 1650, 1850]);
+    const PAGE_LABELS = [
+      "Serpme Kahvaltı · إفطار مشترك",
+      "Kahvaltı · إفطار",
+      "Başlangıç & Tost · مقبلات وتوست",
+      "Makarna & Salata · معكرونة وسلطات",
+      "Tavuk · دجاج (1)",
+      "Tavuk · دجاج (2)",
+      "Pizza · بيتza",
+      "Köfte · كفتة",
+      "Burger · برجر",
+      "Sporcu Menüsü · رياضيون",
+      "Tatlılar · حلويات",
+      "Çay · شاي",
+      "Sıcak Kahveler · قهوة ساخنة",
+      "Soğuk Kahveler · قهوة باردة",
+      "Frozen · مثلّج",
+      "Smoothie · سموذي",
+      "Milkshake · ميلك شيك",
+      "Mojito & Limonata",
+      "Kokteyl & Bubble · كوكتيل",
+      "İçecek & Nargile · مشروبات وأرجيلة",
+    ];
+    function tavukHalf(item, half) {
+      if (!catMatches(item.category, "TAVUK")) return false;
+      const list = menu.filter(it => catMatches(it.category, "TAVUK"));
+      const idx = list.findIndex(it => it.id === item.id);
+      if (idx < 0) return false;
+      return half === 0 ? idx < 5 : idx >= 5;
+    }
+    function pageItemMatches(pageIdx, item) {
+      const n = normName(item.name);
+      const p = Math.round(Number(item.price));
+      switch (pageIdx) {
+        case 0: return catMatches(item.category, "KAHVALTI") && SERPME_PRICES.has(p);
+        case 1: return catMatches(item.category, "KAHVALTI") && !SERPME_PRICES.has(p);
+        case 2: return catMatches(item.category, "LAVAŞ TOST") || catMatches(item.category, "BAŞLANGIÇ");
+        case 3: return catMatches(item.category, "MAKARNALAR") || catMatches(item.category, "SALATALAR");
+        case 4: return tavukHalf(item, 0);
+        case 5: return tavukHalf(item, 1);
+        case 6: return catMatches(item.category, "PİZZA");
+        case 7: return catMatches(item.category, "KÖFTE & BURGER") && (n.includes("kofte") || n.includes("wrap"));
+        case 8: return catMatches(item.category, "KÖFTE & BURGER") && n.includes("burger");
+        case 9: return false;
+        case 10: return catMatches(item.category, "TATLILAR");
+        case 11: return catMatches(item.category, "ÇAY");
+        case 12: return catMatches(item.category, "KAHVE") && !n.includes("iced");
+        case 13: return catMatches(item.category, "KAHVE") && n.includes("iced");
+        case 14: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("frozen");
+        case 15: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("smoothie") && !n.includes("bubble");
+        case 16: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("milkshake");
+        case 17: return catMatches(item.category, "SOĞUK İÇECEK") && (n.includes("mojito") || n.includes("limonata") || n.includes("portakal"));
+        case 18: return catMatches(item.category, "SOĞUK İÇECEK") && (
+          n.includes("bubble") || n.includes("mathilda") || n.includes("valentina") ||
+          n.includes("churchill") || n.includes("cool lime") || n.includes("margarita") || n.includes("ice lime")
+        );
+        case 19: return catExact(item.category, "İÇECEK") || catExact(item.category, "NARGILE") || item.dept === "nargile";
+        default: return false;
+      }
+    }
+    function catLabelAr(cat) {
+      const k = normCat(cat);
+      return CAT_AR[k] || cat || "";
+    }
+    function itemHint(name) {
+      const n = String(name || "");
+      const m = n.match(/(\d+)\s*ki[sş]ilik/i);
+      if (m) return m[1] + " أشخاص · " + m[1] + " kişi";
+      if (/ki[sş]ilik/i.test(n)) return "حسب عدد الأشخاص";
+      if (/tek\s*ki[sş]ilik/i.test(n)) return "شخص واحد";
+      return "";
+    }
+    function menuSearchHay(item) {
+      return normName(item.name) + " " + normCat(item.category) + " " + catLabelAr(item.category);
+    }
+    let menuSearchQuery = "";
+    function normCat(s) {
+      return String(s || "").toLowerCase()
+        .replace(/ı/g, "i").replace(/İ/g, "i").replace(/ğ/g, "g").replace(/Ğ/g, "g")
+        .replace(/ş/g, "s").replace(/Ş/g, "s").replace(/ö/g, "o").replace(/Ö/g, "o")
+        .replace(/ü/g, "u").replace(/Ü/g, "u").replace(/ç/g, "c").replace(/Ç/g, "c")
+        .replace(/\s+/g, " ").trim();
+    }
+    function catMatches(a, b) {
+      const x = normCat(a), y = normCat(b);
+      if (!x || !y) return false;
+      return x === y || x.includes(y) || y.includes(x);
+    }
+    function catExact(a, b) {
+      return normCat(a) === normCat(b);
+    }
+    function normName(s) {
+      return normCat(s).replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+    }
+    function nameMatches(a, b) {
+      const x = normName(a), y = normName(b);
+      if (!x || !y) return false;
+      if (x === y) return true;
+      if (x.includes(y) || y.includes(x)) return true;
+      const aw = x.split(" ").filter(w => w.length > 2);
+      const bw = y.split(" ").filter(w => w.length > 2);
+      if (!aw.length || !bw.length) return false;
+      const hits = aw.filter(w => bw.some(z => z.includes(w) || w.includes(z))).length;
+      return hits >= Math.min(2, Math.min(aw.length, bw.length));
+    }
+    function qtyOf(id) {
+      return cart.filter(l => l.item.id === id).reduce((s, l) => s + l.qty, 0);
+    }
+    function spotInPriceZone(spot) {
+      if (!spot) return false;
+      const x = Number(spot.x), y = Number(spot.y);
+      return x >= 0.68 && y >= 0.06 && y <= 0.98;
+    }
+    function shortPrice(n) {
+      return (Math.round(Number(n) || 0)).toLocaleString("tr-TR");
+    }
+    function spotAnchor(spot) {
+      if (spot.anchor === "left" || spot.anchor === "right") return spot.anchor;
+      return Number(spot.x) >= 0.42 ? "right" : "left";
+    }
+    function spotTransform(anchor) {
+      if (anchor === "right") return "translate(-100%, -50%)";
+      if (anchor === "left") return "translate(0%, -50%)";
+      return "translate(-50%, -50%)";
+    }
+    function gridSpotForItem(index, total, pageIdx) {
+      const twoCol = pageIdx === 1;
+      const col = twoCol ? index % 2 : 0;
+      const row = twoCol ? Math.floor(index / 2) : index;
+      const rows = twoCol ? Math.ceil(total / 2) : total;
+      const x = twoCol ? (col === 0 ? 0.26 : 0.875) : 0.875;
+      const anchor = twoCol ? (col === 0 ? "left" : "right") : "right";
+      const y0 = 0.13, y1 = 0.91;
+      const y = y0 + (row + 0.5) * (y1 - y0) / Math.max(rows, 1);
+      return { x, y, w: 0.11, h: 0.026, anchor, grid: true };
+    }
+    function pagePaperTone(pageIdx) {
+      return pageIdx >= 11 ? "dark" : "cream";
+    }
+    function fillPriceCover(card, item) {
+      const q = qtyOf(item.id);
+      const pulse = card.classList.contains("pulse");
+      card.className = "price-cover" + (pulse ? " pulse" : "") + (q > 0 ? " in-cart" : "");
+      card.dataset.itemId = item.id;
+      card.innerHTML =
+        '<span class="pc-price">' + shortPrice(item.price) + '</span>' +
+        '<span class="pc-cur">₺</span>' +
+        '<span class="pc-plus">' + (q > 0 ? String(q) : "+") + '</span>';
+    }
+    function collectPagePins(pageIdx) {
+      const pageItems = itemsForPage(pageIdx);
+      if (!pageItems.length) return [];
+      const manual = manualSpots[String(pageIdx)] || manualSpots[pageIdx] || [];
+      const auto = (pageHotspots[String(pageIdx)] || pageHotspots[pageIdx] || []).filter(spotValid);
+      const spotKey = s => Math.round(Number(s.price)) + ":" + Number(s.y).toFixed(3);
+      const seen = new Set();
+      const spots = [];
+      for (const s of [...manual, ...auto]) {
+        const k = spotKey(s);
+        if (seen.has(k)) continue;
+        seen.add(k);
+        spots.push(s);
+      }
+      spots.sort((a, b) => Number(a.y) - Number(b.y) || Number(a.x) - Number(b.x));
+      const placed = new Set();
+      const out = [];
+      for (const spot of spots) {
+        const p = Math.round(Number(spot.price));
+        const pool = pageItems.filter(it => !placed.has(it.id));
+        let item = pool.find(it => nameMatches(it.name, spot.name) && Math.round(Number(it.price)) === p);
+        if (!item) item = pool.find(it => Math.round(Number(it.price)) === p);
+        if (!item) continue;
+        placed.add(item.id);
+        out.push({ item, spot: {
+          x: spot.x, y: spot.y,
+          w: spot.w || 0.11, h: spot.h || 0.026,
+          anchor: spotAnchor(spot),
+        } });
+      }
+      const missing = pageItems.filter(it => !placed.has(it.id));
+      missing.forEach((item, i) => {
+        out.push({ item, spot: gridSpotForItem(i, missing.length, pageIdx) });
+      });
+      return out.sort((a, b) => a.spot.y - b.spot.y || a.spot.x - b.spot.x);
+    }
+    function spotValid(spot) {
+      if (!spot) return false;
+      const n = normName(spot.name);
+      if (n.length < 4) return false;
+      if (/^\d+\s*(tl)?$/.test(n)) return false;
+      if (/^\d+\s*yumurta/.test(n)) return false;
+      if (spot.price != null && Number(spot.price) < 25) return false;
+      return true;
+    }
+    function findSpotForItem(item, spots) {
+      if (!spots || !spots.length) return null;
+      let best = null, bestScore = 0;
+      for (const spot of spots) {
+        if (!spotValid(spot)) continue;
+        let score = nameMatches(item.name, spot.name) ? 4 : 0;
+        if (score && spot.price != null && Math.round(Number(item.price)) === Math.round(Number(spot.price))) score += 2;
+        if (score > bestScore) { bestScore = score; best = spot; }
+      }
+      return best;
+    }
+    function pinContent(id) {
+      const q = qtyOf(id);
+      return q > 0 ? String(q) : "+";
+    }
+    function refreshPins() {
+      document.querySelectorAll(".price-cover").forEach(card => {
+        const id = Number(card.dataset.itemId);
+        const item = menu.find(m => m.id === id);
+        if (item) fillPriceCover(card, item);
+      });
+      if (document.getElementById("menu-panel").classList.contains("open")) buildMenuList();
+      renderPageDock();
+    }
+    function findManualSpot(item, pageIdx) {
+      const list = manualSpots[String(pageIdx)] || manualSpots[pageIdx] || [];
+      const p = Math.round(Number(item.price));
+      return list.find(s => Math.round(Number(s.price)) === p) || null;
+    }
+    function imageOverlayRect(pf) {
+      const img = pf.querySelector("img");
+      if (!img || !img.naturalWidth) return null;
+      const cw = pf.clientWidth, ch = pf.clientHeight;
+      const nw = img.naturalWidth, nh = img.naturalHeight;
+      const scale = Math.min(cw / nw, ch / nh);
+      const dw = nw * scale, dh = nh * scale;
+      return { ox: (cw - dw) / 2, oy: (ch - dh) / 2, dw, dh };
+    }
+    function layoutPfHotspots(pf) {
+      const overlay = pf.querySelector(".pf-overlay");
+      const rect = imageOverlayRect(pf);
+      if (!overlay || !rect) return;
+      overlay.style.left = rect.ox + "px";
+      overlay.style.top = rect.oy + "px";
+      overlay.style.width = rect.dw + "px";
+      overlay.style.height = rect.dh + "px";
+      overlay.querySelectorAll(".price-hotspot").forEach(h => {
+        const x = parseFloat(h.dataset.x), y = parseFloat(h.dataset.y);
+        h.style.left = (x * rect.dw) + "px";
+        h.style.top = (y * rect.dh) + "px";
+        h.style.transform = spotTransform(h.dataset.anchor || "right");
+      });
+    }
+    function layoutAllHotspots() {
+      document.querySelectorAll(".pf").forEach(layoutPfHotspots);
+    }
+    function resolveSpot(item, pageIdx, spots, usedSpot) {
+      let spot = findManualSpot(item, pageIdx);
+      if (spot) return spot;
+      const available = spots.filter(s => spotValid(s) && !usedSpot.has(String(s.price) + ":" + s.name));
+      spot = findSpotForItem(item, available);
+      if (spot) return spot;
+      const p = Math.round(Number(item.price));
+      const byPrice = available.filter(s => Math.round(Number(s.price)) === p);
+      if (byPrice.length === 1) return byPrice[0];
+      return null;
+    }
+    function itemsForPage(i) {
+      if (!menu.length) return [];
+      return menu.filter(it => pageItemMatches(i, it))
+        .sort((a, b) => Number(a.price) - Number(b.price) || String(a.name).localeCompare(String(b.name), "tr"));
+    }
+    function renderPageDock() { /* full-screen: ordering on page only */ }
+    function attachPriceCover(overlay, item, spot, pulse, pageIdx) {
+      const h = document.createElement("button");
+      h.className = "hotspot price-hotspot";
+      h.type = "button";
+      h.dataset.itemId = item.id;
+      h.dataset.paper = pagePaperTone(pageIdx);
+      h.dataset.anchor = spot.anchor || spotAnchor(spot);
+      h.dataset.x = String(spot.x);
+      h.dataset.y = String(spot.y);
+      h.title = item.name;
+      h.setAttribute("aria-label", "اطلب " + item.name + " " + money(item.price));
+      const mask = document.createElement("span");
+      mask.className = "price-mask";
+      mask.setAttribute("aria-hidden", "true");
+      const card = document.createElement("span");
+      card.className = "price-cover" + (pulse ? " pulse" : "");
+      fillPriceCover(card, item);
+      h.appendChild(mask);
+      h.appendChild(card);
+      h.addEventListener("click", e => { e.stopPropagation(); quickAddItem(item); });
+      overlay.appendChild(h);
+    }
+    function mountPageOverlays() {
+      bookPages.forEach((_, i) => {
+        const pf = document.querySelector("#pw" + i + " .pf");
+        if (!pf) return;
+        let overlay = pf.querySelector(".pf-overlay");
+        if (!overlay) {
+          overlay = document.createElement("div");
+          overlay.className = "pf-overlay";
+          pf.appendChild(overlay);
+        }
+        overlay.innerHTML = "";
+        const pins = collectPagePins(i);
+        pins.forEach(({ item, spot }, idx) => {
+          attachPriceCover(overlay, item, spot, i === cur && idx < 2, i);
+        });
+        const img = pf.querySelector("img");
+        const relayout = () => layoutPfHotspots(pf);
+        if (img && img.complete) relayout();
+        else if (img) img.addEventListener("load", relayout, { once: true });
+      });
+      layoutAllHotspots();
+    }
     function fixImgUrl(url) {
       if (!url) return url;
       try {
         const u = new URL(url, apiBase || location.origin);
         if (u.hostname === "127.0.0.1" || u.hostname === "localhost") {
-          const base = (apiBase || location.origin).replace(/\/+$/, "");
-          return base + u.pathname + u.search;
-        }
-        if (u.pathname.startsWith("/invoice-images/") && apiBase && u.origin !== apiBase.replace(/\/+$/, "")) {
-          return apiBase.replace(/\/+$/, "") + u.pathname + u.search;
+          return (apiBase || location.origin).replace(/\/+$/, "") + u.pathname + u.search;
         }
       } catch (_) {}
       return url;
     }
-    function imgTag(it) {
-      if (!it.imageUrl) return '<div class="ph">' + esc(it.icon || deptEmoji(it.dept)) + '</div>';
-      return '<img src="' + esc(fixImgUrl(it.imageUrl)) + '" alt="" loading="lazy" />';
-    }
 
-    async function loadManifestApis() {
-      const out = [];
-      const add = u => {
-        u = String(u || "").trim().replace(/\/+$/, "");
-        if (u && isSafeApiUrl(u) && !out.includes(u)) out.push(u);
-      };
-      for (const base of apiCandidates()) {
-        try {
-          const j = await fetch(base + "/guest-api.json?t=" + Date.now(), { cache: "no-store" });
-          if (!j.ok) continue;
-          const data = await j.json();
-          add(data.tunnelUrl);
-          add(data.apiUrl);
-        } catch (_) {}
-      }
-      const urls = [
-        "https://raw.githubusercontent.com/ostaifskandar-lgtm/zekiq-site/main/guest-api.json",
-        "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api.json",
-        "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/guest-api.json",
-      ];
-      for (const u of urls) {
-        try {
-          const j = await fetch(u + "?t=" + Date.now(), { cache: "no-store" });
-          if (!j.ok) continue;
-          const data = await j.json();
-          add(data.tunnelUrl);
-          add(data.apiUrl);
-        } catch (_) {}
-      }
-      return out;
+    function quickAddItem(item) {
+      addToCart(item);
+      showToast("✅ " + item.name + "\n→ السلة · " + money(item.price));
     }
-
-    function isSafeApiUrl(u) {
-      u = String(u || "").trim().replace(/\/+$/, "");
-      if (!u) return false;
-      if (/\.loca\.lt$/i.test(u)) return false;
-      try {
-        const url = new URL(u.includes("://") ? u : "http://" + u);
-        if (url.port === "8790") return false;
-        if (url.protocol === "http:" && !isPrivateApi(u)) return false;
-      } catch (_) { return false; }
-      return true;
+    function openMenuList() {
+      document.getElementById("menu-panel").classList.add("open");
+      buildMenuList();
+      setTimeout(() => document.getElementById("menuSearch").focus(), 200);
     }
-    function isPrivateApi(u) {
-      try {
-        const h = new URL(u.includes("://") ? u : "http://" + u).hostname;
-        return h === "localhost" || h === "127.0.0.1" || /^192\.168\./.test(h) || /^10\./.test(h);
-      } catch (_) { return true; }
+    function closeMenuList() {
+      document.getElementById("menu-panel").classList.remove("open");
+      document.getElementById("menuSearch").value = "";
+      menuSearchQuery = "";
     }
-    function apiCandidates() {
-      const out = [];
-      const add = u => {
-        u = String(u || "").trim().replace(/\/+$/, "");
-        if (u && isSafeApiUrl(u) && !out.includes(u)) out.push(u);
-      };
-      const apiParam = params.get("api")?.trim();
-      const lanParam = params.get("lan")?.trim();
-      const onGithub = /github\.io$/i.test(location.hostname);
-      // 4G/5G: try public HTTPS API first; LAN only on shop Wi-Fi.
-      if (onGithub || navigator.connection?.type === "cellular") {
-        add(apiParam);
-        if (apiParam) {
-          try {
-            const u = new URL(apiParam.includes("://") ? apiParam : "http://" + apiParam);
-            add(u.origin);
-          } catch (_) {}
-        }
-        add(lanParam);
-      } else {
-        add(lanParam);
-        add(apiParam);
-        if (apiParam) {
-          try {
-            const u = new URL(apiParam.includes("://") ? apiParam : "http://" + apiParam);
-            add(u.origin);
-          } catch (_) {}
-        }
-      }
-      if (location.protocol === "https:" && !location.hostname.includes("github.io")) {
-        add(location.origin.replace(/\/+$/, ""));
-      }
-      const onPosGuest =
-        location.pathname.includes("/guest") ||
-        location.pathname.includes("/table") ||
-        location.port === "3000";
-      if (onPosGuest && location.hostname !== "localhost" && location.hostname !== "127.0.0.1")
-        add(location.origin.replace(/\/+$/, ""));
-      if (onPosGuest && (location.hostname === "localhost" || location.hostname === "127.0.0.1"))
-        add("http://127.0.0.1:3000");
-      return out;
-    }
-
-    async function loadApiBase() {
-      return apiCandidates()[0] || location.origin.replace(/\/+$/, "");
-    }
-
-    function showConnecting() {
-      const root = document.getElementById("app");
-      root.className = "center page";
-      root.innerHTML =
-        '<div class="glow"></div><div style="text-align:center;padding:28px;max-width:300px">' +
-        '<p style="font-size:18px;font-weight:700;color:#f5d878;margin-bottom:6px">جاري الاتصال بالكاشير…</p>' +
-        '<p style="font-size:12px;line-height:1.6;color:rgba(184,134,11,.58)">تحميل قائمة الطعام مباشرة بعد QR</p>' +
-        '<div class="skel" style="height:6px;max-width:180px;margin:18px auto 0;border-radius:3px"></div></div>';
-    }
-
-    function filtered() {
-      const q = search.trim().toLowerCase();
-      return menu.filter(it => {
-        if (activeCat && (it.category || "أخرى") !== activeCat) return false;
-        if (!q) return true;
-        return (it.name || "").toLowerCase().includes(q) || (it.category || "").toLowerCase().includes(q);
-      });
-    }
-
-    function categories() {
-      const o = [], s = new Set();
-      for (const it of menu) {
-        const c = it.category || "أخرى";
-        if (!s.has(c)) { s.add(c); o.push(c); }
-      }
-      return o;
-    }
-
-    function render() {
-      const root = document.getElementById("app");
-      if (!TOKEN) { root.className = "center"; root.innerHTML = "<p>امسح <strong>رمز QR</strong> من الطاولة.</p>"; return; }
-      if (!SHOP) { root.className = "center"; root.innerHTML = "<p>رمز QR قديم — حدّث الرموز من إعدادات الكاشير.</p>"; return; }
-      if (!apiBase) { root.className = "center"; root.innerHTML = "<p>الخادم غير متاح.</p>"; return; }
-      if (done) {
-        root.className = "center page";
-        root.innerHTML = '<div class="glow"></div><div class="ok-screen"><div class="ok-ring"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><h2 style="font-size:19px;margin-bottom:8px">شكراً! ✓</h2><p style="font-size:13px;color:rgba(184,134,11,.58);line-height:1.6">وصل طلبك إلى الكاشير والمطبخ<br/><strong style="color:#b8860b">' + esc(shopName) + '</strong></p><button type="button" class="btn-primary" style="max-width:200px;margin:20px auto 0" onclick="window.__again()">طلب إضافي</button></div>';
+    function buildMenuList() {
+      const box = document.getElementById("menu-list");
+      if (!menu.length) {
+        box.innerHTML = '<div class="ml-empty">جاري تحميل الأطباق…</div>';
         return;
       }
-
-      const q = search.trim().toLowerCase();
-      let pages;
-      if (q) {
-        const res = menu.filter(it => (it.name || "").toLowerCase().includes(q) || (it.category || "").toLowerCase().includes(q));
-        pages = [{ cat: "نتائج: " + search.trim(), items: res }];
-      } else {
-        const m = new Map();
-        for (const it of menu) { const c = it.category || "أخرى"; if (!m.has(c)) m.set(c, []); m.get(c).push(it); }
-        pages = [...m.entries()].map(e => ({ cat: e[0], items: e[1] }));
+      const q = normName(menuSearchQuery);
+      const filtered = menu.filter(it => !q || menuSearchHay(it).includes(q));
+      if (!filtered.length) {
+        box.innerHTML = '<div class="ml-empty">لا نتائج لـ «' + esc(menuSearchQuery) + '»</div>';
+        return;
       }
-      if (!pages.length) pages = [{ cat: "", items: [] }];
-      if (cur >= pages.length) cur = pages.length - 1;
-      if (cur < 0) cur = 0;
-      const page = pages[cur];
-      const total = cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0);
-      const count = cart.reduce((s, l) => s + l.qty, 0);
-
-      let html = '<div class="book-app">';
-      html += '<header class="bk-top">';
-      html += '<button type="button" class="bk-cart" id="openCart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.4 12.4a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.2L22 7H6"/></svg>' + (count ? '<span class="bk-badge">' + count + '</span>' : '') + '</button>';
-      html += '<div class="bk-brand">' + esc(shopName || "ZEKiQ") + '<span class="bk-tbl">' + esc(section) + ' · طاولة ' + tableNum + '</span></div>';
-      html += '<div class="bk-deco">✦</div>';
-      html += '</header>';
-      html += '<div class="bk-search"><input class="search" type="search" placeholder="ابحث عن طبق… / Ara" value="' + esc(search) + '" id="searchInp" /></div>';
-      html += '<div class="book" id="bookStage"><section class="leaf ' + (flipDir > 0 ? "in-next" : flipDir < 0 ? "in-prev" : "") + '"><div class="pcat"><span class="pbar"></span>' + esc(page.cat) + '<span class="prule"></span></div>';
-      if (!page.items.length) {
-        html += '<div class="empty"><div style="font-size:40px;opacity:.35;margin-bottom:10px">🍽</div>لا أصناف</div>';
-      } else {
-        html += '<div class="grid">';
-        for (const it of page.items) {
-          const qn = qtyOf(it.id);
-          const hasImg = !!it.imageUrl;
-          html += '<article class="dish' + (qn ? " in-cart" : "") + (hasImg ? " has-img" : "") + '" data-img="' + esc(it.imageUrl || "") + '">';
-          html += '<div class="dimg">' + imgTag(it) + (qn ? '<span class="dq">' + qn + '</span>' : '') + '</div>';
-          html += '<div class="dbody"><div class="dname">' + esc(it.name) + '</div><div class="dfoot"><span class="dprice">' + money(it.price).replace(" ₺", "") + '<small>₺</small></span>';
-          if (!qn) html += '<button type="button" class="dadd" data-add="' + it.id + '"><svg width="16" height="16" viewBox="0 0 16 16"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg></button>';
-          else html += '<div class="qty"><button type="button" data-dec="' + it.id + '">−</button><span>' + qn + '</span><button type="button" data-inc="' + it.id + '">+</button></div>';
-          html += '</div></div></article>';
+      const groups = new Map();
+      for (const it of filtered) {
+        const cat = it.category || "—";
+        if (!groups.has(cat)) groups.set(cat, []);
+        groups.get(cat).push(it);
+      }
+      const cats = [...groups.keys()].sort((a, b) => a.localeCompare(b, "tr"));
+      let html = "";
+      for (const cat of cats) {
+        html += '<div class="ml-cat">' + esc(cat) + (catLabelAr(cat) ? ' · ' + esc(catLabelAr(cat)) : "") + '</div>';
+        for (const it of groups.get(cat)) {
+          const hint = itemHint(it.name);
+          const qv = qtyOf(it.id);
+          html += '<div class="ml-row">' +
+            '<div class="ml-body"><div class="ml-name">' + esc(it.name) + '</div>' +
+            (hint ? '<div class="ml-hint">' + esc(hint) + '</div>' : "") +
+            '</div><div class="ml-price">' + money(it.price) + '</div>' +
+            '<button type="button" class="ml-add' + (qv > 0 ? " in-cart" : "") + '" data-ml-id="' + it.id + '">' +
+            (qv > 0 ? qv : "+") + '</button></div>';
         }
-        html += '</div>';
       }
-      html += '</section></div>';
-      if (pages.length > 1) {
-        html += '<nav class="bk-bot"><button type="button" class="bk-arrow" id="prevPg"' + (cur <= 0 ? " disabled" : "") + '>›</button><div class="bk-dots">';
-        for (let i = 0; i < pages.length; i++) html += '<button type="button" class="bk-dot' + (i === cur ? " on" : "") + '" data-pg="' + i + '"></button>';
-        html += '</div><button type="button" class="bk-arrow" id="nextPg"' + (cur >= pages.length - 1 ? " disabled" : "") + '>‹</button></nav>';
-      }
-      html += '<div class="bk-pageno">' + (cur + 1) + ' / ' + pages.length + '</div>';
-      html += '</div>';
-
-      html += '<div class="cart-bar' + (count ? " show" : "") + '" id="cartBar"><div><div class="meta">' + count + ' منتج</div><div class="total">' + money(total) + '</div></div><button type="button" class="go" id="openCart2">عرض السلة ←</button></div>';
-      html += '<div class="overlay' + (modalOpen ? " open" : "") + '" id="overlay"><div class="sheet"><div class="handle"></div><h3>🛒 ملخص الطلب</h3>';
-      for (const l of cart) {
-        const th = l.item.imageUrl
-          ? '<img class="thumb" src="' + esc(fixImgUrl(l.item.imageUrl)) + '" alt="" />'
-          : '<div class="thumb">' + esc(l.item.icon || deptEmoji(l.item.dept)) + '</div>';
-        html += '<div class="line"><div style="display:flex;align-items:center;gap:11px;min-width:0">' + th + '<div style="min-width:0"><div class="n">' + esc(l.item.name) + '</div><div class="sub">' + l.qty + ' × ' + money(l.item.price) + '</div></div></div><div class="price" style="font-size:14px">' + money(Number(l.item.price) * l.qty) + '</div></div>';
-      }
-      html += '<div class="line" style="border:none;font-weight:700;font-size:16px"><span>المجموع</span><span class="price">' + money(total) + '</span></div>';
-      html += '<textarea class="note" id="noteInp" rows="2" placeholder="ملاحظة (حساسية، طلب خاص…)" maxlength="200"></textarea>';
-      html += '<button type="button" class="btn-primary" id="sendBtn"' + (cart.length ? "" : " disabled") + '>' + (sending ? "جاري الإرسال…" : "✓ تأكيد الطلب") + '</button>';
-      html += '<button type="button" class="btn-cancel" id="closeModal">إلغاء</button></div></div>';
-
-      root.className = "";
-      root.innerHTML = html;
-      flipDir = 0;
-
-      document.querySelectorAll(".dimg img").forEach(img => {
-        img.onerror = function () { const ph = document.createElement("div"); ph.className = "ph"; ph.textContent = "🍽"; this.replaceWith(ph); };
+      box.innerHTML = html;
+      box.querySelectorAll(".ml-add").forEach(btn => {
+        btn.onclick = () => {
+          const item = menu.find(m => m.id === Number(btn.dataset.mlId));
+          if (item) quickAddItem(item);
+          buildMenuList();
+        };
       });
-      const si = document.getElementById("searchInp");
-      if (si) si.addEventListener("input", e => { search = e.target.value; cur = 0; flipDir = 0; render(); document.getElementById("searchInp")?.focus(); });
-      document.querySelectorAll("[data-add]").forEach(b => b.onclick = ev => { ev.stopPropagation(); addItem(Number(b.dataset.add)); });
-      document.querySelectorAll("[data-inc]").forEach(b => b.onclick = ev => { ev.stopPropagation(); chQty(Number(b.dataset.inc), 1); });
-      document.querySelectorAll("[data-dec]").forEach(b => b.onclick = ev => { ev.stopPropagation(); chQty(Number(b.dataset.dec), -1); });
-      document.querySelectorAll(".dish.has-img").forEach(el => {
-        el.onclick = e => { if (e.target.closest("button")) return; const url = el.dataset.img; if (url) openLightbox(fixImgUrl(url)); };
-      });
-      document.getElementById("prevPg")?.addEventListener("click", () => goPage(-1));
-      document.getElementById("nextPg")?.addEventListener("click", () => goPage(1));
-      document.querySelectorAll(".bk-dot").forEach(b => b.onclick = () => { const i = Number(b.dataset.pg); flipDir = i > cur ? 1 : i < cur ? -1 : 0; cur = i; render(); });
-      const oc = () => { modalOpen = true; flipDir = 0; render(); };
-      document.getElementById("openCart")?.addEventListener("click", oc);
-      document.getElementById("openCart2")?.addEventListener("click", oc);
-      document.getElementById("closeModal")?.addEventListener("click", () => { modalOpen = false; flipDir = 0; render(); });
-      document.getElementById("overlay")?.addEventListener("click", e => { if (e.target.id === "overlay") { modalOpen = false; flipDir = 0; render(); } });
-      document.getElementById("sendBtn")?.addEventListener("click", sendOrder);
-      const bk = document.getElementById("bookStage");
-      if (bk) {
-        let sx = 0, sy = 0;
-        bk.addEventListener("touchstart", e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
-        bk.addEventListener("touchend", e => {
-          const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-          if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) goPage(dx < 0 ? 1 : -1);
-        }, { passive: true });
+    }
+
+    function showErr(title, detail) {
+      document.getElementById("loadScreen").innerHTML =
+        '<div style="max-width:320px"><p class="title">' + esc(title) + '</p><p>' + esc(detail) + '</p></div>';
+      document.getElementById("loadScreen").style.display = "flex";
+    }
+
+    function buildBook() {
+      const book = document.getElementById("book");
+      book.innerHTML = "";
+      if (!bookPages.length) {
+        showErr("المينو غير جاهز", "من الكاشير: استورد PDF المينو ثم شغّل export-guest-menu-book");
+        return;
       }
+      bookPages.forEach((imgUrl, i) => {
+        const pw = document.createElement("div");
+        pw.className = "pw";
+        pw.id = "pw" + i;
+        pw.style.zIndex = bookPages.length - i;
+
+        const pf = document.createElement("div");
+        pf.className = "pf";
+        const fi = document.createElement("img");
+        fi.src = fixImgUrl(imgUrl);
+        fi.alt = "صفحة " + (i + 1);
+        fi.draggable = false;
+        pf.appendChild(fi);
+        const shade = document.createElement("div");
+        shade.className = "page-shade";
+        pf.appendChild(shade);
+        const edge = document.createElement("div");
+        edge.className = "page-edge";
+        pf.appendChild(edge);
+
+        const pb = document.createElement("div");
+        pb.className = "pb";
+        if (i + 1 < bookPages.length) {
+          const bi = document.createElement("img");
+          bi.src = fixImgUrl(bookPages[i + 1]);
+          bi.alt = "صفحة " + (i + 2);
+          bi.draggable = false;
+          pb.appendChild(bi);
+        }
+
+        pw.appendChild(pf);
+        pw.appendChild(pb);
+        book.appendChild(pw);
+      });
+
+      const ts = document.getElementById("thumbs");
+      ts.innerHTML = "";
+      bookPages.forEach((imgUrl, i) => {
+        const th = document.createElement("div");
+        th.className = "th" + (i === 0 ? " active" : "");
+        th.id = "th" + i;
+        th.innerHTML = '<img src="' + esc(fixImgUrl(imgUrl)) + '" alt="" />';
+        th.onclick = () => goTo(i);
+        ts.appendChild(th);
+      });
+      cur = 0;
+      mountPageOverlays();
+      sync();
+      buildMenuList();
+      renderPageDock();
+      document.getElementById("loadScreen").style.display = "none";
+      if (!window.__hotspotRo) {
+        window.__hotspotRo = new ResizeObserver(() => layoutAllHotspots());
+        window.__hotspotRo.observe(document.getElementById("book"));
+        window.__hotspotRo.observe(document.getElementById("scene"));
+      }
+      setTimeout(() => document.querySelectorAll(".price-cover.pulse").forEach(p => p.classList.remove("pulse")), 5500);
+      maybeShowCoach();
     }
 
-    function goPage(d) {
-      flipDir = d > 0 ? 1 : -1;
-      cur += d;
-      render();
+    function maybeShowCoach() {
+      try {
+        if (sessionStorage.getItem("zekiq_guest_coach") === "1") { coachDone = true; return; }
+      } catch (_) {}
+      document.getElementById("coach").classList.add("show");
+    }
+    function dismissCoach() {
+      coachDone = true;
+      document.getElementById("coach").classList.remove("show");
+      try { sessionStorage.setItem("zekiq_guest_coach", "1"); } catch (_) {}
+    }
+    document.getElementById("coachOk").onclick = dismissCoach;
+    document.getElementById("coach").onclick = e => { if (e.target.id === "coach") dismissCoach(); };
+
+    const FLIP_MS = 320;
+
+    function endPageTurn(pw) {
+      pw.classList.remove("turn-next", "turn-prev", "turning", "page-leave");
+      animating = false;
+      requestAnimationFrame(layoutAllHotspots);
     }
 
-    function openLightbox(src) {
-      const lb = document.getElementById("lightbox");
-      document.getElementById("lbImg").src = src;
-      lb.classList.add("open");
+    function runFlip(pw, cls, onDone) {
+      pw.classList.add("page-leave");
+      setTimeout(onDone, FLIP_MS);
     }
-    document.getElementById("lbClose").onclick = () => document.getElementById("lightbox").classList.remove("open");
-    document.getElementById("lightbox").onclick = e => { if (e.target.id === "lightbox") e.currentTarget.classList.remove("open"); };
 
-    function addItem(id) {
-      const item = menu.find(m => m.id === id);
-      if (!item) return;
-      const i = cart.findIndex(x => x.item.id === id);
-      if (i >= 0) cart[i].qty++; else cart.push({ item, qty: 1 });
+    function nextPage() {
+      if (animating || cur >= bookPages.length - 1) return;
+      animating = true;
+      const idx = cur;
+      const pw = document.getElementById("pw" + idx);
+      runFlip(pw, "turn-next", () => {
+        cur = idx + 1;
+        sync();
+        endPageTurn(pw);
+      });
+    }
+    function prevPage() {
+      if (animating || cur <= 0) return;
+      animating = true;
+      const idx = cur;
+      const pw = document.getElementById("pw" + idx);
+      runFlip(pw, "turn-prev", () => {
+        cur = idx - 1;
+        sync();
+        endPageTurn(pw);
+      });
+    }
+    function goTo(t) {
+      if (animating || t === cur) return;
+      const step = t > cur
+        ? () => { if (cur < t) { nextPage(); setTimeout(step, FLIP_MS + 40); } }
+        : () => { if (cur > t) { prevPage(); setTimeout(step, FLIP_MS + 40); } };
+      step();
+    }
+    function sync() {
+      const pg = document.getElementById("pgnum");
+      if (pg) pg.textContent = bookPages.length ? (cur + 1) + " / " + bookPages.length : "—";
+      document.getElementById("prevBtn").disabled = cur === 0;
+      document.getElementById("nextBtn").disabled = cur >= bookPages.length - 1;
+      document.querySelectorAll(".pw").forEach((pw, i) => {
+        pw.classList.toggle("page-current", i === cur);
+      });
+      document.querySelectorAll(".th").forEach((t, i) => {
+        t.classList.toggle("active", i === cur);
+        if (i === cur) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      });
+      renderPageDock();
+      requestAnimationFrame(layoutAllHotspots);
+    }
+
+    let tx = 0, ty = 0, dragging = false;
+    document.getElementById("book").addEventListener("touchstart", e => {
+      tx = e.touches[0].clientX; ty = e.touches[0].clientY; dragging = true;
+    }, { passive: true });
+    document.getElementById("book").addEventListener("touchend", e => {
+      if (!dragging) return;
+      dragging = false;
+      const dx = tx - e.changedTouches[0].clientX;
+      const dy = Math.abs(ty - e.changedTouches[0].clientY);
+      if (Math.abs(dx) > 50 && dy < 80) (dx > 0 ? nextPage : prevPage)();
+    });
+    document.getElementById("prevBtn").onclick = prevPage;
+    document.getElementById("nextBtn").onclick = nextPage;
+
+    function openPopup(item) {
+      popupItem = item;
+      popupQty = 1;
+      document.getElementById("p-emoji").textContent = item.icon || deptEmoji(item.dept);
+      document.getElementById("p-name").textContent = item.name;
+      const hint = itemHint(item.name);
+      document.getElementById("p-cat").textContent = (item.category || "") + (hint ? " · " + hint : "");
+      document.getElementById("p-price").textContent = money(item.price);
+      document.getElementById("p-qty").textContent = "1";
+      document.getElementById("item-popup").classList.add("show");
+    }
+    function closePopup() {
+      document.getElementById("item-popup").classList.remove("show");
+      popupItem = null;
+    }
+    document.getElementById("popupClose").onclick = closePopup;
+    document.getElementById("item-popup").onclick = e => { if (e.target.id === "item-popup") closePopup(); };
+    document.getElementById("pqDec").onclick = () => { popupQty = Math.max(1, popupQty - 1); document.getElementById("p-qty").textContent = popupQty; };
+    document.getElementById("pqInc").onclick = () => { popupQty++; document.getElementById("p-qty").textContent = popupQty; };
+    document.getElementById("popupAdd").onclick = () => {
+      if (!popupItem) return;
+      for (let i = 0; i < popupQty; i++) addToCart(popupItem);
+      closePopup();
+      showToast("✅ " + popupItem.name + "\n" + popupQty + "× → السلة");
+    };
+
+    function addToCart(item) {
+      const ex = cart.find(i => i.item.id === item.id);
+      if (ex) ex.qty++; else cart.push({ item, qty: 1 });
+      updateBadge();
       if (navigator.vibrate) navigator.vibrate(12);
-      flipDir = 0; render();
+    }
+    function updateBadge() {
+      const t = cart.reduce((s, i) => s + i.qty, 0);
+      document.getElementById("cbadge").textContent = t;
+      refreshPins();
+      if (t > 0 && !coachDone) dismissCoach();
+    }
+    function openCart() {
+      document.getElementById("cart-panel").classList.add("open");
+      document.getElementById("overlay").classList.add("show");
+      renderCart();
+    }
+    function closeCart() {
+      document.getElementById("cart-panel").classList.remove("open");
+      document.getElementById("overlay").classList.remove("show");
+    }
+    document.getElementById("menuListBtn").onclick = openMenuList;
+    document.getElementById("closeMenuList").onclick = closeMenuList;
+    document.getElementById("menuSearch").addEventListener("input", e => {
+      menuSearchQuery = e.target.value.trim();
+      buildMenuList();
+    });
+
+    document.getElementById("cartBtn").onclick = openCart;
+    document.getElementById("closeCart").onclick = closeCart;
+    document.getElementById("overlay").onclick = closeCart;
+
+    function renderCart() {
+      const c = document.getElementById("cart-items");
+      if (!cart.length) {
+        c.innerHTML = '<div class="empty-c">🍽<br/>السلة فارغة<br/><small>اضغط <b>+</b> في اللوحة السفلية أو <b>📋 قائمة</b></small></div>';
+        document.getElementById("total").textContent = "0 ₺";
+        document.getElementById("sendBtn").disabled = true;
+        return;
+      }
+      c.innerHTML = cart.map(l => `
+        <div class="ci">
+          <div><div class="ci-name">${esc(l.item.name)}</div><div class="ci-price">${money(Number(l.item.price) * l.qty)}</div></div>
+          <div class="ci-qty">
+            <button type="button" class="ci-btn" data-dec="${l.item.id}">−</button>
+            <span class="ci-n">${l.qty}</span>
+            <button type="button" class="ci-btn" data-inc="${l.item.id}">+</button>
+          </div>
+        </div>`).join("");
+      document.getElementById("total").textContent = money(cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0));
+      document.getElementById("sendBtn").disabled = sending;
+      document.querySelectorAll("[data-inc]").forEach(b => b.onclick = () => chQty(Number(b.dataset.inc), 1));
+      document.querySelectorAll("[data-dec]").forEach(b => b.onclick = () => chQty(Number(b.dataset.dec), -1));
     }
     function chQty(id, d) {
       const i = cart.findIndex(x => x.item.id === id);
       if (i < 0) return;
       cart[i].qty += d;
       if (cart[i].qty <= 0) cart.splice(i, 1);
-      flipDir = 0; render();
+      updateBadge();
+      renderCart();
     }
-    window.__again = () => { done = false; cart = []; cur = 0; flipDir = 0; render(); };
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 3500);
+    }
 
     async function sendOrder() {
       if (!cart.length || sending) return;
-      sending = true; render();
-      const note = document.getElementById("noteInp")?.value || "";
+      sending = true;
+      renderCart();
+      const note = document.getElementById("noteInp").value || "";
       try {
         const res = await fetch(apiBase + "/api/guest/v1/orders", {
           method: "POST", headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            shop: SHOP, token: TOKEN, note: note.trim() || undefined,
+            token: TOKEN, note: note.trim() || undefined,
             items: cart.map(l => ({ menuItemId: l.item.id, name: l.item.name, category: l.item.category, price: String(l.item.price), qty: String(l.qty), dept: l.item.dept })),
           }),
         });
         let data = {};
         try { data = await res.json(); } catch (_) {}
         if (data.ok) {
-          done = true; cart = []; modalOpen = false;
+          done = true;
+          cart = [];
+          closeCart();
+          document.getElementById("okDetail").innerHTML = "وصل طلبك إلى الكاشير والمطبخ<br/><strong style='color:#c8860a'>" + esc(shopName) + "</strong>";
+          document.getElementById("okScreen").classList.add("show");
         } else if (data.error === "table_not_active") {
-          alert("الطاولة غير مفتوحة على الكاشير.\n\nافتح الطاولة من ZEKiQ POS (أو اطلب من المحل)، ثم أعد إرسال الطلب.\n\nأو من الإعدادات → QR: أوقف «الطلب فقط للطاولة المفتوحة».");
-        } else if (data.error === "table_qr_disabled") {
-          alert("طلبات QR متوقفة لهذه الطاولة — فعّلها من إعدادات الكاشير.");
+          alert("الطاولة غير مفتوحة على الكاشير.\nافتح الطاولة من ZEKiQ POS ثم أعد الإرسال.");
         } else if (data.error === "invalid_token") {
           alert("رمز QR قديم — اطبع QR جديد من إعدادات الكاشير.");
-        } else if (data.error === "disabled") {
-          alert("طلبات QR معطّلة — فعّلها من إعدادات الكاشير.");
-        } else if (data.error === "rate_limit") {
-          alert("محاولات كثيرة — انتظر دقيقة ثم أعد الإرسال.");
         } else {
           alert("تعذّر الإرسال — تحقق من الإنترنت أو أن ZEKiQ POS شغّال.");
         }
-      } catch (_) { alert("تعذّر الاتصال — تحقق من الإنternet وأن الكاشير يعمل."); }
-      sending = false; render();
+      } catch (_) { alert("تعذّر الاتصال — تحقق من الإنترنت."); }
+      sending = false;
+      renderCart();
+    }
+    document.getElementById("sendBtn").onclick = sendOrder;
+    document.getElementById("againBtn").onclick = () => {
+      done = false;
+      document.getElementById("okScreen").classList.remove("show");
+      updateBadge();
+    };
+
+    function isSafeApiUrl(u) {
+      try {
+        const x = new URL(u.includes("://") ? u : "http://" + u);
+        if (x.protocol !== "http:" && x.protocol !== "https:") return false;
+        if (/^(localhost|127\.)/.test(x.hostname)) return true;
+        if (/^\d+\.\d+\.\d+\.\d+$/.test(x.hostname)) return true;
+        return true;
+      } catch (_) { return false; }
+    }
+    function isPrivateApi(u) {
+      try {
+        const h = new URL(u.includes("://") ? u : "http://" + u).hostname;
+        return /^(localhost|127\.|192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(h);
+      } catch (_) { return false; }
+    }
+    async function fetchJson(url, ms) {
+      ms = ms || 5000;
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), ms);
+      try {
+        const res = await fetch(url, { cache: "no-store", signal: ctrl.signal });
+        clearTimeout(timer);
+        if (!res.ok) return null;
+        return await res.json();
+      } catch (_) { clearTimeout(timer); return null; }
+    }
+    async function loadManifestApis() {
+      const out = [];
+      const add = u => { u = String(u || "").trim().replace(/\/+$/, ""); if (u && isSafeApiUrl(u) && !out.includes(u)) out.push(u); };
+      const jobs = [];
+      for (const base of apiCandidates()) {
+        jobs.push(fetchJson(base + "/guest-api.json", 4000).then(j => { if (j && j.api) add(j.api); if (j && j.apis) j.apis.forEach(add); }));
+      }
+      jobs.push(fetchJson("https://raw.githubusercontent.com/toninopos/tonino-pos/main/data/guest-api.json", 5000).then(j => { if (j && j.api) add(j.api); }));
+      await Promise.allSettled(jobs);
+      return out;
+    }
+    function apiCandidates() {
+      const q = readParams();
+      const apiParam = (q.get("api") || "").trim();
+      const lanParam = (q.get("lan") || "").trim();
+      const out = [];
+      const add = u => { u = String(u || "").trim().replace(/\/+$/, ""); if (u && isSafeApiUrl(u) && !out.includes(u)) out.push(u); };
+      const onGithub = /github\.io$/i.test(location.hostname);
+      if (onGithub || navigator.connection?.type === "cellular") {
+        add(apiParam);
+        if (apiParam) try { add(new URL(apiParam.includes("://") ? apiParam : "http://" + apiParam).origin); } catch (_) {}
+        add(lanParam);
+      } else {
+        add(lanParam);
+        add(apiParam);
+      }
+      if (location.protocol === "https:" && !location.hostname.includes("github.io")) add(location.origin.replace(/\/+$/, ""));
+      const onPos = location.pathname.includes("/guest") || location.pathname.includes("/table") || location.port === "3000";
+      if (onPos && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") add(location.origin.replace(/\/+$/, ""));
+      if (onPos && (location.hostname === "localhost" || location.hostname === "127.0.0.1")) add("http://127.0.0.1:3000");
+      add("https://shop.zekiqmenu.com");
+      return out;
+    }
+
+    async function fetchMenuFromBase(base) {
+      apiBase = base;
+      const ctrl = new AbortController();
+      const timeoutMs = isPrivateApi(apiBase) ? 3000 : 12000;
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        const res = await fetch(apiBase + "/api/guest/v1/menu?t=" + encodeURIComponent(TOKEN) + "&shop=" + encodeURIComponent(SHOP), { cache: "no-store", signal: ctrl.signal });
+        clearTimeout(timer);
+        return await res.json();
+      } catch (_) { clearTimeout(timer); return null; }
+    }
+
+    function applyMenuData(data) {
+      shopName = data.shopName || "ZEKiQ";
+      section = data.section;
+      tableNum = data.tableNum;
+      menu = (data.items || []).map(it => ({ ...it, imageUrl: fixImgUrl(it.imageUrl) }));
+      bookPages = (data.book && data.book.pages) || [];
+      pageCategories = (data.book && data.book.pageCategories) || {};
+      pageHotspots = (data.book && data.book.pageHotspots) || {};
+      manualSpots = (data.book && data.book.manualSpots) || {};
+      document.title = shopName + " — طاولة " + tableNum;
+      document.getElementById("shopLabel").textContent = shopName;
+      document.getElementById("tblLabel").textContent = section + " · طاولة " + tableNum;
+      buildBook();
     }
 
     async function boot() {
-      if (!TOKEN) { render(); return; }
-      showConnecting();
-      const errBox = (title, detail) => {
-        document.getElementById("app").className = "center page";
-        document.getElementById("app").innerHTML =
-          '<div class="glow"></div><div style="max-width:320px;padding:24px;text-align:center">' +
-          '<p style="font-size:17px;font-weight:700;margin-bottom:10px;color:#f5d878">' + esc(title) + '</p>' +
-          '<p style="font-size:13px;line-height:1.65;color:rgba(184,134,11,.65)">' + esc(detail) + '</p></div>';
+      if (!TOKEN) { showErr("امسح QR", "امسح رمز QR من الطاولة للطلب."); return; }
+      if (!SHOP) { showErr("QR قديم", "حدّث الرموز من إعدادات الكاشير."); return; }
+
+      const handleMenuData = data => {
+        if (!data) return false;
+        if (data.ok) { applyMenuData(data); return true; }
+        if (data.error === "disabled") { showErr("طلبات QR معطّلة", "فعّلها من إعدادات الكاشير."); return "stop"; }
+        if (data.error === "invalid_token") { showErr("QR قديم", "اطبع QR جديد من الكاشير."); return "stop"; }
+        return false;
       };
-      const onGithub = /github\.io$/i.test(location.hostname);
-      const manifestBases = await loadManifestApis();
+
       const localBases = apiCandidates();
-      const bases = onGithub ? [...manifestBases, ...localBases] : [...localBases, ...manifestBases];
-      const seen = new Set();
-      const unique = bases.filter(b => { if (seen.has(b)) return false; seen.add(b); return true; });
-      for (let b = 0; b < unique.length; b++) {
-        apiBase = unique[b];
-        try {
-          const ctrl = new AbortController();
-          const timeoutMs = isPrivateApi(apiBase) ? 2500 : 8000;
-          const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-          const res = await fetch(apiBase + "/api/guest/v1/menu?t=" + encodeURIComponent(TOKEN) + "&shop=" + encodeURIComponent(SHOP), { cache: "no-store", signal: ctrl.signal });
-          clearTimeout(timer);
-          const data = await res.json();
-          if (data.ok) {
-            shopName = data.shopName || "ZEKiQ";
-            section = data.section; tableNum = data.tableNum;
-            menu = (data.items || []).map(it => ({ ...it, imageUrl: fixImgUrl(it.imageUrl) }));
-            document.title = shopName + " — طاولة " + tableNum;
-            render(); return;
-          }
-          if (data.error === "shop_not_found" && b < unique.length - 1) continue;
-          if (data.error === "disabled") { errBox("طلبات QR معطّلة", "فعّلها من إعدادات الكاشير → QR الزبون."); return; }
-          if (data.error === "table_qr_disabled") { errBox("QR هذه الطاولة متوقف", "تم إيقاف الطلب من هذه الطاولة — اطلب من المحل تفعيلها."); return; }
-          if (data.error === "invalid_token") {
-            errBox(
-              "رمز QR قديم",
-              "اطبع QR جديد من الكاشير → إعدادات → طلبات QR. الرموز المطبوعة قبل التحديث لا تعمل."
-            );
-            return;
-          }
-        } catch (_) { /* try next base */ }
+      for (let b = 0; b < localBases.length; b++) {
+        const r = handleMenuData(await fetchMenuFromBase(localBases[b]));
+        if (r === true || r === "stop") return;
       }
-      errBox(
-        "تعذّر الاتصال بالكاشير",
-        "تأكد أن ZEKiQ POS شغّال. للبيانات (4G): انتظر 30 دقيقة ثم من الكاشير → إعدادات → QR الزبون → تحديث المينو، واطبع QR جديد. لا تعيد تشغيل النفق كثيراً."
-      );
+      const manifestBases = await Promise.race([loadManifestApis(), new Promise(r => setTimeout(() => r([]), 6000))]);
+      const seen = new Set(localBases);
+      for (const b of (Array.isArray(manifestBases) ? manifestBases : [])) {
+        if (seen.has(b)) continue;
+        seen.add(b);
+        const r = handleMenuData(await fetchMenuFromBase(b));
+        if (r === true || r === "stop") return;
+      }
+      showErr("تعذّر الاتصال", "تأكد أن ZEKiQ POS شغّال و shop.zekiqmenu.com متصل.");
     }
     boot();
   </script>
