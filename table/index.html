@@ -219,31 +219,14 @@
     }
     .hotspot:active .add-pin{filter:brightness(.95);}
 
-    /* Serpme — green + buttons (HTML over printed image, same position) */
+    /* Serpme — invisible tap on printed + (no price overlay) */
     .plus-hotspot{
       position:absolute;padding:0;border:none;background:transparent;cursor:pointer;
-      display:flex;align-items:center;justify-content:center;overflow:visible;
+      opacity:0.001;
     }
-    .plus-hotspot:active .serpme-plus{transform:scale(.92);filter:brightness(.94);}
-    .plus-mask{
-      position:absolute;inset:-1px;z-index:0;border-radius:3px;
-      background:linear-gradient(180deg,#d4b060,#b8923a 55%,#9a7828);
-      box-shadow:0 0 0 1px rgba(0,0,0,.08);
+    .plus-hotspot:focus-visible{
+      opacity:1;outline:2px solid rgba(126,211,33,.85);outline-offset:1px;
     }
-    .serpme-plus{
-      position:relative;z-index:1;width:100%;height:100%;border-radius:3px;border:none;
-      background:linear-gradient(180deg,#b8f035 0%,#7ed321 45%,#5fb318);
-      color:#0a0a0a;font-weight:900;line-height:1;
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 1px 4px rgba(0,0,0,.35);
-      font-size:clamp(13px,72%,26px);pointer-events:none;
-      transition:transform .1s ease;
-    }
-    .plus-hotspot.in-cart .serpme-plus{
-      background:linear-gradient(180deg,#ff8a80,#e53935 55%,#c62828);
-      color:#fff;font-size:clamp(11px,62%,22px);
-    }
-    .serpme-plus.pulse{animation:pinPulse 1.4s ease-in-out 2;}
 
     #item-popup{
       position:fixed;inset:0;z-index:400;display:flex;align-items:flex-end;justify-content:center;
@@ -392,7 +375,7 @@
     <div id="coach-card">
       <h2>كيف تطلب؟</h2>
       <div class="coach-step"><span class="coach-num">1</span><span>تصفّح صفحات الكتاب</span></div>
-      <div class="coach-step"><span class="coach-num">2</span><span>اضغط <strong>زر + الأخضر</strong> على الصورة — يدخل السلة (السعر يبقى كما في المينو)</span></div>
+      <div class="coach-step"><span class="coach-num">2</span><span>اضغط <strong>+ الأخضر</strong> على الصورة — يدخل السلة</span></div>
       <div class="coach-step"><span class="coach-num">3</span><span>🛒 السلة → تأكيد · أو <strong>📋 قائمة</strong> للبحث</span></div>
       <button type="button" id="coachOk">فهمت — ابدأ الطلب ✓</button>
     </div>
@@ -717,13 +700,6 @@
         const item = menu.find(m => m.id === id);
         if (item) fillPriceCover(card, item);
       });
-      document.querySelectorAll(".plus-hotspot").forEach(h => {
-        const id = Number(h.dataset.itemId);
-        const q = qtyOf(id);
-        h.classList.toggle("in-cart", q > 0);
-        const pin = h.querySelector(".serpme-plus");
-        if (pin) pin.textContent = q > 0 ? String(q) : "+";
-      });
       if (document.getElementById("menu-panel").classList.contains("open")) buildMenuList();
       renderPageDock();
     }
@@ -783,7 +759,7 @@
         .sort((a, b) => Number(a.price) - Number(b.price) || String(a.name).localeCompare(String(b.name), "tr"));
     }
     function renderPageDock() { /* full-screen: ordering on page only */ }
-    function attachPlusHotspot(overlay, item, spot, pulse, pageIdx) {
+    function attachPlusHotspot(overlay, item, spot) {
       const h = document.createElement("button");
       h.className = "hotspot plus-hotspot";
       h.type = "button";
@@ -794,17 +770,7 @@
       h.dataset.h = String(spot.h);
       h.dataset.anchor = spot.anchor || "center";
       h.title = item.name;
-      h.setAttribute("aria-label", "أضف " + item.name + " " + money(item.price));
-      const q = qtyOf(item.id);
-      if (q > 0) h.classList.add("in-cart");
-      const mask = document.createElement("span");
-      mask.className = "plus-mask";
-      mask.setAttribute("aria-hidden", "true");
-      const pin = document.createElement("span");
-      pin.className = "serpme-plus" + (pulse ? " pulse" : "");
-      pin.textContent = q > 0 ? String(q) : "+";
-      h.appendChild(mask);
-      h.appendChild(pin);
+      h.setAttribute("aria-label", "أضف " + item.name);
       h.addEventListener("click", e => { e.stopPropagation(); quickAddItem(item); });
       overlay.appendChild(h);
     }
@@ -843,7 +809,7 @@
         overlay.innerHTML = "";
         const pins = collectPagePins(i);
         pins.forEach(({ item, spot }, idx) => {
-          if (spot.kind === "plus") attachPlusHotspot(overlay, item, spot, i === cur && idx < 2, i);
+          if (spot.kind === "plus") attachPlusHotspot(overlay, item, spot);
           else attachPriceCover(overlay, item, spot, i === cur && idx < 2, i);
         });
         const img = pf.querySelector("img");
