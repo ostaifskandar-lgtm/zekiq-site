@@ -459,6 +459,7 @@
     let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "";
     let bookPages = [], pageCategories = {}, pageHotspots = {}, manualSpots = {};
     let singlePagePlusOnly = false;
+    let bookCacheVer = "";
     let cur = 0, animating = false, popupItem = null, popupQty = 1, sending = false, done = false;
     let coachDone = false, orderOn = false;
 
@@ -931,7 +932,7 @@
         const pf = document.createElement("div");
         pf.className = "pf";
         const fi = document.createElement("img");
-        fi.src = fixImgUrl(imgUrl) + (imgUrl.indexOf("?") >= 0 ? "&" : "?") + "v=3";
+        fi.src = fixImgUrl(imgUrl) + (String(imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
         fi.alt = "صفحة " + (i + 1);
         fi.draggable = false;
         pf.appendChild(fi);
@@ -1287,6 +1288,7 @@
       pageHotspots = (data.book && data.book.pageHotspots) || {};
       manualSpots = (data.book && data.book.manualSpots) || {};
       singlePagePlusOnly = Boolean(data.book && data.book.singlePagePlusOnly) || bookPages.length <= 1;
+      bookCacheVer = String((data.book && (data.book.updatedAt || data.book.version)) || "").replace(/[:.]/g, "");
       document.title = shopName + " — طاولة " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
       document.getElementById("tblLabel").textContent = section + " · طاولة " + tableNum;
