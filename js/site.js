@@ -140,6 +140,11 @@
           uniqueDevices: 0,
           verifiedInstalls: 0,
           websiteDownloads: 0,
+          pageViewsTotal: 0,
+          pageViewsUnique: 0,
+          pageViewsToday: 0,
+          pageViews7d: 0,
+          pageViewsByPage: {},
         };
         return cache.stats;
       });
@@ -190,6 +195,47 @@
     var base = cfg && cfg.statsApiUrl ? String(cfg.statsApiUrl).replace(/\/$/, "") : "";
     if (!base) return;
     fetch(base + "/track-download", { method: "POST", mode: "cors" }).catch(function () {});
+  }
+
+  function visitorId() {
+    try {
+      var k = "zekiq_vid";
+      var v = localStorage.getItem(k);
+      if (!v) {
+        v =
+          typeof crypto !== "undefined" && crypto.randomUUID
+            ? crypto.randomUUID()
+            : "v" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+        localStorage.setItem(k, v);
+      }
+      return v;
+    } catch {
+      return "anon";
+    }
+  }
+
+  function trackPageView(cfg) {
+    var page = document.body.getAttribute("data-page") || "home";
+    try {
+      var sk = "zekiq_pv_" + page;
+      if (sessionStorage.getItem(sk)) return;
+      sessionStorage.setItem(sk, "1");
+    } catch {
+      /* ignore */
+    }
+
+    var ns = "zekiq-site";
+    fetch("https://api.countapi.xyz/hit/" + ns + "/views-total", { mode: "cors" }).catch(function () {});
+    fetch("https://api.countapi.xyz/hit/" + ns + "/views-" + page, { mode: "cors" }).catch(function () {});
+
+    var base = cfg && cfg.statsApiUrl ? String(cfg.statsApiUrl).replace(/\/$/, "") : "";
+    if (!base || !/^https:\/\//i.test(base)) return;
+    fetch(base + "/track-pageview", {
+      method: "POST",
+      mode: "cors",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ page: page, visitorId: visitorId() }),
+    }).catch(function () {});
   }
 
   function formatVersion(v) {
@@ -355,7 +401,11 @@
     if (global.ZekiqI18n) global.ZekiqI18n.init();
     setYear();
     markActiveNav();
-    initMeta();
+    initMeta().then(function () {
+      return loadConfig().then(function (cfg) {
+        trackPageView(cfg);
+      });
+    });
     applyPricing();
     applyInstallStats();
     var verId = document.body.getAttribute("data-version-id");
