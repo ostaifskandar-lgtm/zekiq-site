@@ -219,11 +219,13 @@
     }
     .hotspot:active .add-pin{filter:brightness(.95);}
 
-    /* Serpme — شفاف فوق + المطبوع فقط */
+    /* Serpme — invisible tap on printed + (no price overlay) */
     .plus-hotspot{
-      position:absolute;padding:0;margin:0;border:0;cursor:pointer;
-      background:transparent;-webkit-tap-highlight-color:transparent;
-      touch-action:manipulation;z-index:15;
+      position:absolute;padding:0;border:none;background:transparent;cursor:pointer;
+      opacity:0.001;
+    }
+    .plus-hotspot:focus-visible{
+      opacity:1;outline:2px solid rgba(126,211,33,.85);outline-offset:1px;
     }
 
     #item-popup{
@@ -457,7 +459,6 @@
     let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "";
     let bookPages = [], pageCategories = {}, pageHotspots = {}, manualSpots = {};
     let singlePagePlusOnly = false;
-    let bookCacheBust = "";
     let cur = 0, animating = false, popupItem = null, popupQty = 1, sending = false, done = false;
     let coachDone = false, orderOn = false;
 
@@ -478,12 +479,6 @@
       "icecek": "مشروبات", "nargile": "أرجيلة",
     };
     const SERPME_PRICES = new Set([1250, 1650, 1850]);
-    /** صفحة Serpme الوحيدة — مواقع + من الصورة المعدّلة (731×1024) */
-    const SERPME_PLUS_TAPS = [
-      { price: 1850, x: 0.6176, y: 0.8232, w: 0.055, h: 0.032, anchor: "center" },
-      { price: 1650, x: 0.6170, y: 0.8750, w: 0.053, h: 0.032, anchor: "center" },
-      { price: 1250, x: 0.6176, y: 0.9189, w: 0.055, h: 0.032, anchor: "center" },
-    ];
     const PAGE_LABELS = [
       "Serpme Kahvaltı · إفطار مشترك",
       "Kahvaltı · إفطار",
@@ -638,21 +633,28 @@
         '<span class="pc-cur">₺</span>' +
         '<span class="pc-plus">' + (q > 0 ? String(q) : "+") + '</span>';
     }
-    function serpmePlusPins() {
-      const out = [];
-      const used = new Set();
-      for (const tap of SERPME_PLUS_TAPS) {
-        const p = tap.price;
-        const item = menu.find(it => !used.has(it.id) && Math.round(Number(it.price)) === p);
-        if (!item) continue;
-        used.add(item.id);
-        out.push({ item, spot: { kind: "plus", x: tap.x, y: tap.y, w: tap.w, h: tap.h, anchor: tap.anchor } });
-      }
-      return out;
-    }
     function collectPagePins(pageIdx) {
       const plusOnly = singlePagePlusOnly || bookPages.length <= 1;
-      if (plusOnly && pageIdx === 0) return serpmePlusPins();
+      if (plusOnly && pageIdx === 0) {
+        const spots = (manualSpots["0"] || manualSpots[0] || []).filter(s => s && s.kind === "plus");
+        const pageItems = itemsForPage(0);
+        const out = [];
+        const used = new Set();
+        for (const spot of spots) {
+          const p = Math.round(Number(spot.price));
+          let item = pageItems.find(it => !used.has(it.id) && Math.round(Number(it.price)) === p);
+          if (!item) item = menu.find(it => !used.has(it.id) && Math.round(Number(it.price)) === p);
+          if (!item) continue;
+          used.add(item.id);
+          out.push({ item, spot: {
+            x: spot.x, y: spot.y,
+            w: spot.w || 0.055, h: spot.h || 0.032,
+            anchor: spot.anchor || "center",
+            kind: "plus",
+          } });
+        }
+        return out.sort((a, b) => a.spot.y - b.spot.y);
+      }
       const pageItems = itemsForPage(pageIdx);
       if (!pageItems.length) return [];
       const manual = manualSpots[String(pageIdx)] || manualSpots[pageIdx] || [];
@@ -817,23 +819,6 @@
       overlay.appendChild(h);
     }
     function mountPageOverlays() {
-      if (singlePagePlusOnly || bookPages.length <= 1) {
-        const pf = document.querySelector("#pw0 .pf");
-        if (!pf) return;
-        let overlay = pf.querySelector(".pf-overlay");
-        if (!overlay) {
-          overlay = document.createElement("div");
-          overlay.className = "pf-overlay";
-          pf.appendChild(overlay);
-        }
-        overlay.innerHTML = "";
-        serpmePlusPins().forEach(({ item, spot }) => attachPlusHotspot(overlay, item, spot));
-        const img = pf.querySelector("img");
-        const relayout = () => layoutPfHotspots(pf);
-        if (img && img.complete) relayout();
-        else if (img) img.addEventListener("load", relayout, { once: true });
-        return;
-      }
       bookPages.forEach((_, i) => {
         const pf = document.querySelector("#pw" + i + " .pf");
         if (!pf) return;
@@ -946,7 +931,7 @@
         const pf = document.createElement("div");
         pf.className = "pf";
         const fi = document.createElement("img");
-        fi.src = fixImgUrl(imgUrl) + (bookCacheBust ? ("?v=" + encodeURIComponent(bookCacheBust)) : "");
+        fi.src = fixImgUrl(imgUrl) + (imgUrl.indexOf("?") >= 0 ? "&" : "?") + "v=3";
         fi.alt = "صفحة " + (i + 1);
         fi.draggable = false;
         pf.appendChild(fi);
@@ -1301,8 +1286,7 @@
       pageCategories = (data.book && data.book.pageCategories) || {};
       pageHotspots = (data.book && data.book.pageHotspots) || {};
       manualSpots = (data.book && data.book.manualSpots) || {};
-      singlePagePlusOnly = bookPages.length <= 1 || Boolean(data.book && data.book.singlePagePlusOnly);
-      bookCacheBust = (data.book && (data.book.spotsCalibratedAt || data.book.updatedAt)) || String(Date.now());
+      singlePagePlusOnly = Boolean(data.book && data.book.singlePagePlusOnly) || bookPages.length <= 1;
       document.title = shopName + " — طاولة " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
       document.getElementById("tblLabel").textContent = section + " · طاولة " + tableNum;
