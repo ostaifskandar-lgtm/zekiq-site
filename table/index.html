@@ -375,7 +375,7 @@
     <div id="coach-card">
       <h2>كيف تطلب؟</h2>
       <div class="coach-step"><span class="coach-num">1</span><span>تصفّح صفحات الكتاب</span></div>
-      <div class="coach-step"><span class="coach-num">2</span><span>اضغط <strong>+ الأخضر</strong> على الصورة — يدخل السلة</span></div>
+      <div class="coach-step"><span class="coach-num">2</span><span>اضغط <strong>+ الأخضر</strong> على الصورة</span></div>
       <div class="coach-step"><span class="coach-num">3</span><span>🛒 السلة → تأكيد · أو <strong>📋 قائمة</strong> للبحث</span></div>
       <button type="button" id="coachOk">فهمت — ابدأ الطلب ✓</button>
     </div>
@@ -458,6 +458,7 @@
 
     let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "";
     let bookPages = [], pageCategories = {}, pageHotspots = {}, manualSpots = {};
+    let singlePagePlusOnly = false;
     let cur = 0, animating = false, popupItem = null, popupQty = 1, sending = false, done = false;
     let coachDone = false, orderOn = false;
 
@@ -633,6 +634,26 @@
         '<span class="pc-plus">' + (q > 0 ? String(q) : "+") + '</span>';
     }
     function collectPagePins(pageIdx) {
+      const plusOnly = singlePagePlusOnly || bookPages.length <= 1;
+      if (plusOnly && pageIdx === 0) {
+        const spots = (manualSpots["0"] || manualSpots[0] || []).filter(s => s && s.kind === "plus");
+        const pageItems = itemsForPage(0);
+        const out = [];
+        const used = new Set();
+        for (const spot of spots) {
+          const p = Math.round(Number(spot.price));
+          const item = pageItems.find(it => !used.has(it.id) && Math.round(Number(it.price)) === p);
+          if (!item) continue;
+          used.add(item.id);
+          out.push({ item, spot: {
+            x: spot.x, y: spot.y,
+            w: spot.w || 0.055, h: spot.h || 0.032,
+            anchor: spot.anchor || "center",
+            kind: "plus",
+          } });
+        }
+        return out.sort((a, b) => a.spot.y - b.spot.y);
+      }
       const pageItems = itemsForPage(pageIdx);
       if (!pageItems.length) return [];
       const manual = manualSpots[String(pageIdx)] || manualSpots[pageIdx] || [];
@@ -808,9 +829,9 @@
         }
         overlay.innerHTML = "";
         const pins = collectPagePins(i);
-        pins.forEach(({ item, spot }, idx) => {
+        pins.forEach(({ item, spot }) => {
           if (spot.kind === "plus") attachPlusHotspot(overlay, item, spot);
-          else attachPriceCover(overlay, item, spot, i === cur && idx < 2, i);
+          else attachPriceCover(overlay, item, spot, false, i);
         });
         const img = pf.querySelector("img");
         const relayout = () => layoutPfHotspots(pf);
@@ -946,6 +967,8 @@
         ts.appendChild(th);
       });
       cur = 0;
+      const nav = document.getElementById("nav");
+      if (nav) nav.style.display = bookPages.length <= 1 ? "none" : "";
       mountPageOverlays();
       sync();
       buildMenuList();
@@ -1262,6 +1285,7 @@
       pageCategories = (data.book && data.book.pageCategories) || {};
       pageHotspots = (data.book && data.book.pageHotspots) || {};
       manualSpots = (data.book && data.book.manualSpots) || {};
+      singlePagePlusOnly = Boolean(data.book && data.book.singlePagePlusOnly) || bookPages.length <= 1;
       document.title = shopName + " — طاولة " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
       document.getElementById("tblLabel").textContent = section + " · طاولة " + tableNum;
