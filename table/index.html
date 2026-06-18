@@ -341,17 +341,31 @@
       vertical-align:middle;
     }
     .scene-hud-send .send-badge[hidden]{display:none!important;}
-    #guestGuide,
-    #guestOrderChip{
-      display:none!important;
-      pointer-events:none!important;
-      height:0!important;
-      min-height:0!important;
-      padding:0!important;
-      margin:0!important;
-      overflow:hidden!important;
-      visibility:hidden!important;
+    #menuStage{
+      flex:1;
+      min-height:0;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
     }
+    #menuOrderDock{
+      position:absolute;
+      top:0;left:0;right:0;
+      z-index:340;
+      pointer-events:none;
+      max-height:min(38vh,210px);
+      overflow:hidden;
+    }
+    #menuOrderDock::before{
+      content:"";
+      position:absolute;inset:0;
+      background:linear-gradient(180deg,rgba(13,5,0,.94) 0%,rgba(13,5,0,.78) 72%,rgba(13,5,0,0) 100%);
+      z-index:-1;
+      pointer-events:none;
+    }
+    #menuOrderDock #guestGuide,
+    #menuOrderDock #guestOrderChip{pointer-events:auto;}
     #guestGuide{
       flex-shrink:0;
       display:none;
@@ -359,10 +373,10 @@
       align-items:center;
       gap:10px;
       flex-wrap:wrap;
-      padding:2px 12px 8px;
+      padding:2px 12px 6px;
       pointer-events:none;
       position:relative;
-      z-index:940;
+      z-index:1;
     }
     html.immersive #guestGuide.show,
     html.immersive.chrome-hidden #guestGuide.show,
@@ -390,20 +404,23 @@
     #guestOrderChip{
       flex-shrink:0;
       display:none;
-      padding:0 12px 8px;
+      padding:0 12px 6px;
       pointer-events:auto;
       position:relative;
-      z-index:940;
+      z-index:1;
+      max-height:min(34vh,190px);
     }
     html.immersive #guestOrderChip.show,
     html.immersive.chrome-hidden #guestOrderChip.show,
     html.immersive.fs-active #guestOrderChip.show{display:block;}
     .scene-order-panel{
-      background:rgba(13,5,0,.88);
+      background:rgba(13,5,0,.92);
       border:1.5px solid rgba(200,134,10,.5);
       border-radius:14px;
       overflow:hidden;
-      box-shadow:0 3px 12px rgba(0,0,0,.35);
+      box-shadow:0 6px 20px rgba(0,0,0,.45);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
     }
     .order-chip-head-btn{
       width:100%;
@@ -422,7 +439,7 @@
       pointer-events:none;
     }
     .order-chip-list{
-      max-height:min(22vh,140px);
+      max-height:min(16vh,108px);
       overflow-y:auto;
       overflow-x:hidden;
       -webkit-overflow-scrolling:touch;
@@ -831,10 +848,11 @@
       touch-action:manipulation;
     }
     html.coach-locked #scene,
+    html.coach-locked #menuStage,
     html.coach-locked #sceneHud,
-    html.coach-locked #guestGuide,
-    html.coach-locked #guestOrderChip,
+    html.coach-locked #menuOrderDock,
     html.coach-locked #pageSwipeBar,
+    html.coach-locked #nav,
     html.coach-locked #header,
     html.coach-locked #fsHint{
       visibility:hidden!important;
@@ -1113,26 +1131,30 @@
         <button type="button" class="scene-hud-send is-empty" id="sceneSendBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneSendBtn">إرسال ✓</span><span class="send-badge" id="sceneSendBadge" hidden>0</span></button>
       </div>
     </div>
-    <div id="guestGuide" class="guest-guide show">
-      <div class="guide-step" id="i18n-guide1"><span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة</div>
-      <div class="guide-step" id="i18n-guide2"><span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد</div>
-    </div>
-    <div id="guestOrderChip">
-      <div class="scene-order-panel">
-        <button type="button" class="order-chip-head-btn" id="sceneOrderBtn">
-          <div class="order-chip-head" id="sceneOrderSummary"></div>
-        </button>
-        <div class="order-chip-list" id="sceneOrderList"></div>
+    <div id="menuStage">
+      <div id="menuOrderDock">
+        <div id="guestGuide" class="guest-guide show">
+          <div class="guide-step" id="i18n-guide1"><span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة</div>
+          <div class="guide-step" id="i18n-guide2"><span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد</div>
+        </div>
+        <div id="guestOrderChip">
+          <div class="scene-order-panel">
+            <button type="button" class="order-chip-head-btn" id="sceneOrderBtn">
+              <div class="order-chip-head" id="sceneOrderSummary"></div>
+            </button>
+            <div class="order-chip-list" id="sceneOrderList"></div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div id="pageSwipeBar" aria-label="اسحب لقلب الصفحة">
-      <div class="swipe-hint">
-        <span class="swipe-arrow swipe-arrow-prev" aria-hidden="true">‹</span>
-        <span class="swipe-label" id="i18n-swipeHint">اسحب لقلب الصفحة</span>
-        <span class="swipe-arrow swipe-arrow-next" aria-hidden="true">›</span>
+      <div id="pageSwipeBar" aria-label="اسحب لقلب الصفحة">
+        <div class="swipe-hint">
+          <span class="swipe-arrow swipe-arrow-prev" aria-hidden="true">‹</span>
+          <span class="swipe-label" id="i18n-swipeHint">اسحب لقلب الصفحة</span>
+          <span class="swipe-arrow swipe-arrow-next" aria-hidden="true">›</span>
+        </div>
       </div>
+      <div id="book"></div>
     </div>
-    <div id="book"></div>
     <div id="nav">
       <button type="button" class="nav-arrow" id="prevBtn"><span class="nav-label" id="i18n-prev">◀ السابق</span></button>
       <div class="nav-pg"><bdi id="navPgnum" dir="ltr">1 / 1</bdi></div>
@@ -2482,10 +2504,15 @@
     }
     function syncSceneHud() {
       const t = cart.reduce((s, i) => s + i.qty, 0);
+      const total = cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0);
       const shopEl = document.getElementById("sceneHudShop");
       const tableEl = document.getElementById("sceneHudTable");
       const sendBtn = document.getElementById("sceneSendBtn");
       const sendBadge = document.getElementById("sceneSendBadge");
+      const guideEl = document.getElementById("guestGuide");
+      const chipEl = document.getElementById("guestOrderChip");
+      const summaryEl = document.getElementById("sceneOrderSummary");
+      const listEl = document.getElementById("sceneOrderList");
       if (shopEl && shopName) shopEl.textContent = shopName;
       refreshCoverTitles();
       if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
@@ -2496,6 +2523,36 @@
       if (sendBadge) {
         sendBadge.hidden = !t;
         if (t) sendBadge.textContent = String(t);
+      }
+      if (!t) {
+        if (guideEl) guideEl.classList.add("show");
+        if (chipEl) chipEl.classList.remove("show");
+        if (summaryEl) summaryEl.textContent = "";
+        if (listEl) listEl.innerHTML = "";
+        return;
+      }
+      if (guideEl) guideEl.classList.remove("show");
+      if (chipEl) chipEl.classList.add("show");
+      if (summaryEl) summaryEl.textContent = "🛒 " + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
+      if (listEl) {
+        listEl.innerHTML = cart.map(l => `
+          <div class="order-chip-line">
+            <span class="order-chip-name">${l.qty}× ${esc(l.item.name)}</span>
+            <div class="order-chip-actions">
+              <button type="button" class="order-chip-dec" data-dec-id="${l.item.id}" aria-label="−">−</button>
+              <button type="button" class="order-chip-del" data-del-id="${l.item.id}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
+              <span class="order-chip-price">${money(Number(l.item.price) * l.qty)}</span>
+            </div>
+          </div>`).join("") +
+          `<button type="button" class="order-chip-clear" id="sceneClearCart">${esc(guestT("cartClearAll"))}</button>`;
+        listEl.querySelectorAll("[data-dec-id]").forEach(btn => {
+          btn.onclick = e => { e.stopPropagation(); chQty(Number(btn.dataset.decId), -1); };
+        });
+        listEl.querySelectorAll("[data-del-id]").forEach(btn => {
+          btn.onclick = e => { e.stopPropagation(); removeItem(Number(btn.dataset.delId)); };
+        });
+        const sceneClear = listEl.querySelector("#sceneClearCart");
+        if (sceneClear) sceneClear.onclick = e => { e.stopPropagation(); clearCart(); };
       }
     }
     function openCartConfirm(e) {
@@ -2543,6 +2600,7 @@
 
     document.getElementById("cartBtn").onclick = e => { e.stopPropagation(); openCart(); };
     const sceneMenuBtn = document.getElementById("sceneMenuBtn");
+    const sceneOrderBtn = document.getElementById("sceneOrderBtn");
     const sceneSendBtn = document.getElementById("sceneSendBtn");
     function bindTopBtn(el, handler) {
       if (!el || el.__topBound) return;
@@ -2562,6 +2620,7 @@
     bindTopBtn(sceneMenuBtn, () => openMenuList());
     bindTopBtn(document.getElementById("menuListBtn"), () => openMenuList());
     bindTopBtn(document.getElementById("cartBtn"), () => openCart());
+    bindTopBtn(sceneOrderBtn, openCartConfirm);
     bindTopBtn(sceneSendBtn, openCartConfirm);
     bindTopBtn(document.getElementById("prevBtn"), prevPage);
     bindTopBtn(document.getElementById("nextBtn"), nextPage);
