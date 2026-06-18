@@ -83,7 +83,7 @@
         if(h&&!isFullscreen()) h.classList.remove("hide");
       }
       function onMenuTap(ev){
-        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.zoom-btn,.order-chip-list,#sceneOrderList")) return;
+        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.zoom-btn,.order-chip-list,#sceneOrderList")) return;
         fitViewport();
         enterImmersiveAuto();
         tryFullscreen().then(function(){burstRelayout();}).catch(function(){});
@@ -111,7 +111,7 @@
       }
       function blockScroll(e){
         if(e.touches&&e.touches.length>1) return;
-        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list,#book.page-zoomed,.ci-note,#noteInp")) return;
+        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list,#book.page-zoomed,.ci-note,#noteInp,#pageSwipeBar")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pf,.pf-bg")) return;
         e.preventDefault();
       }
@@ -142,12 +142,12 @@
         maybeShowFsHint();
       });
       document.addEventListener("touchstart",function(e){
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.zoom-btn,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.zoom-btn,.order-chip-list,#sceneOrderList")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) onMenuTap(e);
         else fitViewport();
       },{passive:true,capture:true});
       document.addEventListener("click",function(e){
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.zoom-btn,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.zoom-btn,.order-chip-list,#sceneOrderList")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) return;
         fitViewport();
         showChrome();
@@ -476,6 +476,67 @@
     html.immersive.fs-active #scene{
       padding-top:0;
     }
+    #pageSwipeBar{
+      flex-shrink:0;
+      height:46px;
+      min-height:46px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      touch-action:pan-x;
+      user-select:none;
+      -webkit-user-select:none;
+      position:relative;
+      z-index:320;
+      background:linear-gradient(180deg,rgba(13,5,0,.72) 0%,rgba(13,5,0,.28) 55%,transparent 100%);
+      cursor:grab;
+    }
+    #pageSwipeBar:active{cursor:grabbing;}
+    html.single-page #pageSwipeBar{display:none!important;}
+    .swipe-hint{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      width:min(92%,300px);
+      padding:4px 10px;
+      border-radius:20px;
+      border:1px solid rgba(200,134,10,.18);
+      background:rgba(13,5,0,.35);
+    }
+    .swipe-arrow{
+      font-size:24px;
+      line-height:1;
+      color:rgba(255,224,130,.28);
+      text-shadow:0 0 6px rgba(230,168,23,.12);
+      transition:opacity .2s ease,transform .2s ease,text-shadow .2s ease,color .2s ease;
+      animation:swipeArrowPulse 2.6s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .swipe-arrow-prev{animation-delay:0s;}
+    .swipe-arrow-next{animation-delay:1.3s;}
+    @keyframes swipeArrowPulse{
+      0%,100%{opacity:.22;transform:scale(.9);text-shadow:0 0 4px rgba(230,168,23,.08);color:rgba(255,224,130,.25);}
+      45%,55%{opacity:1;transform:scale(1.12);text-shadow:0 0 14px rgba(255,224,130,.9),0 0 26px rgba(230,168,23,.55);color:#ffe082;}
+    }
+    #pageSwipeBar.swipe-left-hint .swipe-arrow-next,
+    #pageSwipeBar.swiping.swipe-left-hint .swipe-arrow-next{
+      opacity:1;transform:scale(1.15);animation:none;
+      text-shadow:0 0 18px rgba(255,224,130,1),0 0 32px rgba(230,168,23,.7);color:#fff4c2;
+    }
+    #pageSwipeBar.swipe-right-hint .swipe-arrow-prev,
+    #pageSwipeBar.swiping.swipe-right-hint .swipe-arrow-prev{
+      opacity:1;transform:scale(1.15);animation:none;
+      text-shadow:0 0 18px rgba(255,224,130,1),0 0 32px rgba(230,168,23,.7);color:#fff4c2;
+    }
+    .swipe-label{
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.04em;
+      color:rgba(200,134,10,.5);
+      white-space:nowrap;
+      pointer-events:none;
+    }
     #book{
       position:relative;flex:1;min-height:0;width:100%;max-width:100vw;
       transform-style:preserve-3d;transform:translateZ(0);
@@ -678,6 +739,7 @@
     html.coach-locked #sceneHud,
     html.coach-locked #guestGuide,
     html.coach-locked #guestOrderChip,
+    html.coach-locked #pageSwipeBar,
     html.coach-locked #header,
     html.coach-locked #fsHint{
       visibility:hidden!important;
@@ -968,6 +1030,13 @@
         <div class="order-chip-list" id="sceneOrderList"></div>
       </div>
     </div>
+    <div id="pageSwipeBar" aria-label="اسحب لقلب الصفحة">
+      <div class="swipe-hint">
+        <span class="swipe-arrow swipe-arrow-prev" aria-hidden="true">‹</span>
+        <span class="swipe-label" id="i18n-swipeHint">اسحب لقلب الصفحة</span>
+        <span class="swipe-arrow swipe-arrow-next" aria-hidden="true">›</span>
+      </div>
+    </div>
     <div id="book"></div>
     <div id="nav">
       <button type="button" class="nav-arrow" id="prevBtn"><span class="nav-label" id="i18n-prev">◀ السابق</span></button>
@@ -996,7 +1065,7 @@
   <div id="coach">
     <div id="coach-card">
       <h2 id="i18n-coach-title">كيف تطلب؟</h2>
-      <div class="coach-step"><span class="coach-num">1</span><span id="i18n-coach-1">تصفّح <strong>المينو</strong> — أزرار <strong>السابق / التالي</strong> بالأسفل</span></div>
+      <div class="coach-step"><span class="coach-num">1</span><span id="i18n-coach-1">تصفّح <strong>المينو</strong> — اسحب من الشريط فوق الصورة أو أزرار <strong>السابق / التالي</strong></span></div>
       <div class="coach-step"><span class="coach-num">2</span><span id="i18n-coach-2">اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام</span></div>
       <div class="coach-step"><span class="coach-num">3</span><span id="i18n-coach-3">اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong></span></div>
       <div class="coach-step"><span class="coach-num">4</span><span id="i18n-coach-4">في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال</span></div>
@@ -1072,13 +1141,14 @@
       guide1: '<span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة',
       guide2: '<span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد',
       coachTitle: "كيف تطلب؟",
-      coach1: 'تصفّح <strong>المينو</strong> — أزرار <strong>السابق / التالي</strong> بالأسفل',
+      coach1: 'تصفّح <strong>المينو</strong> — اسحب من الشريط فوق الصورة أو أزرار <strong>السابق / التالي</strong>',
       coach2: 'اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام',
       coach3: 'اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong>',
       coach4: 'في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال',
       coachOk: "فهمت — ابدأ الطلب ✓",
       prev: "◀ السابق",
       next: "التالي ▶",
+      swipeHint: "اسحب لقلب الصفحة",
       fsHint: "👆 اضغط على المينو لملء الشاشة",
       menuTitle: "📋 قائمة الأطباق",
       menuSub: "ابحث واطلب من أي صفحة",
@@ -1129,13 +1199,14 @@
       guide1: '<span class="guide-n">1</span> Resimdeki yeşil <strong>+</strong> düğmesine basın',
       guide2: '<span class="guide-n">2</span> Sonra onay için <strong>Gönder</strong>',
       coachTitle: "Nasıl sipariş verilir?",
-      coach1: '<strong>Menüde</strong> gezinin — altta <strong>Önceki / Sonraki</strong>',
+      coach1: '<strong>Menüde</strong> gezinin — resmin üstündeki şeridi kaydırın veya altta <strong>Önceki / Sonraki</strong>',
       coach2: 'Yemek eklemek için resimdeki <strong>yeşil +</strong> düğmesine basın',
       coach3: 'Üstte <strong>Gönder</strong> → sepeti kontrol et → <strong>Onayla</strong>',
       coach4: 'Göndermeden önce her ürünün altına <strong>açık bir not</strong> yazabilirsiniz',
       coachOk: "Anladım — siparişe başla ✓",
       prev: "◀ Önceki",
       next: "Sonraki ▶",
+      swipeHint: "Sayfayı çevirmek için kaydır",
       fsHint: "👆 Tam ekran için menüye dokunun",
       menuTitle: "📋 Yemek listesi",
       menuSub: "Ara ve her sayfadan sipariş ver",
@@ -1186,13 +1257,14 @@
       guide1: '<span class="guide-n">1</span> Tap the green <strong>+</strong> on the image',
       guide2: '<span class="guide-n">2</span> Then <strong>Send</strong> to confirm',
       coachTitle: "How to order?",
-      coach1: 'Browse the <strong>menu</strong> — <strong>Prev / Next</strong> at bottom',
+      coach1: 'Browse the <strong>menu</strong> — swipe the bar above the image or use <strong>Prev / Next</strong>',
       coach2: 'Tap the green <strong>+</strong> on the image to add food',
       coach3: 'Tap <strong>Send</strong> at top → review cart → <strong>Confirm</strong>',
       coach4: 'In the cart, add a <strong>clear note</strong> under each item before sending',
       coachOk: "Got it — start ordering ✓",
       prev: "◀ Prev",
       next: "Next ▶",
+      swipeHint: "Swipe to turn the page",
       fsHint: "👆 Tap the menu for full screen",
       menuTitle: "📋 Dish list",
       menuSub: "Search and order from any page",
@@ -1264,6 +1336,7 @@
       "coachOk": "coachOk",
       "i18n-prev": "prev",
       "i18n-next": "next",
+      "i18n-swipeHint": "swipeHint",
       "i18n-fsHint": "fsHint",
       "i18n-menu-title": "menuTitle",
       "i18n-menu-sub": "menuSub",
@@ -1357,6 +1430,90 @@
         }
       }, { passive: true });
       book.addEventListener("touchend", () => { startDist = 0; }, { passive: true });
+    }
+    function bindPageSwipe() {
+      const bar = document.getElementById("pageSwipeBar");
+      if (!bar || bar.__swipeBound) return;
+      bar.__swipeBound = true;
+      const THRESH = 46;
+      const MAX_Y = 72;
+      let startX = 0, startY = 0, tracking = false, pointerId = null;
+
+      function clearSwipeHint() {
+        bar.classList.remove("swiping", "swipe-left-hint", "swipe-right-hint");
+      }
+      function onSwipeEnd(clientX, clientY) {
+        if (!tracking) return;
+        tracking = false;
+        pointerId = null;
+        const dx = clientX - startX;
+        const dy = Math.abs(clientY - startY);
+        clearSwipeHint();
+        if (!coachDone || dy > MAX_Y) return;
+        if (dx <= -THRESH) nextPage();
+        else if (dx >= THRESH) prevPage();
+      }
+
+      bar.addEventListener("touchstart", e => {
+        if (!coachDone || e.touches.length !== 1) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        tracking = true;
+        bar.classList.add("swiping");
+      }, { passive: true });
+
+      bar.addEventListener("touchmove", e => {
+        if (!tracking || e.touches.length !== 1) return;
+        const dx = e.touches[0].clientX - startX;
+        const dy = Math.abs(e.touches[0].clientY - startY);
+        if (dy > MAX_Y) { tracking = false; clearSwipeHint(); return; }
+        bar.classList.toggle("swipe-left-hint", dx < -16);
+        bar.classList.toggle("swipe-right-hint", dx > 16);
+      }, { passive: true });
+
+      bar.addEventListener("touchend", e => {
+        const t = e.changedTouches[0];
+        if (t) onSwipeEnd(t.clientX, t.clientY);
+      }, { passive: true });
+
+      bar.addEventListener("touchcancel", clearSwipeHint, { passive: true });
+
+      bar.addEventListener("pointerdown", e => {
+        if (!coachDone || e.pointerType === "touch") return;
+        pointerId = e.pointerId;
+        startX = e.clientX;
+        startY = e.clientY;
+        tracking = true;
+        bar.classList.add("swiping");
+        try { bar.setPointerCapture(e.pointerId); } catch (_) {}
+      });
+
+      bar.addEventListener("pointermove", e => {
+        if (!tracking || e.pointerId !== pointerId) return;
+        const dx = e.clientX - startX;
+        const dy = Math.abs(e.clientY - startY);
+        if (dy > MAX_Y) { tracking = false; clearSwipeHint(); return; }
+        bar.classList.toggle("swipe-left-hint", dx < -16);
+        bar.classList.toggle("swipe-right-hint", dx > 16);
+      });
+
+      bar.addEventListener("pointerup", e => {
+        if (e.pointerId !== pointerId) return;
+        onSwipeEnd(e.clientX, e.clientY);
+        try { bar.releasePointerCapture(e.pointerId); } catch (_) {}
+      });
+
+      bar.addEventListener("pointercancel", e => {
+        if (e.pointerId !== pointerId) return;
+        tracking = false;
+        pointerId = null;
+        clearSwipeHint();
+      });
+    }
+    function syncSwipeBar() {
+      const bar = document.getElementById("pageSwipeBar");
+      if (!bar) return;
+      bar.style.display = bookPages.length <= 1 ? "none" : "";
     }
     let coachDone = false, orderOn = false;
 
@@ -1988,6 +2145,8 @@
       if (window.__zekiqBindSceneFullscreen) window.__zekiqBindSceneFullscreen();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       bindPagePinch();
+      bindPageSwipe();
+      syncSwipeBar();
       setPageZoom(1);
     }
 
@@ -2064,6 +2223,7 @@
       if (navPg) navPg.textContent = pgText;
       document.getElementById("prevBtn").disabled = cur === 0;
       document.getElementById("nextBtn").disabled = cur >= bookPages.length - 1;
+      syncSwipeBar();
       document.querySelectorAll(".pw").forEach((pw, i) => {
         pw.classList.toggle("page-current", i === cur);
       });
