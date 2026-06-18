@@ -215,6 +215,7 @@
     if (typeof global.__zekiqOnGuestLang === "function") global.__zekiqOnGuestLang(lang);
   }
 
+  global.__zekiqGuestT = t;
   global.guestT = t;
   global.applyGuestLanguage = apply;
   global.__zekiqGuestLang = lang;
