@@ -111,7 +111,7 @@
       }
       function blockScroll(e){
         if(e.touches&&e.touches.length>1) return;
-        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list,#book.page-zoomed")) return;
+        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list,#book.page-zoomed,.ci-note,#noteInp")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pf,.pf-bg")) return;
         e.preventDefault();
       }
@@ -727,7 +727,8 @@
     .cart-title{color:#c8860a;font-size:19px;font-weight:800;}
     .close-c{background:rgba(200,134,10,.15);border:1px solid #c8860a;border-radius:50%;width:34px;height:34px;color:#c8860a;font-size:18px;cursor:pointer;}
     #cart-items{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
-    .ci{background:rgba(200,134,10,.08);border:1px solid rgba(200,134,10,.25);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .ci{background:rgba(200,134,10,.08);border:1px solid rgba(200,134,10,.25);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;align-items:stretch;gap:8px;}
+    .ci-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
     .ci-body{flex:1;min-width:0;}
     .ci-name{color:#fff;font-size:13px;font-weight:700;}
     .ci-price{color:#c8860a;font-size:13px;margin-top:2px;}
@@ -736,6 +737,12 @@
     .ci-btn{background:rgba(200,134,10,.2);border:1px solid #c8860a;border-radius:50%;width:28px;height:28px;color:#c8860a;font-size:16px;cursor:pointer;}
     .ci-del{background:rgba(180,40,40,.15);border:1px solid rgba(220,80,80,.55);border-radius:10px;width:34px;height:34px;color:#ff8a8a;font-size:16px;cursor:pointer;line-height:1;}
     .ci-n{color:#fff;font-size:15px;font-weight:800;min-width:18px;text-align:center;}
+    .ci-note{
+      width:100%;border:1px solid rgba(200,134,10,.28);background:rgba(13,5,0,.55);
+      border-radius:10px;padding:8px 10px;font-size:12px;color:#fff;font-family:inherit;
+      resize:none;min-height:36px;line-height:1.35;
+    }
+    .ci-note::placeholder{color:rgba(200,134,10,.45);}
     .cart-clear-btn{
       display:block;width:calc(100% - 28px);margin:0 14px 10px;
       background:rgba(180,40,40,.12);border:1px solid rgba(220,80,80,.45);color:#ff9a9a;
@@ -985,14 +992,14 @@
 
   <div id="cart-panel">
     <div class="cart-hd">
-      <div><div class="cart-title" id="i18n-cart-title">راجع طلبك</div><div class="menu-sub" style="margin-top:2px" id="i18n-cart-sub">عدّل الكمية ثم أكّد الإرسال</div></div>
+      <div><div class="cart-title" id="i18n-cart-title">راجع طلبك</div><div class="menu-sub" style="margin-top:2px" id="i18n-cart-sub">عدّل الكمية وأضف ملاحظة تحت كل صنف</div></div>
       <button type="button" class="close-c" id="closeCart">×</button>
     </div>
     <div id="cart-items"></div>
     <button type="button" class="cart-clear-btn" id="clearCartBtn" hidden>مسح السلة بالكامل</button>
     <div class="cart-ft">
       <div class="total-row"><span id="i18n-cart-total-label">المجموع</span><span class="tv" id="total">0 ₺</span></div>
-      <textarea class="note" id="noteInp" rows="2" placeholder="ملاحظة (حساسية، طلب خاص…)" maxlength="200"></textarea>
+      <textarea class="note" id="noteInp" rows="2" placeholder="ملاحظة عامة للطلب (اختياري)…" maxlength="200"></textarea>
       <button type="button" class="order-btn" id="sendBtn">✓ تأكيد وإرسال للمطبخ</button>
     </div>
   </div>
@@ -1034,13 +1041,14 @@
       menuSub: "ابحث واطلب من أي صفحة",
       menuSearch: "ابحث… Türk kahve, menemen, pasta…",
       cartTitle: "راجع طلبك",
-      cartSub: "عدّل الكمية ثم أكّد الإرسال",
+      cartSub: "عدّل الكمية وأضف ملاحظة تحت كل صنف",
       cartTotal: "المجموع",
       cartSend: "✓ تأكيد وإرسال للمطبخ",
       cartClearAll: "مسح السلة بالكامل",
       cartDelete: "حذف",
       toastCleared: "تم مسح السلة",
-      notePh: "ملاحظة (حساسية، طلب خاص…)",
+      notePh: "ملاحظة عامة للطلب (اختياري)…",
+      itemNotePh: "ملاحظة لهذا الصنف (بدون بصل، نصف محمص…)",
       popupClose: "إلغاء",
       popupAdd: "أضف للسلة",
       okTitle: "شكراً! ✓",
@@ -1089,13 +1097,14 @@
       menuSub: "Ara ve her sayfadan sipariş ver",
       menuSearch: "Ara… Türk kahve, menemen, pasta…",
       cartTitle: "Siparişini kontrol et",
-      cartSub: "Miktarı düzenle ve onayla",
+      cartSub: "Miktarı düzenle, her ürünün altına not yaz",
       cartTotal: "Toplam",
       cartSend: "✓ Onayla ve mutfağa gönder",
       cartClearAll: "Sepeti temizle",
       cartDelete: "Sil",
       toastCleared: "Sepet temizlendi",
-      notePh: "Not (alerji, özel istek…)",
+      notePh: "Genel sipariş notu (isteğe bağlı)…",
+      itemNotePh: "Bu ürün için not (soğansız, az pişmiş…)",
       popupClose: "İptal",
       popupAdd: "Sepete ekle",
       okTitle: "Teşekkürler! ✓",
@@ -1144,13 +1153,14 @@
       menuSub: "Search and order from any page",
       menuSearch: "Search… coffee, pasta…",
       cartTitle: "Review your order",
-      cartSub: "Edit quantity then confirm",
+      cartSub: "Edit qty and add a note under each item",
       cartTotal: "Total",
       cartSend: "✓ Confirm & send to kitchen",
       cartClearAll: "Clear cart",
       cartDelete: "Delete",
       toastCleared: "Cart cleared",
-      notePh: "Note (allergy, special request…)",
+      notePh: "General order note (optional)…",
+      itemNotePh: "Note for this item (no onion, medium rare…)",
       popupClose: "Cancel",
       popupAdd: "Add to cart",
       okTitle: "Thank you! ✓",
@@ -2052,7 +2062,7 @@
 
     function addToCart(item) {
       const ex = cart.find(i => i.item.id === item.id);
-      if (ex) ex.qty++; else cart.push({ item, qty: 1 });
+      if (ex) ex.qty++; else cart.push({ item, qty: 1, note: "" });
       updateBadge();
       if (navigator.vibrate) navigator.vibrate(12);
     }
@@ -2208,21 +2218,30 @@
       if (clearBtn) clearBtn.hidden = false;
       c.innerHTML = cart.map(l => `
         <div class="ci">
-          <div class="ci-body"><div class="ci-name">${esc(l.item.name)}</div><div class="ci-price">${money(Number(l.item.price) * l.qty)}</div></div>
-          <div class="ci-actions">
-            <div class="ci-qty">
-              <button type="button" class="ci-btn" data-dec="${l.item.id}">−</button>
-              <span class="ci-n">${l.qty}</span>
-              <button type="button" class="ci-btn" data-inc="${l.item.id}">+</button>
+          <div class="ci-row">
+            <div class="ci-body"><div class="ci-name">${esc(l.item.name)}</div><div class="ci-price">${money(Number(l.item.price) * l.qty)}</div></div>
+            <div class="ci-actions">
+              <div class="ci-qty">
+                <button type="button" class="ci-btn" data-dec="${l.item.id}">−</button>
+                <span class="ci-n">${l.qty}</span>
+                <button type="button" class="ci-btn" data-inc="${l.item.id}">+</button>
+              </div>
+              <button type="button" class="ci-del" data-del="${l.item.id}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
             </div>
-            <button type="button" class="ci-del" data-del="${l.item.id}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
           </div>
+          <textarea class="ci-note" data-item-id="${l.item.id}" rows="2" maxlength="120" placeholder="${esc(guestT("itemNotePh"))}">${esc(l.note || "")}</textarea>
         </div>`).join("");
       document.getElementById("total").textContent = money(cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0));
       document.getElementById("sendBtn").disabled = sending;
       document.querySelectorAll("[data-inc]").forEach(b => b.onclick = () => chQty(Number(b.dataset.inc), 1));
       document.querySelectorAll("[data-dec]").forEach(b => b.onclick = () => chQty(Number(b.dataset.dec), -1));
       document.querySelectorAll("[data-del]").forEach(b => b.onclick = () => removeItem(Number(b.dataset.del)));
+      c.querySelectorAll(".ci-note").forEach(inp => {
+        inp.addEventListener("input", () => {
+          const line = cart.find(x => x.item.id === Number(inp.dataset.itemId));
+          if (line) line.note = inp.value.slice(0, 120);
+        });
+      });
     }
     function chQty(id, d) {
       const i = cart.findIndex(x => x.item.id === id);
@@ -2251,7 +2270,15 @@
           method: "POST", headers: { "content-type": "application/json" },
           body: JSON.stringify({
             token: TOKEN, note: note.trim() || undefined,
-            items: cart.map(l => ({ menuItemId: l.item.id, name: l.item.name, category: l.item.category, price: String(l.item.price), qty: String(l.qty), dept: l.item.dept })),
+            items: cart.map(l => ({
+              menuItemId: l.item.id,
+              name: l.item.name,
+              category: l.item.category,
+              price: String(l.item.price),
+              qty: String(l.qty),
+              dept: l.item.dept,
+              notes: l.note?.trim() || undefined,
+            })),
           }),
         });
         let data = {};
