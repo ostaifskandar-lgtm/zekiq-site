@@ -648,14 +648,15 @@
     #pageDock{display:none!important;}
 
     #coach{
-      position:fixed;inset:0;z-index:800;display:none;align-items:center;justify-content:center;
-      background:rgba(0,0,0,.78);padding:20px;
+      position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;
+      background:rgba(0,0,0,.88);padding:20px;
     }
     #coach.show{display:flex;}
     #coach-card{
-      max-width:340px;width:100%;background:linear-gradient(160deg,#1f0c00,#2d1400);
+      max-width:360px;width:100%;background:linear-gradient(160deg,#1f0c00,#2d1400);
       border:2px solid #e6a817;border-radius:22px;padding:26px 22px 22px;
       box-shadow:0 20px 60px rgba(230,168,23,.25);text-align:center;
+      pointer-events:auto;
     }
     #coach-card h2{color:#ffe082;font-size:20px;margin-bottom:16px;}
     .coach-step{
@@ -671,6 +672,16 @@
       margin-top:8px;width:100%;border:none;border-radius:14px;padding:14px;
       background:linear-gradient(135deg,#e6a817,#b87200);color:#1a0a00;
       font-size:16px;font-weight:900;cursor:pointer;
+      touch-action:manipulation;
+    }
+    html.coach-locked #scene,
+    html.coach-locked #sceneHud,
+    html.coach-locked #guestGuide,
+    html.coach-locked #guestOrderChip,
+    html.coach-locked #header,
+    html.coach-locked #fsHint{
+      visibility:hidden!important;
+      pointer-events:none!important;
     }
 
     #hint{display:none;}
@@ -988,6 +999,7 @@
       <div class="coach-step"><span class="coach-num">1</span><span id="i18n-coach-1">تصفّح <strong>المينو</strong> — أزرار <strong>السابق / التالي</strong> بالأسفل</span></div>
       <div class="coach-step"><span class="coach-num">2</span><span id="i18n-coach-2">اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام</span></div>
       <div class="coach-step"><span class="coach-num">3</span><span id="i18n-coach-3">اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong></span></div>
+      <div class="coach-step"><span class="coach-num">4</span><span id="i18n-coach-4">في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال</span></div>
       <button type="button" id="coachOk">فهمت — ابدأ الطلب ✓</button>
     </div>
   </div>
@@ -1063,6 +1075,7 @@
       coach1: 'تصفّح <strong>المينو</strong> — أزرار <strong>السابق / التالي</strong> بالأسفل',
       coach2: 'اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام',
       coach3: 'اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong>',
+      coach4: 'في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال',
       coachOk: "فهمت — ابدأ الطلب ✓",
       prev: "◀ السابق",
       next: "التالي ▶",
@@ -1119,6 +1132,7 @@
       coach1: '<strong>Menüde</strong> gezinin — altta <strong>Önceki / Sonraki</strong>',
       coach2: 'Yemek eklemek için resimdeki <strong>yeşil +</strong> düğmesine basın',
       coach3: 'Üstte <strong>Gönder</strong> → sepeti kontrol et → <strong>Onayla</strong>',
+      coach4: 'Göndermeden önce her ürünün altına <strong>açık bir not</strong> yazabilirsiniz',
       coachOk: "Anladım — siparişe başla ✓",
       prev: "◀ Önceki",
       next: "Sonraki ▶",
@@ -1175,6 +1189,7 @@
       coach1: 'Browse the <strong>menu</strong> — <strong>Prev / Next</strong> at bottom',
       coach2: 'Tap the green <strong>+</strong> on the image to add food',
       coach3: 'Tap <strong>Send</strong> at top → review cart → <strong>Confirm</strong>',
+      coach4: 'In the cart, add a <strong>clear note</strong> under each item before sending',
       coachOk: "Got it — start ordering ✓",
       prev: "◀ Prev",
       next: "Next ▶",
@@ -1245,6 +1260,7 @@
       "i18n-coach-1": "coach1",
       "i18n-coach-2": "coach2",
       "i18n-coach-3": "coach3",
+      "i18n-coach-4": "coach4",
       "coachOk": "coachOk",
       "i18n-prev": "prev",
       "i18n-next": "next",
@@ -1840,11 +1856,12 @@
     }
 
     function quickAddItem(item) {
-      if (!coachDone) dismissCoach();
+      if (!coachDone) return;
       addToCart(item);
       showToast("✅ " + item.name + "\n" + guestT("toastAdded") + " · " + money(item.price));
     }
     function openMenuList() {
+      if (!coachDone) return;
       document.getElementById("menu-panel").classList.add("open");
       buildMenuList();
       if (window.__zekiqShowChrome) window.__zekiqShowChrome();
@@ -1969,31 +1986,30 @@
       setTimeout(() => document.querySelectorAll(".price-cover.pulse").forEach(p => p.classList.remove("pulse")), 5500);
       maybeShowCoach();
       if (window.__zekiqBindSceneFullscreen) window.__zekiqBindSceneFullscreen();
-      if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       bindPagePinch();
       setPageZoom(1);
     }
 
     function maybeShowCoach() {
-      try {
-        if (sessionStorage.getItem("zekiq_guest_coach") === "1") { coachDone = true; return; }
-      } catch (_) {}
+      coachDone = false;
+      document.documentElement.classList.add("coach-locked");
       document.getElementById("coach").classList.add("show");
     }
     function dismissCoach() {
+      if (coachDone) return;
       coachDone = true;
       document.getElementById("coach").classList.remove("show");
-      try { sessionStorage.setItem("zekiq_guest_coach", "1"); } catch (_) {}
+      document.documentElement.classList.remove("coach-locked");
       if (window.__zekiqTryFullscreen) {
         window.__zekiqTryFullscreen().finally(function() {
           if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
         });
       }
       if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
+      if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
     }
     document.getElementById("coachOk").onclick = dismissCoach;
-    document.getElementById("coach").onclick = e => { if (e.target.id === "coach") dismissCoach(); };
 
     const FLIP_MS = 320;
 
@@ -2012,7 +2028,7 @@
     }
 
     function nextPage() {
-      if (animating || cur >= bookPages.length - 1) return;
+      if (!coachDone || animating || cur >= bookPages.length - 1) return;
       animating = true;
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
@@ -2023,7 +2039,7 @@
       });
     }
     function prevPage() {
-      if (animating || cur <= 0) return;
+      if (!coachDone || animating || cur <= 0) return;
       animating = true;
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
@@ -2065,6 +2081,7 @@
     }
 
     function openPopup(item) {
+      if (!coachDone) return;
       popupItem = item;
       popupQty = 1;
       document.getElementById("p-emoji").textContent = item.icon || deptEmoji(item.dept);
@@ -2084,7 +2101,7 @@
     document.getElementById("pqDec").onclick = () => { popupQty = Math.max(1, popupQty - 1); document.getElementById("p-qty").textContent = popupQty; };
     document.getElementById("pqInc").onclick = () => { popupQty++; document.getElementById("p-qty").textContent = popupQty; };
     document.getElementById("popupAdd").onclick = () => {
-      if (!popupItem) return;
+      if (!coachDone || !popupItem) return;
       for (let i = 0; i < popupQty; i++) addToCart(popupItem);
       closePopup();
       showToast("✅ " + popupItem.name + "\n" + popupQty + "× " + guestT("toastAdded"));
@@ -2144,6 +2161,7 @@
       }
     }
     function openCartConfirm(e) {
+      if (!coachDone) return;
       if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
       if (!cart.length) {
         showToast("🛒 " + guestT("emptyCart") + "\n" + guestT("emptyCartHint"));
@@ -2165,9 +2183,9 @@
       if (sumEl) sumEl.textContent = t > 0 ? money(total) : "";
       syncSceneHud();
       refreshPins();
-      if (t > 0 && !coachDone) dismissCoach();
     }
     function openCart() {
+      if (!coachDone) return;
       document.getElementById("cart-panel").classList.add("open");
       document.getElementById("overlay").classList.add("show");
       if (window.__zekiqShowChrome) window.__zekiqShowChrome();
@@ -2337,6 +2355,7 @@
       done = false;
       document.getElementById("okScreen").classList.remove("show");
       updateBadge();
+      maybeShowCoach();
     };
 
     function isSafeApiUrl(u) {
