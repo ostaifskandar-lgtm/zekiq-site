@@ -1159,6 +1159,7 @@
     if (typeof global.__zekiqOnGuestLang === "function") global.__zekiqOnGuestLang(lang);
   }
 
+  global.__zekiqGuestT = t;
   global.guestT = t;
   global.applyGuestLanguage = apply;
   global.__zekiqGuestLang = lang;
@@ -1194,7 +1195,10 @@
     let cur = 0, animating = false, popupItem = null, popupQty = 1, sending = false, done = false;
     let coachDone = false, orderOn = false;
 
-    function guestT(k) { return (typeof window.guestT === "function") ? window.guestT(k) : k; }
+    const guestT = k => {
+      const fn = window.__zekiqGuestT;
+      return typeof fn === "function" ? fn(k) : k;
+    };
     window.__zekiqOnGuestLang = function () {
       if (typeof syncSceneHud === "function") syncSceneHud();
       if (document.getElementById("cart-panel")?.classList.contains("open") && typeof renderCart === "function") renderCart();
@@ -2233,7 +2237,11 @@
       if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
       } catch (e) {
         console.error("[guest/apply]", e);
-        showErr(guestT("errConn"), guestT("errConnD"));
+        const tfn = window.__zekiqGuestT;
+        showErr(
+          typeof tfn === "function" ? tfn("errConn") : "Connection failed",
+          typeof tfn === "function" ? tfn("errConnD") : "Check ZEKiQ POS is running."
+        );
       }
     }
 
