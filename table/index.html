@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover, interactive-widget=resizes-content" />
   <meta name="theme-color" content="#1e1208" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -109,7 +109,9 @@
         },2400);
       }
       function blockScroll(e){
+        if(e.touches&&e.touches.length>1) return;
         if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list")) return;
+        if(e.target&&e.target.closest&&e.target.closest("#book,.pf,.pf-bg")) return;
         e.preventDefault();
       }
       function onFsChange(){
@@ -181,7 +183,7 @@
       position:fixed;inset:0;
       width:var(--app-w,100vw);height:var(--app-h);min-height:var(--app-h);max-height:var(--app-h);
       overflow:hidden;overscroll-behavior:none;
-      background:#1e1208;font-family:"Segoe UI",system-ui,Arial,sans-serif;touch-action:manipulation;color:#fff;
+      background:#1e1208;font-family:"Segoe UI",system-ui,Arial,sans-serif;touch-action:pan-x pan-y pinch-zoom;color:#fff;
       -webkit-text-size-adjust:100%;
     }
 
@@ -320,6 +322,11 @@
       font-weight:900;
       box-shadow:0 3px 12px rgba(200,134,10,.45);
     }
+    .scene-hud-send.is-empty{
+      opacity:.55;
+      box-shadow:none;
+    }
+    .scene-hud-send.is-empty:active{transform:none;}
     #guestGuide{
       flex-shrink:0;
       display:none;
@@ -462,7 +469,9 @@
     #book{
       position:relative;flex:1;min-height:0;width:100%;max-width:100vw;
       transform-style:preserve-3d;transform:translateZ(0);
+      touch-action:pan-x pan-y pinch-zoom;
     }
+    .pf,.pf-bg,.pb,.pb-bg{touch-action:pan-x pan-y pinch-zoom;}
     #book::before{display:none;}
     .pw{
       position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;
@@ -872,7 +881,7 @@
           <div class="scene-hud-shop" id="sceneHudShop">ZEKiQ</div>
           <div class="scene-hud-table" id="sceneHudTable">🪑 طاولة —</div>
         </div>
-        <button type="button" class="scene-hud-send" id="sceneSendBtn" hidden><span id="i18n-sceneSendBtn">إرسال ✓</span></button>
+        <button type="button" class="scene-hud-send is-empty" id="sceneSendBtn"><span id="i18n-sceneSendBtn">إرسال ✓</span></button>
       </div>
     </div>
     <div id="guestGuide" class="guest-guide show">
@@ -1950,19 +1959,6 @@
       });
     }
 
-    let tx = 0, ty = 0, dragging = false;
-    document.getElementById("book").addEventListener("touchstart", e => {
-      if (e.target.closest(".plus-hit, .plus-hotspot, .price-hotspot")) return;
-      tx = e.touches[0].clientX; ty = e.touches[0].clientY; dragging = true;
-    }, { passive: true });
-    document.getElementById("book").addEventListener("touchend", e => {
-      if (e.target.closest(".plus-hit, .plus-hotspot, .price-hotspot")) return;
-      if (!dragging) return;
-      dragging = false;
-      const dx = tx - e.changedTouches[0].clientX;
-      const dy = Math.abs(ty - e.changedTouches[0].clientY);
-      if (Math.abs(dx) > 50 && dy < 80) (dx > 0 ? nextPage : prevPage)();
-    });
     document.getElementById("prevBtn").onclick = prevPage;
     document.getElementById("nextBtn").onclick = nextPage;
 
@@ -2010,15 +2006,17 @@
       const listEl = document.getElementById("sceneOrderList");
       if (shopEl && shopName) shopEl.textContent = shopName;
       if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
+      if (sendBtn) {
+        sendBtn.hidden = false;
+        sendBtn.classList.toggle("is-empty", !t);
+      }
       if (!t) {
-        if (sendBtn) sendBtn.hidden = true;
         if (guideEl) guideEl.classList.add("show");
         if (chipEl) chipEl.classList.remove("show");
         if (summaryEl) summaryEl.textContent = "";
         if (listEl) listEl.innerHTML = "";
         return;
       }
-      if (sendBtn) sendBtn.hidden = false;
       if (guideEl) guideEl.classList.remove("show");
       if (chipEl) chipEl.classList.add("show");
       if (summaryEl) summaryEl.textContent = "🛒 " + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
@@ -2045,7 +2043,10 @@
     }
     function openCartConfirm(e) {
       if (e) e.stopPropagation();
-      if (!cart.length) return;
+      if (!cart.length) {
+        showToast("🛒 " + guestT("emptyCart") + "\n" + guestT("emptyCartHint"));
+        return;
+      }
       openCart();
     }
     function updateBadge() {
@@ -2092,6 +2093,8 @@
     bindTopBtn(document.getElementById("cartBtn"), () => openCart());
     bindTopBtn(sceneOrderBtn, openCartConfirm);
     bindTopBtn(sceneSendBtn, openCartConfirm);
+    bindTopBtn(document.getElementById("prevBtn"), prevPage);
+    bindTopBtn(document.getElementById("nextBtn"), nextPage);
     document.getElementById("closeCart").onclick = closeCart;
     document.getElementById("overlay").onclick = closeCart;
     document.getElementById("clearCartBtn").onclick = clearCart;
