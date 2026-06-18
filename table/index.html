@@ -1877,38 +1877,19 @@
       const plusOnly = singlePagePlusOnly || plusButtonsAllPages || bookPages.length <= 1 || hasPlusManual;
       if (plusOnly) {
         const spots = (manualSpots[String(pageIdx)] || manualSpots[pageIdx] || []).filter(s => s && (s.kind === "plus" || plusButtonsAllPages));
-        const pageItems = itemsForPage(pageIdx);
         const out = [];
-        const used = new Set();
-        const byCol = [[], []];
-        for (const s of spots) byCol[spotColumn(s)].push(s);
-        for (const col of [0, 1]) {
-          byCol[col].sort((a, b) => Number(a.y) - Number(b.y) || Number(a.x) - Number(b.x));
-          const colSpots = byCol[col];
-          if (!colSpots.length) continue;
-          const pool = columnItemPool(pageIdx, col, pageItems, used);
-          const offset = plusSpotMenuOffset(colSpots, pool);
-          for (let spotIdx = 0; spotIdx < colSpots.length; spotIdx++) {
-            const spot = colSpots[spotIdx];
-            let item = resolvePlusSpotItem(spot, pool, pageItems, spotIdx, offset, used);
-            if (!item) {
-              if (spotHasName(spot)) console.warn("[guest/plus] no match:", spot.name, "page", pageIdx, "col", col);
-              continue;
-            }
-            if (spotHasName(spot) && !nameMatches(item.name, spot.name)) {
-              console.warn("[guest/plus] name mismatch:", spot.name, "→", item.name, "page", pageIdx);
-              continue;
-            }
-            used.add(item.id);
-            out.push({ item, spot: {
-              x: spot.x, y: spot.y,
-              w: spot.w || 0.055, h: spot.h || 0.032,
-              anchor: spot.anchor || "center",
-              kind: "plus",
-            } });
-          }
+        for (const spot of spots) {
+          if (spot.menuItemId == null) continue;
+          const item = menu.find(m => m.id === Number(spot.menuItemId));
+          if (!item) continue;
+          out.push({ item, spot: {
+            x: spot.x, y: spot.y,
+            w: spot.w || 0.055, h: spot.h || 0.032,
+            anchor: spot.anchor || "center",
+            kind: "plus",
+          } });
         }
-        if (out.length) return out.sort((a, b) => a.spot.y - b.spot.y || a.spot.x - b.spot.x);
+        return out.sort((a, b) => a.spot.y - b.spot.y || a.spot.x - b.spot.x);
       }
       const pageItems = itemsForPage(pageIdx);
       if (!pageItems.length) return [];
