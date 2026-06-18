@@ -1,0 +1,221 @@
+/**
+ * Customer QR table page — UI strings (ar / tr / en).
+ * Loaded inline in index.html; language from API guestLanguage.
+ */
+(function (global) {
+  var PACK = {
+    ar: {
+      pageTitle: "طلب من الطاولة — ZEKiQ",
+      loadingTitle: "جاري تحميل المينو…",
+      loadingSub: "صفحات الكتاب الحقيقي",
+      menuList: "📋 القائمة",
+      send: "إرسال ✓",
+      guide1: '<span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة',
+      guide2: '<span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد',
+      coachTitle: "كيف تطلب؟",
+      coach1: 'تصفّح <strong>المينو</strong> — أزرار <strong>السابق / التالي</strong> بالأسفل',
+      coach2: 'اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام',
+      coach3: 'اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong>',
+      coachOk: "فهمت — ابدأ الطلب ✓",
+      prev: "◀ السابق",
+      next: "التالي ▶",
+      fsHint: "👆 اضغط على المينو لملء الشاشة",
+      menuTitle: "📋 قائمة الأطباق",
+      menuSub: "ابحث واطلب من أي صفحة",
+      menuSearch: "ابحث… Türk kahve, menemen, pasta…",
+      cartTitle: "راجع طلبك",
+      cartSub: "عدّل الكمية ثم أكّد الإرسال",
+      cartTotal: "المجموع",
+      cartSend: "✓ تأكيد وإرسال للمطبخ",
+      notePh: "ملاحظة (حساسية، طلب خاص…)",
+      popupClose: "إلغاء",
+      popupAdd: "أضف للسلة",
+      okTitle: "شكراً! ✓",
+      againBtn: "طلب إضافي",
+      table: "طاولة",
+      items: "أصناف",
+      orderTotal: "المجموع",
+      emptyCart: "السلة فارغة",
+      emptyCartHint: "اضغط + في المينو أو القائمة",
+      menuLoading: "جاري تحميل الأطباق…",
+      menuNoResults: "لا نتائج",
+      errScanQr: "امسح QR",
+      errScanQrD: "امسح رمز QR من الطاولة للطلب.",
+      errOldQr: "QR قديم",
+      errOldQrD: "حدّث الرموز من إعدادات الكاشير.",
+      errDisabled: "طلبات QR معطّلة",
+      errDisabledD: "فعّلها من إعدادات الكاشير.",
+      errConn: "تعذّر الاتصال",
+      errConnD: "تأكد أن ZEKiQ POS شغّال و shop.zekiqmenu.com متصل.",
+      errTable: "الطاولة غير مفتوحة على الكاشير.\nافتح الطاولة من ZEKiQ POS ثم أعد الإرسال.",
+      errToken: "رمز QR قديم — اطبع QR جديد من إعدادات الكاشير.",
+      errSend: "تعذّر الإرسال — تحقق من الإنترنت أو أن ZEKiQ POS شغّال.",
+      errNet: "تعذّر الاتصال — تحقق من الإنترنت.",
+      okDetail: "وصل طلبك إلى الكاشير والمطبخ",
+      toastAdded: "→ السلة",
+      menuNotReady: "المينو غير جاهز",
+      menuNotReadyD: "من الكاشير: استورد PDF المينو ثم شغّل export-guest-menu-book",
+    },
+    tr: {
+      pageTitle: "Masadan sipariş — ZEKiQ",
+      loadingTitle: "Menü yükleniyor…",
+      loadingSub: "Dijital menü kitabı",
+      menuList: "📋 Menü",
+      send: "Gönder ✓",
+      guide1: '<span class="guide-n">1</span> Resimdeki yeşil <strong>+</strong> düğmesine basın',
+      guide2: '<span class="guide-n">2</span> Sonra onay için <strong>Gönder</strong>',
+      coachTitle: "Nasıl sipariş verilir?",
+      coach1: '<strong>Menüde</strong> gezinin — altta <strong>Önceki / Sonraki</strong>',
+      coach2: 'Yemek eklemek için resimdeki <strong>yeşil +</strong> düğmesine basın',
+      coach3: 'Üstte <strong>Gönder</strong> → sepeti kontrol et → <strong>Onayla</strong>',
+      coachOk: "Anladım — siparişe başla ✓",
+      prev: "◀ Önceki",
+      next: "Sonraki ▶",
+      fsHint: "👆 Tam ekran için menüye dokunun",
+      menuTitle: "📋 Yemek listesi",
+      menuSub: "Ara ve her sayfadan sipariş ver",
+      menuSearch: "Ara… Türk kahve, menemen, pasta…",
+      cartTitle: "Siparişini kontrol et",
+      cartSub: "Miktarı düzenle ve onayla",
+      cartTotal: "Toplam",
+      cartSend: "✓ Onayla ve mutfağa gönder",
+      notePh: "Not (alerji, özel istek…)",
+      popupClose: "İptal",
+      popupAdd: "Sepete ekle",
+      okTitle: "Teşekkürler! ✓",
+      againBtn: "Ek sipariş",
+      table: "Masa",
+      items: "ürün",
+      orderTotal: "Toplam",
+      emptyCart: "Sepet boş",
+      emptyCartHint: "Menüde + veya listeden ekle",
+      menuLoading: "Yemekler yükleniyor…",
+      menuNoResults: "Sonuç yok",
+      errScanQr: "QR okut",
+      errScanQrD: "Sipariş için masadaki QR kodu okutun.",
+      errOldQr: "Eski QR",
+      errOldQrD: "Kasiyer ayarlarından QR kodlarını güncelleyin.",
+      errDisabled: "QR sipariş kapalı",
+      errDisabledD: "Kasiyer ayarlarından etkinleştirin.",
+      errConn: "Bağlantı hatası",
+      errConnD: "ZEKiQ POS açık mı ve internet bağlantısı var mı kontrol edin.",
+      errTable: "Masa kasada açık değil.\nZEKiQ POS'tan masayı açın ve tekrar deneyin.",
+      errToken: "Eski QR — kasiyerden yeni QR yazdırın.",
+      errSend: "Gönderilemedi — internet veya ZEKiQ POS'u kontrol edin.",
+      errNet: "Bağlantı hatası — interneti kontrol edin.",
+      okDetail: "Siparişiniz kasa ve mutfağa ulaştı",
+      toastAdded: "→ sepet",
+      menuNotReady: "Menü hazır değil",
+      menuNotReadyD: "Kasadan PDF menüyü içe aktarın",
+    },
+    en: {
+      pageTitle: "Table order — ZEKiQ",
+      loadingTitle: "Loading menu…",
+      loadingSub: "Digital menu book",
+      menuList: "📋 Menu",
+      send: "Send ✓",
+      guide1: '<span class="guide-n">1</span> Tap the green <strong>+</strong> on the image',
+      guide2: '<span class="guide-n">2</span> Then <strong>Send</strong> to confirm',
+      coachTitle: "How to order?",
+      coach1: 'Browse the <strong>menu</strong> — <strong>Prev / Next</strong> at bottom',
+      coach2: 'Tap the green <strong>+</strong> on the image to add food',
+      coach3: 'Tap <strong>Send</strong> at top → review cart → <strong>Confirm</strong>',
+      coachOk: "Got it — start ordering ✓",
+      prev: "◀ Prev",
+      next: "Next ▶",
+      fsHint: "👆 Tap the menu for full screen",
+      menuTitle: "📋 Dish list",
+      menuSub: "Search and order from any page",
+      menuSearch: "Search… coffee, pasta…",
+      cartTitle: "Review your order",
+      cartSub: "Edit quantity then confirm",
+      cartTotal: "Total",
+      cartSend: "✓ Confirm & send to kitchen",
+      notePh: "Note (allergy, special request…)",
+      popupClose: "Cancel",
+      popupAdd: "Add to cart",
+      okTitle: "Thank you! ✓",
+      againBtn: "Order more",
+      table: "Table",
+      items: "items",
+      orderTotal: "Total",
+      emptyCart: "Cart is empty",
+      emptyCartHint: "Tap + on menu or use list",
+      menuLoading: "Loading dishes…",
+      menuNoResults: "No results",
+      errScanQr: "Scan QR",
+      errScanQrD: "Scan the table QR code to order.",
+      errOldQr: "Old QR",
+      errOldQrD: "Update QR codes from cashier settings.",
+      errDisabled: "QR orders disabled",
+      errDisabledD: "Enable in cashier settings.",
+      errConn: "Connection failed",
+      errConnD: "Check ZEKiQ POS is running and online.",
+      errTable: "Table not open on cashier.\nOpen the table in ZEKiQ POS and try again.",
+      errToken: "Old QR — print a new one from cashier.",
+      errSend: "Could not send — check internet or ZEKiQ POS.",
+      errNet: "Connection failed — check internet.",
+      okDetail: "Your order reached the cashier and kitchen",
+      toastAdded: "→ cart",
+      menuNotReady: "Menu not ready",
+      menuNotReadyD: "Import PDF menu from cashier",
+    },
+  };
+
+  var lang = "ar";
+
+  function t(key) {
+    var bag = PACK[lang] || PACK.ar;
+    return bag[key] || PACK.ar[key] || key;
+  }
+
+  function apply(langCode) {
+    lang = langCode === "tr" || langCode === "en" ? langCode : "ar";
+    global.__zekiqGuestLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.title = t("pageTitle");
+    var htmlIds = {
+      "i18n-load-title": "loadingTitle",
+      "i18n-load-sub": "loadingSub",
+      "i18n-sceneMenuBtn": "menuList",
+      "i18n-sceneSendBtn": "send",
+      "i18n-guide1": "guide1",
+      "i18n-guide2": "guide2",
+      "i18n-coach-title": "coachTitle",
+      "i18n-coach-1": "coach1",
+      "i18n-coach-2": "coach2",
+      "i18n-coach-3": "coach3",
+      "coachOk": "coachOk",
+      "i18n-prev": "prev",
+      "i18n-next": "next",
+      "i18n-fsHint": "fsHint",
+      "i18n-menu-title": "menuTitle",
+      "i18n-menu-sub": "menuSub",
+      "i18n-cart-title": "cartTitle",
+      "i18n-cart-sub": "cartSub",
+      "i18n-cart-total-label": "cartTotal",
+      "sendBtn": "cartSend",
+      "popupClose": "popupClose",
+      "popupAdd": "popupAdd",
+      "i18n-ok-title": "okTitle",
+      "againBtn": "againBtn",
+    };
+    Object.keys(htmlIds).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var val = t(htmlIds[id]);
+      if (htmlIds[id].indexOf("guide") === 0 || htmlIds[id].indexOf("coach") === 0) el.innerHTML = val;
+      else el.textContent = val;
+    });
+    var note = document.getElementById("noteInp");
+    if (note) note.placeholder = t("notePh");
+    var search = document.getElementById("menuSearch");
+    if (search) search.placeholder = t("menuSearch");
+    if (typeof global.__zekiqOnGuestLang === "function") global.__zekiqOnGuestLang(lang);
+  }
+
+  global.guestT = t;
+  global.applyGuestLanguage = apply;
+  global.__zekiqGuestLang = lang;
+})(window);
