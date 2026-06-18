@@ -1,13 +1,186 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#0d0500" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
+  <meta name="theme-color" content="#1e1208" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ZEKiQ" />
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
+  <script>
+    (function immersiveBoot(){
+      var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0;
+      function fitViewport(){
+        var vv=window.visualViewport;
+        var w=vv?vv.width:window.innerWidth;
+        var h=vv?vv.height:window.innerHeight;
+        root.style.setProperty("--app-h",h+"px");
+        root.style.setProperty("--app-w",w+"px");
+        root.style.setProperty("--vv-top",(vv?vv.offsetTop:0)+"px");
+        scheduleRelayout();
+      }
+      function scheduleRelayout(){
+        clearTimeout(relayoutTimer);
+        relayoutTimer=setTimeout(function(){
+          if(typeof window.__zekiqRelayout==="function") window.__zekiqRelayout();
+        }, 40);
+      }
+      function burstRelayout(){
+        scheduleRelayout();
+        setTimeout(scheduleRelayout, 100);
+        setTimeout(scheduleRelayout, 320);
+        setTimeout(scheduleRelayout, 700);
+      }
+      function isFullscreen(){
+        return !!(document.fullscreenElement||document.webkitFullscreenElement);
+      }
+      function tryFullscreen(){
+        if(isFullscreen()) return Promise.resolve();
+        var scene=document.getElementById("scene");
+        var targets=[scene,root,body].filter(Boolean);
+        for(var i=0;i<targets.length;i++){
+          var el=targets[i];
+          var req=el.requestFullscreen||el.webkitRequestFullscreen||el.webkitEnterFullscreen;
+          if(!req) continue;
+          try{
+            var p=req.call(el);
+            if(p&&p.then) return p.then(function(){fitViewport();burstRelayout();hideFsHint();root.classList.add("chrome-hidden","fs-active");}).catch(function(){enterImmersiveAuto();});
+            fitViewport();burstRelayout();hideFsHint();root.classList.add("chrome-hidden","fs-active");
+            return Promise.resolve();
+          }catch(e){}
+        }
+        enterImmersiveAuto();
+        return Promise.resolve();
+      }
+      function enterImmersiveAuto(){
+        fitViewport();
+        root.classList.add("chrome-hidden");
+        hideFsHint();
+        burstRelayout();
+        try{window.scrollTo(0,1);}catch(e){}
+        setTimeout(fitViewport, 120);
+      }
+      function engage(withFullscreen){
+        fitViewport();
+        if(withFullscreen) tryFullscreen();
+        else enterImmersiveAuto();
+      }
+      function hideFsHint(){
+        var h=document.getElementById("fsHint");
+        if(h) h.classList.add("hide");
+        try{sessionStorage.setItem("zekiq_fs_hint","1");}catch(e){}
+      }
+      function maybeShowFsHint(){
+        try{if(sessionStorage.getItem("zekiq_fs_hint")==="1")return;}catch(e){}
+        var h=document.getElementById("fsHint");
+        if(h&&!isFullscreen()) h.classList.remove("hide");
+      }
+      function onMenuTap(ev){
+        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.scene-hud-send,#nav,.nav-arrow,#guestGuide,.order-chip-list,#sceneOrderList")) return;
+        fitViewport();
+        enterImmersiveAuto();
+        tryFullscreen().then(function(){burstRelayout();}).catch(function(){});
+        hideFsHint();
+      }
+      function bindSceneFullscreen(){
+        var scene=document.getElementById("scene");
+        if(!scene||scene.__fsBound) return;
+        scene.__fsBound=true;
+        scene.addEventListener("touchstart",onMenuTap,{passive:true});
+        scene.addEventListener("click",onMenuTap);
+      }
+      function panelOpen(){
+        var mp=document.getElementById("menu-panel");
+        var cp=document.getElementById("cart-panel");
+        return (mp&&mp.classList.contains("open"))||(cp&&cp.classList.contains("open"));
+      }
+      function showChrome(){
+        if(root.classList.contains("fs-active")) return;
+        root.classList.remove("chrome-hidden");
+        clearTimeout(hideTimer);
+        hideTimer=setTimeout(function(){
+          if(!panelOpen()) root.classList.add("chrome-hidden");
+        },2400);
+      }
+      function blockScroll(e){
+        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list")) return;
+        e.preventDefault();
+      }
+      function onFsChange(){
+        fitViewport();
+        burstRelayout();
+        if(isFullscreen()){
+          hideFsHint();
+          root.classList.add("fs-active","chrome-hidden");
+        } else {
+          root.classList.remove("fs-active");
+        }
+      }
+      root.classList.add("immersive");
+      fitViewport();
+      bindSceneFullscreen();
+      window.addEventListener("resize",fitViewport);
+      window.addEventListener("orientationchange",function(){setTimeout(function(){engage(false);},300);});
+      window.addEventListener("pageshow",function(){engage(false);});
+      document.addEventListener("fullscreenchange",onFsChange);
+      document.addEventListener("webkitfullscreenchange",onFsChange);
+      if(window.visualViewport){
+        visualViewport.addEventListener("resize",fitViewport);
+        visualViewport.addEventListener("scroll",fitViewport);
+      }
+      document.addEventListener("DOMContentLoaded",function(){
+        bindSceneFullscreen();
+        enterImmersiveAuto();
+        maybeShowFsHint();
+      });
+      document.addEventListener("touchstart",function(e){
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.scene-hud-send,#nav,.nav-arrow,#guestGuide,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest("#scene,#book,.pw")) onMenuTap(e);
+        else fitViewport();
+      },{passive:true,capture:true});
+      document.addEventListener("click",function(e){
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.scene-hud-send,#nav,.nav-arrow,#guestGuide,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest("#scene,#book,.pw")) return;
+        fitViewport();
+        showChrome();
+      },{capture:true});
+      document.addEventListener("touchmove",blockScroll,{passive:false});
+      document.addEventListener("contextmenu",function(e){e.preventDefault();},{capture:true});
+      document.addEventListener("dragstart",function(e){e.preventDefault();},{capture:true});
+      var lastTouchEnd=0;
+      document.addEventListener("touchend",function(e){
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.scene-hud-send,#nav,.nav-arrow,#guestGuide,.order-chip-list,#sceneOrderList")) return;
+        var now=Date.now();
+        if(now-lastTouchEnd<320) e.preventDefault();
+        lastTouchEnd=now;
+      },{passive:false});
+      window.__zekiqShowChrome=showChrome;
+      window.__zekiqEngage=engage;
+      window.__zekiqEnterImmersive=enterImmersiveAuto;
+      window.__zekiqFitViewport=fitViewport;
+      window.__zekiqBurstRelayout=burstRelayout;
+      window.__zekiqTryFullscreen=tryFullscreen;
+      window.__zekiqMaybeShowFsHint=maybeShowFsHint;
+      window.__zekiqBindSceneFullscreen=bindSceneFullscreen;
+    })();
+  </script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-    html,body{width:100%;height:100%;overflow:hidden;background:#0d0500;font-family:"Segoe UI",system-ui,Arial,sans-serif;touch-action:none;color:#fff;}
+    :root{
+      --app-h:100dvh;--app-w:100vw;--vv-top:0px;--chrome-h:0px;
+      --guest-top:0px;--guest-guide:0px;--guest-nav:52px;
+    }
+    @supports not (height:100dvh){:root{--app-h:100vh;}}
+    html,body{
+      position:fixed;inset:0;
+      width:var(--app-w,100vw);height:var(--app-h);min-height:var(--app-h);max-height:var(--app-h);
+      overflow:hidden;overscroll-behavior:none;
+      background:#1e1208;font-family:"Segoe UI",system-ui,Arial,sans-serif;touch-action:manipulation;color:#fff;
+      -webkit-text-size-adjust:100%;
+    }
 
     #loadScreen{
       position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;
@@ -28,11 +201,13 @@
     }
 
     #header{
-      position:fixed;top:0;left:0;right:0;height:44px;z-index:200;
-      padding-top:env(safe-area-inset-top);
-      background:linear-gradient(180deg,rgba(13,5,0,.88) 0%,rgba(13,5,0,.45) 70%,transparent 100%);
+      position:fixed;top:var(--vv-top,0px);left:0;right:0;z-index:200;
+      min-height:calc(38px + env(safe-area-inset-top,0px));
+      background:linear-gradient(180deg,rgba(30,18,8,.42) 0%,rgba(30,18,8,.1) 72%,transparent 100%);
       border:none;box-shadow:none;
-      display:flex;align-items:center;justify-content:space-between;padding:env(safe-area-inset-top) 10px 0 10px;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:calc(env(safe-area-inset-top,0px) + 4px) 8px 4px;
+      transition:transform .32s ease,opacity .32s ease;
     }
     .logo{color:#c8860a;font-size:15px;font-weight:900;letter-spacing:1px;text-shadow:0 0 15px rgba(200,134,10,.5);max-width:28%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .tbl{font-size:10px;color:rgba(200,134,10,.55);display:block;font-weight:600;letter-spacing:.04em;margin-top:2px;}
@@ -50,19 +225,224 @@
     }
     .cart-btn:active{transform:scale(.95);}
     .cbadge{background:#e53935;color:#fff;border-radius:50%;min-width:18px;height:18px;font-size:10px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+    .cart-sum{font-size:11px;font-weight:800;white-space:nowrap;display:none;}
 
     .list-btn,.cart-btn{padding:6px 10px;font-size:11px;}
     .pg-num{font-size:11px;padding:2px 8px;}
 
+    #sceneHud{
+      flex-shrink:0;
+      display:none;
+      flex-direction:column;
+      gap:0;
+      padding:0 10px 4px;
+      padding-top:max(env(safe-area-inset-top,6px),6px);
+      background:linear-gradient(180deg,rgba(13,5,0,.94) 0%,rgba(13,5,0,.72) 85%,transparent 100%);
+      pointer-events:none;
+      z-index:300;
+    }
+    .hud-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      pointer-events:none;
+    }
+    html.immersive.chrome-hidden #sceneHud,
+    html.immersive.fs-active #sceneHud,
+    html:fullscreen #sceneHud,
+    html:-webkit-full-screen #sceneHud,
+    #scene:fullscreen #sceneHud,
+    #scene:-webkit-full-screen #sceneHud{display:flex;}
+    .scene-hud-btn{
+      pointer-events:auto;
+      flex-shrink:0;
+      border:none;
+      cursor:pointer;
+      touch-action:manipulation;
+    }
+    .scene-hud-list{
+      background:rgba(200,134,10,.18);
+      border:1.5px solid rgba(200,134,10,.5);
+      border-radius:16px;
+      color:#ffe082;
+      font-weight:800;
+      font-size:12px;
+      padding:8px 12px;
+      box-shadow:0 2px 10px rgba(0,0,0,.35);
+    }
+    .scene-hud-center{
+      flex:1;
+      min-width:0;
+      text-align:center;
+      pointer-events:none;
+    }
+    .scene-hud-shop{
+      color:#c8860a;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.04em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .scene-hud-table{
+      margin-top:2px;
+      display:inline-block;
+      background:rgba(13,5,0,.82);
+      border:1px solid rgba(200,134,10,.5);
+      padding:5px 12px;
+      border-radius:14px;
+      color:#ffe082;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+      box-shadow:0 2px 10px rgba(0,0,0,.3);
+    }
+    .scene-hud-send{
+      flex-shrink:0;
+      pointer-events:auto;
+      border:none;
+      cursor:pointer;
+      touch-action:manipulation;
+      min-height:36px;
+      padding:8px 14px;
+      border-radius:16px;
+      background:linear-gradient(135deg,#b87200,#f0a820);
+      color:#0d0500;
+      font-size:12px;
+      font-weight:900;
+      box-shadow:0 3px 12px rgba(200,134,10,.45);
+    }
+    #guestGuide{
+      flex-shrink:0;
+      display:none;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      padding:2px 12px 8px;
+      pointer-events:none;
+    }
+    html.immersive.chrome-hidden #guestGuide.show,
+    html.immersive.fs-active #guestGuide.show{display:flex;}
+    .guide-step{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      background:rgba(13,5,0,.78);
+      border:1px solid rgba(200,134,10,.35);
+      border-radius:14px;
+      padding:6px 10px;
+      color:rgba(255,224,130,.92);
+      font-size:11px;
+      font-weight:700;
+      line-height:1.35;
+    }
+    .guide-step strong{color:#7cff9a;font-weight:900;}
+    .guide-n{
+      width:20px;height:20px;border-radius:50%;
+      background:linear-gradient(135deg,#e6a817,#b87200);
+      color:#1a0a00;font-size:11px;font-weight:900;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    #guestOrderChip{
+      flex-shrink:0;
+      display:none;
+      padding:0 12px 8px;
+      pointer-events:auto;
+    }
+    html.immersive.chrome-hidden #guestOrderChip.show,
+    html.immersive.fs-active #guestOrderChip.show{display:block;}
+    .scene-order-panel{
+      background:rgba(13,5,0,.88);
+      border:1.5px solid rgba(200,134,10,.5);
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:0 3px 12px rgba(0,0,0,.35);
+    }
+    .order-chip-head-btn{
+      width:100%;
+      border:none;
+      cursor:pointer;
+      background:rgba(200,134,10,.12);
+      border-bottom:1px solid rgba(200,134,10,.3);
+      padding:8px 12px;
+      touch-action:manipulation;
+    }
+    .order-chip-head{
+      font-size:12px;
+      font-weight:900;
+      text-align:center;
+      color:#c8860a;
+      pointer-events:none;
+    }
+    .order-chip-list{
+      max-height:min(22vh,140px);
+      overflow-y:auto;
+      overflow-x:hidden;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+      touch-action:pan-y;
+      padding:4px 12px 8px;
+    }
+    .order-chip-line{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:8px;
+      padding:5px 0;
+      border-bottom:1px solid rgba(200,134,10,.22);
+      font-size:11px;
+      font-weight:700;
+      line-height:1.4;
+      color:#ffe082;
+    }
+    .order-chip-line:last-child{border-bottom:none;}
+    .order-chip-name{flex:1;min-width:0;text-align:right;word-break:break-word;}
+    .order-chip-price{flex-shrink:0;font-weight:900;white-space:nowrap;}
+    #scene:fullscreen,
+    #scene:-webkit-full-screen{
+      position:fixed;inset:0;top:0;
+      width:100%;height:100%;
+      max-width:none;max-height:none;
+    }
+    #scene:fullscreen #sceneHud,
+    #scene:-webkit-full-screen #sceneHud{display:flex!important;}
     #scene{
-      position:fixed;inset:0;z-index:1;
-      display:flex;align-items:center;justify-content:center;overflow:hidden;
-      background:#0d0500;
+      position:fixed;left:0;right:0;top:var(--vv-top,0px);
+      width:var(--app-w,100vw);height:var(--app-h,100dvh);z-index:1;
+      display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
+      overflow:hidden;
+      background:#1e1208;
       perspective:2400px;
-      padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+      padding:0;
+      cursor:pointer;
+    }
+    html.immersive.chrome-hidden #scene,
+    html.immersive.fs-active #scene,
+    #scene:fullscreen,
+    #scene:-webkit-full-screen{
+      justify-content:flex-start;
+    }
+    #fsHint{
+      position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);
+      z-index:160;display:flex;justify-content:center;pointer-events:none;
+      transition:opacity .35s ease;
+    }
+    #fsHint.hide{opacity:0;}
+    #fsHint span{
+      background:rgba(13,5,0,.82);color:#ffe082;font-size:13px;font-weight:800;
+      padding:10px 18px;border-radius:22px;border:1.5px solid rgba(200,134,10,.5);
+      box-shadow:0 6px 24px rgba(0,0,0,.45);
+      animation:fsHintPulse 1.6s ease-in-out infinite;
+    }
+    @keyframes fsHintPulse{
+      0%,100%{transform:scale(1);opacity:.92;}
+      50%{transform:scale(1.04);opacity:1;}
     }
     #book{
-      position:relative;width:100%;height:100%;max-width:100vw;
+      position:relative;flex:1;min-height:0;width:100%;max-width:100vw;
       transform-style:preserve-3d;transform:translateZ(0);
     }
     #book::before{display:none;}
@@ -126,17 +506,62 @@
       35%,65%{opacity:.92;transform:rotateY(-28deg);}
     }
     .pw.turning .hotspot{pointer-events:none!important;opacity:.35;}
-    .pf img,.pb img{width:100%;height:100%;object-fit:contain;background:#1a0800;display:block;pointer-events:none;}
-    .pf-overlay,.pb-overlay{position:absolute;inset:0;pointer-events:none;z-index:12;}
+    .pf-bg,.pb-bg{
+      position:absolute;inset:0;
+      background-size:contain;background-position:center;background-repeat:no-repeat;
+      background-color:#6b5438;
+      filter:brightness(1.14) saturate(1.04);
+      pointer-events:none;user-select:none;-webkit-user-select:none;
+      -webkit-user-drag:none;-webkit-touch-callout:none;
+      touch-action:none;
+    }
+    .th img{user-select:none;-webkit-user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;}
+    .pf-overlay,.pb-overlay{position:absolute;inset:0;pointer-events:none;z-index:20;}
     .pf-overlay .price-hotspot,.pb-overlay .price-hotspot{pointer-events:auto;}
+    .pf-overlay .plus-hit,.pb-overlay .plus-hit,
     .pf-overlay .plus-hotspot,.pb-overlay .plus-hotspot{pointer-events:auto;}
     .pf::after{display:none;}
     .hotspot{
       position:absolute;border:none;background:transparent;cursor:pointer;z-index:10;padding:0;
       display:inline-flex;align-items:center;justify-content:center;
-      width:auto!important;height:auto!important;min-width:0;min-height:0;
+      min-width:0;min-height:0;
     }
-    .hotspot:active .price-cover{transform:scale(.93);filter:brightness(.95);}
+    .hotspot.price-hotspot{width:auto!important;height:auto!important;}
+    .hotspot.plus-hit,.hotspot.plus-hotspot{
+      display:block;
+      z-index:25;
+      box-sizing:border-box;touch-action:manipulation;
+      border:none;border-radius:0;padding:0;margin:0;
+      background:transparent;
+      opacity:1;
+      box-shadow:none;filter:none;
+      -webkit-tap-highlight-color:rgba(188,208,36,.22);
+    }
+    .hotspot.plus-hit::after,.hotspot.plus-hotspot::after{
+      content:"";
+      position:absolute;left:50%;top:50%;
+      width:calc(100% + 14px);height:calc(100% + 14px);
+      min-width:40px;min-height:40px;
+      transform:translate(-50%,-50%);
+      background:transparent;
+    }
+    .plus-hit .plus-glow,.plus-hotspot .plus-glow{
+      position:absolute;inset:0;
+      background:#bcd024;
+      opacity:0;
+      pointer-events:none;
+      animation:plusBtnGlow 1.5s ease-in-out infinite;
+    }
+    .plus-hit.in-cart .plus-glow,.plus-hotspot.in-cart .plus-glow{animation:plusBtnGlowCart 1.2s ease-in-out infinite;}
+    .plus-hit:active .plus-glow,.plus-hotspot:active .plus-glow{opacity:.75!important;animation:none;}
+    @keyframes plusBtnGlow{
+      0%,100%{opacity:0;}
+      50%{opacity:.72;}
+    }
+    @keyframes plusBtnGlowCart{
+      0%,100%{opacity:.3;}
+      50%{opacity:.82;}
+    }
     .price-mask{
       position:absolute;inset:-1px -3px;z-index:0;border-radius:3px;
       background:#ebe4d3;
@@ -219,15 +644,7 @@
     }
     .hotspot:active .add-pin{filter:brightness(.95);}
 
-    /* Serpme — invisible tap on printed + (no price overlay) */
-    .plus-hotspot{
-      position:absolute;padding:0;border:none;background:transparent;cursor:pointer;
-      opacity:0.001;
-    }
-    .plus-hotspot:focus-visible{
-      opacity:1;outline:2px solid rgba(126,211,33,.85);outline-offset:1px;
-    }
-
+    .hotspot:active .price-cover{transform:scale(.93);filter:brightness(.95);}
     #item-popup{
       position:fixed;inset:0;z-index:400;display:flex;align-items:flex-end;justify-content:center;
       opacity:0;pointer-events:none;transition:opacity .25s;background:rgba(0,0,0,0);
@@ -252,7 +669,7 @@
     .popup-add{flex:2;background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:900;color:#0d0500;cursor:pointer;}
 
     #cart-panel{
-      position:fixed;top:0;right:-105%;width:min(390px,100vw);height:100vh;
+      position:fixed;top:0;right:-105%;width:min(390px,100vw);height:var(--app-h,100dvh);
       background:linear-gradient(180deg,#0d0500,#1f0c00);border-left:1.5px solid #c8860a;z-index:350;
       transition:right .4s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;
     }
@@ -321,15 +738,25 @@
     .ml-empty{text-align:center;color:rgba(200,134,10,.45);padding:40px 16px;font-size:14px;}
 
     #nav{
-      position:fixed;bottom:0;left:0;right:0;height:44px;z-index:200;
-      padding-bottom:env(safe-area-inset-bottom);
-      background:linear-gradient(0deg,rgba(13,5,0,.9) 0%,rgba(13,5,0,.5) 65%,transparent 100%);
+      flex-shrink:0;
+      position:relative;
+      width:100%;
+      min-height:48px;
+      padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));
+      background:linear-gradient(0deg,rgba(13,5,0,.92) 0%,rgba(13,5,0,.55) 65%,transparent 100%);
       border:none;
-      display:flex;align-items:center;gap:6px;padding:0 10px;
+      display:flex;align-items:center;gap:8px;
+      z-index:200;
+    }
+    .nav-label{font-size:11px;font-weight:800;white-space:nowrap;}
+    .nav-pg{
+      flex:1;text-align:center;color:rgba(255,224,130,.85);
+      font-size:11px;font-weight:800;white-space:nowrap;
     }
     .nav-arrow{
-      background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:50%;
-      width:34px;height:34px;font-size:14px;color:#0d0500;font-weight:900;cursor:pointer;flex-shrink:0;
+      background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:14px;
+      min-height:38px;padding:0 12px;font-size:12px;color:#0d0500;font-weight:900;cursor:pointer;flex-shrink:0;
+      display:flex;align-items:center;gap:4px;
     }
     .nav-arrow:disabled{background:rgba(42,24,0,.75);color:#5a3a00;cursor:default;}
     #thumbs{flex:1;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;align-items:center;}
@@ -338,15 +765,65 @@
     .th.active{border-color:#c8860a;opacity:1;box-shadow:0 0 8px rgba(200,134,10,.6);}
     .th img{width:100%;height:100%;object-fit:cover;display:block;}
 
+    html.immersive #loadScreen,
+    html.immersive #okScreen,
+    html.immersive #coach,
+    html.immersive #item-popup,
+    html.immersive #overlay,
+    html.immersive #menu-panel{
+      top:var(--vv-top,0px)!important;
+      left:0!important;right:0!important;
+      bottom:auto!important;
+      width:var(--app-w,100vw)!important;
+      height:var(--app-h,100dvh)!important;
+    }
+    html.immersive #scene{
+      top:var(--vv-top,0px)!important;
+      left:0!important;right:0!important;
+      width:var(--app-w,100vw)!important;
+      height:var(--app-h,100dvh)!important;
+    }
+    html.immersive #header{top:var(--vv-top,0px)!important;}
+    html.immersive #nav{
+      top:auto!important;
+      bottom:auto!important;
+    }
+    html.immersive #cart-panel{
+      top:var(--vv-top,0px)!important;
+      height:var(--app-h,100dvh)!important;
+    }
+    html.immersive.chrome-hidden #header .logo,
+    html.immersive.fs-active #header .logo{display:none!important;}
+    html.immersive.chrome-hidden #header .list-btn,
+    html.immersive.fs-active #header .list-btn,
+    html.immersive.chrome-hidden #header .cart-btn,
+    html.immersive.fs-active #header .cart-btn{display:none!important;}
+    html.immersive.chrome-hidden #header,
+    html.immersive.fs-active #header{display:none!important;}
+    html.immersive.chrome-hidden #nav,
+    html.immersive.fs-active #nav{
+      position:relative!important;
+      top:auto!important;
+      bottom:auto!important;
+      left:auto!important;
+      right:auto!important;
+      background:linear-gradient(0deg,rgba(13,5,0,.92) 0%,rgba(13,5,0,.55) 65%,transparent 100%);
+    }
+    html.immersive.chrome-hidden #nav #thumbs,
+    html.immersive.fs-active #nav #thumbs{display:none;}
+    html.single-page .pg-num{display:none;}
+    html:fullscreen,html:-webkit-full-screen{background:#1e1208;}
+    body:fullscreen,body:-webkit-full-screen{background:#1e1208;}
+
   </style>
 </head>
 <body>
-  <div id="loadScreen"><div><p class="title">جاري تحميل المينو…</p><p>صفحات الكتاب الحقيقي</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p></div></div>
 
   <div id="okScreen">
     <div>
       <div class="ok-ring"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c8860a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h2 style="font-size:19px;margin-bottom:8px">شكراً! ✓</h2>
+      <h2 style="font-size:19px;margin-bottom:8px" id="i18n-ok-title">شكراً! ✓</h2>
       <p id="okDetail" style="font-size:13px;color:rgba(200,134,10,.65);line-height:1.6"></p>
       <button type="button" class="order-btn" style="max-width:220px;margin:20px auto 0" id="againBtn">طلب إضافي</button>
     </div>
@@ -356,10 +833,42 @@
     <div class="logo"><span id="shopLabel">ZEKiQ</span><span class="tbl" id="tblLabel"></span></div>
     <div class="pg-num"><bdi id="pgnum" dir="ltr">1 / 1</bdi></div>
     <button type="button" class="list-btn" id="menuListBtn">📋 قائمة</button>
-    <button type="button" class="cart-btn" id="cartBtn">🛒 <span class="cbadge" id="cbadge">0</span></button>
+    <button type="button" class="cart-btn" id="cartBtn">🛒 <span class="cbadge" id="cbadge">0</span><span class="cart-sum" id="cartSum"></span></button>
   </div>
+  <div id="immersiveCartStrip" aria-live="polite"></div>
 
-  <div id="scene"><div id="book"></div></div>
+    <div id="scene">
+    <div id="sceneHud">
+      <div class="hud-row">
+        <button type="button" class="scene-hud-btn scene-hud-list" id="sceneMenuBtn"><span id="i18n-sceneMenuBtn">📋 القائمة</span></button>
+        <div class="scene-hud-center">
+          <div class="scene-hud-shop" id="sceneHudShop">ZEKiQ</div>
+          <div class="scene-hud-table" id="sceneHudTable">🪑 طاولة —</div>
+        </div>
+        <button type="button" class="scene-hud-send" id="sceneSendBtn" hidden><span id="i18n-sceneSendBtn">إرسال ✓</span></button>
+      </div>
+    </div>
+    <div id="guestGuide" class="guest-guide show">
+      <div class="guide-step" id="i18n-guide1"><span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة</div>
+      <div class="guide-step" id="i18n-guide2"><span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد</div>
+    </div>
+    <div id="guestOrderChip">
+      <div class="scene-order-panel">
+        <button type="button" class="order-chip-head-btn" id="sceneOrderBtn">
+          <div class="order-chip-head" id="sceneOrderSummary"></div>
+        </button>
+        <div class="order-chip-list" id="sceneOrderList"></div>
+      </div>
+    </div>
+    <div id="book"></div>
+    <div id="nav">
+      <button type="button" class="nav-arrow" id="prevBtn"><span class="nav-label" id="i18n-prev">◀ السابق</span></button>
+      <div class="nav-pg"><bdi id="navPgnum" dir="ltr">1 / 1</bdi></div>
+      <button type="button" class="nav-arrow" id="nextBtn"><span class="nav-label" id="i18n-next">التالي ▶</span></button>
+      <div id="thumbs" aria-hidden="true"></div>
+    </div>
+  </div>
+  <div id="fsHint" aria-hidden="true"><span id="i18n-fsHint">👆 اضغط على المينو لملء الشاشة</span></div>
 
   <div id="pageDock">
     <div class="dock-head">
@@ -373,19 +882,14 @@
 
   <div id="coach">
     <div id="coach-card">
-      <h2>كيف تطلب؟</h2>
-      <div class="coach-step"><span class="coach-num">1</span><span>تصفّح صفحات الكتاب</span></div>
-      <div class="coach-step"><span class="coach-num">2</span><span>اضغط <strong>+ الأخضر</strong> على الصورة</span></div>
-      <div class="coach-step"><span class="coach-num">3</span><span>🛒 السلة → تأكيد · أو <strong>📋 قائمة</strong> للبحث</span></div>
+      <h2 id="i18n-coach-title">كيف تطلب؟</h2>
+      <div class="coach-step"><span class="coach-num">1</span><span id="i18n-coach-1">تصفّح <strong>المينو</strong> — أزرار <strong>السابق / التالي</strong> بالأسفل</span></div>
+      <div class="coach-step"><span class="coach-num">2</span><span id="i18n-coach-2">اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام</span></div>
+      <div class="coach-step"><span class="coach-num">3</span><span id="i18n-coach-3">اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong></span></div>
       <button type="button" id="coachOk">فهمت — ابدأ الطلب ✓</button>
     </div>
   </div>
 
-  <div id="nav">
-    <button type="button" class="nav-arrow" id="prevBtn">◀</button>
-    <div id="thumbs"></div>
-    <button type="button" class="nav-arrow" id="nextBtn">▶</button>
-  </div>
 
   <div id="item-popup">
     <div id="popup-card">
@@ -407,7 +911,7 @@
 
   <div id="menu-panel">
     <div class="menu-hd">
-      <div><div class="menu-title">📋 قائمة الأطباق</div><div class="menu-sub">ابحث واطلب من أي صفحة</div></div>
+      <div><div class="menu-title" id="i18n-menu-title">📋 قائمة الأطباق</div><div class="menu-sub" id="i18n-menu-sub">ابحث واطلب من أي صفحة</div></div>
       <button type="button" class="close-c" id="closeMenuList">×</button>
     </div>
     <input type="search" id="menuSearch" placeholder="ابحث… Türk kahve, menemen, pasta…" autocomplete="off" enterkeyhint="search" />
@@ -415,12 +919,15 @@
   </div>
 
   <div id="cart-panel">
-    <div class="cart-hd"><span class="cart-title">🛒 السلة</span><button type="button" class="close-c" id="closeCart">×</button></div>
+    <div class="cart-hd">
+      <div><div class="cart-title" id="i18n-cart-title">راجع طلبك</div><div class="menu-sub" style="margin-top:2px" id="i18n-cart-sub">عدّل الكمية ثم أكّد الإرسال</div></div>
+      <button type="button" class="close-c" id="closeCart">×</button>
+    </div>
     <div id="cart-items"></div>
     <div class="cart-ft">
-      <div class="total-row"><span>المجموع</span><span class="tv" id="total">0 ₺</span></div>
+      <div class="total-row"><span id="i18n-cart-total-label">المجموع</span><span class="tv" id="total">0 ₺</span></div>
       <textarea class="note" id="noteInp" rows="2" placeholder="ملاحظة (حساسية، طلب خاص…)" maxlength="200"></textarea>
-      <button type="button" class="order-btn" id="sendBtn">✓ تأكيد الطلب</button>
+      <button type="button" class="order-btn" id="sendBtn">✓ تأكيد وإرسال للمطبخ</button>
     </div>
   </div>
   <div id="overlay"></div>
@@ -434,6 +941,229 @@
       location.replace(location.pathname + "?" + h);
     })();
   </script>
+  <script>
+/**
+ * Customer QR table page — UI strings (ar / tr / en).
+ * Loaded inline in index.html; language from API guestLanguage.
+ */
+(function (global) {
+  var PACK = {
+    ar: {
+      pageTitle: "طلب من الطاولة — ZEKiQ",
+      loadingTitle: "جاري تحميل المينو…",
+      loadingSub: "صفحات الكتاب الحقيقي",
+      menuList: "📋 القائمة",
+      send: "إرسال ✓",
+      guide1: '<span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة',
+      guide2: '<span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد',
+      coachTitle: "كيف تطلب؟",
+      coach1: 'تصفّح <strong>المينو</strong> — أزرار <strong>السابق / التالي</strong> بالأسفل',
+      coach2: 'اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام',
+      coach3: 'اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong>',
+      coachOk: "فهمت — ابدأ الطلب ✓",
+      prev: "◀ السابق",
+      next: "التالي ▶",
+      fsHint: "👆 اضغط على المينو لملء الشاشة",
+      menuTitle: "📋 قائمة الأطباق",
+      menuSub: "ابحث واطلب من أي صفحة",
+      menuSearch: "ابحث… Türk kahve, menemen, pasta…",
+      cartTitle: "راجع طلبك",
+      cartSub: "عدّل الكمية ثم أكّد الإرسال",
+      cartTotal: "المجموع",
+      cartSend: "✓ تأكيد وإرسال للمطبخ",
+      notePh: "ملاحظة (حساسية، طلب خاص…)",
+      popupClose: "إلغاء",
+      popupAdd: "أضف للسلة",
+      okTitle: "شكراً! ✓",
+      againBtn: "طلب إضافي",
+      table: "طاولة",
+      items: "أصناف",
+      orderTotal: "المجموع",
+      emptyCart: "السلة فارغة",
+      emptyCartHint: "اضغط + في المينو أو القائمة",
+      menuLoading: "جاري تحميل الأطباق…",
+      menuNoResults: "لا نتائج",
+      errScanQr: "امسح QR",
+      errScanQrD: "امسح رمز QR من الطاولة للطلب.",
+      errOldQr: "QR قديم",
+      errOldQrD: "حدّث الرموز من إعدادات الكاشير.",
+      errDisabled: "طلبات QR معطّلة",
+      errDisabledD: "فعّلها من إعدادات الكاشير.",
+      errConn: "تعذّر الاتصال",
+      errConnD: "تأكد أن ZEKiQ POS شغّال و shop.zekiqmenu.com متصل.",
+      errTable: "الطاولة غير مفتوحة على الكاشير.\nافتح الطاولة من ZEKiQ POS ثم أعد الإرسال.",
+      errToken: "رمز QR قديم — اطبع QR جديد من إعدادات الكاشير.",
+      errSend: "تعذّر الإرسال — تحقق من الإنترنت أو أن ZEKiQ POS شغّال.",
+      errNet: "تعذّر الاتصال — تحقق من الإنترنت.",
+      okDetail: "وصل طلبك إلى الكاشير والمطبخ",
+      toastAdded: "→ السلة",
+      menuNotReady: "المينو غير جاهز",
+      menuNotReadyD: "من الكاشير: استورد PDF المينو ثم شغّل export-guest-menu-book",
+    },
+    tr: {
+      pageTitle: "Masadan sipariş — ZEKiQ",
+      loadingTitle: "Menü yükleniyor…",
+      loadingSub: "Dijital menü kitabı",
+      menuList: "📋 Menü",
+      send: "Gönder ✓",
+      guide1: '<span class="guide-n">1</span> Resimdeki yeşil <strong>+</strong> düğmesine basın',
+      guide2: '<span class="guide-n">2</span> Sonra onay için <strong>Gönder</strong>',
+      coachTitle: "Nasıl sipariş verilir?",
+      coach1: '<strong>Menüde</strong> gezinin — altta <strong>Önceki / Sonraki</strong>',
+      coach2: 'Yemek eklemek için resimdeki <strong>yeşil +</strong> düğmesine basın',
+      coach3: 'Üstte <strong>Gönder</strong> → sepeti kontrol et → <strong>Onayla</strong>',
+      coachOk: "Anladım — siparişe başla ✓",
+      prev: "◀ Önceki",
+      next: "Sonraki ▶",
+      fsHint: "👆 Tam ekran için menüye dokunun",
+      menuTitle: "📋 Yemek listesi",
+      menuSub: "Ara ve her sayfadan sipariş ver",
+      menuSearch: "Ara… Türk kahve, menemen, pasta…",
+      cartTitle: "Siparişini kontrol et",
+      cartSub: "Miktarı düzenle ve onayla",
+      cartTotal: "Toplam",
+      cartSend: "✓ Onayla ve mutfağa gönder",
+      notePh: "Not (alerji, özel istek…)",
+      popupClose: "İptal",
+      popupAdd: "Sepete ekle",
+      okTitle: "Teşekkürler! ✓",
+      againBtn: "Ek sipariş",
+      table: "Masa",
+      items: "ürün",
+      orderTotal: "Toplam",
+      emptyCart: "Sepet boş",
+      emptyCartHint: "Menüde + veya listeden ekle",
+      menuLoading: "Yemekler yükleniyor…",
+      menuNoResults: "Sonuç yok",
+      errScanQr: "QR okut",
+      errScanQrD: "Sipariş için masadaki QR kodu okutun.",
+      errOldQr: "Eski QR",
+      errOldQrD: "Kasiyer ayarlarından QR kodlarını güncelleyin.",
+      errDisabled: "QR sipariş kapalı",
+      errDisabledD: "Kasiyer ayarlarından etkinleştirin.",
+      errConn: "Bağlantı hatası",
+      errConnD: "ZEKiQ POS açık mı ve internet bağlantısı var mı kontrol edin.",
+      errTable: "Masa kasada açık değil.\nZEKiQ POS'tan masayı açın ve tekrar deneyin.",
+      errToken: "Eski QR — kasiyerden yeni QR yazdırın.",
+      errSend: "Gönderilemedi — internet veya ZEKiQ POS'u kontrol edin.",
+      errNet: "Bağlantı hatası — interneti kontrol edin.",
+      okDetail: "Siparişiniz kasa ve mutfağa ulaştı",
+      toastAdded: "→ sepet",
+      menuNotReady: "Menü hazır değil",
+      menuNotReadyD: "Kasadan PDF menüyü içe aktarın",
+    },
+    en: {
+      pageTitle: "Table order — ZEKiQ",
+      loadingTitle: "Loading menu…",
+      loadingSub: "Digital menu book",
+      menuList: "📋 Menu",
+      send: "Send ✓",
+      guide1: '<span class="guide-n">1</span> Tap the green <strong>+</strong> on the image',
+      guide2: '<span class="guide-n">2</span> Then <strong>Send</strong> to confirm',
+      coachTitle: "How to order?",
+      coach1: 'Browse the <strong>menu</strong> — <strong>Prev / Next</strong> at bottom',
+      coach2: 'Tap the green <strong>+</strong> on the image to add food',
+      coach3: 'Tap <strong>Send</strong> at top → review cart → <strong>Confirm</strong>',
+      coachOk: "Got it — start ordering ✓",
+      prev: "◀ Prev",
+      next: "Next ▶",
+      fsHint: "👆 Tap the menu for full screen",
+      menuTitle: "📋 Dish list",
+      menuSub: "Search and order from any page",
+      menuSearch: "Search… coffee, pasta…",
+      cartTitle: "Review your order",
+      cartSub: "Edit quantity then confirm",
+      cartTotal: "Total",
+      cartSend: "✓ Confirm & send to kitchen",
+      notePh: "Note (allergy, special request…)",
+      popupClose: "Cancel",
+      popupAdd: "Add to cart",
+      okTitle: "Thank you! ✓",
+      againBtn: "Order more",
+      table: "Table",
+      items: "items",
+      orderTotal: "Total",
+      emptyCart: "Cart is empty",
+      emptyCartHint: "Tap + on menu or use list",
+      menuLoading: "Loading dishes…",
+      menuNoResults: "No results",
+      errScanQr: "Scan QR",
+      errScanQrD: "Scan the table QR code to order.",
+      errOldQr: "Old QR",
+      errOldQrD: "Update QR codes from cashier settings.",
+      errDisabled: "QR orders disabled",
+      errDisabledD: "Enable in cashier settings.",
+      errConn: "Connection failed",
+      errConnD: "Check ZEKiQ POS is running and online.",
+      errTable: "Table not open on cashier.\nOpen the table in ZEKiQ POS and try again.",
+      errToken: "Old QR — print a new one from cashier.",
+      errSend: "Could not send — check internet or ZEKiQ POS.",
+      errNet: "Connection failed — check internet.",
+      okDetail: "Your order reached the cashier and kitchen",
+      toastAdded: "→ cart",
+      menuNotReady: "Menu not ready",
+      menuNotReadyD: "Import PDF menu from cashier",
+    },
+  };
+
+  var lang = "ar";
+
+  function t(key) {
+    var bag = PACK[lang] || PACK.ar;
+    return bag[key] || PACK.ar[key] || key;
+  }
+
+  function apply(langCode) {
+    lang = langCode === "tr" || langCode === "en" ? langCode : "ar";
+    global.__zekiqGuestLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.title = t("pageTitle");
+    var htmlIds = {
+      "i18n-load-title": "loadingTitle",
+      "i18n-load-sub": "loadingSub",
+      "i18n-sceneMenuBtn": "menuList",
+      "i18n-sceneSendBtn": "send",
+      "i18n-guide1": "guide1",
+      "i18n-guide2": "guide2",
+      "i18n-coach-title": "coachTitle",
+      "i18n-coach-1": "coach1",
+      "i18n-coach-2": "coach2",
+      "i18n-coach-3": "coach3",
+      "coachOk": "coachOk",
+      "i18n-prev": "prev",
+      "i18n-next": "next",
+      "i18n-fsHint": "fsHint",
+      "i18n-menu-title": "menuTitle",
+      "i18n-menu-sub": "menuSub",
+      "i18n-cart-title": "cartTitle",
+      "i18n-cart-sub": "cartSub",
+      "i18n-cart-total-label": "cartTotal",
+      "sendBtn": "cartSend",
+      "popupClose": "popupClose",
+      "popupAdd": "popupAdd",
+      "i18n-ok-title": "okTitle",
+      "againBtn": "againBtn",
+    };
+    Object.keys(htmlIds).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var val = t(htmlIds[id]);
+      if (htmlIds[id].indexOf("guide") === 0 || htmlIds[id].indexOf("coach") === 0) el.innerHTML = val;
+      else el.textContent = val;
+    });
+    var note = document.getElementById("noteInp");
+    if (note) note.placeholder = t("notePh");
+    var search = document.getElementById("menuSearch");
+    if (search) search.placeholder = t("menuSearch");
+    if (typeof global.__zekiqOnGuestLang === "function") global.__zekiqOnGuestLang(lang);
+  }
+
+  global.guestT = t;
+  global.applyGuestLanguage = apply;
+  global.__zekiqGuestLang = lang;
+})(window);
+</script>
   <script>
     function readParams() {
       const q = new URLSearchParams(location.search);
@@ -459,9 +1189,16 @@
     let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "";
     let bookPages = [], pageCategories = {}, pageHotspots = {}, manualSpots = {};
     let singlePagePlusOnly = false;
+    let plusButtonsAllPages = false;
     let bookCacheVer = "";
     let cur = 0, animating = false, popupItem = null, popupQty = 1, sending = false, done = false;
     let coachDone = false, orderOn = false;
+
+    function guestT(k) { return (typeof window.guestT === "function") ? window.guestT(k) : k; }
+    window.__zekiqOnGuestLang = function () {
+      if (typeof syncSceneHud === "function") syncSceneHud();
+      if (document.getElementById("cart-panel")?.classList.contains("open") && typeof renderCart === "function") renderCart();
+    };
 
     function esc(s) {
       return String(s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
@@ -621,6 +1358,7 @@
     function spotKind(spot, pageIdx) {
       if (spot && spot.kind === "plus") return "plus";
       if (spot && spot.kind === "price") return "price";
+      if (plusButtonsAllPages) return "plus";
       if (pageIdx === 0) return "plus";
       return "price";
     }
@@ -635,16 +1373,19 @@
         '<span class="pc-plus">' + (q > 0 ? String(q) : "+") + '</span>';
     }
     function collectPagePins(pageIdx) {
-      const plusOnly = singlePagePlusOnly || bookPages.length <= 1;
-      if (plusOnly && pageIdx === 0) {
-        const spots = (manualSpots["0"] || manualSpots[0] || []).filter(s => s && s.kind === "plus");
-        const pageItems = itemsForPage(0);
+      const manual = manualSpots[String(pageIdx)] || manualSpots[pageIdx] || [];
+      const hasPlusManual = manual.some(s => s && (s.kind === "plus" || plusButtonsAllPages));
+      const plusOnly = singlePagePlusOnly || plusButtonsAllPages || bookPages.length <= 1 || hasPlusManual;
+      if (plusOnly) {
+        const spots = (manualSpots[String(pageIdx)] || manualSpots[pageIdx] || []).filter(s => s && (s.kind === "plus" || plusButtonsAllPages));
+        const pageItems = itemsForPage(pageIdx);
         const out = [];
         const used = new Set();
-        for (const spot of spots) {
-          const p = Math.round(Number(spot.price));
-          let item = pageItems.find(it => !used.has(it.id) && Math.round(Number(it.price)) === p);
-          if (!item) item = menu.find(it => !used.has(it.id) && Math.round(Number(it.price)) === p);
+        const sortedSpots = spots.sort((a, b) => Number(a.y) - Number(b.y) || Number(a.x) - Number(b.x));
+        const offset = plusSpotMenuOffset(sortedSpots, pageItems);
+        for (let spotIdx = 0; spotIdx < sortedSpots.length; spotIdx++) {
+          const spot = sortedSpots[spotIdx];
+          let item = resolvePlusSpotItem(spot, pageItems, spotIdx, offset, used);
           if (!item) continue;
           used.add(item.id);
           out.push({ item, spot: {
@@ -654,11 +1395,10 @@
             kind: "plus",
           } });
         }
-        return out.sort((a, b) => a.spot.y - b.spot.y);
+        if (out.length) return out.sort((a, b) => a.spot.y - b.spot.y);
       }
       const pageItems = itemsForPage(pageIdx);
       if (!pageItems.length) return [];
-      const manual = manualSpots[String(pageIdx)] || manualSpots[pageIdx] || [];
       const auto = (pageHotspots[String(pageIdx)] || pageHotspots[pageIdx] || []).filter(spotValid);
       const spotKey = s => Math.round(Number(s.price)) + ":" + Number(s.y).toFixed(3);
       const seen = new Set();
@@ -723,6 +1463,10 @@
         const item = menu.find(m => m.id === id);
         if (item) fillPriceCover(card, item);
       });
+      document.querySelectorAll(".plus-hit, .plus-hotspot").forEach(h => {
+        const id = Number(h.dataset.itemId);
+        h.classList.toggle("in-cart", qtyOf(id) > 0);
+      });
       if (document.getElementById("menu-panel").classList.contains("open")) buildMenuList();
       renderPageDock();
     }
@@ -732,13 +1476,34 @@
       return list.find(s => Math.round(Number(s.price)) === p) || null;
     }
     function imageOverlayRect(pf) {
-      const img = pf.querySelector("img");
-      if (!img || !img.naturalWidth) return null;
+      const nw = Number(pf.dataset.nw), nh = Number(pf.dataset.nh);
+      if (!nw || !nh) return null;
       const cw = pf.clientWidth, ch = pf.clientHeight;
-      const nw = img.naturalWidth, nh = img.naturalHeight;
       const scale = Math.min(cw / nw, ch / nh);
       const dw = nw * scale, dh = nh * scale;
       return { ox: (cw - dw) / 2, oy: (ch - dh) / 2, dw, dh };
+    }
+    function primePageBg(pf, src, onReady) {
+      const bg = document.createElement("div");
+      bg.className = "pf-bg";
+      bg.setAttribute("aria-hidden", "true");
+      pf.insertBefore(bg, pf.firstChild);
+      const probe = new Image();
+      probe.onload = () => {
+        pf.dataset.nw = String(probe.naturalWidth);
+        pf.dataset.nh = String(probe.naturalHeight);
+        bg.style.backgroundImage = "url(\"" + String(src).replace(/\\/g, "\\\\").replace(/"/g, "\\\"") + "\")";
+        if (onReady) onReady();
+      };
+      probe.onerror = () => { if (onReady) onReady(); };
+      probe.src = src;
+    }
+    function primeBackBg(pb, src) {
+      const bg = document.createElement("div");
+      bg.className = "pb-bg";
+      bg.setAttribute("aria-hidden", "true");
+      bg.style.backgroundImage = "url(\"" + String(src).replace(/\\/g, "\\\\").replace(/"/g, "\\\"") + "\")";
+      pb.appendChild(bg);
     }
     function layoutPfHotspots(pf) {
       const overlay = pf.querySelector(".pf-overlay");
@@ -748,14 +1513,14 @@
       overlay.style.top = rect.oy + "px";
       overlay.style.width = rect.dw + "px";
       overlay.style.height = rect.dh + "px";
-      overlay.querySelectorAll(".price-hotspot, .plus-hotspot").forEach(h => {
+      overlay.querySelectorAll(".price-hotspot, .plus-hit, .plus-hotspot").forEach(h => {
         const x = parseFloat(h.dataset.x), y = parseFloat(h.dataset.y);
-        const isPlus = h.classList.contains("plus-hotspot");
+        const isPlus = h.classList.contains("plus-hit") || h.classList.contains("plus-hotspot");
         h.style.left = (x * rect.dw) + "px";
         h.style.top = (y * rect.dh) + "px";
         if (isPlus) {
-          const w = parseFloat(h.dataset.w) || 0.038;
-          const hh = parseFloat(h.dataset.h) || 0.028;
+          const w = parseFloat(h.dataset.w) || 0.055;
+          const hh = parseFloat(h.dataset.h) || 0.032;
           h.style.width = (w * rect.dw) + "px";
           h.style.height = (hh * rect.dh) + "px";
         }
@@ -765,6 +1530,9 @@
     function layoutAllHotspots() {
       document.querySelectorAll(".pf").forEach(layoutPfHotspots);
     }
+    window.__zekiqRelayout = function() {
+      layoutAllHotspots();
+    };
     function resolveSpot(item, pageIdx, spots, usedSpot) {
       let spot = findManualSpot(item, pageIdx);
       if (spot) return spot;
@@ -778,13 +1546,72 @@
     }
     function itemsForPage(i) {
       if (!menu.length) return [];
-      return menu.filter(it => pageItemMatches(i, it))
-        .sort((a, b) => Number(a.price) - Number(b.price) || String(a.name).localeCompare(String(b.name), "tr"));
+      return menu
+        .map((it, idx) => ({ it, idx }))
+        .filter(({ it }) => pageItemMatches(i, it))
+        .sort((a, b) => a.idx - b.idx)
+        .map(({ it }) => it);
+    }
+    function plusSpotMenuOffset(sortedSpots, pageItems) {
+      const gap = pageItems.length - sortedSpots.length;
+      if (gap <= 0) return 0;
+      let bestOff = 0, bestScore = -1;
+      for (let off = 0; off <= gap; off++) {
+        let score = 0;
+        for (let i = 0; i < sortedSpots.length; i++) {
+          const item = pageItems[i + off];
+          if (!item) break;
+          const spot = sortedSpots[i];
+          if (spot.menuItemId != null && item.id === Number(spot.menuItemId)) score += 8;
+          if (spot.name && nameMatches(item.name, spot.name)) score += 4;
+          const sp = Math.round(Number(spot.price));
+          const ip = Math.round(Number(item.price));
+          if (sp > 0 && sp === ip) score += 1;
+        }
+        if (score > bestScore) { bestScore = score; bestOff = off; }
+      }
+      return bestOff;
+    }
+    function resolvePlusSpotItem(spot, pageItems, spotIdx, offset, used) {
+      if (spot.menuItemId != null) {
+        const byId = pageItems.find(it => it.id === Number(spot.menuItemId) && !used.has(it.id));
+        if (byId) return byId;
+      }
+      if (spot.name) {
+        const p = spot.price != null ? Math.round(Number(spot.price)) : null;
+        const byName = pageItems.find(it => !used.has(it.id) && nameMatches(it.name, spot.name)
+          && (p == null || Math.round(Number(it.price)) === p));
+        if (byName) return byName;
+      }
+      const idx = spotIdx + offset;
+      if (idx >= 0 && idx < pageItems.length) {
+        const byPos = pageItems[idx];
+        if (byPos && !used.has(byPos.id)) return byPos;
+      }
+      if (spot.price != null) {
+        const p = Math.round(Number(spot.price));
+        return pageItems.find(it => !used.has(it.id) && Math.round(Number(it.price)) === p) || null;
+      }
+      return null;
     }
     function renderPageDock() { /* full-screen: ordering on page only */ }
-    function attachPlusHotspot(overlay, item, spot) {
+    function bindPlusTap(h, item) {
+      let last = 0;
+      const fire = e => {
+        const now = Date.now();
+        if (now - last < 400) return;
+        last = now;
+        e.preventDefault();
+        e.stopPropagation();
+        quickAddItem(item);
+      };
+      h.addEventListener("touchstart", e => e.stopPropagation(), { passive: true });
+      h.addEventListener("touchend", fire, { passive: false });
+      h.addEventListener("click", fire);
+    }
+    function attachPlusHotspot(overlay, item, spot, glowIndex) {
       const h = document.createElement("button");
-      h.className = "hotspot plus-hotspot";
+      h.className = "hotspot plus-hit";
       h.type = "button";
       h.dataset.itemId = item.id;
       h.dataset.x = String(spot.x);
@@ -792,9 +1619,14 @@
       h.dataset.w = String(spot.w);
       h.dataset.h = String(spot.h);
       h.dataset.anchor = spot.anchor || "center";
+      const glow = document.createElement("span");
+      glow.className = "plus-glow";
+      glow.setAttribute("aria-hidden", "true");
+      glow.style.animationDelay = (Number(glowIndex) || 0) * 0.5 + "s";
+      h.appendChild(glow);
       h.title = item.name;
       h.setAttribute("aria-label", "أضف " + item.name);
-      h.addEventListener("click", e => { e.stopPropagation(); quickAddItem(item); });
+      bindPlusTap(h, item);
       overlay.appendChild(h);
     }
     function attachPriceCover(overlay, item, spot, pulse, pageIdx) {
@@ -819,27 +1651,28 @@
       h.addEventListener("click", e => { e.stopPropagation(); quickAddItem(item); });
       overlay.appendChild(h);
     }
-    function mountPageOverlays() {
-      bookPages.forEach((_, i) => {
-        const pf = document.querySelector("#pw" + i + " .pf");
-        if (!pf) return;
-        let overlay = pf.querySelector(".pf-overlay");
-        if (!overlay) {
-          overlay = document.createElement("div");
-          overlay.className = "pf-overlay";
-          pf.appendChild(overlay);
-        }
-        overlay.innerHTML = "";
-        const pins = collectPagePins(i);
-        pins.forEach(({ item, spot }) => {
-          if (spot.kind === "plus") attachPlusHotspot(overlay, item, spot);
-          else attachPriceCover(overlay, item, spot, false, i);
-        });
-        const img = pf.querySelector("img");
-        const relayout = () => layoutPfHotspots(pf);
-        if (img && img.complete) relayout();
-        else if (img) img.addEventListener("load", relayout, { once: true });
+    function mountPageOverlays(pageIdx) {
+      if (pageIdx == null) pageIdx = cur;
+      document.querySelectorAll(".pf-overlay").forEach(o => { o.innerHTML = ""; o.remove(); });
+      const pf = document.querySelector("#pw" + pageIdx + " .pf");
+      if (!pf) return;
+      const overlay = document.createElement("div");
+      overlay.className = "pf-overlay";
+      pf.appendChild(overlay);
+      const pins = collectPagePins(pageIdx);
+      pins.forEach(({ item, spot }, pinIdx) => {
+        if (spot.kind === "plus") attachPlusHotspot(overlay, item, spot, pinIdx);
+        else attachPriceCover(overlay, item, spot, false, pageIdx);
       });
+      const relayout = () => layoutPfHotspots(pf);
+      if (pf.dataset.nw) relayout();
+      else {
+        const wait = () => {
+          if (pf.dataset.nw) relayout();
+          else requestAnimationFrame(wait);
+        };
+        wait();
+      }
       layoutAllHotspots();
     }
     function fixImgUrl(url) {
@@ -854,29 +1687,32 @@
     }
 
     function quickAddItem(item) {
+      if (!coachDone) dismissCoach();
       addToCart(item);
-      showToast("✅ " + item.name + "\n→ السلة · " + money(item.price));
+      showToast("✅ " + item.name + "\n" + guestT("toastAdded") + " · " + money(item.price));
     }
     function openMenuList() {
       document.getElementById("menu-panel").classList.add("open");
       buildMenuList();
+      if (window.__zekiqShowChrome) window.__zekiqShowChrome();
       setTimeout(() => document.getElementById("menuSearch").focus(), 200);
     }
     function closeMenuList() {
       document.getElementById("menu-panel").classList.remove("open");
       document.getElementById("menuSearch").value = "";
       menuSearchQuery = "";
+      if (window.__zekiqShowChrome) window.__zekiqShowChrome();
     }
     function buildMenuList() {
       const box = document.getElementById("menu-list");
       if (!menu.length) {
-        box.innerHTML = '<div class="ml-empty">جاري تحميل الأطباق…</div>';
+        box.innerHTML = '<div class="ml-empty">' + esc(guestT("menuLoading")) + '</div>';
         return;
       }
       const q = normName(menuSearchQuery);
       const filtered = menu.filter(it => !q || menuSearchHay(it).includes(q));
       if (!filtered.length) {
-        box.innerHTML = '<div class="ml-empty">لا نتائج لـ «' + esc(menuSearchQuery) + '»</div>';
+        box.innerHTML = '<div class="ml-empty">' + esc(guestT("menuNoResults")) + ' «' + esc(menuSearchQuery) + '»</div>';
         return;
       }
       const groups = new Map();
@@ -920,7 +1756,7 @@
       const book = document.getElementById("book");
       book.innerHTML = "";
       if (!bookPages.length) {
-        showErr("المينو غير جاهز", "من الكاشير: استورد PDF المينو ثم شغّل export-guest-menu-book");
+        showErr(guestT("menuNotReady"), guestT("menuNotReadyD"));
         return;
       }
       bookPages.forEach((imgUrl, i) => {
@@ -931,11 +1767,8 @@
 
         const pf = document.createElement("div");
         pf.className = "pf";
-        const fi = document.createElement("img");
-        fi.src = fixImgUrl(imgUrl) + (String(imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
-        fi.alt = "صفحة " + (i + 1);
-        fi.draggable = false;
-        pf.appendChild(fi);
+        const pageSrc = fixImgUrl(imgUrl) + (String(imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
+        primePageBg(pf, pageSrc);
         const shade = document.createElement("div");
         shade.className = "page-shade";
         pf.appendChild(shade);
@@ -946,11 +1779,7 @@
         const pb = document.createElement("div");
         pb.className = "pb";
         if (i + 1 < bookPages.length) {
-          const bi = document.createElement("img");
-          bi.src = fixImgUrl(bookPages[i + 1]);
-          bi.alt = "صفحة " + (i + 2);
-          bi.draggable = false;
-          pb.appendChild(bi);
+          primeBackBg(pb, fixImgUrl(bookPages[i + 1]));
         }
 
         pw.appendChild(pf);
@@ -964,25 +1793,31 @@
         const th = document.createElement("div");
         th.className = "th" + (i === 0 ? " active" : "");
         th.id = "th" + i;
-        th.innerHTML = '<img src="' + esc(fixImgUrl(imgUrl)) + '" alt="" />';
+        th.innerHTML = '<img src="' + esc(fixImgUrl(imgUrl)) + '" alt="" draggable="false" role="presentation" />';
         th.onclick = () => goTo(i);
         ts.appendChild(th);
       });
       cur = 0;
       const nav = document.getElementById("nav");
       if (nav) nav.style.display = bookPages.length <= 1 ? "none" : "";
-      mountPageOverlays();
+      document.documentElement.classList.toggle("single-page", bookPages.length <= 1);
       sync();
       buildMenuList();
       renderPageDock();
       document.getElementById("loadScreen").style.display = "none";
       if (!window.__hotspotRo) {
-        window.__hotspotRo = new ResizeObserver(() => layoutAllHotspots());
+        window.__hotspotRo = new ResizeObserver(() => {
+          layoutAllHotspots();
+          if (window.__zekiqFitViewport) window.__zekiqFitViewport();
+        });
         window.__hotspotRo.observe(document.getElementById("book"));
         window.__hotspotRo.observe(document.getElementById("scene"));
       }
       setTimeout(() => document.querySelectorAll(".price-cover.pulse").forEach(p => p.classList.remove("pulse")), 5500);
       maybeShowCoach();
+      if (window.__zekiqBindSceneFullscreen) window.__zekiqBindSceneFullscreen();
+      if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
+      if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
     }
 
     function maybeShowCoach() {
@@ -995,6 +1830,12 @@
       coachDone = true;
       document.getElementById("coach").classList.remove("show");
       try { sessionStorage.setItem("zekiq_guest_coach", "1"); } catch (_) {}
+      if (window.__zekiqTryFullscreen) {
+        window.__zekiqTryFullscreen().finally(function() {
+          if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
+        });
+      }
+      if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
     }
     document.getElementById("coachOk").onclick = dismissCoach;
     document.getElementById("coach").onclick = e => { if (e.target.id === "coach") dismissCoach(); };
@@ -1004,7 +1845,10 @@
     function endPageTurn(pw) {
       pw.classList.remove("turn-next", "turn-prev", "turning", "page-leave");
       animating = false;
-      requestAnimationFrame(layoutAllHotspots);
+      requestAnimationFrame(() => {
+        layoutAllHotspots();
+        if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
+      });
     }
 
     function runFlip(pw, cls, onDone) {
@@ -1042,8 +1886,11 @@
       step();
     }
     function sync() {
+      const pgText = bookPages.length ? (cur + 1) + " / " + bookPages.length : "—";
       const pg = document.getElementById("pgnum");
-      if (pg) pg.textContent = bookPages.length ? (cur + 1) + " / " + bookPages.length : "—";
+      if (pg) pg.textContent = pgText;
+      const navPg = document.getElementById("navPgnum");
+      if (navPg) navPg.textContent = pgText;
       document.getElementById("prevBtn").disabled = cur === 0;
       document.getElementById("nextBtn").disabled = cur >= bookPages.length - 1;
       document.querySelectorAll(".pw").forEach((pw, i) => {
@@ -1054,14 +1901,20 @@
         if (i === cur) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       });
       renderPageDock();
-      requestAnimationFrame(layoutAllHotspots);
+      mountPageOverlays(cur);
+      requestAnimationFrame(() => {
+        layoutAllHotspots();
+        if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
+      });
     }
 
     let tx = 0, ty = 0, dragging = false;
     document.getElementById("book").addEventListener("touchstart", e => {
+      if (e.target.closest(".plus-hit, .plus-hotspot, .price-hotspot")) return;
       tx = e.touches[0].clientX; ty = e.touches[0].clientY; dragging = true;
     }, { passive: true });
     document.getElementById("book").addEventListener("touchend", e => {
+      if (e.target.closest(".plus-hit, .plus-hotspot, .price-hotspot")) return;
       if (!dragging) return;
       dragging = false;
       const dx = tx - e.changedTouches[0].clientX;
@@ -1094,7 +1947,7 @@
       if (!popupItem) return;
       for (let i = 0; i < popupQty; i++) addToCart(popupItem);
       closePopup();
-      showToast("✅ " + popupItem.name + "\n" + popupQty + "× → السلة");
+      showToast("✅ " + popupItem.name + "\n" + popupQty + "× " + guestT("toastAdded"));
     };
 
     function addToCart(item) {
@@ -1103,20 +1956,63 @@
       updateBadge();
       if (navigator.vibrate) navigator.vibrate(12);
     }
+    function syncSceneHud() {
+      const t = cart.reduce((s, i) => s + i.qty, 0);
+      const total = cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0);
+      const shopEl = document.getElementById("sceneHudShop");
+      const tableEl = document.getElementById("sceneHudTable");
+      const sendBtn = document.getElementById("sceneSendBtn");
+      const guideEl = document.getElementById("guestGuide");
+      const chipEl = document.getElementById("guestOrderChip");
+      const summaryEl = document.getElementById("sceneOrderSummary");
+      const listEl = document.getElementById("sceneOrderList");
+      if (shopEl && shopName) shopEl.textContent = shopName;
+      if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
+      if (!t) {
+        if (sendBtn) sendBtn.hidden = true;
+        if (guideEl) guideEl.classList.add("show");
+        if (chipEl) chipEl.classList.remove("show");
+        if (summaryEl) summaryEl.textContent = "";
+        if (listEl) listEl.innerHTML = "";
+        return;
+      }
+      if (sendBtn) sendBtn.hidden = false;
+      if (guideEl) guideEl.classList.remove("show");
+      if (chipEl) chipEl.classList.add("show");
+      if (summaryEl) summaryEl.textContent = "🛒 " + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
+      if (listEl) {
+        listEl.innerHTML = cart.map(l => `
+          <div class="order-chip-line">
+            <span class="order-chip-name">${l.qty}× ${esc(l.item.name)}</span>
+            <span class="order-chip-price">${money(Number(l.item.price) * l.qty)}</span>
+          </div>`).join("");
+      }
+    }
+    function openCartConfirm(e) {
+      if (e) e.stopPropagation();
+      if (!cart.length) return;
+      openCart();
+    }
     function updateBadge() {
       const t = cart.reduce((s, i) => s + i.qty, 0);
+      const total = cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0);
       document.getElementById("cbadge").textContent = t;
+      const sumEl = document.getElementById("cartSum");
+      if (sumEl) sumEl.textContent = t > 0 ? money(total) : "";
+      syncSceneHud();
       refreshPins();
       if (t > 0 && !coachDone) dismissCoach();
     }
     function openCart() {
       document.getElementById("cart-panel").classList.add("open");
       document.getElementById("overlay").classList.add("show");
+      if (window.__zekiqShowChrome) window.__zekiqShowChrome();
       renderCart();
     }
     function closeCart() {
       document.getElementById("cart-panel").classList.remove("open");
       document.getElementById("overlay").classList.remove("show");
+      if (window.__zekiqShowChrome) window.__zekiqShowChrome();
     }
     document.getElementById("menuListBtn").onclick = openMenuList;
     document.getElementById("closeMenuList").onclick = closeMenuList;
@@ -1126,13 +2022,19 @@
     });
 
     document.getElementById("cartBtn").onclick = openCart;
+    const sceneMenuBtn = document.getElementById("sceneMenuBtn");
+    const sceneOrderBtn = document.getElementById("sceneOrderBtn");
+    const sceneSendBtn = document.getElementById("sceneSendBtn");
+    if (sceneMenuBtn) sceneMenuBtn.onclick = e => { e.stopPropagation(); openMenuList(); };
+    if (sceneOrderBtn) sceneOrderBtn.onclick = openCartConfirm;
+    if (sceneSendBtn) sceneSendBtn.onclick = openCartConfirm;
     document.getElementById("closeCart").onclick = closeCart;
     document.getElementById("overlay").onclick = closeCart;
 
     function renderCart() {
       const c = document.getElementById("cart-items");
       if (!cart.length) {
-        c.innerHTML = '<div class="empty-c">🍽<br/>السلة فارغة<br/><small>اضغط <b>+</b> في اللوحة السفلية أو <b>📋 قائمة</b></small></div>';
+        c.innerHTML = '<div class="empty-c">🍽<br/>' + esc(guestT("emptyCart")) + '<br/><small>' + esc(guestT("emptyCartHint")) + '</small></div>';
         document.getElementById("total").textContent = "0 ₺";
         document.getElementById("sendBtn").disabled = true;
         return;
@@ -1170,6 +2072,7 @@
     async function sendOrder() {
       if (!cart.length || sending) return;
       sending = true;
+      syncSceneHud();
       renderCart();
       const note = document.getElementById("noteInp").value || "";
       try {
@@ -1185,18 +2088,20 @@
         if (data.ok) {
           done = true;
           cart = [];
+          updateBadge();
           closeCart();
-          document.getElementById("okDetail").innerHTML = "وصل طلبك إلى الكاشير والمطبخ<br/><strong style='color:#c8860a'>" + esc(shopName) + "</strong>";
+          document.getElementById("okDetail").innerHTML = esc(guestT("okDetail")) + "<br/><strong style='color:#c8860a'>" + esc(shopName) + "</strong>";
           document.getElementById("okScreen").classList.add("show");
         } else if (data.error === "table_not_active") {
-          alert("الطاولة غير مفتوحة على الكاشير.\nافتح الطاولة من ZEKiQ POS ثم أعد الإرسال.");
+          alert(guestT("errTable"));
         } else if (data.error === "invalid_token") {
-          alert("رمز QR قديم — اطبع QR جديد من إعدادات الكاشير.");
+          alert(guestT("errToken"));
         } else {
-          alert("تعذّر الإرسال — تحقق من الإنترنت أو أن ZEKiQ POS شغّال.");
+          alert(guestT("errSend"));
         }
-      } catch (_) { alert("تعذّر الاتصال — تحقق من الإنترنت."); }
+      } catch (_) { alert(guestT("errNet")); }
       sending = false;
+      syncSceneHud();
       renderCart();
     }
     document.getElementById("sendBtn").onclick = sendOrder;
@@ -1232,14 +2137,27 @@
         return await res.json();
       } catch (_) { clearTimeout(timer); return null; }
     }
+    async function ingestManifest(j, add) {
+      if (!j) return;
+      add(j.apiUrl);
+      add(j.tunnelUrl);
+      add(j.lanUrl);
+      add(j.api);
+      if (Array.isArray(j.apis)) j.apis.forEach(add);
+    }
+    function isEphemeralTunnel(u) {
+      try { return /\.trycloudflare\.com$/i.test(new URL(u.includes("://") ? u : "https://" + u).hostname); } catch (_) { return false; }
+    }
     async function loadManifestApis() {
       const out = [];
       const add = u => { u = String(u || "").trim().replace(/\/+$/, ""); if (u && isSafeApiUrl(u) && !out.includes(u)) out.push(u); };
       const jobs = [];
+      const siteRoot = location.pathname.replace(/\/table(\/index\.html)?$/i, "").replace(/\/+$/, "");
+      if (siteRoot) jobs.push(fetchJson(location.origin + siteRoot + "/guest-api.json", 5000).then(j => ingestManifest(j, add)));
+      jobs.push(fetchJson("https://shop.zekiqmenu.com/guest-api.json", 5000).then(j => ingestManifest(j, add)));
       for (const base of apiCandidates()) {
-        jobs.push(fetchJson(base + "/guest-api.json", 4000).then(j => { if (j && j.api) add(j.api); if (j && j.apis) j.apis.forEach(add); }));
+        jobs.push(fetchJson(base + "/guest-api.json", 4000).then(j => ingestManifest(j, add)));
       }
-      jobs.push(fetchJson("https://raw.githubusercontent.com/toninopos/tonino-pos/main/data/guest-api.json", 5000).then(j => { if (j && j.api) add(j.api); }));
       await Promise.allSettled(jobs);
       return out;
     }
@@ -1250,18 +2168,27 @@
       const out = [];
       const add = u => { u = String(u || "").trim().replace(/\/+$/, ""); if (u && isSafeApiUrl(u) && !out.includes(u)) out.push(u); };
       const onGithub = /github\.io$/i.test(location.hostname);
-      if (onGithub || navigator.connection?.type === "cellular") {
-        add(apiParam);
-        if (apiParam) try { add(new URL(apiParam.includes("://") ? apiParam : "http://" + apiParam).origin); } catch (_) {}
+      const onCellular = navigator.connection?.type === "cellular";
+      const phoneMode = onGithub || onCellular;
+
+      if (phoneMode) add("https://shop.zekiqmenu.com");
+
+      if (phoneMode) {
+        if (apiParam && !isEphemeralTunnel(apiParam)) {
+          add(apiParam);
+          try { add(new URL(apiParam.includes("://") ? apiParam : "http://" + apiParam).origin); } catch (_) {}
+        }
         add(lanParam);
       } else {
         add(lanParam);
         add(apiParam);
+        if (apiParam) try { add(new URL(apiParam.includes("://") ? apiParam : "http://" + apiParam).origin); } catch (_) {}
       }
       if (location.protocol === "https:" && !location.hostname.includes("github.io")) add(location.origin.replace(/\/+$/, ""));
       const onPos = location.pathname.includes("/guest") || location.pathname.includes("/table") || location.port === "3000";
       if (onPos && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") add(location.origin.replace(/\/+$/, ""));
       if (onPos && (location.hostname === "localhost" || location.hostname === "127.0.0.1")) add("http://127.0.0.1:3000");
+      if (phoneMode && apiParam && isEphemeralTunnel(apiParam)) add(apiParam);
       add("https://shop.zekiqmenu.com");
       return out;
     }
@@ -1269,7 +2196,7 @@
     async function fetchMenuFromBase(base) {
       apiBase = base;
       const ctrl = new AbortController();
-      const timeoutMs = isPrivateApi(apiBase) ? 3000 : 12000;
+      const timeoutMs = isEphemeralTunnel(apiBase) ? 3500 : (isPrivateApi(apiBase) ? 3000 : 8000);
       const timer = setTimeout(() => ctrl.abort(), timeoutMs);
       try {
         const res = await fetch(apiBase + "/api/guest/v1/menu?t=" + encodeURIComponent(TOKEN) + "&shop=" + encodeURIComponent(SHOP), { cache: "no-store", signal: ctrl.signal });
@@ -1279,6 +2206,7 @@
     }
 
     function applyMenuData(data) {
+      try {
       shopName = data.shopName || "ZEKiQ";
       section = data.section;
       tableNum = data.tableNum;
@@ -1288,22 +2216,36 @@
       pageHotspots = (data.book && data.book.pageHotspots) || {};
       manualSpots = (data.book && data.book.manualSpots) || {};
       singlePagePlusOnly = Boolean(data.book && data.book.singlePagePlusOnly) || bookPages.length <= 1;
+      plusButtonsAllPages = Boolean(data.book && data.book.plusButtonsAllPages);
+      if (!plusButtonsAllPages && data.book && data.book.manualSpots) {
+        plusButtonsAllPages = Object.values(data.book.manualSpots).some(
+          arr => Array.isArray(arr) && arr.some(s => s && s.kind === "plus")
+        );
+      }
+      if (plusButtonsAllPages) singlePagePlusOnly = false;
       bookCacheVer = String((data.book && (data.book.updatedAt || data.book.version)) || "").replace(/[:.]/g, "");
-      document.title = shopName + " — طاولة " + tableNum;
+      if (data.guestLanguage && window.applyGuestLanguage) window.applyGuestLanguage(data.guestLanguage);
+      document.title = shopName + " — " + guestT("table") + " " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
-      document.getElementById("tblLabel").textContent = section + " · طاولة " + tableNum;
+      document.getElementById("tblLabel").textContent = section + " · " + guestT("table") + " " + tableNum;
+      syncSceneHud();
       buildBook();
+      if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
+      } catch (e) {
+        console.error("[guest/apply]", e);
+        showErr(guestT("errConn"), guestT("errConnD"));
+      }
     }
 
     async function boot() {
-      if (!TOKEN) { showErr("امسح QR", "امسح رمز QR من الطاولة للطلب."); return; }
-      if (!SHOP) { showErr("QR قديم", "حدّث الرموز من إعدادات الكاشير."); return; }
+      if (!TOKEN) { showErr(guestT("errScanQr"), guestT("errScanQrD")); return; }
+      if (!SHOP) { showErr(guestT("errOldQr"), guestT("errOldQrD")); return; }
 
       const handleMenuData = data => {
         if (!data) return false;
         if (data.ok) { applyMenuData(data); return true; }
-        if (data.error === "disabled") { showErr("طلبات QR معطّلة", "فعّلها من إعدادات الكاشير."); return "stop"; }
-        if (data.error === "invalid_token") { showErr("QR قديم", "اطبع QR جديد من الكاشير."); return "stop"; }
+        if (data.error === "disabled") { showErr(guestT("errDisabled"), guestT("errDisabledD")); return "stop"; }
+        if (data.error === "invalid_token") { showErr(guestT("errOldQr"), guestT("errToken")); return "stop"; }
         return false;
       };
 
@@ -1320,7 +2262,7 @@
         const r = handleMenuData(await fetchMenuFromBase(b));
         if (r === true || r === "stop") return;
       }
-      showErr("تعذّر الاتصال", "تأكد أن ZEKiQ POS شغّال و shop.zekiqmenu.com متصل.");
+      showErr(guestT("errConn"), guestT("errConnD"));
     }
     boot();
   </script>
