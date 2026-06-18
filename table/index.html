@@ -82,18 +82,18 @@
         if(h&&!isFullscreen()) h.classList.remove("hide");
       }
       function onMenuTap(ev){
-        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#nav,.nav-arrow,#guestGuide,.order-chip-list,#sceneOrderList")) return;
+        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         fitViewport();
         enterImmersiveAuto();
         tryFullscreen().then(function(){burstRelayout();}).catch(function(){});
         hideFsHint();
       }
       function bindSceneFullscreen(){
-        var scene=document.getElementById("scene");
-        if(!scene||scene.__fsBound) return;
-        scene.__fsBound=true;
-        scene.addEventListener("touchstart",onMenuTap,{passive:true});
-        scene.addEventListener("click",onMenuTap);
+        var book=document.getElementById("book");
+        if(!book||book.__fsBound) return;
+        book.__fsBound=true;
+        book.addEventListener("touchstart",onMenuTap,{passive:true});
+        book.addEventListener("click",onMenuTap);
       }
       function panelOpen(){
         var mp=document.getElementById("menu-panel");
@@ -140,13 +140,13 @@
         maybeShowFsHint();
       });
       document.addEventListener("touchstart",function(e){
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#nav,.nav-arrow,#guestGuide,.order-chip-list,#sceneOrderList")) return;
-        if(e.target&&e.target.closest&&e.target.closest("#scene,#book,.pw")) onMenuTap(e);
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) onMenuTap(e);
         else fitViewport();
       },{passive:true,capture:true});
       document.addEventListener("click",function(e){
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#nav,.nav-arrow,#guestGuide,.order-chip-list,#sceneOrderList")) return;
-        if(e.target&&e.target.closest&&e.target.closest("#scene,#book,.pw")) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) return;
         fitViewport();
         showChrome();
       },{capture:true});
@@ -155,7 +155,7 @@
       document.addEventListener("dragstart",function(e){e.preventDefault();},{capture:true});
       var lastTouchEnd=0;
       document.addEventListener("touchend",function(e){
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#nav,.nav-arrow,#guestGuide,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         var now=Date.now();
         if(now-lastTouchEnd<320) e.preventDefault();
         lastTouchEnd=now;
@@ -204,7 +204,8 @@
     }
 
     #header{
-      position:fixed;top:var(--vv-top,0px);left:0;right:0;z-index:200;
+      position:fixed;top:var(--vv-top,0px);left:0;right:0;z-index:500;
+      pointer-events:auto;
       min-height:calc(38px + env(safe-area-inset-top,0px));
       background:linear-gradient(180deg,rgba(30,18,8,.42) 0%,rgba(30,18,8,.1) 72%,transparent 100%);
       border:none;box-shadow:none;
@@ -241,16 +242,18 @@
       padding:0 10px 4px;
       padding-top:max(env(safe-area-inset-top,6px),6px);
       background:linear-gradient(180deg,rgba(13,5,0,.94) 0%,rgba(13,5,0,.72) 85%,transparent 100%);
-      pointer-events:none;
-      z-index:300;
+      pointer-events:auto;
+      position:relative;
+      z-index:400;
     }
     .hud-row{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:8px;
-      pointer-events:none;
+      pointer-events:auto;
     }
+    html.immersive #sceneHud,
     html.immersive.chrome-hidden #sceneHud,
     html.immersive.fs-active #sceneHud,
     html:fullscreen #sceneHud,
@@ -2066,20 +2069,29 @@
       document.getElementById("overlay").classList.remove("show");
       if (window.__zekiqShowChrome) window.__zekiqShowChrome();
     }
-    document.getElementById("menuListBtn").onclick = openMenuList;
+    document.getElementById("menuListBtn").onclick = e => { e.stopPropagation(); openMenuList(); };
     document.getElementById("closeMenuList").onclick = closeMenuList;
     document.getElementById("menuSearch").addEventListener("input", e => {
       menuSearchQuery = e.target.value.trim();
       buildMenuList();
     });
 
-    document.getElementById("cartBtn").onclick = openCart;
+    document.getElementById("cartBtn").onclick = e => { e.stopPropagation(); openCart(); };
     const sceneMenuBtn = document.getElementById("sceneMenuBtn");
     const sceneOrderBtn = document.getElementById("sceneOrderBtn");
     const sceneSendBtn = document.getElementById("sceneSendBtn");
-    if (sceneMenuBtn) sceneMenuBtn.onclick = e => { e.stopPropagation(); openMenuList(); };
-    if (sceneOrderBtn) sceneOrderBtn.onclick = openCartConfirm;
-    if (sceneSendBtn) sceneSendBtn.onclick = openCartConfirm;
+    function bindTopBtn(el, handler) {
+      if (!el || el.__topBound) return;
+      el.__topBound = true;
+      const run = e => { e.stopPropagation(); handler(e); };
+      el.addEventListener("click", run);
+      el.addEventListener("touchstart", e => e.stopPropagation(), { passive: true });
+    }
+    bindTopBtn(sceneMenuBtn, () => openMenuList());
+    bindTopBtn(document.getElementById("menuListBtn"), () => openMenuList());
+    bindTopBtn(document.getElementById("cartBtn"), () => openCart());
+    bindTopBtn(sceneOrderBtn, openCartConfirm);
+    bindTopBtn(sceneSendBtn, openCartConfirm);
     document.getElementById("closeCart").onclick = closeCart;
     document.getElementById("overlay").onclick = closeCart;
     document.getElementById("clearCartBtn").onclick = clearCart;
