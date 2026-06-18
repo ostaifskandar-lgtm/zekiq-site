@@ -93,8 +93,12 @@
         var book=document.getElementById("book");
         if(!book||book.__fsBound) return;
         book.__fsBound=true;
-        book.addEventListener("touchstart",onMenuTap,{passive:true});
         book.addEventListener("click",onMenuTap);
+        book.addEventListener("touchend",function(ev){
+          if(window.__zekiqGestureSwipe) return;
+          if(ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot")) return;
+          onMenuTap(ev);
+        },{passive:true});
       }
       function panelOpen(){
         var mp=document.getElementById("menu-panel");
@@ -543,6 +547,8 @@
       touch-action:manipulation;
     }
     #book.page-zoomed{overflow:auto;-webkit-overflow-scrolling:touch;}
+    #book.page-swiping .pf-overlay{pointer-events:none!important;}
+    #book.page-swiping .plus-hit,#book.page-swiping .plus-hotspot,#book.page-swiping .price-hotspot{pointer-events:none!important;}
     .pw.page-current .pf{overflow:visible;}
     .nav-zoom{
       display:flex;align-items:center;gap:4px;flex-shrink:0;
@@ -1065,7 +1071,7 @@
   <div id="coach">
     <div id="coach-card">
       <h2 id="i18n-coach-title">كيف تطلب؟</h2>
-      <div class="coach-step"><span class="coach-num">1</span><span id="i18n-coach-1">تصفّح <strong>المينو</strong> — اسحب من الشريط فوق الصورة أو أزرار <strong>السابق / التالي</strong></span></div>
+      <div class="coach-step"><span class="coach-num">1</span><span id="i18n-coach-1">تصفّح <strong>المينو</strong> — اسحب يميناً/يساراً على الصورة أو استخدم <strong>السابق / التالي</strong></span></div>
       <div class="coach-step"><span class="coach-num">2</span><span id="i18n-coach-2">اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام</span></div>
       <div class="coach-step"><span class="coach-num">3</span><span id="i18n-coach-3">اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong></span></div>
       <div class="coach-step"><span class="coach-num">4</span><span id="i18n-coach-4">في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال</span></div>
@@ -1141,7 +1147,7 @@
       guide1: '<span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة',
       guide2: '<span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد',
       coachTitle: "كيف تطلب؟",
-      coach1: 'تصفّح <strong>المينو</strong> — اسحب من الشريط فوق الصورة أو أزرار <strong>السابق / التالي</strong>',
+      coach1: 'تصفّح <strong>المينو</strong> — اسحب يميناً/يساراً على الصورة أو استخدم <strong>السابق / التالي</strong>',
       coach2: 'اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام',
       coach3: 'اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong>',
       coach4: 'في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال',
@@ -1199,7 +1205,7 @@
       guide1: '<span class="guide-n">1</span> Resimdeki yeşil <strong>+</strong> düğmesine basın',
       guide2: '<span class="guide-n">2</span> Sonra onay için <strong>Gönder</strong>',
       coachTitle: "Nasıl sipariş verilir?",
-      coach1: '<strong>Menüde</strong> gezinin — resmin üstündeki şeridi kaydırın veya altta <strong>Önceki / Sonraki</strong>',
+      coach1: '<strong>Menüde</strong> gezinin — resimde sağa/sola kaydırın veya <strong>Önceki / Sonraki</strong>',
       coach2: 'Yemek eklemek için resimdeki <strong>yeşil +</strong> düğmesine basın',
       coach3: 'Üstte <strong>Gönder</strong> → sepeti kontrol et → <strong>Onayla</strong>',
       coach4: 'Göndermeden önce her ürünün altına <strong>açık bir not</strong> yazabilirsiniz',
@@ -1257,7 +1263,7 @@
       guide1: '<span class="guide-n">1</span> Tap the green <strong>+</strong> on the image',
       guide2: '<span class="guide-n">2</span> Then <strong>Send</strong> to confirm',
       coachTitle: "How to order?",
-      coach1: 'Browse the <strong>menu</strong> — swipe the bar above the image or use <strong>Prev / Next</strong>',
+      coach1: 'Browse the <strong>menu</strong> — swipe left/right on the image or use <strong>Prev / Next</strong>',
       coach2: 'Tap the green <strong>+</strong> on the image to add food',
       coach3: 'Tap <strong>Send</strong> at top → review cart → <strong>Confirm</strong>',
       coach4: 'In the cart, add a <strong>clear note</strong> under each item before sending',
@@ -1431,83 +1437,93 @@
       }, { passive: true });
       book.addEventListener("touchend", () => { startDist = 0; }, { passive: true });
     }
-    function bindPageSwipe() {
+    window.__zekiqGestureSwipe = false;
+    const pageGesture = { active: false, swipe: false, startX: 0, startY: 0 };
+    function bindBookSwipe() {
+      const book = document.getElementById("book");
       const bar = document.getElementById("pageSwipeBar");
-      if (!bar || bar.__swipeBound) return;
-      bar.__swipeBound = true;
-      const THRESH = 46;
-      const MAX_Y = 72;
-      let startX = 0, startY = 0, tracking = false, pointerId = null;
+      if (!book || book.__bookSwipeBound) return;
+      book.__bookSwipeBound = true;
+      const zones = [book, bar].filter(Boolean);
+      const SWIPE_THRESH = 48;
+      const SWIPE_LOCK = 12;
+      const MAX_Y = 84;
 
-      function clearSwipeHint() {
-        bar.classList.remove("swiping", "swipe-left-hint", "swipe-right-hint");
-      }
-      function onSwipeEnd(clientX, clientY) {
-        if (!tracking) return;
-        tracking = false;
-        pointerId = null;
-        const dx = clientX - startX;
-        const dy = Math.abs(clientY - startY);
-        clearSwipeHint();
-        if (!coachDone || dy > MAX_Y) return;
-        if (dx <= -THRESH) nextPage();
-        else if (dx >= THRESH) prevPage();
-      }
-
-      bar.addEventListener("touchstart", e => {
-        if (!coachDone || e.touches.length !== 1) return;
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        tracking = true;
-        bar.classList.add("swiping");
-      }, { passive: true });
-
-      bar.addEventListener("touchmove", e => {
-        if (!tracking || e.touches.length !== 1) return;
-        const dx = e.touches[0].clientX - startX;
-        const dy = Math.abs(e.touches[0].clientY - startY);
-        if (dy > MAX_Y) { tracking = false; clearSwipeHint(); return; }
+      function barHint(dx) {
+        if (!bar) return;
         bar.classList.toggle("swipe-left-hint", dx < -16);
         bar.classList.toggle("swipe-right-hint", dx > 16);
-      }, { passive: true });
+      }
+      function clearBar() {
+        if (bar) bar.classList.remove("swiping", "swipe-left-hint", "swipe-right-hint");
+        book.classList.remove("page-swiping");
+      }
+      function canSwipe() {
+        return coachDone && !animating && pageZoom <= 1 && bookPages.length > 1;
+      }
+      function onStart(x, y) {
+        if (!canSwipe()) return;
+        pageGesture.active = true;
+        pageGesture.swipe = false;
+        window.__zekiqGestureSwipe = false;
+        pageGesture.startX = x;
+        pageGesture.startY = y;
+        if (bar) bar.classList.add("swiping");
+      }
+      function onMove(x, y) {
+        if (!pageGesture.active) return;
+        const dx = x - pageGesture.startX;
+        const dy = Math.abs(y - pageGesture.startY);
+        if (dy > MAX_Y) {
+          pageGesture.active = false;
+          pageGesture.swipe = false;
+          clearBar();
+          return;
+        }
+        if (Math.abs(dx) > SWIPE_LOCK && Math.abs(dx) > dy * 1.05) {
+          pageGesture.swipe = true;
+          window.__zekiqGestureSwipe = true;
+          book.classList.add("page-swiping");
+        }
+        barHint(dx);
+      }
+      function onEnd(x, y) {
+        if (!pageGesture.active) return;
+        pageGesture.active = false;
+        const dx = x - pageGesture.startX;
+        const dy = Math.abs(y - pageGesture.startY);
+        const flip = pageGesture.swipe || (Math.abs(dx) >= SWIPE_THRESH && Math.abs(dx) > dy * 1.05);
+        clearBar();
+        if (flip && canSwipe()) {
+          window.__zekiqGestureSwipe = true;
+          setTimeout(() => { window.__zekiqGestureSwipe = false; }, 380);
+          if (dx <= -SWIPE_THRESH) nextPage();
+          else if (dx >= SWIPE_THRESH) prevPage();
+        } else {
+          window.__zekiqGestureSwipe = false;
+        }
+        pageGesture.swipe = false;
+      }
 
-      bar.addEventListener("touchend", e => {
-        const t = e.changedTouches[0];
-        if (t) onSwipeEnd(t.clientX, t.clientY);
-      }, { passive: true });
-
-      bar.addEventListener("touchcancel", clearSwipeHint, { passive: true });
-
-      bar.addEventListener("pointerdown", e => {
-        if (!coachDone || e.pointerType === "touch") return;
-        pointerId = e.pointerId;
-        startX = e.clientX;
-        startY = e.clientY;
-        tracking = true;
-        bar.classList.add("swiping");
-        try { bar.setPointerCapture(e.pointerId); } catch (_) {}
-      });
-
-      bar.addEventListener("pointermove", e => {
-        if (!tracking || e.pointerId !== pointerId) return;
-        const dx = e.clientX - startX;
-        const dy = Math.abs(e.clientY - startY);
-        if (dy > MAX_Y) { tracking = false; clearSwipeHint(); return; }
-        bar.classList.toggle("swipe-left-hint", dx < -16);
-        bar.classList.toggle("swipe-right-hint", dx > 16);
-      });
-
-      bar.addEventListener("pointerup", e => {
-        if (e.pointerId !== pointerId) return;
-        onSwipeEnd(e.clientX, e.clientY);
-        try { bar.releasePointerCapture(e.pointerId); } catch (_) {}
-      });
-
-      bar.addEventListener("pointercancel", e => {
-        if (e.pointerId !== pointerId) return;
-        tracking = false;
-        pointerId = null;
-        clearSwipeHint();
+      zones.forEach(zone => {
+        zone.addEventListener("touchstart", e => {
+          if (e.touches.length !== 1) { pageGesture.active = false; return; }
+          onStart(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true, capture: true });
+        zone.addEventListener("touchmove", e => {
+          if (e.touches.length !== 1) return;
+          onMove(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true, capture: true });
+        zone.addEventListener("touchend", e => {
+          const t = e.changedTouches[0];
+          if (t) onEnd(t.clientX, t.clientY);
+        }, { passive: true, capture: true });
+        zone.addEventListener("touchcancel", () => {
+          pageGesture.active = false;
+          pageGesture.swipe = false;
+          window.__zekiqGestureSwipe = false;
+          clearBar();
+        }, { passive: true, capture: true });
       });
     }
     function syncSwipeBar() {
@@ -1921,19 +1937,40 @@
       return null;
     }
     function renderPageDock() { /* full-screen: ordering on page only */ }
-    function bindPlusTap(h, item) {
+    function bindHotspotTap(h, handler) {
+      let startX = 0, startY = 0, touchMoved = false;
+      const SLOP = 14;
+      h.addEventListener("touchstart", e => {
+        if (e.touches.length !== 1) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        touchMoved = false;
+        e.stopPropagation();
+      }, { passive: true });
+      h.addEventListener("touchmove", e => {
+        if (e.touches.length !== 1) return;
+        if (Math.abs(e.touches[0].clientX - startX) > SLOP || Math.abs(e.touches[0].clientY - startY) > SLOP) {
+          touchMoved = true;
+        }
+      }, { passive: true });
       let last = 0;
       const fire = e => {
+        if (window.__zekiqGestureSwipe || touchMoved) return;
         const now = Date.now();
         if (now - last < 400) return;
         last = now;
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         e.stopPropagation();
-        quickAddItem(item);
+        handler(e);
       };
-      h.addEventListener("touchstart", e => e.stopPropagation(), { passive: true });
       h.addEventListener("touchend", fire, { passive: false });
-      h.addEventListener("click", fire);
+      h.addEventListener("click", e => {
+        if (window.__zekiqGestureSwipe) return;
+        fire(e);
+      });
+    }
+    function bindPlusTap(h, item) {
+      bindHotspotTap(h, () => quickAddItem(item));
     }
     function attachPlusHotspot(overlay, item, spot, glowIndex) {
       const h = document.createElement("button");
@@ -1974,7 +2011,7 @@
       fillPriceCover(card, item);
       h.appendChild(mask);
       h.appendChild(card);
-      h.addEventListener("click", e => { e.stopPropagation(); quickAddItem(item); });
+      bindHotspotTap(h, () => quickAddItem(item));
       overlay.appendChild(h);
     }
     function mountPageOverlays(pageIdx) {
@@ -2145,7 +2182,7 @@
       if (window.__zekiqBindSceneFullscreen) window.__zekiqBindSceneFullscreen();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       bindPagePinch();
-      bindPageSwipe();
+      bindBookSwipe();
       syncSwipeBar();
       setPageZoom(1);
     }
