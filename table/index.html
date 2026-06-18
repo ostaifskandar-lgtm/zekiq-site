@@ -739,7 +739,6 @@
     .hotspot.price-hotspot{width:auto!important;height:auto!important;}
     .hotspot.plus-hit,.hotspot.plus-hotspot{
       display:block;
-      z-index:25;
       box-sizing:border-box;touch-action:manipulation;
       border:none;border-radius:0;padding:0;margin:0;
       background:transparent;
@@ -750,8 +749,9 @@
     .hotspot.plus-hit::after,.hotspot.plus-hotspot::after{
       content:"";
       position:absolute;left:50%;top:50%;
-      width:calc(100% + 14px);height:calc(100% + 14px);
-      min-width:40px;min-height:40px;
+      width:calc(100% + 6px);height:calc(100% + 6px);
+      min-width:28px;min-height:28px;
+      max-width:calc(100% + 10px);max-height:calc(100% + 10px);
       transform:translate(-50%,-50%);
       background:transparent;
     }
@@ -1797,6 +1797,16 @@
     function qtyOf(id) {
       return cart.filter(l => l.item.id === id).reduce((s, l) => s + l.qty, 0);
     }
+    function menuItemById(id) {
+      return menu.find(m => m.id === Number(id)) || null;
+    }
+    function spotHasName(spot) {
+      return !!(spot && String(spot.name || "").trim());
+    }
+    function uniquePriceMatches(pageItems, price, used) {
+      const p = Math.round(Number(price));
+      return pageItems.filter(it => !used.has(it.id) && Math.round(Number(it.price)) === p);
+    }
     function spotInPriceZone(spot) {
       if (!spot) return false;
       const x = Number(spot.x), y = Number(spot.y);
@@ -1859,7 +1869,14 @@
         for (let spotIdx = 0; spotIdx < sortedSpots.length; spotIdx++) {
           const spot = sortedSpots[spotIdx];
           let item = resolvePlusSpotItem(spot, pageItems, spotIdx, offset, used);
-          if (!item) continue;
+          if (!item) {
+            if (spotHasName(spot)) console.warn("[guest/plus] no match:", spot.name, "page", pageIdx);
+            continue;
+          }
+          if (spotHasName(spot) && !nameMatches(item.name, spot.name)) {
+            console.warn("[guest/plus] name mismatch:", spot.name, "→", item.name, "page", pageIdx);
+            continue;
+          }
           used.add(item.id);
           out.push({ item, spot: {
             x: spot.x, y: spot.y,
@@ -1888,8 +1905,15 @@
       for (const spot of spots) {
         const p = Math.round(Number(spot.price));
         const pool = pageItems.filter(it => !placed.has(it.id));
-        let item = pool.find(it => nameMatches(it.name, spot.name) && Math.round(Number(it.price)) === p);
-        if (!item) item = pool.find(it => Math.round(Number(it.price)) === p);
+        let item = null;
+        if (spotHasName(spot)) {
+          const named = pool.filter(it => nameMatches(it.name, spot.name));
+          if (named.length === 1) item = named[0];
+          else if (named.length > 1) item = named.find(it => Math.round(Number(it.price)) === p) || null;
+        } else {
+          const byPrice = uniquePriceMatches(pageItems, p, placed);
+          if (byPrice.length === 1) item = byPrice[0];
+        }
         if (!item) continue;
         placed.add(item.id);
         out.push({ item, spot: {
@@ -2026,6 +2050,7 @@
         .map(({ it }) => it);
     }
     function plusSpotMenuOffset(sortedSpots, pageItems) {
+      if (sortedSpots.some(spotHasName)) return 0;
       const gap = pageItems.length - sortedSpots.length;
       if (gap <= 0) return 0;
       let bestOff = 0, bestScore = -1;
@@ -2035,11 +2060,15 @@
           const item = pageItems[i + off];
           if (!item) break;
           const spot = sortedSpots[i];
-          if (spot.menuItemId != null && item.id === Number(spot.menuItemId)) score += 8;
-          if (spot.name && nameMatches(item.name, spot.name)) score += 4;
+          if (spot.menuItemId != null && item.id === Number(spot.menuItemId)) score += 12;
+          if (spotHasName(spot) && nameMatches(item.name, spot.name)) score += 8;
           const sp = Math.round(Number(spot.price));
           const ip = Math.round(Number(item.price));
-          if (sp > 0 && sp === ip) score += 1;
+          if (sp > 0 && sp === ip) {
+            const dupSp = sortedSpots.filter(s => Math.round(Number(s.price)) === sp).length;
+            const dupIt = pageItems.filter(it => Math.round(Number(it.price)) === sp).length;
+            score += dupSp === 1 && dupIt === 1 ? 6 : 1;
+          }
         }
         if (score > bestScore) { bestScore = score; bestOff = off; }
       }
@@ -2050,11 +2079,15 @@
         const byId = pageItems.find(it => it.id === Number(spot.menuItemId) && !used.has(it.id));
         if (byId) return byId;
       }
-      if (spot.name) {
+      if (spotHasName(spot)) {
         const p = spot.price != null ? Math.round(Number(spot.price)) : null;
-        const byName = pageItems.find(it => !used.has(it.id) && nameMatches(it.name, spot.name)
-          && (p == null || Math.round(Number(it.price)) === p));
-        if (byName) return byName;
+        const named = pageItems.filter(it => !used.has(it.id) && nameMatches(it.name, spot.name));
+        if (named.length === 1) return named[0];
+        if (named.length > 1 && p != null) {
+          const byBoth = named.find(it => Math.round(Number(it.price)) === p);
+          if (byBoth) return byBoth;
+        }
+        return null;
       }
       const idx = spotIdx + offset;
       if (idx >= 0 && idx < pageItems.length) {
@@ -2062,10 +2095,13 @@
         if (byPos && !used.has(byPos.id)) return byPos;
       }
       if (spot.price != null) {
-        const p = Math.round(Number(spot.price));
-        return pageItems.find(it => !used.has(it.id) && Math.round(Number(it.price)) === p) || null;
+        const byPrice = uniquePriceMatches(pageItems, spot.price, used);
+        if (byPrice.length === 1) return byPrice[0];
       }
       return null;
+    }
+    function hotspotZIndex(spot) {
+      return String(1200 + Math.round((1 - Number(spot.y || 0)) * 800));
     }
     function renderPageDock() { /* full-screen: ordering on page only */ }
     function bindHotspotTap(h, handler) {
@@ -2092,7 +2128,9 @@
         last = now;
         if (e.cancelable) e.preventDefault();
         e.stopPropagation();
-        handler(e);
+        const item = menuItemById(h.dataset.itemId);
+        if (!item) return;
+        handler(e, item);
       };
       h.addEventListener("touchend", fire, { passive: false });
       h.addEventListener("click", e => {
@@ -2100,8 +2138,8 @@
         fire(e);
       });
     }
-    function bindPlusTap(h, item) {
-      bindHotspotTap(h, () => quickAddItem(item));
+    function bindPlusTap(h) {
+      bindHotspotTap(h, (e, item) => quickAddItem(item));
     }
     function attachPlusHotspot(overlay, item, spot, glowIndex) {
       const h = document.createElement("button");
@@ -2113,6 +2151,7 @@
       h.dataset.w = String(spot.w);
       h.dataset.h = String(spot.h);
       h.dataset.anchor = spot.anchor || "center";
+      h.style.zIndex = hotspotZIndex(spot);
       const glow = document.createElement("span");
       glow.className = "plus-glow";
       glow.setAttribute("aria-hidden", "true");
@@ -2120,7 +2159,7 @@
       h.appendChild(glow);
       h.title = item.name;
       h.setAttribute("aria-label", "أضف " + item.name);
-      bindPlusTap(h, item);
+      bindPlusTap(h);
       overlay.appendChild(h);
     }
     function attachPriceCover(overlay, item, spot, pulse, pageIdx) {
@@ -2132,6 +2171,7 @@
       h.dataset.anchor = spot.anchor || spotAnchor(spot);
       h.dataset.x = String(spot.x);
       h.dataset.y = String(spot.y);
+      h.style.zIndex = hotspotZIndex(spot);
       h.title = item.name;
       h.setAttribute("aria-label", "اطلب " + item.name + " " + money(item.price));
       const mask = document.createElement("span");
@@ -2142,7 +2182,7 @@
       fillPriceCover(card, item);
       h.appendChild(mask);
       h.appendChild(card);
-      bindHotspotTap(h, () => quickAddItem(item));
+      bindHotspotTap(h, (e, it) => quickAddItem(it));
       overlay.appendChild(h);
     }
     function mountPageOverlays(pageIdx) {
