@@ -324,6 +324,34 @@
       box-shadow:none;
     }
     .scene-hud-send.is-empty:active{transform:none;}
+    .scene-hud-send .send-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:20px;
+      height:20px;
+      margin-inline-start:6px;
+      padding:0 6px;
+      border-radius:10px;
+      background:#1a0a00;
+      color:#ffe082;
+      font-size:11px;
+      font-weight:900;
+      line-height:1;
+      vertical-align:middle;
+    }
+    .scene-hud-send .send-badge[hidden]{display:none!important;}
+    #guestGuide,
+    #guestOrderChip{
+      display:none!important;
+      pointer-events:none!important;
+      height:0!important;
+      min-height:0!important;
+      padding:0!important;
+      margin:0!important;
+      overflow:hidden!important;
+      visibility:hidden!important;
+    }
     #guestGuide{
       flex-shrink:0;
       display:none;
@@ -1082,7 +1110,7 @@
           <div class="scene-hud-shop" id="sceneHudShop">ZEKiQ</div>
           <div class="scene-hud-table" id="sceneHudTable">🪑 طاولة —</div>
         </div>
-        <button type="button" class="scene-hud-send is-empty" id="sceneSendBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneSendBtn">إرسال ✓</span></button>
+        <button type="button" class="scene-hud-send is-empty" id="sceneSendBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneSendBtn">إرسال ✓</span><span class="send-badge" id="sceneSendBadge" hidden>0</span></button>
       </div>
     </div>
     <div id="guestGuide" class="guest-guide show">
@@ -2454,14 +2482,10 @@
     }
     function syncSceneHud() {
       const t = cart.reduce((s, i) => s + i.qty, 0);
-      const total = cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0);
       const shopEl = document.getElementById("sceneHudShop");
       const tableEl = document.getElementById("sceneHudTable");
       const sendBtn = document.getElementById("sceneSendBtn");
-      const guideEl = document.getElementById("guestGuide");
-      const chipEl = document.getElementById("guestOrderChip");
-      const summaryEl = document.getElementById("sceneOrderSummary");
-      const listEl = document.getElementById("sceneOrderList");
+      const sendBadge = document.getElementById("sceneSendBadge");
       if (shopEl && shopName) shopEl.textContent = shopName;
       refreshCoverTitles();
       if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
@@ -2469,35 +2493,9 @@
         sendBtn.hidden = false;
         sendBtn.classList.toggle("is-empty", !t);
       }
-      if (!t) {
-        if (guideEl) guideEl.classList.add("show");
-        if (chipEl) chipEl.classList.remove("show");
-        if (summaryEl) summaryEl.textContent = "";
-        if (listEl) listEl.innerHTML = "";
-        return;
-      }
-      if (guideEl) guideEl.classList.remove("show");
-      if (chipEl) chipEl.classList.add("show");
-      if (summaryEl) summaryEl.textContent = "🛒 " + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
-      if (listEl) {
-        listEl.innerHTML = cart.map(l => `
-          <div class="order-chip-line">
-            <span class="order-chip-name">${l.qty}× ${esc(l.item.name)}</span>
-            <div class="order-chip-actions">
-              <button type="button" class="order-chip-dec" data-dec-id="${l.item.id}" aria-label="−">−</button>
-              <button type="button" class="order-chip-del" data-del-id="${l.item.id}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
-              <span class="order-chip-price">${money(Number(l.item.price) * l.qty)}</span>
-            </div>
-          </div>`).join("") +
-          `<button type="button" class="order-chip-clear" id="sceneClearCart">${esc(guestT("cartClearAll"))}</button>`;
-        listEl.querySelectorAll("[data-dec-id]").forEach(btn => {
-          btn.onclick = e => { e.stopPropagation(); chQty(Number(btn.dataset.decId), -1); };
-        });
-        listEl.querySelectorAll("[data-del-id]").forEach(btn => {
-          btn.onclick = e => { e.stopPropagation(); removeItem(Number(btn.dataset.delId)); };
-        });
-        const sceneClear = listEl.querySelector("#sceneClearCart");
-        if (sceneClear) sceneClear.onclick = e => { e.stopPropagation(); clearCart(); };
+      if (sendBadge) {
+        sendBadge.hidden = !t;
+        if (t) sendBadge.textContent = String(t);
       }
     }
     function openCartConfirm(e) {
@@ -2545,7 +2543,6 @@
 
     document.getElementById("cartBtn").onclick = e => { e.stopPropagation(); openCart(); };
     const sceneMenuBtn = document.getElementById("sceneMenuBtn");
-    const sceneOrderBtn = document.getElementById("sceneOrderBtn");
     const sceneSendBtn = document.getElementById("sceneSendBtn");
     function bindTopBtn(el, handler) {
       if (!el || el.__topBound) return;
@@ -2565,7 +2562,6 @@
     bindTopBtn(sceneMenuBtn, () => openMenuList());
     bindTopBtn(document.getElementById("menuListBtn"), () => openMenuList());
     bindTopBtn(document.getElementById("cartBtn"), () => openCart());
-    bindTopBtn(sceneOrderBtn, openCartConfirm);
     bindTopBtn(sceneSendBtn, openCartConfirm);
     bindTopBtn(document.getElementById("prevBtn"), prevPage);
     bindTopBtn(document.getElementById("nextBtn"), nextPage);
