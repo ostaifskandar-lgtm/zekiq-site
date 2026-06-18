@@ -44,7 +44,7 @@
       function tryFullscreen(){
         if(isFullscreen()) return Promise.resolve();
         var scene=document.getElementById("scene");
-        var targets=[scene,root,body].filter(Boolean);
+        var targets=[root,body,scene].filter(Boolean);
         for(var i=0;i<targets.length;i++){
           var el=targets[i];
           var req=el.requestFullscreen||el.webkitRequestFullscreen||el.webkitEnterFullscreen;
@@ -238,8 +238,7 @@
       padding-top:max(env(safe-area-inset-top,6px),6px);
       background:linear-gradient(180deg,rgba(13,5,0,.97) 0%,rgba(13,5,0,.88) 85%,rgba(13,5,0,.55) 100%);
       pointer-events:auto;
-      position:fixed;
-      top:0;left:0;right:0;
+      position:relative;
       z-index:950;
     }
     .hud-row{
@@ -330,9 +329,7 @@
       flex-wrap:wrap;
       padding:2px 12px 8px;
       pointer-events:none;
-      position:fixed;
-      left:0;right:0;
-      top:calc(48px + env(safe-area-inset-top,0px));
+      position:relative;
       z-index:940;
     }
     html.immersive #guestGuide.show,
@@ -363,15 +360,8 @@
       display:none;
       padding:0 12px 8px;
       pointer-events:auto;
-      position:fixed;
-      left:0;right:0;
-      top:calc(48px + env(safe-area-inset-top,0px));
+      position:relative;
       z-index:940;
-    }
-    html.immersive.has-order-chip #scene,
-    html.immersive.chrome-hidden.has-order-chip #scene,
-    html.immersive.fs-active.has-order-chip #scene{
-      padding-top:calc(128px + env(safe-area-inset-top,0px));
     }
     html.immersive #guestOrderChip.show,
     html.immersive.chrome-hidden #guestOrderChip.show,
@@ -443,6 +433,12 @@
     }
     #scene:fullscreen #sceneHud,
     #scene:-webkit-full-screen #sceneHud{display:flex!important;}
+    #scene:fullscreen #guestGuide.show,
+    #scene:-webkit-full-screen #guestGuide.show{display:flex!important;}
+    #scene:fullscreen #guestOrderChip.show,
+    #scene:-webkit-full-screen #guestOrderChip.show{display:block!important;}
+    #scene:fullscreen #nav,
+    #scene:-webkit-full-screen #nav{display:flex!important;}
     #scene{
       position:fixed;left:0;right:0;top:var(--vv-top,0px);
       width:var(--app-w,100vw);height:var(--app-h,100dvh);z-index:1;
@@ -478,7 +474,7 @@
     html.immersive #scene,
     html.immersive.chrome-hidden #scene,
     html.immersive.fs-active #scene{
-      padding-top:calc(52px + env(safe-area-inset-top,0px));
+      padding-top:0;
     }
     #book{
       position:relative;flex:1;min-height:0;width:100%;max-width:100vw;
@@ -864,7 +860,9 @@
     html.immersive.fs-active #header{display:none!important;}
     html.immersive.chrome-hidden #nav,
     html.immersive.fs-active #nav{
+      display:flex!important;
       position:relative!important;
+      flex-shrink:0!important;
       top:auto!important;
       bottom:auto!important;
       left:auto!important;
@@ -899,30 +897,29 @@
   </div>
   <div id="immersiveCartStrip" aria-live="polite"></div>
 
-  <div id="sceneHud">
-    <div class="hud-row">
-      <button type="button" class="scene-hud-btn scene-hud-list" id="sceneMenuBtn" onclick="return window.__zekiqOpenMenu&&window.__zekiqOpenMenu(event)"><span id="i18n-sceneMenuBtn">📋 القائمة</span></button>
-      <div class="scene-hud-center">
-        <div class="scene-hud-shop" id="sceneHudShop">ZEKiQ</div>
-        <div class="scene-hud-table" id="sceneHudTable">🪑 طاولة —</div>
-      </div>
-      <button type="button" class="scene-hud-send is-empty" id="sceneSendBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneSendBtn">إرسال ✓</span></button>
-    </div>
-  </div>
-  <div id="guestGuide" class="guest-guide show">
-    <div class="guide-step" id="i18n-guide1"><span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة</div>
-    <div class="guide-step" id="i18n-guide2"><span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد</div>
-  </div>
-  <div id="guestOrderChip">
-    <div class="scene-order-panel">
-      <button type="button" class="order-chip-head-btn" id="sceneOrderBtn">
-        <div class="order-chip-head" id="sceneOrderSummary"></div>
-      </button>
-      <div class="order-chip-list" id="sceneOrderList"></div>
-    </div>
-  </div>
-
   <div id="scene">
+    <div id="sceneHud">
+      <div class="hud-row">
+        <button type="button" class="scene-hud-btn scene-hud-list" id="sceneMenuBtn" onclick="return window.__zekiqOpenMenu&&window.__zekiqOpenMenu(event)"><span id="i18n-sceneMenuBtn">📋 القائمة</span></button>
+        <div class="scene-hud-center">
+          <div class="scene-hud-shop" id="sceneHudShop">ZEKiQ</div>
+          <div class="scene-hud-table" id="sceneHudTable">🪑 طاولة —</div>
+        </div>
+        <button type="button" class="scene-hud-send is-empty" id="sceneSendBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneSendBtn">إرسال ✓</span></button>
+      </div>
+    </div>
+    <div id="guestGuide" class="guest-guide show">
+      <div class="guide-step" id="i18n-guide1"><span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة</div>
+      <div class="guide-step" id="i18n-guide2"><span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد</div>
+    </div>
+    <div id="guestOrderChip">
+      <div class="scene-order-panel">
+        <button type="button" class="order-chip-head-btn" id="sceneOrderBtn">
+          <div class="order-chip-head" id="sceneOrderSummary"></div>
+        </button>
+        <div class="order-chip-list" id="sceneOrderList"></div>
+      </div>
+    </div>
     <div id="book"></div>
     <div id="nav">
       <button type="button" class="nav-arrow" id="prevBtn"><span class="nav-label" id="i18n-prev">◀ السابق</span></button>
@@ -2076,7 +2073,6 @@
         sendBtn.classList.toggle("is-empty", !t);
       }
       if (!t) {
-        document.documentElement.classList.remove("has-order-chip");
         if (guideEl) guideEl.classList.add("show");
         if (chipEl) chipEl.classList.remove("show");
         if (summaryEl) summaryEl.textContent = "";
@@ -2085,7 +2081,6 @@
       }
       if (guideEl) guideEl.classList.remove("show");
       if (chipEl) chipEl.classList.add("show");
-      document.documentElement.classList.add("has-order-chip");
       if (summaryEl) summaryEl.textContent = "🛒 " + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
       if (listEl) {
         listEl.innerHTML = cart.map(l => `
