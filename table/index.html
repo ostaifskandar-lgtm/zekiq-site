@@ -678,12 +678,21 @@
     .cart-title{color:#c8860a;font-size:19px;font-weight:800;}
     .close-c{background:rgba(200,134,10,.15);border:1px solid #c8860a;border-radius:50%;width:34px;height:34px;color:#c8860a;font-size:18px;cursor:pointer;}
     #cart-items{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
-    .ci{background:rgba(200,134,10,.08);border:1px solid rgba(200,134,10,.25);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;}
+    .ci{background:rgba(200,134,10,.08);border:1px solid rgba(200,134,10,.25);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .ci-body{flex:1;min-width:0;}
     .ci-name{color:#fff;font-size:13px;font-weight:700;}
     .ci-price{color:#c8860a;font-size:13px;margin-top:2px;}
+    .ci-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
     .ci-qty{display:flex;align-items:center;gap:8px;}
     .ci-btn{background:rgba(200,134,10,.2);border:1px solid #c8860a;border-radius:50%;width:28px;height:28px;color:#c8860a;font-size:16px;cursor:pointer;}
+    .ci-del{background:rgba(180,40,40,.15);border:1px solid rgba(220,80,80,.55);border-radius:10px;width:34px;height:34px;color:#ff8a8a;font-size:16px;cursor:pointer;line-height:1;}
     .ci-n{color:#fff;font-size:15px;font-weight:800;min-width:18px;text-align:center;}
+    .cart-clear-btn{
+      display:block;width:calc(100% - 28px);margin:0 14px 10px;
+      background:rgba(180,40,40,.12);border:1px solid rgba(220,80,80,.45);color:#ff9a9a;
+      border-radius:12px;padding:10px 14px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;
+    }
+    .cart-clear-btn[hidden]{display:none;}
     .empty-c{text-align:center;color:rgba(200,134,10,.4);padding:50px 20px;}
     .cart-ft{padding:18px 20px;border-top:1px solid rgba(200,134,10,.25);}
     .total-row{display:flex;justify-content:space-between;margin-bottom:14px;}
@@ -924,6 +933,7 @@
       <button type="button" class="close-c" id="closeCart">×</button>
     </div>
     <div id="cart-items"></div>
+    <button type="button" class="cart-clear-btn" id="clearCartBtn" hidden>مسح السلة بالكامل</button>
     <div class="cart-ft">
       <div class="total-row"><span id="i18n-cart-total-label">المجموع</span><span class="tv" id="total">0 ₺</span></div>
       <textarea class="note" id="noteInp" rows="2" placeholder="ملاحظة (حساسية، طلب خاص…)" maxlength="200"></textarea>
@@ -971,6 +981,9 @@
       cartSub: "عدّل الكمية ثم أكّد الإرسال",
       cartTotal: "المجموع",
       cartSend: "✓ تأكيد وإرسال للمطبخ",
+      cartClearAll: "مسح السلة بالكامل",
+      cartDelete: "حذف",
+      toastCleared: "تم مسح السلة",
       notePh: "ملاحظة (حساسية، طلب خاص…)",
       popupClose: "إلغاء",
       popupAdd: "أضف للسلة",
@@ -1023,6 +1036,9 @@
       cartSub: "Miktarı düzenle ve onayla",
       cartTotal: "Toplam",
       cartSend: "✓ Onayla ve mutfağa gönder",
+      cartClearAll: "Sepeti temizle",
+      cartDelete: "Sil",
+      toastCleared: "Sepet temizlendi",
       notePh: "Not (alerji, özel istek…)",
       popupClose: "İptal",
       popupAdd: "Sepete ekle",
@@ -1075,6 +1091,9 @@
       cartSub: "Edit quantity then confirm",
       cartTotal: "Total",
       cartSend: "✓ Confirm & send to kitchen",
+      cartClearAll: "Clear cart",
+      cartDelete: "Delete",
+      toastCleared: "Cart cleared",
       notePh: "Note (allergy, special request…)",
       popupClose: "Cancel",
       popupAdd: "Add to cart",
@@ -1140,6 +1159,7 @@
       "i18n-cart-sub": "cartSub",
       "i18n-cart-total-label": "cartTotal",
       "sendBtn": "cartSend",
+      "clearCartBtn": "cartClearAll",
       "popupClose": "popupClose",
       "popupAdd": "popupAdd",
       "i18n-ok-title": "okTitle",
@@ -2034,28 +2054,53 @@
     if (sceneSendBtn) sceneSendBtn.onclick = openCartConfirm;
     document.getElementById("closeCart").onclick = closeCart;
     document.getElementById("overlay").onclick = closeCart;
+    document.getElementById("clearCartBtn").onclick = clearCart;
+
+    function removeItem(id) {
+      const i = cart.findIndex(x => x.item.id === id);
+      if (i < 0) return;
+      const name = cart[i].item.name;
+      cart.splice(i, 1);
+      updateBadge();
+      renderCart();
+      showToast("🗑 " + name);
+    }
+    function clearCart() {
+      if (!cart.length) return;
+      cart = [];
+      updateBadge();
+      renderCart();
+      showToast("🗑 " + guestT("toastCleared"));
+    }
 
     function renderCart() {
       const c = document.getElementById("cart-items");
+      const clearBtn = document.getElementById("clearCartBtn");
       if (!cart.length) {
         c.innerHTML = '<div class="empty-c">🍽<br/>' + esc(guestT("emptyCart")) + '<br/><small>' + esc(guestT("emptyCartHint")) + '</small></div>';
         document.getElementById("total").textContent = "0 ₺";
         document.getElementById("sendBtn").disabled = true;
+        if (clearBtn) clearBtn.hidden = true;
         return;
       }
+      if (clearBtn) clearBtn.hidden = false;
       c.innerHTML = cart.map(l => `
         <div class="ci">
-          <div><div class="ci-name">${esc(l.item.name)}</div><div class="ci-price">${money(Number(l.item.price) * l.qty)}</div></div>
-          <div class="ci-qty">
-            <button type="button" class="ci-btn" data-dec="${l.item.id}">−</button>
-            <span class="ci-n">${l.qty}</span>
-            <button type="button" class="ci-btn" data-inc="${l.item.id}">+</button>
+          <div class="ci-body"><div class="ci-name">${esc(l.item.name)}</div><div class="ci-price">${money(Number(l.item.price) * l.qty)}</div></div>
+          <div class="ci-actions">
+            <div class="ci-qty">
+              <button type="button" class="ci-btn" data-dec="${l.item.id}">−</button>
+              <span class="ci-n">${l.qty}</span>
+              <button type="button" class="ci-btn" data-inc="${l.item.id}">+</button>
+            </div>
+            <button type="button" class="ci-del" data-del="${l.item.id}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
           </div>
         </div>`).join("");
       document.getElementById("total").textContent = money(cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0));
       document.getElementById("sendBtn").disabled = sending;
       document.querySelectorAll("[data-inc]").forEach(b => b.onclick = () => chQty(Number(b.dataset.inc), 1));
       document.querySelectorAll("[data-dec]").forEach(b => b.onclick = () => chQty(Number(b.dataset.dec), -1));
+      document.querySelectorAll("[data-del]").forEach(b => b.onclick = () => removeItem(Number(b.dataset.del)));
     }
     function chQty(id, d) {
       const i = cart.findIndex(x => x.item.id === id);
