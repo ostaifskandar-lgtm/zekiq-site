@@ -83,7 +83,7 @@
         if(h&&!isFullscreen()) h.classList.remove("hide");
       }
       function onMenuTap(ev){
-        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.zoom-btn,.order-chip-list,#sceneOrderList")) return;
+        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         fitViewport();
         enterImmersiveAuto();
         tryFullscreen().then(function(){burstRelayout();}).catch(function(){});
@@ -115,7 +115,7 @@
       }
       function blockScroll(e){
         if(e.touches&&e.touches.length>1) return;
-        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list,#book.page-zoomed,.ci-note,#noteInp,#pageSwipeBar")) return;
+        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list,.ci-note,#noteInp,#pageSwipeBar")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pf,.pf-bg")) return;
         e.preventDefault();
       }
@@ -146,12 +146,12 @@
         maybeShowFsHint();
       });
       document.addEventListener("touchstart",function(e){
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.zoom-btn,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) onMenuTap(e);
         else fitViewport();
       },{passive:true,capture:true});
       document.addEventListener("click",function(e){
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.zoom-btn,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) return;
         fitViewport();
         showChrome();
@@ -591,19 +591,9 @@
       transform-style:preserve-3d;transform:translateZ(0);
       touch-action:manipulation;
     }
-    #book.page-zoomed{overflow:auto;-webkit-overflow-scrolling:touch;}
     #book.page-swiping .pf-overlay{pointer-events:none!important;}
     #book.page-swiping .plus-hit,#book.page-swiping .plus-hotspot,#book.page-swiping .price-hotspot{pointer-events:none!important;}
     .pw.page-current .pf{overflow:visible;}
-    .nav-zoom{
-      display:flex;align-items:center;gap:4px;flex-shrink:0;
-    }
-    .zoom-btn{
-      min-width:34px;height:34px;border-radius:10px;border:1px solid rgba(200,134,10,.45);
-      background:rgba(200,134,10,.15);color:#ffe082;font-size:16px;font-weight:900;cursor:pointer;
-      touch-action:manipulation;padding:0 8px;
-    }
-    .zoom-level{font-size:10px;color:#c8860a;min-width:30px;text-align:center;font-weight:800;}
     #book::before{display:none;}
     .pw{
       position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;
@@ -673,8 +663,6 @@
       pointer-events:none;user-select:none;-webkit-user-select:none;
       -webkit-user-drag:none;-webkit-touch-callout:none;
       touch-action:none;
-      transition:transform .12s ease-out;
-      transform-origin:center top;
     }
     .pf.book-cover{
       background:linear-gradient(155deg,#120800 0%,#2a1400 42%,#1a0c00 100%);
@@ -1158,11 +1146,6 @@
     <div id="nav">
       <button type="button" class="nav-arrow" id="prevBtn"><span class="nav-label" id="i18n-prev">◀ السابق</span></button>
       <div class="nav-pg"><bdi id="navPgnum" dir="ltr">1 / 1</bdi></div>
-      <div class="nav-zoom">
-        <button type="button" class="zoom-btn" id="zoomOutBtn" aria-label="تصغير">−</button>
-        <span id="zoomLevel" class="zoom-level"></span>
-        <button type="button" class="zoom-btn" id="zoomInBtn" aria-label="تكبير">+</button>
-      </div>
       <button type="button" class="nav-arrow" id="nextBtn"><span class="nav-label" id="i18n-next">التالي ▶</span></button>
       <div id="thumbs" aria-hidden="true"></div>
     </div>
@@ -1533,39 +1516,6 @@
     let plusButtonsAllPages = false;
     let bookCacheVer = "";
     let cur = 0, animating = false, popupItem = null, popupQty = 1, sending = false, done = false;
-    let pageZoom = 1;
-    function setPageZoom(z) {
-      pageZoom = Math.min(2.5, Math.max(1, Math.round(z * 10) / 10));
-      const book = document.getElementById("book");
-      if (book) book.classList.toggle("page-zoomed", pageZoom > 1);
-      document.querySelectorAll(".pf-bg").forEach(bg => { bg.style.transform = ""; });
-      const bg = document.querySelector("#pw" + cur + " .pf-bg");
-      if (bg && pageZoom > 1) bg.style.transform = "scale(" + pageZoom + ")";
-      const zm = document.getElementById("zoomLevel");
-      if (zm) zm.textContent = pageZoom > 1 ? Math.round(pageZoom * 100) + "%" : "";
-    }
-    function bindPagePinch() {
-      const book = document.getElementById("book");
-      if (!book || book.__pinchBound) return;
-      book.__pinchBound = true;
-      let startDist = 0, startZoom = 1;
-      book.addEventListener("touchstart", e => {
-        if (e.touches.length === 2) {
-          const dx = e.touches[0].clientX - e.touches[1].clientX;
-          const dy = e.touches[0].clientY - e.touches[1].clientY;
-          startDist = Math.hypot(dx, dy);
-          startZoom = pageZoom;
-        }
-      }, { passive: true });
-      book.addEventListener("touchmove", e => {
-        if (e.touches.length === 2 && startDist > 0) {
-          const dx = e.touches[0].clientX - e.touches[1].clientX;
-          const dy = e.touches[0].clientY - e.touches[1].clientY;
-          setPageZoom(startZoom * (Math.hypot(dx, dy) / startDist));
-        }
-      }, { passive: true });
-      book.addEventListener("touchend", () => { startDist = 0; }, { passive: true });
-    }
     window.__zekiqGestureSwipe = false;
     const pageGesture = { active: false, swipe: false, startX: 0, startY: 0 };
     function bindBookSwipe() {
@@ -1588,7 +1538,7 @@
         book.classList.remove("page-swiping");
       }
       function canSwipe() {
-        return coachDone && !animating && pageZoom <= 1 && bookSpread.length > 1;
+        return coachDone && !animating && bookSpread.length > 1;
       }
       function onStart(x, y) {
         if (!canSwipe()) return;
@@ -2371,10 +2321,8 @@
       maybeShowCoach();
       if (window.__zekiqBindSceneFullscreen) window.__zekiqBindSceneFullscreen();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
-      bindPagePinch();
       bindBookSwipe();
       syncSwipeBar();
-      setPageZoom(1);
     }
 
     function maybeShowCoach() {
@@ -2462,7 +2410,6 @@
       });
       renderPageDock();
       mountPageOverlays(cur);
-      setPageZoom(pageZoom);
       requestAnimationFrame(() => {
         layoutAllHotspots();
         if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
@@ -2624,9 +2571,6 @@
     bindTopBtn(sceneSendBtn, openCartConfirm);
     bindTopBtn(document.getElementById("prevBtn"), prevPage);
     bindTopBtn(document.getElementById("nextBtn"), nextPage);
-    bindTopBtn(document.getElementById("zoomInBtn"), () => setPageZoom(pageZoom + 0.25));
-    bindTopBtn(document.getElementById("zoomOutBtn"), () => setPageZoom(pageZoom - 0.25));
-    bindPagePinch();
     document.getElementById("closeCart").onclick = closeCart;
     document.getElementById("overlay").onclick = closeCart;
     document.getElementById("clearCartBtn").onclick = clearCart;
