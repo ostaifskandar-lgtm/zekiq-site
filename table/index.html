@@ -631,6 +631,67 @@
       transition:transform .12s ease-out;
       transform-origin:center top;
     }
+    .pf.book-cover{
+      background:linear-gradient(155deg,#120800 0%,#2a1400 42%,#1a0c00 100%);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .book-cover-inner{width:min(88%,340px);padding:8px;}
+    .book-cover-frame{
+      border:2px solid rgba(230,168,23,.5);
+      border-radius:20px;
+      padding:28px 22px 24px;
+      background:linear-gradient(165deg,rgba(18,8,0,.92) 0%,rgba(35,18,0,.78) 100%);
+      box-shadow:0 16px 48px rgba(0,0,0,.5),inset 0 0 36px rgba(230,168,23,.07);
+      text-align:center;
+    }
+    .book-cover-badge{
+      display:inline-block;
+      font-size:10px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:#e6a817;
+      font-weight:900;
+      margin-bottom:14px;
+      padding:4px 12px;
+      border-radius:12px;
+      border:1px solid rgba(230,168,23,.35);
+      background:rgba(230,168,23,.1);
+    }
+    .book-cover-title{
+      font-size:clamp(20px,5.5vw,26px);
+      color:#ffe082;
+      font-weight:900;
+      line-height:1.25;
+      margin-bottom:10px;
+    }
+    .book-cover-sub{
+      font-size:13px;
+      color:rgba(255,224,130,.72);
+      line-height:1.55;
+    }
+    .book-cover-swipe{
+      margin-top:20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      font-size:30px;
+      line-height:1;
+      color:rgba(255,224,130,.28);
+    }
+    .book-cover-swipe .cover-arrow{
+      display:inline-block;
+      text-shadow:0 0 8px rgba(230,168,23,.15);
+      animation:coverArrowPulse 2.4s ease-in-out infinite;
+    }
+    .book-cover-start .cover-arrow-next{animation-delay:0s;color:rgba(255,224,130,.85);}
+    .book-cover-start .cover-arrow-prev{animation-delay:1.2s;opacity:.45;}
+    .book-cover-end .cover-arrow-prev{animation-delay:0s;color:rgba(255,224,130,.85);}
+    .book-cover-end .cover-arrow-next{animation-delay:1.2s;opacity:.45;}
+    @keyframes coverArrowPulse{
+      0%,100%{opacity:.25;transform:scale(.88);text-shadow:0 0 4px rgba(230,168,23,.1);}
+      50%{opacity:1;transform:scale(1.1);text-shadow:0 0 16px rgba(255,224,130,.85),0 0 28px rgba(230,168,23,.45);}
+    }
     .th img{user-select:none;-webkit-user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;}
     .pf-overlay,.pb-overlay{position:absolute;inset:0;pointer-events:none;z-index:20;}
     .pf-overlay .price-hotspot,.pb-overlay .price-hotspot{pointer-events:auto;}
@@ -1152,6 +1213,12 @@
       coach3: 'اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong>',
       coach4: 'في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال',
       coachOk: "فهمت — ابدأ الطلب ✓",
+      coverStartBadge: "بداية المينو",
+      coverStartTitle: "مرحباً",
+      coverStartSub: "اسحب للداخل لبدء تصفّح الأطباق",
+      coverEndBadge: "نهاية المينو",
+      coverEndTitle: "انتهى المينو",
+      coverEndSub: "اسحب للخلف أو أرسل طلبك من الأعلى",
       prev: "◀ السابق",
       next: "التالي ▶",
       swipeHint: "اسحب لقلب الصفحة",
@@ -1210,6 +1277,12 @@
       coach3: 'Üstte <strong>Gönder</strong> → sepeti kontrol et → <strong>Onayla</strong>',
       coach4: 'Göndermeden önce her ürünün altına <strong>açık bir not</strong> yazabilirsiniz',
       coachOk: "Anladım — siparişe başla ✓",
+      coverStartBadge: "Menü başı",
+      coverStartTitle: "Hoş geldiniz",
+      coverStartSub: "Yemekleri görmek için kaydırın",
+      coverEndBadge: "Menü sonu",
+      coverEndTitle: "Menü bitti",
+      coverEndSub: "Geri kaydırın veya üstten sipariş gönderin",
       prev: "◀ Önceki",
       next: "Sonraki ▶",
       swipeHint: "Sayfayı çevirmek için kaydır",
@@ -1268,6 +1341,12 @@
       coach3: 'Tap <strong>Send</strong> at top → review cart → <strong>Confirm</strong>',
       coach4: 'In the cart, add a <strong>clear note</strong> under each item before sending',
       coachOk: "Got it — start ordering ✓",
+      coverStartBadge: "Menu start",
+      coverStartTitle: "Welcome",
+      coverStartSub: "Swipe to browse dishes",
+      coverEndBadge: "Menu end",
+      coverEndTitle: "End of menu",
+      coverEndSub: "Swipe back or send your order above",
       prev: "◀ Prev",
       next: "Next ▶",
       swipeHint: "Swipe to turn the page",
@@ -1399,7 +1478,7 @@
     if (!SHOP && TOKEN) SHOP = shopFromToken(TOKEN);
 
     let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "";
-    let bookPages = [], pageCategories = {}, pageHotspots = {}, manualSpots = {};
+    let bookPages = [], bookSpread = [], menuPageCount = 0, pageCategories = {}, pageHotspots = {}, manualSpots = {};
     let singlePagePlusOnly = false;
     let plusButtonsAllPages = false;
     let bookCacheVer = "";
@@ -1459,7 +1538,7 @@
         book.classList.remove("page-swiping");
       }
       function canSwipe() {
-        return coachDone && !animating && pageZoom <= 1 && bookPages.length > 1;
+        return coachDone && !animating && pageZoom <= 1 && bookSpread.length > 1;
       }
       function onStart(x, y) {
         if (!canSwipe()) return;
@@ -1529,7 +1608,59 @@
     function syncSwipeBar() {
       const bar = document.getElementById("pageSwipeBar");
       if (!bar) return;
-      bar.style.display = bookPages.length <= 1 ? "none" : "";
+      bar.style.display = bookSpread.length <= 1 ? "none" : "";
+    }
+    function rebuildBookSpread() {
+      bookSpread = [{ kind: "cover-start" }];
+      bookPages.forEach((imgUrl, i) => bookSpread.push({ kind: "menu", menuIdx: i, imgUrl }));
+      bookSpread.push({ kind: "cover-end" });
+      menuPageCount = bookPages.length;
+    }
+    function spreadKind(i) {
+      return (bookSpread[i] || {}).kind || "";
+    }
+    function menuIdxFromCur(c) {
+      const s = bookSpread[c];
+      return s && s.kind === "menu" ? s.menuIdx : -1;
+    }
+    function formatPageLabel() {
+      const kind = spreadKind(cur);
+      if (kind === "cover-start") return guestT("coverStartBadge");
+      if (kind === "cover-end") return guestT("coverEndBadge");
+      const mi = menuIdxFromCur(cur);
+      return mi >= 0 ? (mi + 1) + " / " + menuPageCount : "—";
+    }
+    function fillCoverPage(pf, kind) {
+      pf.classList.add("book-cover", kind === "cover-start" ? "book-cover-start" : "book-cover-end");
+      const frame = document.createElement("div");
+      frame.className = "book-cover-frame";
+      const badge = document.createElement("div");
+      badge.className = "book-cover-badge";
+      badge.textContent = kind === "cover-start" ? guestT("coverStartBadge") : guestT("coverEndBadge");
+      const title = document.createElement("h2");
+      title.className = "book-cover-title";
+      title.textContent = kind === "cover-start" ? (shopName || guestT("coverStartTitle")) : guestT("coverEndTitle");
+      const sub = document.createElement("p");
+      sub.className = "book-cover-sub";
+      sub.textContent = kind === "cover-start" ? guestT("coverStartSub") : guestT("coverEndSub");
+      const swipe = document.createElement("div");
+      swipe.className = "book-cover-swipe";
+      swipe.innerHTML = kind === "cover-start"
+        ? '<span class="cover-arrow cover-arrow-prev" aria-hidden="true">‹</span><span class="cover-arrow cover-arrow-next" aria-hidden="true">›</span>'
+        : '<span class="cover-arrow cover-arrow-prev" aria-hidden="true">‹</span><span class="cover-arrow cover-arrow-next" aria-hidden="true">›</span>';
+      frame.appendChild(badge);
+      frame.appendChild(title);
+      frame.appendChild(sub);
+      frame.appendChild(swipe);
+      const inner = document.createElement("div");
+      inner.className = "book-cover-inner";
+      inner.appendChild(frame);
+      pf.appendChild(inner);
+    }
+    function refreshCoverTitles() {
+      document.querySelectorAll(".book-cover-start .book-cover-title").forEach(el => {
+        el.textContent = shopName || guestT("coverStartTitle");
+      });
     }
     let coachDone = false, orderOn = false;
 
@@ -2017,15 +2148,17 @@
     function mountPageOverlays(pageIdx) {
       if (pageIdx == null) pageIdx = cur;
       document.querySelectorAll(".pf-overlay").forEach(o => { o.innerHTML = ""; o.remove(); });
+      const menuIdx = menuIdxFromCur(pageIdx);
+      if (menuIdx < 0) return;
       const pf = document.querySelector("#pw" + pageIdx + " .pf");
       if (!pf) return;
       const overlay = document.createElement("div");
       overlay.className = "pf-overlay";
       pf.appendChild(overlay);
-      const pins = collectPagePins(pageIdx);
+      const pins = collectPagePins(menuIdx);
       pins.forEach(({ item, spot }, pinIdx) => {
         if (spot.kind === "plus") attachPlusHotspot(overlay, item, spot, pinIdx);
-        else attachPriceCover(overlay, item, spot, false, pageIdx);
+        else attachPriceCover(overlay, item, spot, false, menuIdx);
       });
       const relayout = () => layoutPfHotspots(pf);
       if (pf.dataset.nw) relayout();
@@ -2123,27 +2256,34 @@
         showErr(guestT("menuNotReady"), guestT("menuNotReadyD"));
         return;
       }
-      bookPages.forEach((imgUrl, i) => {
+      rebuildBookSpread();
+      const spreadLen = bookSpread.length;
+      bookSpread.forEach((spread, i) => {
         const pw = document.createElement("div");
         pw.className = "pw";
         pw.id = "pw" + i;
-        pw.style.zIndex = bookPages.length - i;
+        pw.style.zIndex = spreadLen - i;
 
         const pf = document.createElement("div");
         pf.className = "pf";
-        const pageSrc = fixImgUrl(imgUrl) + (String(imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
-        primePageBg(pf, pageSrc);
-        const shade = document.createElement("div");
-        shade.className = "page-shade";
-        pf.appendChild(shade);
-        const edge = document.createElement("div");
-        edge.className = "page-edge";
-        pf.appendChild(edge);
+        if (spread.kind === "menu") {
+          const pageSrc = fixImgUrl(spread.imgUrl) + (String(spread.imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
+          primePageBg(pf, pageSrc);
+          const shade = document.createElement("div");
+          shade.className = "page-shade";
+          pf.appendChild(shade);
+          const edge = document.createElement("div");
+          edge.className = "page-edge";
+          pf.appendChild(edge);
+        } else {
+          fillCoverPage(pf, spread.kind);
+        }
 
         const pb = document.createElement("div");
         pb.className = "pb";
-        if (i + 1 < bookPages.length) {
-          primeBackBg(pb, fixImgUrl(bookPages[i + 1]));
+        const nextSpread = bookSpread[i + 1];
+        if (nextSpread && nextSpread.kind === "menu") {
+          primeBackBg(pb, fixImgUrl(nextSpread.imgUrl));
         }
 
         pw.appendChild(pf);
@@ -2155,16 +2295,16 @@
       ts.innerHTML = "";
       bookPages.forEach((imgUrl, i) => {
         const th = document.createElement("div");
-        th.className = "th" + (i === 0 ? " active" : "");
+        th.className = "th";
         th.id = "th" + i;
         th.innerHTML = '<img src="' + esc(fixImgUrl(imgUrl)) + '" alt="" draggable="false" role="presentation" />';
-        th.onclick = () => goTo(i);
+        th.onclick = () => goTo(i + 1);
         ts.appendChild(th);
       });
       cur = 0;
       const nav = document.getElementById("nav");
-      if (nav) nav.style.display = bookPages.length <= 1 ? "none" : "";
-      document.documentElement.classList.toggle("single-page", bookPages.length <= 1);
+      if (nav) nav.style.display = spreadLen <= 1 ? "none" : "";
+      document.documentElement.classList.toggle("single-page", menuPageCount <= 1);
       sync();
       buildMenuList();
       renderPageDock();
@@ -2224,7 +2364,7 @@
     }
 
     function nextPage() {
-      if (!coachDone || animating || cur >= bookPages.length - 1) return;
+      if (!coachDone || animating || cur >= bookSpread.length - 1) return;
       animating = true;
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
@@ -2253,20 +2393,22 @@
       step();
     }
     function sync() {
-      const pgText = bookPages.length ? (cur + 1) + " / " + bookPages.length : "—";
+      const pgText = formatPageLabel();
       const pg = document.getElementById("pgnum");
       if (pg) pg.textContent = pgText;
       const navPg = document.getElementById("navPgnum");
       if (navPg) navPg.textContent = pgText;
       document.getElementById("prevBtn").disabled = cur === 0;
-      document.getElementById("nextBtn").disabled = cur >= bookPages.length - 1;
+      document.getElementById("nextBtn").disabled = cur >= bookSpread.length - 1;
       syncSwipeBar();
+      refreshCoverTitles();
       document.querySelectorAll(".pw").forEach((pw, i) => {
         pw.classList.toggle("page-current", i === cur);
       });
+      const activeMenuIdx = menuIdxFromCur(cur);
       document.querySelectorAll(".th").forEach((t, i) => {
-        t.classList.toggle("active", i === cur);
-        if (i === cur) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        t.classList.toggle("active", activeMenuIdx === i);
+        if (activeMenuIdx === i) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       });
       renderPageDock();
       mountPageOverlays(cur);
@@ -2321,6 +2463,7 @@
       const summaryEl = document.getElementById("sceneOrderSummary");
       const listEl = document.getElementById("sceneOrderList");
       if (shopEl && shopName) shopEl.textContent = shopName;
+      refreshCoverTitles();
       if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
       if (sendBtn) {
         sendBtn.hidden = false;
