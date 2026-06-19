@@ -2010,6 +2010,9 @@
       const overlay = pf.querySelector(".pf-overlay");
       const rect = imageOverlayRect(pf);
       if (!overlay || !rect) return;
+      overlay.style.inset = "auto";
+      overlay.style.right = "auto";
+      overlay.style.bottom = "auto";
       overlay.style.left = rect.ox + "px";
       overlay.style.top = rect.oy + "px";
       overlay.style.width = rect.dw + "px";
