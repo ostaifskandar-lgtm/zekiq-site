@@ -1,1 +1,6 @@
-{"lanUrl":"","tunnelUrl":"https://shop.zekiqmenu.com","updatedAt":"2026-06-19T15:16:51.8051713Z","apiUrl":"https://shop.zekiqmenu.com"}
+{
+  "apiUrl": "https://shop.zekiqmenu.com",
+  "tunnelUrl": "https://shop.zekiqmenu.com",
+  "lanUrl": "http://192.168.1.84:3000",
+  "updatedAt": "2026-06-19T15:22:24.785Z"
+}
