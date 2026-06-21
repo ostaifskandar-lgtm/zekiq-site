@@ -240,7 +240,7 @@
       gap:0;
       padding:0 10px 4px;
       padding-top:max(env(safe-area-inset-top,6px),6px);
-      background:linear-gradient(180deg,rgba(13,5,0,.97) 0%,rgba(13,5,0,.88) 85%,rgba(13,5,0,.55) 100%);
+      background:linear-gradient(180deg,rgba(13,5,0,.82) 0%,rgba(13,5,0,.55) 85%,rgba(13,5,0,.22) 100%);
       pointer-events:auto;
       position:relative;
       z-index:950;
@@ -354,15 +354,8 @@
       top:0;left:0;right:0;
       z-index:340;
       pointer-events:none;
-      max-height:min(42vh,246px);
-      overflow:hidden;
-    }
-    #menuOrderDock::before{
-      content:"";
-      position:absolute;inset:0;
-      background:linear-gradient(180deg,rgba(13,5,0,.94) 0%,rgba(13,5,0,.78) 72%,rgba(13,5,0,0) 100%);
-      z-index:-1;
-      pointer-events:none;
+      max-height:none;
+      overflow:visible;
     }
     #menuOrderDock #guestGuide,
     #menuOrderDock #guestOrderChip{pointer-events:auto;}
@@ -385,7 +378,7 @@
       display:flex;
       align-items:center;
       gap:6px;
-      background:rgba(13,5,0,.78);
+      background:rgba(13,5,0,.62);
       border:1px solid rgba(200,134,10,.35);
       border-radius:14px;
       padding:6px 10px;
@@ -393,6 +386,7 @@
       font-size:11px;
       font-weight:700;
       line-height:1.35;
+      box-shadow:0 2px 10px rgba(0,0,0,.22);
     }
     .guide-step strong{color:#7cff9a;font-weight:900;}
     .guide-n{
@@ -537,7 +531,7 @@
       -webkit-user-select:none;
       position:relative;
       z-index:320;
-      background:linear-gradient(180deg,rgba(13,5,0,.72) 0%,rgba(13,5,0,.28) 55%,transparent 100%);
+      background:linear-gradient(180deg,rgba(13,5,0,.28) 0%,rgba(13,5,0,.08) 55%,transparent 100%);
       cursor:grab;
     }
     #pageSwipeBar:active{cursor:grabbing;}
@@ -810,7 +804,7 @@
 
     #coach{
       position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;
-      background:rgba(0,0,0,.88);padding:20px;
+      background:rgba(0,0,0,.72);padding:20px;
     }
     #coach.show{display:flex;}
     #coach-card{
@@ -1012,7 +1006,7 @@
       width:100%;
       min-height:48px;
       padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));
-      background:linear-gradient(0deg,rgba(13,5,0,.92) 0%,rgba(13,5,0,.55) 65%,transparent 100%);
+      background:linear-gradient(0deg,rgba(13,5,0,.62) 0%,rgba(13,5,0,.28) 65%,transparent 100%);
       border:none;
       display:flex;align-items:center;gap:8px;
       z-index:200;
@@ -1078,7 +1072,7 @@
       bottom:auto!important;
       left:auto!important;
       right:auto!important;
-      background:linear-gradient(0deg,rgba(13,5,0,.92) 0%,rgba(13,5,0,.55) 65%,transparent 100%);
+      background:linear-gradient(0deg,rgba(13,5,0,.62) 0%,rgba(13,5,0,.28) 65%,transparent 100%);
     }
     html.immersive.chrome-hidden #nav #thumbs,
     html.immersive.fs-active #nav #thumbs{display:none;}
@@ -2375,6 +2369,12 @@
     }
 
     function maybeShowCoach() {
+      try {
+        if (sessionStorage.getItem("zekiq_coach_done") === "1") {
+          coachDone = true;
+          return;
+        }
+      } catch (e) {}
       coachDone = false;
       document.documentElement.classList.add("coach-locked");
       document.getElementById("coach").classList.add("show");
@@ -2382,6 +2382,7 @@
     function dismissCoach() {
       if (coachDone) return;
       coachDone = true;
+      try { sessionStorage.setItem("zekiq_coach_done", "1"); } catch (e) {}
       document.getElementById("coach").classList.remove("show");
       document.documentElement.classList.remove("coach-locked");
       if (window.__zekiqTryFullscreen) {
