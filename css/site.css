@@ -965,3 +965,163 @@ html.site-gate-locked body > *:not(#siteGate) {
   width: 100%;
   margin-top: 4px;
 }
+
+/* —— Marketing: power / compare / savings —— */
+.power-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+@media (max-width: 960px) {
+  .power-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .power-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.power-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px 22px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.power-card:hover {
+  border-color: rgba(245, 158, 11, 0.45);
+  transform: translateY(-2px);
+}
+
+.power-num {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.power-card h3 {
+  font-size: 1.05rem;
+  margin-bottom: 10px;
+}
+
+.power-card p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.compare-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+}
+
+.compare-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 14px 16px;
+  text-align: start;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  font-size: 0.92rem;
+}
+
+.compare-table thead th {
+  background: var(--bg-2);
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.compare-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.compare-table .col-zekiq {
+  background: rgba(245, 158, 11, 0.06);
+}
+
+.cmp-yes {
+  color: var(--ok);
+  font-weight: 900;
+  margin-inline-end: 6px;
+}
+
+.cmp-no {
+  color: #f87171;
+  font-weight: 900;
+  margin-inline-end: 6px;
+}
+
+.compare-note {
+  margin-top: 18px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.88rem;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.savings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+@media (max-width: 720px) {
+  .savings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.savings-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px 22px;
+}
+
+.savings-card-wide {
+  grid-column: 1 / -1;
+  border-color: rgba(245, 158, 11, 0.35);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), var(--card));
+}
+
+.savings-amt {
+  font-size: clamp(1.4rem, 3vw, 1.85rem);
+  font-weight: 900;
+  color: var(--gold);
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+
+.savings-card h3 {
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+}
+
+.savings-card p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+  .nav-links a[href^="#"] {
+    font-size: 0.82rem;
+    padding: 6px 8px;
+  }
+}
