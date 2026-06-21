@@ -659,10 +659,126 @@
       touch-action:none;
     }
     .pf.book-cover{
-      background:linear-gradient(155deg,#120800 0%,#2a1400 42%,#1a0c00 100%);
       display:flex;align-items:center;justify-content:center;
+      padding:clamp(10px,3vw,18px);
+      background:#3d2818;
     }
-    .book-cover-inner{width:min(88%,340px);padding:8px;}
+    .pf.book-cover-start{
+      background:
+        radial-gradient(ellipse 120% 80% at 50% 0%, rgba(255,240,210,.08) 0%, transparent 55%),
+        linear-gradient(165deg,#2a1808 0%,#4a3020 38%,#3a2818 100%);
+    }
+    .book-cover-leather{
+      width:min(96%,420px);
+      height:min(92%,calc(var(--app-h,100dvh) - 120px));
+      max-height:680px;
+      border-radius:6px 14px 14px 6px;
+      padding:clamp(10px,2.8vw,16px);
+      background:
+        linear-gradient(135deg,#5c3d28 0%,#3d2818 45%,#2a1808 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,220,170,.12),
+        inset 0 2px 8px rgba(255,255,255,.06),
+        8px 12px 36px rgba(0,0,0,.55);
+      position:relative;
+    }
+    .book-cover-leather::before{
+      content:"";
+      position:absolute;left:0;top:8%;bottom:8%;width:14px;
+      border-radius:3px 0 0 3px;
+      background:linear-gradient(90deg,rgba(0,0,0,.35),transparent);
+      pointer-events:none;
+    }
+    .book-cover-panel{
+      width:100%;height:100%;
+      border-radius:4px 10px 10px 4px;
+      padding:clamp(14px,4vw,22px);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background:
+        url("assets/cover-tonino.jpg") center/cover no-repeat,
+        linear-gradient(160deg,#f3e8d4 0%,#e8d5b8 48%,#dcc9a8 100%);
+      box-shadow:inset 0 0 0 2px rgba(90,60,35,.25),inset 0 0 0 6px rgba(255,248,235,.35);
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .book-cover-panel::after{
+      content:"";
+      position:absolute;inset:0;
+      background:linear-gradient(180deg,rgba(255,250,240,.08) 0%,rgba(0,0,0,.06) 100%);
+      pointer-events:none;
+    }
+    .book-cover-plaque{
+      position:relative;z-index:1;
+      width:min(88%,280px);
+      padding:clamp(18px,5vw,28px) clamp(14px,4vw,20px) clamp(16px,4vw,22px);
+      border-radius:18px 18px 22px 22px;
+      background:linear-gradient(165deg,#d4af37 0%,#f0d060 22%,#c9a227 55%,#a88418 100%);
+      box-shadow:
+        0 10px 28px rgba(0,0,0,.35),
+        inset 0 2px 0 rgba(255,255,255,.45),
+        inset 0 -3px 8px rgba(0,0,0,.18);
+      clip-path:polygon(0 0,100% 0,100% 82%,50% 100%,0 82%);
+    }
+    .cover-menu-tag{
+      display:block;
+      text-align:right;
+      font-size:9px;
+      letter-spacing:.22em;
+      font-weight:800;
+      color:#1a1008;
+      margin-bottom:6px;
+      padding-right:4px;
+    }
+    .cover-logo-img{
+      width:min(92%,220px);
+      height:auto;
+      display:block;
+      margin:0 auto 4px;
+      filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));
+    }
+    .cover-tagline{
+      margin-top:10px;
+      font-size:clamp(11px,3.2vw,13px);
+      font-weight:700;
+      color:#1a1008;
+      letter-spacing:.04em;
+      line-height:1.45;
+      font-family:Georgia,"Times New Roman",serif;
+    }
+    .book-cover-swipe-hint{
+      position:relative;z-index:1;
+      margin-top:clamp(14px,4vw,22px);
+      font-size:12px;
+      font-weight:800;
+      color:#5a3a18;
+      letter-spacing:.03em;
+      display:flex;align-items:center;justify-content:center;gap:12px;
+    }
+    .book-cover-swipe-hint .cover-arrow{
+      font-size:28px;line-height:1;
+      color:#8b6914;
+      animation:coverArrowPulse 2.4s ease-in-out infinite;
+    }
+    .book-cover-start .cover-arrow-next{animation-delay:0s;}
+    .book-cover-start .cover-arrow-prev{opacity:.35;animation-delay:1.2s;}
+    .pf.book-cover-end{
+      background:linear-gradient(155deg,#120800 0%,#2a1400 42%,#1a0c00 100%);
+    }
+    .book-cover-end .book-cover-leather{
+      max-height:520px;
+      background:linear-gradient(135deg,#4a3020,#2a1808);
+    }
+    .book-cover-end .book-cover-panel{
+      background:linear-gradient(165deg,#1f0c00,#2d1400);
+      box-shadow:inset 0 0 0 2px rgba(230,168,23,.35);
+    }
+    .book-cover-end .book-cover-title{
+      font-size:clamp(18px,5vw,24px);
+      color:#ffe082;font-weight:900;margin-bottom:8px;
+    }
+    .book-cover-end .book-cover-sub{color:rgba(255,224,130,.75);font-size:13px;line-height:1.55;}
+    .book-cover-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
     .book-cover-frame{
       border:2px solid rgba(230,168,23,.5);
       border-radius:20px;
@@ -711,8 +827,6 @@
       text-shadow:0 0 8px rgba(230,168,23,.15);
       animation:coverArrowPulse 2.4s ease-in-out infinite;
     }
-    .book-cover-start .cover-arrow-next{animation-delay:0s;color:rgba(255,224,130,.85);}
-    .book-cover-start .cover-arrow-prev{animation-delay:1.2s;opacity:.45;}
     .book-cover-end .cover-arrow-prev{animation-delay:0s;color:rgba(255,224,130,.85);}
     .book-cover-end .cover-arrow-next{animation-delay:1.2s;opacity:.45;}
     @keyframes coverArrowPulse{
@@ -1240,9 +1354,9 @@
       coach3: 'اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong>',
       coach4: 'في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال',
       coachOk: "فهمت — ابدأ الطلب ✓",
-      coverStartBadge: "بداية المينو",
-      coverStartTitle: "مرحباً",
-      coverStartSub: "اسحب للداخل لبدء تصفّح الأطباق",
+      coverStartBadge: "الغلاف",
+      coverStartTitle: "Tonino Coffee",
+      coverStartSub: "اسحب للداخل ←",
       coverEndBadge: "نهاية المينو",
       coverEndTitle: "انتهى المينو",
       coverEndSub: "اسحب للخلف أو أرسل طلبك من الأعلى",
@@ -1304,9 +1418,9 @@
       coach3: 'Üstte <strong>Gönder</strong> → sepeti kontrol et → <strong>Onayla</strong>',
       coach4: 'Göndermeden önce her ürünün altına <strong>açık bir not</strong> yazabilirsiniz',
       coachOk: "Anladım — siparişe başla ✓",
-      coverStartBadge: "Menü başı",
-      coverStartTitle: "Hoş geldiniz",
-      coverStartSub: "Yemekleri görmek için kaydırın",
+      coverStartBadge: "Kapak",
+      coverStartTitle: "Tonino Coffee",
+      coverStartSub: "Kaydırarak aç →",
       coverEndBadge: "Menü sonu",
       coverEndTitle: "Menü bitti",
       coverEndSub: "Geri kaydırın veya üstten sipariş gönderin",
@@ -1368,9 +1482,9 @@
       coach3: 'Tap <strong>Send</strong> at top → review cart → <strong>Confirm</strong>',
       coach4: 'In the cart, add a <strong>clear note</strong> under each item before sending',
       coachOk: "Got it — start ordering ✓",
-      coverStartBadge: "Menu start",
-      coverStartTitle: "Welcome",
-      coverStartSub: "Swipe to browse dishes",
+      coverStartBadge: "Cover",
+      coverStartTitle: "Tonino Coffee",
+      coverStartSub: "Swipe to open →",
       coverEndBadge: "Menu end",
       coverEndTitle: "End of menu",
       coverEndSub: "Swipe back or send your order above",
@@ -1624,36 +1738,67 @@
       const mi = menuIdxFromCur(cur);
       return mi >= 0 ? (mi + 1) + " / " + menuPageCount : "—";
     }
+    function guestDisplayShopName(raw) {
+      const s = String(raw || "").trim();
+      if (!s) return "Tonino Coffee";
+      const digits = s.replace(/\D/g, "");
+      const compact = s.replace(/\s/g, "");
+      if (digits.length >= 8 && digits.length / Math.max(compact.length, 1) >= 0.85) return "Tonino Coffee";
+      return s;
+    }
     function fillCoverPage(pf, kind) {
       pf.classList.add("book-cover", kind === "cover-start" ? "book-cover-start" : "book-cover-end");
-      const frame = document.createElement("div");
-      frame.className = "book-cover-frame";
-      const badge = document.createElement("div");
-      badge.className = "book-cover-badge";
-      badge.textContent = kind === "cover-start" ? guestT("coverStartBadge") : guestT("coverEndBadge");
-      const title = document.createElement("h2");
-      title.className = "book-cover-title";
-      title.textContent = kind === "cover-start" ? (shopName || guestT("coverStartTitle")) : guestT("coverEndTitle");
-      const sub = document.createElement("p");
-      sub.className = "book-cover-sub";
-      sub.textContent = kind === "cover-start" ? guestT("coverStartSub") : guestT("coverEndSub");
-      const swipe = document.createElement("div");
-      swipe.className = "book-cover-swipe";
-      swipe.innerHTML = kind === "cover-start"
-        ? '<span class="cover-arrow cover-arrow-prev" aria-hidden="true">‹</span><span class="cover-arrow cover-arrow-next" aria-hidden="true">›</span>'
-        : '<span class="cover-arrow cover-arrow-prev" aria-hidden="true">‹</span><span class="cover-arrow cover-arrow-next" aria-hidden="true">›</span>';
-      frame.appendChild(badge);
-      frame.appendChild(title);
-      frame.appendChild(sub);
-      frame.appendChild(swipe);
       const inner = document.createElement("div");
       inner.className = "book-cover-inner";
-      inner.appendChild(frame);
+      if (kind === "cover-start") {
+        const leather = document.createElement("div");
+        leather.className = "book-cover-leather";
+        const panel = document.createElement("div");
+        panel.className = "book-cover-panel";
+        const plaque = document.createElement("div");
+        plaque.className = "book-cover-plaque";
+        plaque.innerHTML =
+          '<span class="cover-menu-tag">MENU</span>' +
+          '<img class="cover-logo-img" src="assets/tonino-logo.svg" alt="Tonino Coffee Restaurant" width="220" height="68" />' +
+          '<p class="cover-tagline">Kahve · Yemek · Hayat</p>';
+        const hint = document.createElement("div");
+        hint.className = "book-cover-swipe-hint";
+        hint.innerHTML =
+          '<span class="cover-arrow cover-arrow-prev" aria-hidden="true">‹</span>' +
+          "<span>" + esc(guestT("coverStartSub")) + "</span>" +
+          '<span class="cover-arrow cover-arrow-next" aria-hidden="true">›</span>';
+        panel.appendChild(plaque);
+        panel.appendChild(hint);
+        leather.appendChild(panel);
+        inner.appendChild(leather);
+      } else {
+        const frame = document.createElement("div");
+        frame.className = "book-cover-frame";
+        const badge = document.createElement("div");
+        badge.className = "book-cover-badge";
+        badge.textContent = guestT("coverEndBadge");
+        const title = document.createElement("h2");
+        title.className = "book-cover-title";
+        title.textContent = guestT("coverEndTitle");
+        const sub = document.createElement("p");
+        sub.className = "book-cover-sub";
+        sub.textContent = guestT("coverEndSub");
+        const swipe = document.createElement("div");
+        swipe.className = "book-cover-swipe";
+        swipe.innerHTML =
+          '<span class="cover-arrow cover-arrow-prev" aria-hidden="true">‹</span>' +
+          '<span class="cover-arrow cover-arrow-next" aria-hidden="true">›</span>';
+        frame.appendChild(badge);
+        frame.appendChild(title);
+        frame.appendChild(sub);
+        frame.appendChild(swipe);
+        inner.appendChild(frame);
+      }
       pf.appendChild(inner);
     }
     function refreshCoverTitles() {
-      document.querySelectorAll(".book-cover-start .book-cover-title").forEach(el => {
-        el.textContent = shopName || guestT("coverStartTitle");
+      document.querySelectorAll(".book-cover-swipe-hint span:not(.cover-arrow)").forEach(el => {
+        el.textContent = guestT("coverStartSub");
       });
     }
     let coachDone = false, orderOn = false;
@@ -2843,7 +2988,7 @@
 
     function applyMenuData(data) {
       try {
-      shopName = data.shopName || "ZEKiQ";
+      shopName = guestDisplayShopName(data.shopName || "Tonino Coffee");
       section = data.section;
       tableNum = data.tableNum;
       menu = (data.items || []).map(it => ({ ...it, imageUrl: fixImgUrl(it.imageUrl) }));
