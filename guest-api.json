@@ -1,6 +1,6 @@
 {
-  "apiUrl": "https://shop.zekiqmenu.com",
-  "tunnelUrl": "https://shop.zekiqmenu.com",
-  "lanUrl": "http://192.168.1.84:3000",
-  "updatedAt": "2026-06-23T17:13:47.104Z"
+  "apiUrl": "https://tonino.zekiqmenu.com",
+  "tunnelUrl": "https://tonino.zekiqmenu.com",
+  "lanUrl": "http://192.168.1.25:3000",
+  "updatedAt": "2026-06-23T20:30:00.000Z"
 }
