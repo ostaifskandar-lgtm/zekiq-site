@@ -1833,19 +1833,11 @@
     let TOKEN = (params.get("t") || params.get("token") || "").trim();
     let SHOP = (params.get("shop") || "").trim();
     if (!SHOP && TOKEN) SHOP = shopFromToken(TOKEN);
-    let _bootToken = "";
-    let _booting = false;
 
-    function refreshUrlParams() {
-      const q = readParams();
-      TOKEN = (q.get("t") || q.get("token") || "").trim();
-      SHOP = (q.get("shop") || "").trim();
-      if (!SHOP && TOKEN) SHOP = shopFromToken(TOKEN);
-    }
     function coachDoneKey() {
       return "zekiq_coach_done:" + (TOKEN || "x").slice(0, 48);
     }
-    function resetGuestSession() {
+    function clearGuestOverlays() {
       cart.length = 0;
       done = false;
       sending = false;
@@ -1857,7 +1849,6 @@
       document.getElementById("item-popup")?.classList.remove("show");
       const note = document.getElementById("noteInp");
       if (note) note.value = "";
-      if (typeof syncSceneHud === "function") syncSceneHud();
       if (typeof updateBadge === "function") updateBadge();
     }
     const INSTANT_PAGE_TURN = (function () {
@@ -3441,6 +3432,7 @@
         if (!data) return false;
         if (data.ok) { applyMenuData(data); return true; }
         if (data.error === "disabled") { showErr(guestT("errDisabled"), guestT("errDisabledD")); return "stop"; }
+        if (data.error === "table_qr_disabled") { showErr(guestT("errDisabled"), guestT("errDisabledD")); return "stop"; }
         if (data.error === "invalid_token") { sawInvalidToken = true; return false; }
         return false;
       };
@@ -3469,31 +3461,12 @@
       else showErr(guestT("errConn"), guestT("errConnD"));
     }
 
-    async function startGuestApp(force) {
-      refreshUrlParams();
-      if (_booting) return;
-      const tokenChanged = TOKEN !== _bootToken;
-      if (!force && !tokenChanged && document.getElementById("book")?.children.length) return;
-      _booting = true;
-      try {
-        _bootToken = TOKEN;
-        resetGuestSession();
-        coachDone = false;
-        cur = 0;
-        try { sessionStorage.removeItem("zekiq_coach_done"); } catch (e) {}
-        document.documentElement.classList.remove("coach-locked");
-        await boot();
-      } finally {
-        _booting = false;
-      }
-    }
-
     window.addEventListener("pageshow", function (e) {
-      refreshUrlParams();
-      if (e.persisted || TOKEN !== _bootToken) startGuestApp(true);
+      if (!e.persisted) return;
+      clearGuestOverlays();
     });
 
-    startGuestApp(true);
+    boot();
   </script>
 </body>
 </html>
