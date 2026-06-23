@@ -598,13 +598,19 @@
     .pw.page-current .pf{overflow:visible;}
     #book::before{display:none;}
     .pw{
-      position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;
-      cursor:pointer;user-select:none;will-change:opacity;
-      transition:opacity .28s ease;
+      position:absolute;inset:0;
+      cursor:pointer;user-select:none;
       opacity:0;visibility:hidden;pointer-events:none;z-index:1;
+      contain:layout style paint;
+      isolation:isolate;
+    }
+    html.instant-page-turn .pw{transition:none!important;}
+    html:not(.instant-page-turn) .pw{
+      transition:opacity .22s ease;
+      will-change:opacity;
     }
     .pw.page-current{opacity:1;visibility:visible;pointer-events:auto;z-index:50!important;}
-    .pw.page-leave{
+    html:not(.instant-page-turn) .pw.page-leave{
       opacity:0!important;visibility:visible!important;
       pointer-events:none!important;z-index:51!important;
     }
@@ -662,16 +668,16 @@
     }
     .pw.turning .hotspot{pointer-events:none!important;opacity:.35;}
     .pf-bg,.pb-bg{
-      position:absolute;inset:0;
-      background-size:contain;background-position:center;background-repeat:no-repeat;
-      background-color:#6b5438;
-      filter:brightness(1.14) saturate(1.04);
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:contain;object-position:center;
+      background-color:#1e1208;
       pointer-events:none;user-select:none;-webkit-user-select:none;
       -webkit-user-drag:none;-webkit-touch-callout:none;
       touch-action:none;
       -webkit-backface-visibility:hidden;backface-visibility:hidden;
       transform:translateZ(0);
     }
+    .pf-bg[src=""],.pb-bg[src=""]{opacity:0;}
     .pf.book-cover{
       display:flex;align-items:center;justify-content:center;
       padding:clamp(8px,2.5vw,14px);
@@ -1753,6 +1759,13 @@
     const TOKEN = (params.get("t") || params.get("token") || "").trim();
     let SHOP = (params.get("shop") || "").trim();
     if (!SHOP && TOKEN) SHOP = shopFromToken(TOKEN);
+    const INSTANT_PAGE_TURN = (function () {
+      const ua = navigator.userAgent || "";
+      const ios = /iPhone|iPad|iPod/i.test(ua);
+      const ipadOs = navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+      return ios || ipadOs;
+    })();
+    if (INSTANT_PAGE_TURN) document.documentElement.classList.add("instant-page-turn");
 
     let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "";
     let bookPages = [], bookSpread = [], menuPageCount = 0, pageCategories = {}, pageHotspots = {}, manualSpots = {};
@@ -2339,26 +2352,30 @@
       return { ox: (cw - dw) / 2, oy: (ch - dh) / 2, dw, dh };
     }
     function primePageBg(pf, src, onReady) {
-      const bg = document.createElement("div");
-      bg.className = "pf-bg";
-      bg.setAttribute("aria-hidden", "true");
-      pf.insertBefore(bg, pf.firstChild);
-      const probe = new Image();
-      probe.onload = () => {
-        pf.dataset.nw = String(probe.naturalWidth);
-        pf.dataset.nh = String(probe.naturalHeight);
-        bg.style.backgroundImage = "url(\"" + String(src).replace(/\\/g, "\\\\").replace(/"/g, "\\\"") + "\")";
+      const img = document.createElement("img");
+      img.className = "pf-bg";
+      img.alt = "";
+      img.draggable = false;
+      img.decoding = "async";
+      img.setAttribute("aria-hidden", "true");
+      pf.insertBefore(img, pf.firstChild);
+      img.onload = () => {
+        pf.dataset.nw = String(img.naturalWidth);
+        pf.dataset.nh = String(img.naturalHeight);
         if (onReady) onReady();
       };
-      probe.onerror = () => { if (onReady) onReady(); };
-      probe.src = src;
+      img.onerror = () => { if (onReady) onReady(); };
+      img.src = src;
     }
     function primeBackBg(pb, src) {
-      const bg = document.createElement("div");
-      bg.className = "pb-bg";
-      bg.setAttribute("aria-hidden", "true");
-      bg.style.backgroundImage = "url(\"" + String(src).replace(/\\/g, "\\\\").replace(/"/g, "\\\"") + "\")";
-      pb.appendChild(bg);
+      const img = document.createElement("img");
+      img.className = "pb-bg";
+      img.alt = "";
+      img.draggable = false;
+      img.decoding = "async";
+      img.setAttribute("aria-hidden", "true");
+      img.src = src;
+      pb.appendChild(img);
     }
     function layoutPfHotspots(pf) {
       const overlay = pf.querySelector(".pf-overlay");
@@ -2548,13 +2565,14 @@
       bindHotspotTap(h, (e, it) => quickAddItem(it));
       overlay.appendChild(h);
     }
-    function mountPageOverlays(pageIdx) {
+    function mountPageOverlays(pageIdx, force) {
       if (pageIdx == null) pageIdx = cur;
-      document.querySelectorAll(".pf-overlay").forEach(o => { o.innerHTML = ""; o.remove(); });
       const menuIdx = menuIdxFromCur(pageIdx);
       if (menuIdx < 0) return;
       const pf = document.querySelector("#pw" + pageIdx + " .pf");
       if (!pf) return;
+      if (!force && pf.querySelector(".pf-overlay")) return;
+      pf.querySelectorAll(".pf-overlay").forEach(o => { o.innerHTML = ""; o.remove(); });
       const overlay = document.createElement("div");
       overlay.className = "pf-overlay";
       pf.appendChild(overlay);
@@ -2737,6 +2755,9 @@
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       bindBookSwipe();
       syncSwipeBar();
+      bookSpread.forEach((_, i) => {
+        if (spreadKind(i) === "menu") mountPageOverlays(i, true);
+      });
     }
 
     function initCoverGate() {
@@ -2768,18 +2789,21 @@
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
     }
 
-    const FLIP_MS = 320;
+    const FLIP_MS = INSTANT_PAGE_TURN ? 0 : 220;
 
     function endPageTurn(pw) {
-      pw.classList.remove("turn-next", "turn-prev", "turning", "page-leave");
+      if (pw) pw.classList.remove("turn-next", "turn-prev", "turning", "page-leave");
       animating = false;
       requestAnimationFrame(() => {
         layoutAllHotspots();
-        if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       });
     }
 
     function runFlip(leavingPw, onDone) {
+      if (INSTANT_PAGE_TURN) {
+        onDone();
+        return;
+      }
       requestAnimationFrame(() => {
         leavingPw.classList.add("page-leave");
         setTimeout(onDone, FLIP_MS);
@@ -2791,12 +2815,10 @@
       animating = true;
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
-      const next = document.getElementById("pw" + (idx + 1));
       cur = idx + 1;
-      if (next) next.classList.add("page-current");
-      sync();
+      sync(true);
       runFlip(pw, () => {
-        pw.classList.remove("page-current", "page-leave");
+        if (pw) pw.classList.remove("page-current", "page-leave");
         endPageTurn(pw);
       });
     }
@@ -2805,12 +2827,10 @@
       animating = true;
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
-      const prev = document.getElementById("pw" + (idx - 1));
       cur = idx - 1;
-      if (prev) prev.classList.add("page-current");
-      sync();
+      sync(true);
       runFlip(pw, () => {
-        pw.classList.remove("page-current", "page-leave");
+        if (pw) pw.classList.remove("page-current", "page-leave");
         endPageTurn(pw);
       });
     }
@@ -2821,7 +2841,7 @@
         : () => { if (cur > t) { prevPage(); setTimeout(step, FLIP_MS + 40); } };
       step();
     }
-    function sync() {
+    function sync(duringFlip) {
       const pgText = formatPageLabel();
       const pg = document.getElementById("pgnum");
       if (pg) pg.textContent = pgText;
@@ -2837,14 +2857,13 @@
       const activeMenuIdx = menuIdxFromCur(cur);
       document.querySelectorAll(".th").forEach((t, i) => {
         t.classList.toggle("active", activeMenuIdx === i);
-        if (activeMenuIdx === i) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        if (!duringFlip && activeMenuIdx === i) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       });
       renderPageDock();
-      mountPageOverlays(cur);
-      requestAnimationFrame(() => {
-        layoutAllHotspots();
-        if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
-      });
+      if (!duringFlip) {
+        mountPageOverlays(cur);
+        requestAnimationFrame(() => layoutAllHotspots());
+      }
     }
 
     function openPopup(item) {
