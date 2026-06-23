@@ -599,11 +599,15 @@
     #book::before{display:none;}
     .pw{
       position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;
-      cursor:pointer;user-select:none;will-change:opacity,transform;
-      transition:opacity .28s ease;opacity:0;pointer-events:none;
+      cursor:pointer;user-select:none;will-change:opacity;
+      transition:opacity .28s ease;
+      opacity:0;visibility:hidden;pointer-events:none;z-index:1;
     }
-    .pw.page-current{opacity:1;pointer-events:auto;z-index:50!important;}
-    .pw.page-leave{opacity:0!important;}
+    .pw.page-current{opacity:1;visibility:visible;pointer-events:auto;z-index:50!important;}
+    .pw.page-leave{
+      opacity:0!important;visibility:visible!important;
+      pointer-events:none!important;z-index:51!important;
+    }
     .pw.flipped{transform:none!important;}
     .pb{display:none!important;}
     .pw.turn-next{animation:pageTurnNext .92s cubic-bezier(.42,.08,.22,1) forwards;}
@@ -665,6 +669,8 @@
       pointer-events:none;user-select:none;-webkit-user-select:none;
       -webkit-user-drag:none;-webkit-touch-callout:none;
       touch-action:none;
+      -webkit-backface-visibility:hidden;backface-visibility:hidden;
+      transform:translateZ(0);
     }
     .pf.book-cover{
       display:flex;align-items:center;justify-content:center;
@@ -2671,7 +2677,6 @@
         const pw = document.createElement("div");
         pw.className = "pw";
         pw.id = "pw" + i;
-        pw.style.zIndex = spreadLen - i;
 
         const pf = document.createElement("div");
         pf.className = "pf";
@@ -2774,9 +2779,11 @@
       });
     }
 
-    function runFlip(pw, cls, onDone) {
-      pw.classList.add("page-leave");
-      setTimeout(onDone, FLIP_MS);
+    function runFlip(leavingPw, onDone) {
+      requestAnimationFrame(() => {
+        leavingPw.classList.add("page-leave");
+        setTimeout(onDone, FLIP_MS);
+      });
     }
 
     function nextPage() {
@@ -2784,9 +2791,12 @@
       animating = true;
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
-      runFlip(pw, "turn-next", () => {
-        cur = idx + 1;
-        sync();
+      const next = document.getElementById("pw" + (idx + 1));
+      cur = idx + 1;
+      if (next) next.classList.add("page-current");
+      sync();
+      runFlip(pw, () => {
+        pw.classList.remove("page-current", "page-leave");
         endPageTurn(pw);
       });
     }
@@ -2795,9 +2805,12 @@
       animating = true;
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
-      runFlip(pw, "turn-prev", () => {
-        cur = idx - 1;
-        sync();
+      const prev = document.getElementById("pw" + (idx - 1));
+      cur = idx - 1;
+      if (prev) prev.classList.add("page-current");
+      sync();
+      runFlip(pw, () => {
+        pw.classList.remove("page-current", "page-leave");
         endPageTurn(pw);
       });
     }
