@@ -15,16 +15,42 @@
   <title>طلب من الطاولة — ZEKiQ</title>
   <script>
     (function immersiveBoot(){
-      var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0;
+      var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
+      function isIosDevice(){
+        var ua=navigator.userAgent||"";
+        return /iPhone|iPad|iPod/i.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+      }
+      function isStandalone(){
+        return window.navigator.standalone===true||window.matchMedia("(display-mode: standalone)").matches;
+      }
+      function isIosInBrowser(){
+        return isIosDevice()&&!isStandalone();
+      }
+      if(isIosInBrowser()) root.classList.add("ios-inbrowser");
+      if(isStandalone()) root.classList.add("ios-standalone");
       function fitViewport(){
         var vv=window.visualViewport;
         if(vv&&vv.scale&&vv.scale>1.02) return;
         var w=vv?vv.width:window.innerWidth;
         var h=vv?vv.height:window.innerHeight;
-        root.style.setProperty("--app-h",h+"px");
-        root.style.setProperty("--app-w",w+"px");
-        root.style.setProperty("--vv-top","0px");
+        var top=vv?vv.offsetTop:0;
+        var left=vv?vv.offsetLeft:0;
+        root.style.setProperty("--app-h",Math.round(h)+"px");
+        root.style.setProperty("--app-w",Math.round(w)+"px");
+        root.style.setProperty("--vv-top",Math.round(top)+"px");
+        root.style.setProperty("--vv-left",Math.round(left)+"px");
         scheduleRelayout();
+      }
+      function hideSafariChrome(){
+        if(!isIosInBrowser()) return;
+        clearTimeout(safariHideTimer);
+        safariHideTimer=setTimeout(function(){
+          try{
+            window.scrollTo(0,1);
+            setTimeout(function(){window.scrollTo(0,0);fitViewport();},40);
+            setTimeout(function(){window.scrollTo(0,1);fitViewport();},120);
+          }catch(e){}
+        },16);
       }
       function scheduleRelayout(){
         clearTimeout(relayoutTimer);
@@ -63,9 +89,10 @@
         fitViewport();
         root.classList.add("chrome-hidden");
         hideFsHint();
+        hideSafariChrome();
         burstRelayout();
-        try{window.scrollTo(0,1);}catch(e){}
         setTimeout(fitViewport, 120);
+        setTimeout(hideSafariChrome, 280);
       }
       function engage(withFullscreen){
         fitViewport();
@@ -80,13 +107,20 @@
       function maybeShowFsHint(){
         try{if(sessionStorage.getItem("zekiq_fs_hint")==="1")return;}catch(e){}
         var h=document.getElementById("fsHint");
+        var span=document.getElementById("i18n-fsHint");
+        if(span&&isIosInBrowser()){
+          var tfn=window.__zekiqGuestT;
+          var iosMsg=typeof tfn==="function"?tfn("fsHintIos"):"";
+          if(iosMsg) span.textContent=iosMsg;
+        }
         if(h&&!isFullscreen()) h.classList.remove("hide");
       }
       function onMenuTap(ev){
         if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         fitViewport();
+        hideSafariChrome();
         enterImmersiveAuto();
-        tryFullscreen().then(function(){burstRelayout();}).catch(function(){});
+        if(!isIosInBrowser()) tryFullscreen().then(function(){burstRelayout();}).catch(function(){});
         hideFsHint();
       }
       function bindSceneFullscreen(){
@@ -139,6 +173,7 @@
       document.addEventListener("webkitfullscreenchange",onFsChange);
       if(window.visualViewport){
         visualViewport.addEventListener("resize",fitViewport);
+        visualViewport.addEventListener("scroll",fitViewport);
       }
       document.addEventListener("DOMContentLoaded",function(){
         bindSceneFullscreen();
@@ -166,13 +201,15 @@
       window.__zekiqBurstRelayout=burstRelayout;
       window.__zekiqTryFullscreen=tryFullscreen;
       window.__zekiqMaybeShowFsHint=maybeShowFsHint;
+      window.__zekiqHideSafariChrome=hideSafariChrome;
+      window.__zekiqIsIosInBrowser=isIosInBrowser;
       window.__zekiqBindSceneFullscreen=bindSceneFullscreen;
     })();
   </script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
     :root{
-      --app-h:100dvh;--app-w:100vw;--vv-top:0px;--chrome-h:0px;
+      --app-h:100dvh;--app-w:100vw;--vv-top:0px;--vv-left:0px;--chrome-h:0px;
       --guest-top:0px;--guest-guide:0px;--guest-nav:52px;
     }
     @supports not (height:100dvh){:root{--app-h:100vh;}}
@@ -182,6 +219,27 @@
       overflow:hidden;overscroll-behavior:none;
       background:#1e1208;font-family:"Segoe UI",system-ui,Arial,sans-serif;touch-action:manipulation;color:#fff;
       -webkit-text-size-adjust:100%;
+    }
+    html.ios-inbrowser,
+    html.ios-inbrowser body{
+      top:var(--vv-top,0px);left:var(--vv-left,0px);
+      right:auto;bottom:auto;inset:auto;
+      width:var(--app-w,100vw);height:var(--app-h,100dvh);
+      min-height:var(--app-h);max-height:var(--app-h);
+    }
+    html.ios-inbrowser #loadScreen,
+    html.ios-inbrowser #okScreen,
+    html.ios-inbrowser #scene,
+    html.ios-inbrowser #menu-panel,
+    html.ios-inbrowser #cart-panel{
+      top:var(--vv-top,0px)!important;
+      left:var(--vv-left,0px)!important;
+      right:auto!important;
+      width:var(--app-w,100vw)!important;
+      height:var(--app-h,100dvh)!important;
+    }
+    html.ios-inbrowser #pageSwipeBar{
+      padding-bottom:max(env(safe-area-inset-bottom,0px),8px);
     }
 
     #loadScreen{
@@ -1264,14 +1322,14 @@
     html.immersive #overlay,
     html.immersive #menu-panel{
       top:var(--vv-top,0px)!important;
-      left:0!important;right:0!important;
+      left:var(--vv-left,0px)!important;right:auto!important;
       bottom:auto!important;
       width:var(--app-w,100vw)!important;
       height:var(--app-h,100dvh)!important;
     }
     html.immersive #scene{
       top:var(--vv-top,0px)!important;
-      left:0!important;right:0!important;
+      left:var(--vv-left,0px)!important;right:auto!important;
       width:var(--app-w,100vw)!important;
       height:var(--app-h,100dvh)!important;
     }
@@ -1487,6 +1545,7 @@
       next: "التالي ▶",
       swipeHint: "اسحب لقلب الصفحة",
       fsHint: "👆 اضغط على المينو لملء الشاشة",
+      fsHintIos: "↑ اسحب للأعلى قليلاً لإخفاء شريط Safari وملء الشاشة",
       menuTitle: "📋 قائمة الأطباق",
       menuSub: "ابحث واطلب من أي صفحة",
       menuSearch: "ابحث… Türk kahve, menemen, pasta…",
@@ -1558,6 +1617,7 @@
       next: "Sonraki ▶",
       swipeHint: "Sayfayı çevirmek için kaydır",
       fsHint: "👆 Tam ekran için menüye dokunun",
+      fsHintIos: "↑ Safari çubuğunu gizlemek için yukarı kaydırın",
       menuTitle: "📋 Yemek listesi",
       menuSub: "Ara ve her sayfadan sipariş ver",
       menuSearch: "Ara… Türk kahve, menemen, pasta…",
@@ -1629,6 +1689,7 @@
       next: "Next ▶",
       swipeHint: "Swipe to turn the page",
       fsHint: "👆 Tap the menu for full screen",
+      fsHintIos: "↑ Swipe up slightly to hide Safari bar and fill the screen",
       menuTitle: "📋 Dish list",
       menuSub: "Search and order from any page",
       menuSearch: "Search… coffee, pasta…",
@@ -2777,14 +2838,7 @@
       coachDone = true;
       try { sessionStorage.setItem("zekiq_coach_done", "1"); } catch (e) {}
       document.documentElement.classList.remove("coach-locked");
-      if (cur === 0 && bookSpread.length > 1) {
-        nextPage();
-      }
-      if (window.__zekiqTryFullscreen) {
-        window.__zekiqTryFullscreen().finally(function() {
-          if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
-        });
-      }
+      if (window.__zekiqHideSafariChrome) window.__zekiqHideSafariChrome();
       if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
     }
