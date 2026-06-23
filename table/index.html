@@ -3072,6 +3072,10 @@
       if (siteRoot && shopSlug && shopSlug !== "shop") {
         jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-" + shopSlug + ".json", 5000).then(j => ingestManifest(j, add)));
       }
+      // GitHub QR without api= — load known shop manifests (Tonino cashier .25)
+      if (siteRoot && /github\.io$/i.test(location.hostname)) {
+        jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-tonino.json", 5000).then(j => ingestManifest(j, add)));
+      }
       jobs.push(fetchJson("https://shop.zekiqmenu.com/guest-api.json", 5000).then(j => ingestManifest(j, add)));
       for (const base of apiCandidates()) {
         jobs.push(fetchJson(base + "/guest-api.json", 4000).then(j => ingestManifest(j, add)));
@@ -3173,17 +3177,17 @@
         return false;
       };
 
-      const localBases = apiCandidates();
-      for (let b = 0; b < localBases.length; b++) {
-        const r = handleMenuData(await fetchMenuFromBase(localBases[b]));
-        if (r === true || r === "stop") return;
-      }
+      const onGithub = /github\.io$/i.test(location.hostname);
       const manifestBases = await Promise.race([loadManifestApis(), new Promise(r => setTimeout(() => r([]), 6000))]);
-      const seen = new Set(localBases);
-      for (const b of (Array.isArray(manifestBases) ? manifestBases : [])) {
-        if (seen.has(b)) continue;
-        seen.add(b);
-        const r = handleMenuData(await fetchMenuFromBase(b));
+      const localBases = onGithub
+        ? [...(Array.isArray(manifestBases) ? manifestBases : []), ...apiCandidates()]
+        : [...apiCandidates(), ...(Array.isArray(manifestBases) ? manifestBases : [])];
+      const seen = new Set();
+      for (let b = 0; b < localBases.length; b++) {
+        const base = localBases[b];
+        if (!base || seen.has(base)) continue;
+        seen.add(base);
+        const r = handleMenuData(await fetchMenuFromBase(base));
         if (r === true || r === "stop") return;
       }
       if (sawInvalidToken) {
