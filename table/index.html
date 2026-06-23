@@ -1593,6 +1593,7 @@
       errDisabledD: "فعّلها من إعدادات الكاشير.",
       errConn: "تعذّر الاتصال",
       errConnD: "تأكد أن ZEKiQ POS شغّال — من الإعدادات: QR → إعادة النفق أو Token Cloudflare.",
+      retry: "إعادة المحاولة",
       errTable: "الطاولة غير مفتوحة على الكاشير.\nافتح الطاولة من ZEKiQ POS ثم أعد الإرسال.",
       errToken: "رمز QR قديم — اطبع QR جديد من إعدادات الكاشير.",
       errSend: "تعذّر الإرسال — تحقق من الإنترنت أو أن ZEKiQ POS شغّال.",
@@ -1665,6 +1666,7 @@
       errDisabledD: "Kasiyer ayarlarından etkinleştirin.",
       errConn: "Bağlantı hatası",
       errConnD: "ZEKiQ POS açık mı ve internet bağlantısı var mı kontrol edin.",
+      retry: "Tekrar dene",
       errTable: "Masa kasada açık değil.\nZEKiQ POS'tan masayı açın ve tekrar deneyin.",
       errToken: "Eski QR — kasiyerden yeni QR yazdırın.",
       errSend: "Gönderilemedi — internet veya ZEKiQ POS'u kontrol edin.",
@@ -1737,6 +1739,7 @@
       errDisabledD: "Enable in cashier settings.",
       errConn: "Connection failed",
       errConnD: "Check ZEKiQ POS is running and online.",
+      retry: "Try again",
       errTable: "Table not open on cashier.\nOpen the table in ZEKiQ POS and try again.",
       errToken: "Old QR — print a new one from cashier.",
       errSend: "Could not send — check internet or ZEKiQ POS.",
@@ -2776,10 +2779,17 @@
       });
     }
 
-    function showErr(title, detail) {
-      document.getElementById("loadScreen").innerHTML =
-        '<div style="max-width:320px"><p class="title">' + esc(title) + '</p><p>' + esc(detail) + '</p></div>';
-      document.getElementById("loadScreen").style.display = "flex";
+    function showErr(title, detail, withRetry) {
+      const ls = document.getElementById("loadScreen");
+      if (!ls) return;
+      const retry = withRetry !== false
+        ? '<button type="button" id="guestRetryBtn" style="margin-top:16px;background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:800;color:#0d0500;cursor:pointer">↻ ' + esc(guestT("retry") || "Retry") + "</button>"
+        : "";
+      ls.innerHTML =
+        '<div style="max-width:320px"><p class="title">' + esc(title) + '</p><p>' + esc(detail) + '</p>' + retry + "</div>";
+      ls.style.display = "flex";
+      const btn = document.getElementById("guestRetryBtn");
+      if (btn) btn.onclick = () => { ls.style.display = "flex"; ls.innerHTML = '<div><p class="title">' + esc(guestT("loadingTitle")) + '</p><p>' + esc(guestT("loadingSub")) + "</p></div>"; boot(); };
     }
 
     function buildBook() {
@@ -3334,6 +3344,8 @@
       // GitHub QR without api= — load known shop manifests (Tonino cashier .25)
       if (siteRoot && /github\.io$/i.test(location.hostname)) {
         jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-tonino.json", 5000).then(j => ingestManifest(j, add)));
+        add("https://tonino.zekiqmenu.com");
+        add("https://shop.zekiqmenu.com");
       }
       jobs.push(fetchJson("https://shop.zekiqmenu.com/guest-api.json", 5000).then(j => ingestManifest(j, add)));
       for (const base of apiCandidates()) {
@@ -3386,6 +3398,27 @@
       } catch (_) { clearTimeout(timer); return null; }
     }
 
+    function rankApiBases(bases) {
+      const onHttps = location.protocol === "https:";
+      const scored = bases.map((base, i) => {
+        let score = 1000 - i;
+        try {
+          const u = new URL(base.includes("://") ? base : "http://" + base);
+          if (u.protocol === "https:") score += 500;
+          if (/zekiqmenu\.com$/i.test(u.hostname)) score += 200;
+          if (onHttps && u.protocol === "http:" && isPrivateApi(base)) score -= 800;
+          if (/212\.156\.209\.82|trycloudflare\.com|loca\.lt/i.test(u.hostname)) score -= 400;
+        } catch (_) {}
+        return { base, score };
+      });
+      scored.sort((a, b) => b.score - a.score);
+      const out = [];
+      for (const row of scored) {
+        if (row.base && !out.includes(row.base)) out.push(row.base);
+      }
+      return out;
+    }
+
     function applyMenuData(data) {
       try {
       shopName = guestDisplayShopName(data.shopName || "Tonino Coffee");
@@ -3411,14 +3444,11 @@
       document.getElementById("tblLabel").textContent = section + " · " + guestT("table") + " " + tableNum;
       syncSceneHud();
       buildBook();
-      if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
+      try { if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive(); } catch (_) {}
       } catch (e) {
         console.error("[guest/apply]", e);
-        const tfn = window.__zekiqGuestT;
-        showErr(
-          typeof tfn === "function" ? tfn("errConn") : "Connection failed",
-          typeof tfn === "function" ? tfn("errConnD") : "Check ZEKiQ POS is running."
-        );
+        if (document.getElementById("book")?.children.length) return;
+        showErr(guestT("menuNotReady"), guestT("menuNotReadyD"));
       }
     }
 
@@ -3439,9 +3469,9 @@
 
       const onGithub = /github\.io$/i.test(location.hostname);
       const manifestBases = await Promise.race([loadManifestApis(), new Promise(r => setTimeout(() => r([]), 6000))]);
-      const localBases = onGithub
+      const localBases = rankApiBases(onGithub
         ? [...(Array.isArray(manifestBases) ? manifestBases : []), ...apiCandidates()]
-        : [...apiCandidates(), ...(Array.isArray(manifestBases) ? manifestBases : [])];
+        : [...apiCandidates(), ...(Array.isArray(manifestBases) ? manifestBases : [])]);
       const seen = new Set();
       for (let b = 0; b < localBases.length; b++) {
         const base = localBases[b];
