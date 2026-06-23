@@ -1458,7 +1458,7 @@
       errDisabled: "طلبات QR معطّلة",
       errDisabledD: "فعّلها من إعدادات الكاشير.",
       errConn: "تعذّر الاتصال",
-      errConnD: "تأكد أن ZEKiQ POS شغّال و shop.zekiqmenu.com متصل.",
+      errConnD: "تأكد أن ZEKiQ POS شغّال — من الإعدادات: QR → إعادة النفق أو Token Cloudflare.",
       errTable: "الطاولة غير مفتوحة على الكاشير.\nافتح الطاولة من ZEKiQ POS ثم أعد الإرسال.",
       errToken: "رمز QR قديم — اطبع QR جديد من إعدادات الكاشير.",
       errSend: "تعذّر الإرسال — تحقق من الإنترنت أو أن ZEKiQ POS شغّال.",
@@ -3062,7 +3062,16 @@
       const add = u => { u = String(u || "").trim().replace(/\/+$/, ""); if (u && isSafeApiUrl(u) && !out.includes(u)) out.push(u); };
       const jobs = [];
       const siteRoot = location.pathname.replace(/\/table(\/index\.html)?$/i, "").replace(/\/+$/, "");
+      const q0 = readParams();
+      const apiParam0 = (q0.get("api") || "").trim();
+      let shopSlug = "";
+      try {
+        if (apiParam0) shopSlug = new URL(apiParam0.includes("://") ? apiParam0 : "https://" + apiParam0).hostname.split(".")[0] || "";
+      } catch (_) {}
       if (siteRoot) jobs.push(fetchJson(location.origin + siteRoot + "/guest-api.json", 5000).then(j => ingestManifest(j, add)));
+      if (siteRoot && shopSlug && shopSlug !== "shop") {
+        jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-" + shopSlug + ".json", 5000).then(j => ingestManifest(j, add)));
+      }
       jobs.push(fetchJson("https://shop.zekiqmenu.com/guest-api.json", 5000).then(j => ingestManifest(j, add)));
       for (const base of apiCandidates()) {
         jobs.push(fetchJson(base + "/guest-api.json", 4000).then(j => ingestManifest(j, add)));
@@ -3080,16 +3089,17 @@
       const onCellular = navigator.connection?.type === "cellular";
       const phoneMode = onGithub || onCellular;
 
-      if (phoneMode) add("https://shop.zekiqmenu.com");
+      // Shop Wi-Fi: LAN works even when Cloudflare tunnel is down.
+      add(lanParam);
 
       if (phoneMode) {
         if (apiParam && !isEphemeralTunnel(apiParam)) {
           add(apiParam);
           try { add(new URL(apiParam.includes("://") ? apiParam : "http://" + apiParam).origin); } catch (_) {}
         }
-        add(lanParam);
+        if (phoneMode && apiParam && isEphemeralTunnel(apiParam)) add(apiParam);
+        add("https://shop.zekiqmenu.com");
       } else {
-        add(lanParam);
         add(apiParam);
         if (apiParam) try { add(new URL(apiParam.includes("://") ? apiParam : "http://" + apiParam).origin); } catch (_) {}
       }
@@ -3097,8 +3107,7 @@
       const onPos = location.pathname.includes("/guest") || location.pathname.includes("/table") || location.port === "3000";
       if (onPos && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") add(location.origin.replace(/\/+$/, ""));
       if (onPos && (location.hostname === "localhost" || location.hostname === "127.0.0.1")) add("http://127.0.0.1:3000");
-      if (phoneMode && apiParam && isEphemeralTunnel(apiParam)) add(apiParam);
-      add("https://shop.zekiqmenu.com");
+      if (!phoneMode) add("https://shop.zekiqmenu.com");
       return out;
     }
 
@@ -3154,11 +3163,13 @@
       if (!TOKEN) { showErr(guestT("errScanQr"), guestT("errScanQrD")); return; }
       if (!SHOP) { showErr(guestT("errOldQr"), guestT("errOldQrD")); return; }
 
+      let sawInvalidToken = false;
+
       const handleMenuData = data => {
         if (!data) return false;
         if (data.ok) { applyMenuData(data); return true; }
         if (data.error === "disabled") { showErr(guestT("errDisabled"), guestT("errDisabledD")); return "stop"; }
-        if (data.error === "invalid_token") { showErr(guestT("errOldQr"), guestT("errToken")); return "stop"; }
+        if (data.error === "invalid_token") { sawInvalidToken = true; return false; }
         return false;
       };
 
@@ -3175,7 +3186,15 @@
         const r = handleMenuData(await fetchMenuFromBase(b));
         if (r === true || r === "stop") return;
       }
-      showErr(guestT("errConn"), guestT("errConnD"));
+      if (sawInvalidToken) {
+        const manifestLan = (Array.isArray(manifestBases) ? manifestBases : []).find(isPrivateApi);
+        if (manifestLan && !seen.has(manifestLan)) {
+          const r = handleMenuData(await fetchMenuFromBase(manifestLan));
+          if (r === true || r === "stop") return;
+        }
+      }
+      if (sawInvalidToken) showErr(guestT("errOldQr"), guestT("errToken"));
+      else showErr(guestT("errConn"), guestT("errConnD"));
     }
     boot();
   </script>
