@@ -746,24 +746,6 @@
     .cover-corner-tr{top:20px;right:20px;border-width:2px 2px 0 0;border-radius:0 4px 0 0;}
     .cover-corner-bl{bottom:20px;left:20px;border-width:0 0 2px 2px;border-radius:0 0 0 4px;}
     .cover-corner-br{bottom:20px;right:20px;border-width:0 2px 2px 0;border-radius:0 0 4px 0;}
-    .cover-emblem{
-      position:relative;z-index:1;
-      width:clamp(56px,16vw,72px);height:clamp(56px,16vw,72px);
-      border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      background:
-        radial-gradient(circle at 35% 28%,rgba(255,240,200,.22) 0%,transparent 45%),
-        linear-gradient(145deg,#3d2818,#1a0e06);
-      box-shadow:
-        0 0 0 2px rgba(255,210,140,.35),
-        0 0 0 5px rgba(0,0,0,.35),
-        0 8px 28px rgba(0,0,0,.45),
-        inset 0 2px 6px rgba(255,255,255,.08);
-    }
-    .cover-emblem svg{
-      width:58%;height:58%;
-      filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
-    }
     .cover-ornament{
       position:relative;z-index:1;
       width:min(76%,220px);height:10px;
@@ -794,14 +776,14 @@
       margin:0;
       max-width:94%;
       font-family:Georgia,"Times New Roman","Palatino Linotype",serif;
-      font-size:clamp(28px,8vw,44px);
+      font-size:clamp(32px,9vw,48px);
       font-weight:700;
-      line-height:1.12;
+      line-height:1.1;
       color:#fff8ef;
       text-shadow:
         0 2px 20px rgba(0,0,0,.5),
         0 0 48px rgba(255,200,120,.12);
-      letter-spacing:.015em;
+      letter-spacing:.02em;
     }
     .cover-digital-label{
       position:relative;z-index:1;
@@ -1838,16 +1820,6 @@
       if (digits.length >= 8 && digits.length / Math.max(compact.length, 1) >= 0.85) return "Tonino Coffee";
       return s;
     }
-    const COVER_EMBLEM_SVG =
-      '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-      '<defs><linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%">' +
-      '<stop offset="0%" stop-color="#ffe9a8"/><stop offset="100%" stop-color="#c9a227"/></linearGradient></defs>' +
-      '<path fill="none" stroke="url(#cg)" stroke-width="2.5" stroke-linecap="round" d="M18 42V26c0-6 5-11 11-11h6c6 0 11 5 11 11v16"/>' +
-      '<path fill="none" stroke="url(#cg)" stroke-width="2.5" d="M15 42h34"/>' +
-      '<path fill="url(#cg)" d="M28 18c0-3 2-5 4-5s4 2 4 5" opacity=".85"/>' +
-      '<line x1="32" y1="10" x2="32" y2="14" stroke="url(#cg)" stroke-width="2" stroke-linecap="round"/>' +
-      '</svg>';
-
     function fillCoverPage(pf, kind) {
       pf.classList.add("book-cover", kind === "cover-start" ? "book-cover-start" : "book-cover-end");
       const inner = document.createElement("div");
@@ -1872,10 +1844,6 @@
         const kicker = document.createElement("p");
         kicker.className = "cover-kicker";
         kicker.textContent = guestT("coverStartKicker");
-
-        const emblem = document.createElement("div");
-        emblem.className = "cover-emblem";
-        emblem.innerHTML = COVER_EMBLEM_SVG;
 
         const title = document.createElement("h1");
         title.className = "cover-shop-name";
@@ -1903,7 +1871,6 @@
 
         panel.appendChild(ornamentTop);
         panel.appendChild(kicker);
-        panel.appendChild(emblem);
         panel.appendChild(title);
         panel.appendChild(ornamentMid);
         panel.appendChild(digital);
