@@ -667,7 +667,9 @@
       transition:opacity .22s ease;
       will-change:opacity;
     }
-    .pw.page-current{opacity:1;visibility:visible;pointer-events:auto;z-index:50!important;}
+    .pw.page-current{opacity:1;visibility:visible;pointer-events:auto;z-index:50!important;display:block!important;}
+    .pw:not(.page-current):not(.page-leave){display:none!important;}
+    html:not(.instant-page-turn) .pw.page-leave{display:block!important;}
     html:not(.instant-page-turn) .pw.page-leave{
       opacity:0!important;visibility:visible!important;
       pointer-events:none!important;z-index:51!important;
@@ -1834,6 +1836,7 @@
     let plusButtonsAllPages = false;
     let bookCacheVer = "";
     let cur = 0, animating = false, popupItem = null, popupQty = 1, sending = false, done = false;
+    let swipeReady = false, swipeReadyTimer = 0;
     window.__zekiqGestureSwipe = false;
     const pageGesture = { active: false, swipe: false, startX: 0, startY: 0 };
     function bindBookSwipe() {
@@ -1842,7 +1845,7 @@
       if (!book || book.__bookSwipeBound) return;
       book.__bookSwipeBound = true;
       const zones = [book, bar].filter(Boolean);
-      const SWIPE_THRESH = 48;
+      const SWIPE_THRESH = INSTANT_PAGE_TURN ? 68 : 48;
       const SWIPE_LOCK = 12;
       const MAX_Y = 84;
 
@@ -1856,7 +1859,14 @@
         book.classList.remove("page-swiping");
       }
       function canSwipe() {
-        return coachDone && !animating && bookSpread.length > 1;
+        return coachDone && swipeReady && !animating && bookSpread.length > 1;
+      }
+      function armSwipeDelay() {
+        swipeReady = false;
+        clearTimeout(swipeReadyTimer);
+        swipeReadyTimer = setTimeout(function () {
+          swipeReady = true;
+        }, INSTANT_PAGE_TURN ? 900 : 450);
       }
       function onStart(x, y) {
         if (!canSwipe()) return;
@@ -2791,14 +2801,13 @@
         th.className = "th";
         th.id = "th" + i;
         th.innerHTML = '<img src="' + esc(fixImgUrl(imgUrl)) + '" alt="" draggable="false" role="presentation" />';
-        th.onclick = () => goTo(i + 1);
+        th.onclick = () => goToPage(i + 1, false);
         ts.appendChild(th);
       });
       cur = 0;
       const nav = document.getElementById("nav");
       if (nav) nav.style.display = spreadLen <= 1 ? "none" : "";
       document.documentElement.classList.toggle("single-page", menuPageCount <= 1);
-      sync();
       buildMenuList();
       renderPageDock();
       document.getElementById("loadScreen").style.display = "none";
@@ -2811,33 +2820,40 @@
         window.__hotspotRo.observe(document.getElementById("scene"));
       }
       setTimeout(() => document.querySelectorAll(".price-cover.pulse").forEach(p => p.classList.remove("pulse")), 5500);
+      bookSpread.forEach((_, i) => {
+        if (spreadKind(i) === "menu") mountPageOverlays(i, true);
+      });
       initCoverGate();
       if (window.__zekiqBindSceneFullscreen) window.__zekiqBindSceneFullscreen();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       bindBookSwipe();
       syncSwipeBar();
-      bookSpread.forEach((_, i) => {
-        if (spreadKind(i) === "menu") mountPageOverlays(i, true);
-      });
     }
 
     function initCoverGate() {
+      cur = 0;
       try {
         if (sessionStorage.getItem("zekiq_coach_done") === "1") {
           coachDone = true;
           document.documentElement.classList.remove("coach-locked");
-          return;
+        } else {
+          coachDone = false;
+          document.documentElement.classList.add("coach-locked");
         }
-      } catch (e) {}
-      coachDone = false;
-      cur = 0;
-      document.documentElement.classList.add("coach-locked");
+      } catch (e) {
+        coachDone = false;
+        document.documentElement.classList.add("coach-locked");
+      }
+      goToPage(0, true);
+      armSwipeDelay();
     }
     function dismissCoach() {
       if (coachDone) return;
       coachDone = true;
       try { sessionStorage.setItem("zekiq_coach_done", "1"); } catch (e) {}
       document.documentElement.classList.remove("coach-locked");
+      goToPage(0, true);
+      armSwipeDelay();
       if (window.__zekiqHideSafariChrome) window.__zekiqHideSafariChrome();
       if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
@@ -2888,6 +2904,23 @@
         endPageTurn(pw);
       });
     }
+    function goToPage(n, instant) {
+      n = Math.max(0, Math.min(bookSpread.length - 1, Number(n) || 0));
+      if (n === cur && !animating) {
+        sync();
+        return;
+      }
+      if (instant || INSTANT_PAGE_TURN) {
+        animating = false;
+        cur = n;
+        document.querySelectorAll(".pw").forEach(function (pw) {
+          pw.classList.remove("page-leave", "turn-next", "turn-prev", "turning");
+        });
+        sync();
+        return;
+      }
+      goTo(n);
+    }
     function goTo(t) {
       if (animating || t === cur) return;
       const step = t > cur
@@ -2911,7 +2944,7 @@
       const activeMenuIdx = menuIdxFromCur(cur);
       document.querySelectorAll(".th").forEach((t, i) => {
         t.classList.toggle("active", activeMenuIdx === i);
-        if (!duringFlip && activeMenuIdx === i) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        if (!duringFlip && activeMenuIdx === i && !INSTANT_PAGE_TURN) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       });
       renderPageDock();
       if (!duringFlip) {
@@ -3198,7 +3231,7 @@
       done = false;
       document.getElementById("okScreen").classList.remove("show");
       updateBadge();
-      if (bookSpread.length > 1) goTo(1);
+      if (bookSpread.length > 1) goToPage(1, true);
     };
     document.getElementById("exitBtn").onclick = () => {
       document.getElementById("okScreen").classList.remove("show");
