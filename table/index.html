@@ -2487,12 +2487,24 @@
       }
       layoutAllHotspots();
     }
+    function isPrivateHost(h) {
+      return /^(localhost|127\.|192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(h) || /^\d+\.\d+\.\d+\.\d+$/.test(h);
+    }
     function fixImgUrl(url) {
       if (!url) return url;
       try {
-        const u = new URL(url, apiBase || location.origin);
+        const base = (apiBase || location.origin).replace(/\/+$/, "");
+        const u = new URL(url, base);
+        if (isPrivateHost(u.hostname)) {
+          let pub = apiBase;
+          try {
+            if (pub && isPrivateHost(new URL(pub.includes("://") ? pub : "http://" + pub).hostname)) pub = "";
+          } catch (_) { pub = ""; }
+          if (pub) return pub.replace(/\/+$/, "") + u.pathname + u.search;
+          if (u.protocol === "https:") return "http://" + u.host + u.pathname + u.search;
+        }
         if (u.hostname === "127.0.0.1" || u.hostname === "localhost") {
-          return (apiBase || location.origin).replace(/\/+$/, "") + u.pathname + u.search;
+          return base + u.pathname + u.search;
         }
       } catch (_) {}
       return url;
@@ -3133,7 +3145,7 @@
       section = data.section;
       tableNum = data.tableNum;
       menu = (data.items || []).map(it => ({ ...it, imageUrl: fixImgUrl(it.imageUrl) }));
-      bookPages = (data.book && data.book.pages) || [];
+      bookPages = ((data.book && data.book.pages) || []).map(u => fixImgUrl(u));
       pageCategories = (data.book && data.book.pageCategories) || {};
       pageHotspots = (data.book && data.book.pageHotspots) || {};
       manualSpots = (data.book && data.book.manualSpots) || {};
