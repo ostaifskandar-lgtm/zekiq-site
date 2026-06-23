@@ -201,6 +201,14 @@
       width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
       border:2px solid #c8860a;box-shadow:0 0 30px rgba(200,134,10,.35);
     }
+    .ok-actions{display:flex;flex-direction:column;gap:10px;max-width:260px;margin:18px auto 0;width:100%;}
+    .ok-actions .order-btn{margin:0;max-width:none;}
+    .ok-btn-exit{
+      background:transparent!important;
+      border:1.5px solid rgba(200,134,10,.45)!important;
+      color:#f0a820!important;
+      box-shadow:none!important;
+    }
 
     #header{
       position:fixed;top:var(--vv-top,0px);left:0;right:0;z-index:500;
@@ -822,6 +830,36 @@
     }
     .book-cover-start .cover-arrow-next{animation-delay:0s;}
     .book-cover-start .cover-arrow-prev{opacity:.35;animation-delay:1.2s;}
+    .cover-instructions{
+      position:relative;z-index:1;width:min(92%,320px);
+      text-align:right;direction:rtl;
+      display:flex;flex-direction:column;gap:7px;
+      margin-top:4px;
+    }
+    .cover-instructions .cover-step{
+      display:flex;align-items:flex-start;gap:8px;
+      font-size:11px;line-height:1.45;color:#4a3420;
+    }
+    .cover-instructions .cover-step-num{
+      flex-shrink:0;width:20px;height:20px;border-radius:50%;
+      background:linear-gradient(135deg,#b87200,#f0a820);
+      color:#1a0e06;font-size:10px;font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .cover-start-btn{
+      position:relative;z-index:2;
+      width:min(92%,280px);margin-top:6px;
+      background:linear-gradient(135deg,#b87200,#f0a820);
+      border:none;border-radius:14px;padding:13px 16px;
+      font-size:15px;font-weight:900;color:#1a0e06;cursor:pointer;
+      box-shadow:0 4px 18px rgba(184,114,0,.35);
+    }
+    .cover-start-btn:active{transform:scale(.97);}
+    html.coach-locked .book-cover-swipe-hint{display:none;}
+    html:not(.coach-locked) .cover-instructions,
+    html:not(.coach-locked) .cover-start-btn{display:none!important;}
+    #coach{display:none!important;}
+    #guestGuide{display:none!important;}
     .pf.book-cover-end{
       background:linear-gradient(155deg,#120800 0%,#2a1400 42%,#1a0c00 100%);
     }
@@ -1264,7 +1302,11 @@
       <div class="ok-ring"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c8860a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
       <h2 style="font-size:19px;margin-bottom:8px" id="i18n-ok-title">شكراً! ✓</h2>
       <p id="okDetail" style="font-size:13px;color:rgba(200,134,10,.65);line-height:1.6"></p>
-      <button type="button" class="order-btn" style="max-width:220px;margin:20px auto 0" id="againBtn">طلب إضافي</button>
+      <p id="i18n-ok-ask" style="font-size:14px;color:rgba(240,168,32,.85);margin-top:14px;font-weight:700">هل لديك طلب إضافي؟</p>
+      <div class="ok-actions">
+        <button type="button" class="order-btn" id="againBtn">طلب إضافي</button>
+        <button type="button" class="order-btn ok-btn-exit" id="exitBtn">إنهاء — إغلاق الصفحة</button>
+      </div>
     </div>
   </div>
 
@@ -1443,7 +1485,10 @@
       popupClose: "إلغاء",
       popupAdd: "أضف للسلة",
       okTitle: "شكراً! ✓",
+      okAsk: "هل لديك طلب إضافي؟",
       againBtn: "طلب إضافي",
+      exitBtn: "إنهاء — إغلاق الصفحة",
+      exitDone: "يمكنك إغلاق هذه الصفحة — شكراً لزيارتك",
       table: "طاولة",
       items: "أصناف",
       orderTotal: "المجموع",
@@ -1511,7 +1556,10 @@
       popupClose: "İptal",
       popupAdd: "Sepete ekle",
       okTitle: "Teşekkürler! ✓",
+      okAsk: "Ek siparişiniz var mı?",
       againBtn: "Ek sipariş",
+      exitBtn: "Bitir — sayfayı kapat",
+      exitDone: "Bu sayfayı kapatabilirsiniz — teşekkürler",
       table: "Masa",
       items: "ürün",
       orderTotal: "Toplam",
@@ -1579,7 +1627,10 @@
       popupClose: "Cancel",
       popupAdd: "Add to cart",
       okTitle: "Thank you! ✓",
+      okAsk: "Would you like to order more?",
       againBtn: "Order more",
+      exitBtn: "Done — close page",
+      exitDone: "You can close this page — thank you",
       table: "Table",
       items: "items",
       orderTotal: "Total",
@@ -1647,6 +1698,8 @@
       "popupAdd": "popupAdd",
       "i18n-ok-title": "okTitle",
       "againBtn": "againBtn",
+      "exitBtn": "exitBtn",
+      "i18n-ok-ask": "okAsk",
     };
     Object.keys(htmlIds).forEach(function (id) {
       var el = document.getElementById(id);
@@ -1793,7 +1846,6 @@
     function rebuildBookSpread() {
       bookSpread = [{ kind: "cover-start" }];
       bookPages.forEach((imgUrl, i) => bookSpread.push({ kind: "menu", menuIdx: i, imgUrl }));
-      bookSpread.push({ kind: "cover-end" });
       menuPageCount = bookPages.length;
     }
     function spreadKind(i) {
@@ -1870,6 +1922,22 @@
         tableLine.textContent =
           section && tableNum ? section + " · " + guestT("table") + " " + tableNum : "";
 
+        const instr = document.createElement("div");
+        instr.className = "cover-instructions";
+        [1, 2, 3, 4].forEach(n => {
+          const row = document.createElement("div");
+          row.className = "cover-step";
+          row.innerHTML = '<span class="cover-step-num">' + n + '</span><span class="cover-step-text">' + guestT("coach" + n) + "</span>";
+          instr.appendChild(row);
+        });
+
+        const startBtn = document.createElement("button");
+        startBtn.type = "button";
+        startBtn.className = "cover-start-btn";
+        startBtn.id = "coverStartBtn";
+        startBtn.textContent = guestT("coachOk");
+        startBtn.onclick = dismissCoach;
+
         const hint = document.createElement("div");
         hint.className = "book-cover-swipe-hint";
         hint.innerHTML =
@@ -1879,6 +1947,8 @@
 
         panel.appendChild(plate);
         if (section && tableNum) panel.appendChild(tableLine);
+        panel.appendChild(instr);
+        panel.appendChild(startBtn);
         panel.appendChild(hint);
         leather.appendChild(panel);
         inner.appendChild(leather);
@@ -1928,6 +1998,12 @@
       document.querySelectorAll(".cover-table-line").forEach(el => {
         if (section && tableNum) el.textContent = section + " · " + guestT("table") + " " + tableNum;
       });
+      document.querySelectorAll(".cover-instructions .cover-step").forEach((row, i) => {
+        const txt = row.querySelector(".cover-step-text");
+        if (txt) txt.innerHTML = guestT("coach" + (i + 1));
+      });
+      const csb = document.getElementById("coverStartBtn");
+      if (csb) csb.textContent = guestT("coachOk");
     }
     let coachDone = false, orderOn = false;
 
@@ -2646,30 +2722,33 @@
         window.__hotspotRo.observe(document.getElementById("scene"));
       }
       setTimeout(() => document.querySelectorAll(".price-cover.pulse").forEach(p => p.classList.remove("pulse")), 5500);
-      maybeShowCoach();
+      initCoverGate();
       if (window.__zekiqBindSceneFullscreen) window.__zekiqBindSceneFullscreen();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       bindBookSwipe();
       syncSwipeBar();
     }
 
-    function maybeShowCoach() {
+    function initCoverGate() {
       try {
         if (sessionStorage.getItem("zekiq_coach_done") === "1") {
           coachDone = true;
+          document.documentElement.classList.remove("coach-locked");
           return;
         }
       } catch (e) {}
       coachDone = false;
+      cur = 0;
       document.documentElement.classList.add("coach-locked");
-      document.getElementById("coach").classList.add("show");
     }
     function dismissCoach() {
       if (coachDone) return;
       coachDone = true;
       try { sessionStorage.setItem("zekiq_coach_done", "1"); } catch (e) {}
-      document.getElementById("coach").classList.remove("show");
       document.documentElement.classList.remove("coach-locked");
+      if (cur === 0 && bookSpread.length > 1) {
+        nextPage();
+      }
       if (window.__zekiqTryFullscreen) {
         window.__zekiqTryFullscreen().finally(function() {
           if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
@@ -2678,7 +2757,6 @@
       if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
     }
-    document.getElementById("coachOk").onclick = dismissCoach;
 
     const FLIP_MS = 320;
 
@@ -3029,7 +3107,14 @@
       done = false;
       document.getElementById("okScreen").classList.remove("show");
       updateBadge();
-      maybeShowCoach();
+      if (bookSpread.length > 1) goTo(1);
+    };
+    document.getElementById("exitBtn").onclick = () => {
+      document.getElementById("okScreen").classList.remove("show");
+      try { window.close(); } catch (e) {}
+      if (!window.closed) {
+        document.body.innerHTML = '<div style="min-height:100dvh;display:flex;align-items:center;justify-content:center;background:#0d0500;color:#f0a820;font-family:system-ui;text-align:center;padding:24px"><div><p style="font-size:20px;font-weight:800;margin-bottom:8px">' + esc(guestT("okTitle")) + '</p><p style="font-size:14px;opacity:.75">' + esc(guestT("exitDone")) + "</p></div></div>";
+      }
     };
 
     function isSafeApiUrl(u) {
