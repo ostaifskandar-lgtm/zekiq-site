@@ -1041,14 +1041,19 @@
       font-size:16px;font-weight:900;cursor:pointer;
       touch-action:manipulation;
     }
-    html.coach-locked #scene,
-    html.coach-locked #menuStage,
     html.coach-locked #sceneHud,
     html.coach-locked #menuOrderDock,
     html.coach-locked #pageSwipeBar,
     html.coach-locked #nav,
     html.coach-locked #header,
-    html.coach-locked #fsHint{
+    html.coach-locked #fsHint,
+    html.coach-locked #thumbs{
+      visibility:hidden!important;
+      pointer-events:none!important;
+    }
+    html.coach-locked .plus-hit,
+    html.coach-locked .plus-hotspot,
+    html.coach-locked .price-hotspot{
       visibility:hidden!important;
       pointer-events:none!important;
     }
