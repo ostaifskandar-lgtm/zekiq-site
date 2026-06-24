@@ -3559,6 +3559,55 @@
       }
     }
 
+    async function staticBookCandidates() {
+      if (/\/menu(\/|$)/i.test(location.pathname)) {
+        return ["./book.json", "book.json", "../menu/book.json"];
+      }
+      return ["../menu/book.json", "./book.json", "book.json"];
+    }
+
+    function normalizeStaticMenuPayload(raw, bookUrl) {
+      const root = bookUrl.replace(/[^/]+$/, "") || "./";
+      const src = raw.book || raw;
+      const files = src.pages || raw.pages || [];
+      const pages = files.map(f => {
+        const s = String(f);
+        if (/^https?:\/\//i.test(s) || s.startsWith("/")) return s;
+        if (s.startsWith("../") || s.startsWith("./")) return s;
+        const name = s.replace(/^.*\//, "");
+        return root + "pages/" + name;
+      });
+      if (!pages.length) return null;
+      return {
+        ok: true,
+        shopName: raw.shopName || "Tonino Coffee",
+        guestLanguage: raw.guestLanguage || "ar",
+        book: {
+          pages,
+          pageCategories: src.pageCategories || {},
+          pageHotspots: src.pageHotspots || {},
+          manualSpots: src.manualSpots || {},
+          singlePagePlusOnly: src.singlePagePlusOnly,
+          plusButtonsAllPages: src.plusButtonsAllPages,
+          updatedAt: src.updatedAt || raw.updatedAt,
+          version: src.version || raw.version,
+        },
+      };
+    }
+
+    async function fetchStaticMenuBook() {
+      for (const url of staticBookCandidates()) {
+        try {
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) continue;
+          const raw = await res.json();
+          const data = normalizeStaticMenuPayload(raw, url);
+          if (data) return data;
+        } catch (_) {}
+      }
+      return null;
+    }
+
     async function bootMenuOnly() {
       const handleMenuData = data => {
         if (!data) return false;
@@ -3566,6 +3615,16 @@
         if (data.error === "menu_not_ready") { showErr(guestT("menuNotReady"), guestT("menuNotReadyD")); return "stop"; }
         return false;
       };
+
+      if (!params.get("api")) {
+        const staticData = await fetchStaticMenuBook();
+        if (staticData) {
+          apiBase = location.origin || "";
+          const r = handleMenuData(staticData);
+          if (r === true || r === "stop") return;
+        }
+      }
+
       const onGithub = /github\.io$/i.test(location.hostname);
       const manifestBases = await Promise.race([loadManifestApis(), new Promise(r => setTimeout(() => r([]), 6000))]);
       const localBases = rankApiBases(onGithub
