@@ -89,8 +89,12 @@
         $("err").style.display = "flex";
         $("errMsg").textContent = msg || "تحقق من الاتصال ثم أعد المحاولة.";
       }
+      function baseUrl() {
+        var u = location.href.split("#")[0].split("?")[0];
+        return u.endsWith("/") ? u : u + "/";
+      }
       function pageUrl(name) {
-        return "./pages/" + encodeURIComponent(name.replace(/^.*\//, ""));
+        return baseUrl() + "pages/" + encodeURIComponent(name.replace(/^.*\//, ""));
       }
       function render() {
         if (!pages.length) return;
@@ -127,7 +131,7 @@
         if (e.key === "ArrowRight") go(-1);
       });
 
-      fetch("./book.json", { cache: "no-store" })
+      fetch(baseUrl() + "book.json", { cache: "no-store" })
         .then(function (r) {
           if (!r.ok) throw new Error("book_missing");
           return r.json();
