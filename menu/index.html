@@ -2,22 +2,150 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0e0a02" />
   <title>المينو الرقمي — ZEKiQ</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;overflow:hidden;background:#0e0a02;color:#f5d878;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    #app{height:100%;display:flex;flex-direction:column}
+    header{
+      flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:8px;
+      padding:10px 14px calc(10px + env(safe-area-inset-top));
+      background:linear-gradient(180deg,rgba(14,10,2,.98),rgba(14,10,2,.82));
+      border-bottom:1px solid rgba(184,114,0,.25);
+    }
+    header h1{font-size:15px;font-weight:800;color:#ffe082;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    header span{font-size:12px;color:#b8860b;font-weight:700}
+    #stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:pan-y}
+    #page{
+      max-width:100%;max-height:100%;width:auto;height:auto;
+      object-fit:contain;user-select:none;-webkit-user-drag:none;
+      transition:opacity .18s ease;
+    }
+    .nav{
+      position:absolute;top:50%;transform:translateY(-50%);
+      width:44px;height:56px;border:none;border-radius:12px;cursor:pointer;
+      background:rgba(0,0,0,.45);color:#ffe082;font-size:22px;font-weight:900;
+      border:1px solid rgba(184,114,0,.35);backdrop-filter:blur(4px);
+    }
+    .nav:disabled{opacity:.25;pointer-events:none}
+    .nav.prev{right:8px}
+    .nav.next{left:8px}
+    footer{
+      flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:12px;
+      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+      background:rgba(0,0,0,.55);border-top:1px solid rgba(184,114,0,.2);
+      font-size:12px;color:#b8860b;
+    }
+    #load,#err{
+      position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:10px;background:#0e0a02;text-align:center;padding:24px;z-index:20;
+    }
+    #err{display:none;color:#ffb4a2}
+    #err p{color:#f5d878;opacity:.85;font-size:14px;line-height:1.6;max-width:320px}
+    #err button{
+      margin-top:8px;padding:12px 20px;border-radius:12px;border:none;cursor:pointer;
+      background:linear-gradient(135deg,#b87200,#f0a820);color:#1a0e06;font-weight:900;
+    }
+    .hint{font-size:11px;opacity:.65;margin-top:4px}
+    @media (max-width:520px){.nav{width:38px;height:48px;font-size:18px}}
+  </style>
+</head>
+<body>
+  <div id="load">
+    <p style="font-size:16px;font-weight:800">جاري تحميل المينو…</p>
+    <p class="hint">صفحات ثابتة — بدون كاشير</p>
+  </div>
+  <div id="err">
+    <p style="font-size:17px;font-weight:900">تعذّر فتح المينو</p>
+    <p id="errMsg"></p>
+    <button type="button" onclick="location.reload()">↻ إعادة المحاولة</button>
+  </div>
+  <div id="app" hidden>
+    <header>
+      <h1 id="shopName">ZEKiQ</h1>
+      <span id="pageLabel">1 / 1</span>
+    </header>
+    <div id="stage">
+      <button type="button" class="nav prev" id="btnPrev" aria-label="السابق">▶</button>
+      <img id="page" alt="" draggable="false" />
+      <button type="button" class="nav next" id="btnNext" aria-label="التالي">◀</button>
+    </div>
+    <footer>
+      <span>اسحب يميناً / يساراً لقلب الصفحة</span>
+    </footer>
+  </div>
   <script>
     (function () {
-      var params = new URLSearchParams(location.search || "");
-      params.set("view", "menu");
-      var hash = location.hash.replace(/^#\??/, "").trim();
-      if (hash && hash.indexOf("=") >= 0) {
-        new URLSearchParams(hash).forEach(function (v, k) { params.set(k, v); });
+      var pages = [];
+      var idx = 0;
+      var touchX = null;
+
+      function $(id) { return document.getElementById(id); }
+      function showErr(msg) {
+        $("load").style.display = "none";
+        $("app").hidden = true;
+        $("err").style.display = "flex";
+        $("errMsg").textContent = msg || "تحقق من الاتصال ثم أعد المحاولة.";
       }
-      location.replace("../table/index.html?" + params.toString());
+      function pageUrl(name) {
+        return "./pages/" + encodeURIComponent(name.replace(/^.*\//, ""));
+      }
+      function render() {
+        if (!pages.length) return;
+        idx = Math.max(0, Math.min(idx, pages.length - 1));
+        $("page").src = pageUrl(pages[idx]);
+        $("pageLabel").textContent = (idx + 1) + " / " + pages.length;
+        $("btnPrev").disabled = idx <= 0;
+        $("btnNext").disabled = idx >= pages.length - 1;
+      }
+      function go(delta) {
+        var next = idx + delta;
+        if (next < 0 || next >= pages.length) return;
+        idx = next;
+        render();
+        if (navigator.vibrate) navigator.vibrate(8);
+      }
+
+      $("btnPrev").onclick = function () { go(-1); };
+      $("btnNext").onclick = function () { go(1); };
+
+      $("stage").addEventListener("touchstart", function (e) {
+        if (e.touches.length === 1) touchX = e.touches[0].clientX;
+      }, { passive: true });
+      $("stage").addEventListener("touchend", function (e) {
+        if (touchX == null || !e.changedTouches.length) return;
+        var dx = e.changedTouches[0].clientX - touchX;
+        touchX = null;
+        if (Math.abs(dx) < 48) return;
+        go(dx < 0 ? 1 : -1);
+      }, { passive: true });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowLeft") go(1);
+        if (e.key === "ArrowRight") go(-1);
+      });
+
+      fetch("./book.json", { cache: "no-store" })
+        .then(function (r) {
+          if (!r.ok) throw new Error("book_missing");
+          return r.json();
+        })
+        .then(function (data) {
+          var book = data.book || data;
+          pages = (book.pages || []).map(function (p) { return String(p).replace(/^.*\//, ""); });
+          if (!pages.length) throw new Error("no_pages");
+          $("shopName").textContent = data.shopName || "Tonino Coffee";
+          document.title = $("shopName").textContent + " — المينو الرقمي";
+          $("load").style.display = "none";
+          $("app").hidden = false;
+          render();
+        })
+        .catch(function () {
+          showErr("ملف المينو غير موجود على هذا الرابط. شغّل: node scripts/sync-static-menu-site.mjs ثم أعد النشر.");
+        });
     })();
   </script>
-</head>
-<body style="margin:0;background:#0e0a02;color:#f5d878;font-family:system-ui;text-align:center;padding:48px 24px">
-  <p>جاري فتح المينو الرقمي…</p>
-  <p style="opacity:.6;font-size:13px"><a href="../table/index.html?view=menu" style="color:#b8860b">اضغط هنا</a> إن لم يتم التوجيه.</p>
 </body>
 </html>
