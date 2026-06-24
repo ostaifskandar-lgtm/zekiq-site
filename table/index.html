@@ -954,6 +954,21 @@
     #coach{display:none!important;}
     html.coach-locked #guestGuide,
     html.coach-locked #guestOrderChip{display:none!important;}
+    html.menu-only #header .list-btn,
+    html.menu-only #header .cart-btn,
+    html.menu-only #sceneHud .scene-hud-send,
+    html.menu-only #sceneHud .scene-hud-list,
+    html.menu-only #menuOrderDock,
+    html.menu-only #pageDock,
+    html.menu-only #orderStrip,
+    html.menu-only #okScreen,
+    html.menu-only .plus-hit,
+    html.menu-only .plus-hotspot,
+    html.menu-only .price-hotspot{display:none!important;}
+    html.menu-only #sceneHudTable{display:none!important;}
+    html.menu-only .cover-instructions,
+    html.menu-only .cover-start-btn{display:none!important;}
+    html.menu-only .book-cover-swipe-hint{display:flex!important;}
     .pf.book-cover-end{
       background:linear-gradient(155deg,#120800 0%,#2a1400 42%,#1a0c00 100%);
     }
@@ -1556,6 +1571,7 @@
       coach4: 'في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال',
       coachOk: "فهمت — ابدأ الطلب ✓",
       coverStartBadge: "الغلاف",
+      digitalMenu: "المينو الرقمي",
       coverStartTitle: "Tonino Coffee",
       coverStartKicker: "MENU",
       coverDigitalMenu: "المينو الرقمي",
@@ -1629,6 +1645,7 @@
       coach4: 'Göndermeden önce her ürünün altına <strong>açık bir not</strong> yazabilirsiniz',
       coachOk: "Anladım — siparişe başla ✓",
       coverStartBadge: "Kapak",
+      digitalMenu: "Dijital Menü",
       coverStartTitle: "Tonino Coffee",
       coverStartKicker: "MENU",
       coverDigitalMenu: "Dijital Menü",
@@ -1702,6 +1719,7 @@
       coach4: 'In the cart, add a <strong>clear note</strong> under each item before sending',
       coachOk: "Got it — start ordering ✓",
       coverStartBadge: "Cover",
+      digitalMenu: "Digital Menu",
       coverStartTitle: "Tonino Coffee",
       coverStartKicker: "MENU",
       coverDigitalMenu: "Digital Menu",
@@ -1844,11 +1862,14 @@
       } catch (_) { return ""; }
     }
     const params = readParams();
+    const MENU_ONLY = /\/menu(\/|$)/i.test(location.pathname) || params.get("view") === "menu";
+    if (MENU_ONLY) document.documentElement.classList.add("menu-only");
     let TOKEN = (params.get("t") || params.get("token") || "").trim();
     let SHOP = (params.get("shop") || "").trim();
     if (!SHOP && TOKEN) SHOP = shopFromToken(TOKEN);
 
     function coachDoneKey() {
+      if (MENU_ONLY) return "zekiq_menu_coach_done:" + (apiBase || location.hostname);
       return "zekiq_coach_done:" + (TOKEN || "x").slice(0, 48);
     }
     function clearGuestOverlays() {
@@ -3116,7 +3137,15 @@
       const listEl = document.getElementById("sceneOrderList");
       if (shopEl && shopName) shopEl.textContent = shopName;
       refreshCoverTitles();
-      if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
+      if (tableEl) {
+        if (MENU_ONLY) tableEl.textContent = "📖 " + guestT("digitalMenu");
+        else if (section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
+      }
+      if (MENU_ONLY) {
+        if (guideEl) guideEl.classList.remove("show");
+        if (chipEl) chipEl.classList.remove("show");
+        return;
+      }
       if (!coachDone || document.documentElement.classList.contains("coach-locked")) {
         if (guideEl) guideEl.classList.remove("show");
         if (chipEl) chipEl.classList.remove("show");
@@ -3468,7 +3497,8 @@
       const timeoutMs = isEphemeralTunnel(apiBase) ? 3500 : (isPrivateApi(apiBase) ? 3000 : 8000);
       const timer = setTimeout(() => ctrl.abort(), timeoutMs);
       try {
-        const res = await fetch(apiBase + "/api/guest/v1/menu?t=" + encodeURIComponent(TOKEN) + "&shop=" + encodeURIComponent(SHOP), { cache: "no-store", signal: ctrl.signal });
+        const path = MENU_ONLY ? "/api/guest/v1/menu-book" : "/api/guest/v1/menu?t=" + encodeURIComponent(TOKEN) + "&shop=" + encodeURIComponent(SHOP);
+        const res = await fetch(apiBase + path, { cache: "no-store", signal: ctrl.signal });
         clearTimeout(timer);
         return await res.json();
       } catch (_) { clearTimeout(timer); return null; }
@@ -3498,9 +3528,9 @@
     function applyMenuData(data) {
       try {
       shopName = guestDisplayShopName(data.shopName || "Tonino Coffee");
-      section = data.section;
-      tableNum = data.tableNum;
-      menu = (data.items || []).map(it => ({ ...it, imageUrl: fixImgUrl(it.imageUrl) }));
+      section = MENU_ONLY ? "" : (data.section || "");
+      tableNum = MENU_ONLY ? 0 : (data.tableNum || 0);
+      menu = MENU_ONLY ? [] : ((data.items || []).map(it => ({ ...it, imageUrl: fixImgUrl(it.imageUrl) })));
       bookPages = ((data.book && data.book.pages) || []).map(u => fixImgUrl(u));
       pageCategories = (data.book && data.book.pageCategories) || {};
       pageHotspots = (data.book && data.book.pageHotspots) || {};
@@ -3515,9 +3545,10 @@
       if (plusButtonsAllPages) singlePagePlusOnly = false;
       bookCacheVer = String((data.book && (data.book.updatedAt || data.book.version)) || "").replace(/[:.]/g, "");
       if (data.guestLanguage && window.applyGuestLanguage) window.applyGuestLanguage(data.guestLanguage);
-      document.title = shopName + " — " + guestT("table") + " " + tableNum;
+      document.title = shopName + (MENU_ONLY ? " — " + guestT("digitalMenu") : " — " + guestT("table") + " " + tableNum);
       document.getElementById("shopLabel").textContent = shopName;
-      document.getElementById("tblLabel").textContent = section + " · " + guestT("table") + " " + tableNum;
+      const tbl = document.getElementById("tblLabel");
+      if (tbl) tbl.textContent = MENU_ONLY ? guestT("digitalMenu") : section + " · " + guestT("table") + " " + tableNum;
       syncSceneHud();
       buildBook();
       try { if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive(); } catch (_) {}
@@ -3528,7 +3559,31 @@
       }
     }
 
+    async function bootMenuOnly() {
+      const handleMenuData = data => {
+        if (!data) return false;
+        if (data.ok) { applyMenuData(data); return true; }
+        if (data.error === "menu_not_ready") { showErr(guestT("menuNotReady"), guestT("menuNotReadyD")); return "stop"; }
+        return false;
+      };
+      const onGithub = /github\.io$/i.test(location.hostname);
+      const manifestBases = await Promise.race([loadManifestApis(), new Promise(r => setTimeout(() => r([]), 6000))]);
+      const localBases = rankApiBases(onGithub
+        ? [...(Array.isArray(manifestBases) ? manifestBases : []), ...apiCandidates()]
+        : [...apiCandidates(), ...(Array.isArray(manifestBases) ? manifestBases : [])]);
+      const seen = new Set();
+      for (let b = 0; b < localBases.length; b++) {
+        const base = localBases[b];
+        if (!base || seen.has(base)) continue;
+        seen.add(base);
+        const r = handleMenuData(await fetchMenuFromBase(base));
+        if (r === true || r === "stop") return;
+      }
+      showErr(guestT("errConn"), guestT("errConnD"));
+    }
+
     async function boot() {
+      if (MENU_ONLY) { await bootMenuOnly(); return; }
       if (!TOKEN) { showErr(guestT("errScanQr"), guestT("errScanQrD")); return; }
       if (!SHOP) { showErr(guestT("errOldQr"), guestT("errOldQrD")); return; }
 
