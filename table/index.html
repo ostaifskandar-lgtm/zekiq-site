@@ -3559,11 +3559,19 @@
       }
     }
 
-    async function staticBookCandidates() {
+    function staticBookCandidates() {
       if (/\/menu(\/|$)/i.test(location.pathname)) {
         return ["./book.json", "book.json", "../menu/book.json"];
       }
       return ["../menu/book.json", "./book.json", "book.json"];
+    }
+
+    function absStaticAssetUrl(relativePath, bookUrl) {
+      try {
+        return new URL(relativePath, new URL(bookUrl, location.href).href).href;
+      } catch (_) {
+        return relativePath;
+      }
     }
 
     function normalizeStaticMenuPayload(raw, bookUrl) {
@@ -3573,9 +3581,9 @@
       const pages = files.map(f => {
         const s = String(f);
         if (/^https?:\/\//i.test(s) || s.startsWith("/")) return s;
-        if (s.startsWith("../") || s.startsWith("./")) return s;
+        if (s.startsWith("../") || s.startsWith("./")) return absStaticAssetUrl(s, bookUrl);
         const name = s.replace(/^.*\//, "");
-        return root + "pages/" + name;
+        return absStaticAssetUrl(root + "pages/" + name, bookUrl);
       });
       if (!pages.length) return null;
       return {
@@ -3619,13 +3627,21 @@
       if (!params.get("api")) {
         const staticData = await fetchStaticMenuBook();
         if (staticData) {
-          apiBase = location.origin || "";
+          try {
+            apiBase = new URL("../menu/", location.href).href.replace(/\/+$/, "");
+          } catch (_) {
+            apiBase = location.origin || "";
+          }
           const r = handleMenuData(staticData);
           if (r === true || r === "stop") return;
         }
       }
 
       const onGithub = /github\.io$/i.test(location.hostname);
+      if (onGithub && !params.get("api")) {
+        showErr(guestT("menuNotReady"), guestT("menuNotReadyD"));
+        return;
+      }
       const manifestBases = await Promise.race([loadManifestApis(), new Promise(r => setTimeout(() => r([]), 6000))]);
       const localBases = rankApiBases(onGithub
         ? [...(Array.isArray(manifestBases) ? manifestBases : []), ...apiCandidates()]
