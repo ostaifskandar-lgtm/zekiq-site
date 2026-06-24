@@ -149,7 +149,7 @@
       }
       function blockScroll(e){
         if(e.touches&&e.touches.length>1) return;
-        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list,.ci-note,#noteInp,#pageSwipeBar,#menuStage,#book,.pf,.pf-bg")) return;
+        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list,.ci-note,#noteInp,#pageSwipeBar,#menuStage,#scene,#book,.pf,.pf-bg")) return;
         e.preventDefault();
       }
       function onFsChange(){
@@ -566,6 +566,7 @@
       perspective:2400px;
       padding:0;
       cursor:pointer;
+      touch-action:pan-x pinch-zoom;
     }
     html.immersive.chrome-hidden #scene,
     html.immersive.fs-active #scene,
@@ -1875,16 +1876,25 @@
     const FLIP_MS = 1000;
     window.__zekiqGestureSwipe = false;
     const pageGesture = { active: false, swipe: false, startX: 0, startY: 0 };
+    function isPageSwipeBlockedTarget(el) {
+      if (!el || !el.closest) return false;
+      return !!el.closest(
+        "#coach-card,#item-popup.show,#overlay.show,#menu-panel.open,#cart-panel.open," +
+        ".scene-hud-btn,.scene-hud-send,.cover-start-btn,.nav-arrow,.th," +
+        ".order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear," +
+        ".list-btn,.cart-btn,#noteInp,.ci-note,input,textarea,select,a[href]"
+      );
+    }
     function bindBookSwipe() {
       const book = document.getElementById("book");
       const bar = document.getElementById("pageSwipeBar");
-      const stage = document.getElementById("menuStage");
-      if (!book || book.__bookSwipeBound) return;
-      book.__bookSwipeBound = true;
-      const zones = [book, bar, stage].filter(Boolean);
-      const SWIPE_THRESH = 42;
-      const SWIPE_LOCK = 12;
-      const MAX_Y = 84;
+      const scene = document.getElementById("scene");
+      if (!book || !scene || scene.__bookSwipeBound) return;
+      scene.__bookSwipeBound = true;
+      const SWIPE_THRESH = 36;
+      const SWIPE_LOCK = 10;
+      const MAX_Y = 110;
+      let ptrId = null;
 
       function barHint(dx) {
         if (!bar) return;
@@ -1896,17 +1906,14 @@
         book.classList.remove("page-swiping");
       }
       function canSwipe() {
-        return coachDone && swipeReady && !animating && bookSpread.length > 1;
+        return swipeReady && !animating && bookSpread.length > 1;
       }
       function armSwipeDelay() {
-        swipeReady = false;
         clearTimeout(swipeReadyTimer);
-        swipeReadyTimer = setTimeout(function () {
-          swipeReady = true;
-        }, 280);
+        swipeReady = true;
       }
-      function onStart(x, y) {
-        if (!canSwipe()) return;
+      function onStart(x, y, target) {
+        if (!canSwipe() || isPageSwipeBlockedTarget(target)) return;
         pageGesture.active = true;
         pageGesture.swipe = false;
         window.__zekiqGestureSwipe = false;
@@ -1924,7 +1931,7 @@
           clearBar();
           return;
         }
-        if (Math.abs(dx) > SWIPE_LOCK && Math.abs(dx) > dy * 1.05) {
+        if (Math.abs(dx) > SWIPE_LOCK && Math.abs(dx) > dy * 0.95) {
           pageGesture.swipe = true;
           window.__zekiqGestureSwipe = true;
           book.classList.add("page-swiping");
@@ -1934,9 +1941,10 @@
       function onEnd(x, y) {
         if (!pageGesture.active) return;
         pageGesture.active = false;
+        ptrId = null;
         const dx = x - pageGesture.startX;
         const dy = Math.abs(y - pageGesture.startY);
-        const flip = pageGesture.swipe || (Math.abs(dx) >= SWIPE_THRESH && Math.abs(dx) > dy * 1.05);
+        const flip = pageGesture.swipe || (Math.abs(dx) >= SWIPE_THRESH && Math.abs(dx) > dy * 0.95);
         clearBar();
         if (flip && canSwipe()) {
           window.__zekiqGestureSwipe = true;
@@ -1948,27 +1956,47 @@
         }
         pageGesture.swipe = false;
       }
+      function onCancel() {
+        pageGesture.active = false;
+        pageGesture.swipe = false;
+        ptrId = null;
+        window.__zekiqGestureSwipe = false;
+        clearBar();
+      }
 
-      zones.forEach(zone => {
-        zone.addEventListener("touchstart", e => {
-          if (e.touches.length !== 1) { pageGesture.active = false; return; }
-          onStart(e.touches[0].clientX, e.touches[0].clientY);
-        }, { passive: true, capture: true });
-        zone.addEventListener("touchmove", e => {
-          if (e.touches.length !== 1) return;
-          onMove(e.touches[0].clientX, e.touches[0].clientY);
-        }, { passive: true, capture: true });
-        zone.addEventListener("touchend", e => {
-          const t = e.changedTouches[0];
-          if (t) onEnd(t.clientX, t.clientY);
-        }, { passive: true, capture: true });
-        zone.addEventListener("touchcancel", () => {
-          pageGesture.active = false;
-          pageGesture.swipe = false;
-          window.__zekiqGestureSwipe = false;
-          clearBar();
-        }, { passive: true, capture: true });
-      });
+      scene.addEventListener("touchstart", e => {
+        if (e.touches.length !== 1) { onCancel(); return; }
+        onStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
+      }, { passive: true, capture: true });
+      scene.addEventListener("touchmove", e => {
+        if (e.touches.length !== 1 || !pageGesture.active) return;
+        onMove(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true, capture: true });
+      scene.addEventListener("touchend", e => {
+        const t = e.changedTouches[0];
+        if (t) onEnd(t.clientX, t.clientY);
+      }, { passive: true, capture: true });
+      scene.addEventListener("touchcancel", onCancel, { passive: true, capture: true });
+
+      scene.addEventListener("pointerdown", e => {
+        if (e.pointerType !== "mouse" || e.button !== 0) return;
+        if (isPageSwipeBlockedTarget(e.target)) return;
+        ptrId = e.pointerId;
+        try { e.target.setPointerCapture(e.pointerId); } catch (err) {}
+        onStart(e.clientX, e.clientY, e.target);
+      }, { capture: true });
+      scene.addEventListener("pointermove", e => {
+        if (ptrId == null || e.pointerId !== ptrId) return;
+        onMove(e.clientX, e.clientY);
+      }, { capture: true });
+      scene.addEventListener("pointerup", e => {
+        if (ptrId == null || e.pointerId !== ptrId) return;
+        onEnd(e.clientX, e.clientY);
+      }, { capture: true });
+      scene.addEventListener("pointercancel", e => {
+        if (ptrId == null || e.pointerId !== ptrId) return;
+        onCancel();
+      }, { capture: true });
     }
     function syncSwipeBar() {
       const bar = document.getElementById("pageSwipeBar");
@@ -2600,7 +2628,6 @@
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
         touchMoved = false;
-        e.stopPropagation();
       }, { passive: true });
       h.addEventListener("touchmove", e => {
         if (e.touches.length !== 1) return;
@@ -2893,18 +2920,22 @@
       armSwipeDelay();
       syncSceneHud();
     }
-    function dismissCoach() {
+    function ensureCoachUnlocked() {
       if (coachDone) return;
       coachDone = true;
       try { sessionStorage.setItem(coachDoneKey(), "1"); } catch (e) {}
       document.documentElement.classList.remove("coach-locked");
       swipeReady = true;
-      goToPage(0, true);
-      armSwipeDelay();
       syncSceneHud();
       if (window.__zekiqHideSafariChrome) window.__zekiqHideSafariChrome();
       if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
+    }
+    function dismissCoach() {
+      if (coachDone) return;
+      ensureCoachUnlocked();
+      goToPage(0, true);
+      armSwipeDelay();
     }
 
     function endPageTurn(pw) {
@@ -2919,7 +2950,8 @@
     }
 
     function nextPage() {
-      if (!coachDone || animating || cur >= bookSpread.length - 1) return;
+      if (animating || cur >= bookSpread.length - 1) return;
+      ensureCoachUnlocked();
       animating = true;
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
@@ -2936,7 +2968,8 @@
       }, FLIP_MS);
     }
     function prevPage() {
-      if (!coachDone || animating || cur <= 0) return;
+      if (animating || cur <= 0) return;
+      ensureCoachUnlocked();
       animating = true;
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
