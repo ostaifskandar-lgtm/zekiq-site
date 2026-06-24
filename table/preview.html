@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>معاينة مينو QR — قبل تحديث الكاشier</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,sans-serif;background:#0e0a02;color:#f5d878;padding:20px;line-height:1.55}
+    h1{font-size:1.25rem;margin:0 0 12px;color:#ffe082}
+    .card{background:#1a1203;border:1px solid rgba(184,114,0,.35);border-radius:14px;padding:16px;margin:12px 0}
+    .ok{color:#7cff9a;font-weight:800}
+    .old{color:#ff8a80;font-weight:800}
+    a.btn{display:block;text-align:center;background:linear-gradient(135deg,#b87200,#f0a820);color:#0d0500;
+      text-decoration:none;font-weight:900;padding:14px 18px;border-radius:12px;margin:10px 0}
+    a.btn.secondary{background:#2a1808;color:#ffe082;border:1px solid rgba(184,114,0,.45)}
+    code{font-size:11px;word-break:break-all;background:rgba(0,0,0,.35);padding:2px 6px;border-radius:6px}
+    ol{padding-right:18px;margin:8px 0}
+    li{margin:6px 0}
+  </style>
+</head>
+<body>
+  <h1>معاينة مينو الزبون (QR) — قبل التحديث</h1>
+
+  <div class="card">
+    <p><span class="ok">جديد (GitHub)</span> — السحب v2 + قلب من أي مكان</p>
+    <p><span class="old">قديم (tonino.zekiqmenu.com)</span> — حتى تحدّث الكاشier</p>
+  </div>
+
+  <div class="card">
+    <strong>الطريقة 1 — من الكاشier (أفضل، مينو حقيقي)</strong>
+    <ol>
+      <li>على كاشier Tonino: <strong>الإعدادات → QR المينو</strong></li>
+      <li>اختر أي طاولة → اضغط <strong>فتح</strong></li>
+      <li>إن فتح رابط <code>github.io</code> → السحب الجديد يعمل الآن</li>
+      <li>إن فتح <code>tonino.zekiqmenu.com</code> → انتظر التحديث</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <strong>الطريقة 2 — من الهاتف (Wi‑Fi)</strong>
+    <ol>
+      <li>اتصل بـ Wi‑Fi المحل</li>
+      <li>امسح QR من شاشة الكاشier أو الملصق</li>
+      <li>أو افتح الرابط أدناه بعد نسخه من «فتح»</li>
+    </ol>
+  </div>
+
+  <a class="btn" id="openGithub" href="index.html">فتح صفحة المينو (GitHub — محدّثة)</a>
+  <a class="btn secondary" href="https://tonino.zekiqmenu.com/table/index.html">فتح tonino.zekiqmenu.com (كاشier — قديمة)</a>
+
+  <div class="card">
+    <p style="font-size:12px;opacity:.85;margin:0">
+      بعد التحديث: QR الجديد = <code>https://tonino.zekiqmenu.com/table/</code> فقط (صفحة + API من الكاشier).
+    </p>
+  </div>
+  <script>
+    (function () {
+      var q = location.search || "";
+      var gh = "index.html" + q;
+      document.getElementById("openGithub").href = gh;
+    })();
+  </script>
+</body>
+</html>
