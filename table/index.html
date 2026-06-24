@@ -13,6 +13,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
+  <!-- guest-page-flip-v2 -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -1872,10 +1873,13 @@
     let plusButtonsAllPages = false;
     let bookCacheVer = "";
     let cur = 0, animating = false, popupItem = null, popupQty = 1, sending = false, done = false;
-    let swipeReady = false, swipeReadyTimer = 0;
     const FLIP_MS = 1000;
+    const GUEST_PAGE_FLIP_V = 2;
     window.__zekiqGestureSwipe = false;
     const pageGesture = { active: false, swipe: false, startX: 0, startY: 0 };
+    function canFlipPages() {
+      return bookPages.length > 0 && !animating && bookSpread.length > 1;
+    }
     function isPageSwipeBlockedTarget(el) {
       if (!el || !el.closest) return false;
       return !!el.closest(
@@ -1889,12 +1893,14 @@
       const book = document.getElementById("book");
       const bar = document.getElementById("pageSwipeBar");
       const scene = document.getElementById("scene");
-      if (!book || !scene || scene.__bookSwipeBound) return;
-      scene.__bookSwipeBound = true;
-      const SWIPE_THRESH = 36;
-      const SWIPE_LOCK = 10;
-      const MAX_Y = 110;
-      let ptrId = null;
+      if (!book || !scene || document.documentElement.__bookSwipeBound) return;
+      document.documentElement.__bookSwipeBound = true;
+      const SWIPE_THRESH = 28;
+      const SWIPE_LOCK = 8;
+      let activePtr = null;
+      let sx = 0;
+      let sy = 0;
+      let horiz = false;
 
       function barHint(dx) {
         if (!bar) return;
@@ -1905,99 +1911,129 @@
         if (bar) bar.classList.remove("swiping", "swipe-left-hint", "swipe-right-hint");
         book.classList.remove("page-swiping");
       }
-      function canSwipe() {
-        return swipeReady && !animating && bookSpread.length > 1;
+      function resetGesture() {
+        activePtr = null;
+        horiz = false;
+        pageGesture.active = false;
+        pageGesture.swipe = false;
+        window.__zekiqGestureSwipe = false;
+        clearBar();
       }
-      function armSwipeDelay() {
-        clearTimeout(swipeReadyTimer);
-        swipeReady = true;
+      function commitFlip(dx) {
+        if (!canFlipPages()) return;
+        ensureCoachUnlocked();
+        window.__zekiqGestureSwipe = true;
+        setTimeout(function () { window.__zekiqGestureSwipe = false; }, 380);
+        if (dx <= -SWIPE_THRESH) nextPage();
+        else if (dx >= SWIPE_THRESH) prevPage();
       }
-      function onStart(x, y, target) {
-        if (!canSwipe() || isPageSwipeBlockedTarget(target)) return;
+      function onPointerDown(e) {
+        if (activePtr != null || !canFlipPages()) return;
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        if (isPageSwipeBlockedTarget(e.target)) return;
+        activePtr = e.pointerId;
+        sx = e.clientX;
+        sy = e.clientY;
+        horiz = false;
         pageGesture.active = true;
         pageGesture.swipe = false;
+        pageGesture.startX = sx;
+        pageGesture.startY = sy;
         window.__zekiqGestureSwipe = false;
-        pageGesture.startX = x;
-        pageGesture.startY = y;
         if (bar) bar.classList.add("swiping");
+        try { (scene.setPointerCapture ? scene : e.target).setPointerCapture(e.pointerId); } catch (_) {}
       }
-      function onMove(x, y) {
-        if (!pageGesture.active) return;
-        const dx = x - pageGesture.startX;
-        const dy = Math.abs(y - pageGesture.startY);
-        if (dy > MAX_Y) {
-          pageGesture.active = false;
-          pageGesture.swipe = false;
-          clearBar();
-          return;
+      function onPointerMove(e) {
+        if (activePtr == null || e.pointerId !== activePtr) return;
+        const dx = e.clientX - sx;
+        const dy = Math.abs(e.clientY - sy);
+        if (!horiz) {
+          if (Math.abs(dx) < SWIPE_LOCK && dy < SWIPE_LOCK) return;
+          if (Math.abs(dx) >= dy * 0.88) {
+            horiz = true;
+            pageGesture.swipe = true;
+            window.__zekiqGestureSwipe = true;
+            book.classList.add("page-swiping");
+          } else if (dy > Math.abs(dx) * 1.12) {
+            resetGesture();
+            return;
+          } else return;
         }
-        if (Math.abs(dx) > SWIPE_LOCK && Math.abs(dx) > dy * 0.95) {
-          pageGesture.swipe = true;
-          window.__zekiqGestureSwipe = true;
-          book.classList.add("page-swiping");
-        }
+        if (horiz && e.cancelable) e.preventDefault();
         barHint(dx);
       }
-      function onEnd(x, y) {
-        if (!pageGesture.active) return;
-        pageGesture.active = false;
-        ptrId = null;
-        const dx = x - pageGesture.startX;
-        const dy = Math.abs(y - pageGesture.startY);
-        const flip = pageGesture.swipe || (Math.abs(dx) >= SWIPE_THRESH && Math.abs(dx) > dy * 0.95);
-        clearBar();
-        if (flip && canSwipe()) {
-          window.__zekiqGestureSwipe = true;
-          setTimeout(() => { window.__zekiqGestureSwipe = false; }, 380);
-          if (dx <= -SWIPE_THRESH) nextPage();
-          else if (dx >= SWIPE_THRESH) prevPage();
-        } else {
-          window.__zekiqGestureSwipe = false;
-        }
-        pageGesture.swipe = false;
-      }
-      function onCancel() {
-        pageGesture.active = false;
-        pageGesture.swipe = false;
-        ptrId = null;
-        window.__zekiqGestureSwipe = false;
-        clearBar();
+      function onPointerUp(e) {
+        if (activePtr == null || e.pointerId !== activePtr) return;
+        const dx = e.clientX - sx;
+        const dy = Math.abs(e.clientY - sy);
+        const flip = horiz && Math.abs(dx) >= SWIPE_THRESH && Math.abs(dx) > dy * 0.75;
+        if (flip) commitFlip(dx);
+        resetGesture();
       }
 
-      scene.addEventListener("touchstart", e => {
-        if (e.touches.length !== 1) { onCancel(); return; }
-        onStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
-      }, { passive: true, capture: true });
-      scene.addEventListener("touchmove", e => {
-        if (e.touches.length !== 1 || !pageGesture.active) return;
-        onMove(e.touches[0].clientX, e.touches[0].clientY);
-      }, { passive: true, capture: true });
-      scene.addEventListener("touchend", e => {
-        const t = e.changedTouches[0];
-        if (t) onEnd(t.clientX, t.clientY);
-      }, { passive: true, capture: true });
-      scene.addEventListener("touchcancel", onCancel, { passive: true, capture: true });
+      document.addEventListener("pointerdown", onPointerDown, { capture: true, passive: true });
+      document.addEventListener("pointermove", onPointerMove, { capture: true, passive: false });
+      document.addEventListener("pointerup", onPointerUp, { capture: true, passive: true });
+      document.addEventListener("pointercancel", resetGesture, { capture: true, passive: true });
 
-      scene.addEventListener("pointerdown", e => {
-        if (e.pointerType !== "mouse" || e.button !== 0) return;
+      function onTouchStart(e) {
+        if (activePtr != null || e.touches.length !== 1 || !canFlipPages()) return;
         if (isPageSwipeBlockedTarget(e.target)) return;
-        ptrId = e.pointerId;
-        try { e.target.setPointerCapture(e.pointerId); } catch (err) {}
-        onStart(e.clientX, e.clientY, e.target);
-      }, { capture: true });
-      scene.addEventListener("pointermove", e => {
-        if (ptrId == null || e.pointerId !== ptrId) return;
-        onMove(e.clientX, e.clientY);
-      }, { capture: true });
-      scene.addEventListener("pointerup", e => {
-        if (ptrId == null || e.pointerId !== ptrId) return;
-        onEnd(e.clientX, e.clientY);
-      }, { capture: true });
-      scene.addEventListener("pointercancel", e => {
-        if (ptrId == null || e.pointerId !== ptrId) return;
-        onCancel();
+        activePtr = "touch-" + e.touches[0].identifier;
+        sx = e.touches[0].clientX;
+        sy = e.touches[0].clientY;
+        horiz = false;
+        pageGesture.active = true;
+        pageGesture.swipe = false;
+        pageGesture.startX = sx;
+        pageGesture.startY = sy;
+        window.__zekiqGestureSwipe = false;
+        if (bar) bar.classList.add("swiping");
+      }
+      function onTouchMove(e) {
+        if (activePtr == null || String(activePtr).indexOf("touch-") !== 0 || e.touches.length !== 1) return;
+        const dx = e.touches[0].clientX - sx;
+        const dy = Math.abs(e.touches[0].clientY - sy);
+        if (!horiz) {
+          if (Math.abs(dx) < SWIPE_LOCK && dy < SWIPE_LOCK) return;
+          if (Math.abs(dx) >= dy * 0.88) {
+            horiz = true;
+            pageGesture.swipe = true;
+            window.__zekiqGestureSwipe = true;
+            book.classList.add("page-swiping");
+          } else if (dy > Math.abs(dx) * 1.12) {
+            resetGesture();
+            return;
+          } else return;
+        }
+        if (horiz && e.cancelable) e.preventDefault();
+        barHint(dx);
+      }
+      function onTouchEnd(e) {
+        if (activePtr == null || String(activePtr).indexOf("touch-") !== 0) return;
+        const t = e.changedTouches[0];
+        if (!t) { resetGesture(); return; }
+        const dx = t.clientX - sx;
+        const dy = Math.abs(t.clientY - sy);
+        const flip = horiz && Math.abs(dx) >= SWIPE_THRESH && Math.abs(dx) > dy * 0.75;
+        if (flip) commitFlip(dx);
+        resetGesture();
+      }
+      document.addEventListener("touchstart", onTouchStart, { capture: true, passive: true });
+      document.addEventListener("touchmove", onTouchMove, { capture: true, passive: false });
+      document.addEventListener("touchend", onTouchEnd, { capture: true, passive: true });
+      document.addEventListener("touchcancel", resetGesture, { capture: true, passive: true });
+
+      scene.addEventListener("click", function (e) {
+        if (!canFlipPages() || window.__zekiqGestureSwipe || pageGesture.active) return;
+        if (isPageSwipeBlockedTarget(e.target)) return;
+        const r = scene.getBoundingClientRect();
+        const relX = (e.clientX - r.left) / Math.max(1, r.width);
+        if (relX < 0.2) { ensureCoachUnlocked(); prevPage(); }
+        else if (relX > 0.8) { ensureCoachUnlocked(); nextPage(); }
       }, { capture: true });
     }
+    function armSwipeDelay() { /* flip ready immediately after menu load */ }
     function syncSwipeBar() {
       const bar = document.getElementById("pageSwipeBar");
       if (!bar) return;
@@ -2906,7 +2942,6 @@
       try {
         if (sessionStorage.getItem(coachDoneKey()) === "1") {
           coachDone = true;
-          swipeReady = true;
           document.documentElement.classList.remove("coach-locked");
         } else {
           coachDone = false;
@@ -2925,7 +2960,6 @@
       coachDone = true;
       try { sessionStorage.setItem(coachDoneKey(), "1"); } catch (e) {}
       document.documentElement.classList.remove("coach-locked");
-      swipeReady = true;
       syncSceneHud();
       if (window.__zekiqHideSafariChrome) window.__zekiqHideSafariChrome();
       if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
