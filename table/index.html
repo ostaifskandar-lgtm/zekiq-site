@@ -8,11 +8,15 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="ZEKiQ" />
+  <meta name="screen-orientation" content="portrait" />
+  <meta name="x5-orientation" content="portrait" />
+  <meta name="x5-fullscreen" content="true" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
+  <!-- guest-table-ui-v3: full-screen swipe + portrait lock -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -96,6 +100,8 @@
       }
       function engage(withFullscreen){
         fitViewport();
+        lockPortrait();
+        updateOrientLock();
         if(withFullscreen) tryFullscreen();
         else enterImmersiveAuto();
       }
@@ -147,9 +153,23 @@
           if(!panelOpen()) root.classList.add("chrome-hidden");
         },2400);
       }
+      function lockPortrait(){
+        try{
+          var o=screen.orientation;
+          if(o&&o.lock) o.lock("portrait-primary").catch(function(){});
+        }catch(e){}
+      }
+      function updateOrientLock(){
+        var ol=document.getElementById("orientLock");
+        if(!ol) return;
+        var land=window.matchMedia("(orientation: landscape)").matches&&window.innerHeight<520;
+        ol.classList.toggle("show",!!land);
+        ol.setAttribute("aria-hidden",land?"false":"true");
+      }
       function blockScroll(e){
+        if(window.__zekiqPageSwiping){e.preventDefault();return;}
         if(e.touches&&e.touches.length>1) return;
-        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list,.ci-note,#noteInp,#pageSwipeBar,#menuStage,#book,.pf,.pf-bg")) return;
+        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list,.ci-note,#noteInp,#pageSwipeBar,#menuStage,#book,.pf,.pf-bg,#scene")) return;
         e.preventDefault();
       }
       function onFsChange(){
@@ -166,7 +186,8 @@
       fitViewport();
       bindSceneFullscreen();
       window.addEventListener("resize",fitViewport);
-      window.addEventListener("orientationchange",function(){setTimeout(function(){engage(false);},300);});
+      window.addEventListener("orientationchange",function(){setTimeout(function(){engage(false);updateOrientLock();},300);});
+      if(window.matchMedia) window.matchMedia("(orientation: landscape)").addEventListener("change",updateOrientLock);
       window.addEventListener("pageshow",function(){engage(false);});
       document.addEventListener("fullscreenchange",onFsChange);
       document.addEventListener("webkitfullscreenchange",onFsChange);
@@ -177,9 +198,11 @@
       document.addEventListener("DOMContentLoaded",function(){
         bindSceneFullscreen();
         enterImmersiveAuto();
+        updateOrientLock();
         maybeShowFsHint();
       });
       document.addEventListener("touchstart",function(e){
+        if(window.__zekiqLockPortrait) window.__zekiqLockPortrait();
         if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) onMenuTap(e);
         else fitViewport();
@@ -193,6 +216,8 @@
       document.addEventListener("touchmove",blockScroll,{passive:false});
       document.addEventListener("contextmenu",function(e){e.preventDefault();},{capture:true});
       document.addEventListener("dragstart",function(e){e.preventDefault();},{capture:true});
+      window.__zekiqLockPortrait=lockPortrait;
+      window.__zekiqUpdateOrientLock=updateOrientLock;
       window.__zekiqShowChrome=showChrome;
       window.__zekiqEngage=engage;
       window.__zekiqEnterImmersive=enterImmersiveAuto;
@@ -566,6 +591,7 @@
       perspective:2400px;
       padding:0;
       cursor:pointer;
+      touch-action:pan-x pinch-zoom;
     }
     html.immersive.chrome-hidden #scene,
     html.immersive.fs-active #scene,
@@ -1388,10 +1414,22 @@
     html.single-page .pg-num{display:none;}
     html:fullscreen,html:-webkit-full-screen{background:#1e1208;}
     body:fullscreen,body:-webkit-full-screen{background:#1e1208;}
+    #orientLock{
+      display:none;position:fixed;inset:0;z-index:99999;
+      background:linear-gradient(160deg,#1e1208,#0d0500);
+      flex-direction:column;align-items:center;justify-content:center;
+      padding:24px;text-align:center;color:#ffe082;
+    }
+    #orientLock.show{display:flex;}
+    #orientLock p{font-size:15px;line-height:1.6;max-width:280px;margin-top:12px;color:rgba(255,224,130,.85);}
 
   </style>
 </head>
 <body>
+  <div id="orientLock" aria-hidden="true">
+    <div style="font-size:42px;line-height:1" aria-hidden="true">📱</div>
+    <p id="i18n-orientLock">أبقِ الهاتف عمودياً لاستخدام المينو</p>
+  </div>
   <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p></div></div>
 
   <div id="okScreen">
@@ -1565,6 +1603,7 @@
       coverEndSub: "اسحب للخلف أو أرسل طلبك من الأعلى",
       prev: "◀ السابق",
       next: "التالي ▶",
+      orientLock: "أبقِ الهاتف عمودياً لاستخدام المينو",
       swipeHint: "اسحب لقلب الصفحة",
       fsHint: "👆 اضغط على المينو لملء الشاشة",
       fsHintIos: "↑ اسحب للأعلى قليلاً لإخفاء شريط Safari وملء الشاشة",
@@ -1638,6 +1677,7 @@
       coverEndSub: "Geri kaydırın veya üstten sipariş gönderin",
       prev: "◀ Önceki",
       next: "Sonraki ▶",
+      orientLock: "Telefonu dikey tutun",
       swipeHint: "Sayfayı çevirmek için kaydır",
       fsHint: "👆 Tam ekran için menüye dokunun",
       fsHintIos: "↑ Safari çubuğunu gizlemek için yukarı kaydırın",
@@ -1711,6 +1751,7 @@
       coverEndSub: "Swipe back or send your order above",
       prev: "◀ Prev",
       next: "Next ▶",
+      orientLock: "Keep your phone upright to browse the menu",
       swipeHint: "Swipe to turn the page",
       fsHint: "👆 Tap the menu for full screen",
       fsHintIos: "↑ Swipe up slightly to hide Safari bar and fill the screen",
@@ -1789,6 +1830,7 @@
       "i18n-prev": "prev",
       "i18n-next": "next",
       "i18n-swipeHint": "swipeHint",
+      "i18n-orientLock": "orientLock",
       "i18n-fsHint": "fsHint",
       "i18n-menu-title": "menuTitle",
       "i18n-menu-sub": "menuSub",
@@ -1875,16 +1917,24 @@
     const FLIP_MS = 1000;
     window.__zekiqGestureSwipe = false;
     const pageGesture = { active: false, swipe: false, startX: 0, startY: 0 };
+    function isSwipeExcluded(el) {
+      if (!el || !el.closest) return false;
+      return !!el.closest(
+        ".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send," +
+          ".cover-start-btn,#coachOk,.list-btn,.cart-btn,.nav-arrow,.order-chip-head-btn," +
+          "#thumbs,.thumb,.popup-close,.popup-add,.qty-btn,.ci-btn,.ci-del,.order-btn,#againBtn,#exitBtn," +
+          "#item-popup.show,#cart-panel.open,#menu-panel.open,#coach.show,#loadScreen,#okScreen"
+      );
+    }
     function bindBookSwipe() {
+      const scene = document.getElementById("scene");
       const book = document.getElementById("book");
       const bar = document.getElementById("pageSwipeBar");
-      const stage = document.getElementById("menuStage");
-      if (!book || book.__bookSwipeBound) return;
-      book.__bookSwipeBound = true;
-      const zones = [book, bar, stage].filter(Boolean);
-      const SWIPE_THRESH = 42;
-      const SWIPE_LOCK = 12;
-      const MAX_Y = 84;
+      if (!scene || scene.__bookSwipeBound) return;
+      scene.__bookSwipeBound = true;
+      const SWIPE_THRESH = 36;
+      const SWIPE_LOCK = 10;
+      const MAX_Y = 96;
 
       function barHint(dx) {
         if (!bar) return;
@@ -1893,20 +1943,22 @@
       }
       function clearBar() {
         if (bar) bar.classList.remove("swiping", "swipe-left-hint", "swipe-right-hint");
-        book.classList.remove("page-swiping");
+        if (book) book.classList.remove("page-swiping");
+        window.__zekiqPageSwiping = false;
       }
       function canSwipe() {
-        return coachDone && swipeReady && !animating && bookSpread.length > 1;
+        return swipeReady && !animating && bookSpread.length > 1;
       }
       function armSwipeDelay() {
         swipeReady = false;
         clearTimeout(swipeReadyTimer);
         swipeReadyTimer = setTimeout(function () {
           swipeReady = true;
-        }, 280);
+        }, 120);
       }
-      function onStart(x, y) {
+      function onStart(e, x, y) {
         if (!canSwipe()) return;
+        if (isSwipeExcluded(e.target)) return;
         pageGesture.active = true;
         pageGesture.swipe = false;
         window.__zekiqGestureSwipe = false;
@@ -1924,10 +1976,11 @@
           clearBar();
           return;
         }
-        if (Math.abs(dx) > SWIPE_LOCK && Math.abs(dx) > dy * 1.05) {
+        if (Math.abs(dx) > SWIPE_LOCK && Math.abs(dx) > dy * 0.85) {
           pageGesture.swipe = true;
           window.__zekiqGestureSwipe = true;
-          book.classList.add("page-swiping");
+          window.__zekiqPageSwiping = true;
+          if (book) book.classList.add("page-swiping");
         }
         barHint(dx);
       }
@@ -1936,7 +1989,7 @@
         pageGesture.active = false;
         const dx = x - pageGesture.startX;
         const dy = Math.abs(y - pageGesture.startY);
-        const flip = pageGesture.swipe || (Math.abs(dx) >= SWIPE_THRESH && Math.abs(dx) > dy * 1.05);
+        const flip = pageGesture.swipe || (Math.abs(dx) >= SWIPE_THRESH && Math.abs(dx) > dy * 0.85);
         clearBar();
         if (flip && canSwipe()) {
           window.__zekiqGestureSwipe = true;
@@ -1949,26 +2002,44 @@
         pageGesture.swipe = false;
       }
 
-      zones.forEach(zone => {
-        zone.addEventListener("touchstart", e => {
-          if (e.touches.length !== 1) { pageGesture.active = false; return; }
-          onStart(e.touches[0].clientX, e.touches[0].clientY);
-        }, { passive: true, capture: true });
-        zone.addEventListener("touchmove", e => {
-          if (e.touches.length !== 1) return;
+      scene.addEventListener(
+        "touchstart",
+        e => {
+          if (e.touches.length !== 1) {
+            pageGesture.active = false;
+            return;
+          }
+          onStart(e, e.touches[0].clientX, e.touches[0].clientY);
+        },
+        { passive: true, capture: true }
+      );
+      scene.addEventListener(
+        "touchmove",
+        e => {
+          if (!pageGesture.active || e.touches.length !== 1) return;
           onMove(e.touches[0].clientX, e.touches[0].clientY);
-        }, { passive: true, capture: true });
-        zone.addEventListener("touchend", e => {
+          if (pageGesture.swipe && e.cancelable) e.preventDefault();
+        },
+        { passive: false, capture: true }
+      );
+      scene.addEventListener(
+        "touchend",
+        e => {
           const t = e.changedTouches[0];
           if (t) onEnd(t.clientX, t.clientY);
-        }, { passive: true, capture: true });
-        zone.addEventListener("touchcancel", () => {
+        },
+        { passive: true, capture: true }
+      );
+      scene.addEventListener(
+        "touchcancel",
+        () => {
           pageGesture.active = false;
           pageGesture.swipe = false;
           window.__zekiqGestureSwipe = false;
           clearBar();
-        }, { passive: true, capture: true });
-      });
+        },
+        { passive: true, capture: true }
+      );
     }
     function syncSwipeBar() {
       const bar = document.getElementById("pageSwipeBar");
@@ -2899,12 +2970,13 @@
       try { sessionStorage.setItem(coachDoneKey(), "1"); } catch (e) {}
       document.documentElement.classList.remove("coach-locked");
       swipeReady = true;
-      goToPage(0, true);
+      goToPage(cur, true);
       armSwipeDelay();
       syncSceneHud();
       if (window.__zekiqHideSafariChrome) window.__zekiqHideSafariChrome();
       if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
+      if (window.__zekiqLockPortrait) window.__zekiqLockPortrait();
     }
 
     function endPageTurn(pw) {
@@ -2919,7 +2991,7 @@
     }
 
     function nextPage() {
-      if (!coachDone || animating || cur >= bookSpread.length - 1) return;
+      if (animating || cur >= bookSpread.length - 1) return;
       animating = true;
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
@@ -2936,7 +3008,7 @@
       }, FLIP_MS);
     }
     function prevPage() {
-      if (!coachDone || animating || cur <= 0) return;
+      if (animating || cur <= 0) return;
       animating = true;
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
