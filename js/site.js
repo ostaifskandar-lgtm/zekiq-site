@@ -359,13 +359,13 @@
           document.head.appendChild(link);
         }
         var page = document.body.getAttribute("data-page") || "home";
-        var paths = { home: "", download: "download.html", phone: "phone.html", garson: "garson.html" };
+        var paths = { home: "", download: "index.html", phone: "phone.html", garson: "garson.html" };
         link.href = cfg.siteUrl.replace(/\/$/, "") + "/" + (paths[page] || "");
       }
       var og = document.querySelector('meta[property="og:url"]');
       if (og && cfg.siteUrl) {
         var page = document.body.getAttribute("data-page") || "home";
-        var paths = { home: "", download: "download.html", phone: "phone.html", garson: "garson.html" };
+        var paths = { home: "", download: "index.html", phone: "phone.html", garson: "garson.html" };
         og.content = cfg.siteUrl.replace(/\/$/, "") + "/" + (paths[page] || "");
       }
     });
@@ -430,10 +430,14 @@
     if (sticky && window.matchMedia("(max-width: 820px)").matches) {
       sticky.hidden = false;
       var hero = document.querySelector(".hero");
+      var downloadSection = document.getElementById("download");
       var onScroll = function () {
         var y = window.scrollY || document.documentElement.scrollTop;
         var threshold = hero ? hero.offsetHeight * 0.55 : 320;
-        sticky.classList.toggle("is-shown", y > threshold);
+        var nearDownload =
+          downloadSection &&
+          y + window.innerHeight > downloadSection.offsetTop + 80;
+        sticky.classList.toggle("is-shown", y > threshold && !nearDownload);
       };
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });

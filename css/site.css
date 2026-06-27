@@ -1467,3 +1467,75 @@ html[dir="rtl"] .flow-arrow {
     display: none !important;
   }
 }
+
+/* —— Unified download panel (marketing + install) —— */
+.download-section {
+  position: relative;
+}
+
+.download-panel {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.download-panel-glow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(520px 280px at 50% 0%, rgba(245, 158, 11, 0.16), transparent 70%);
+  pointer-events: none;
+  border-radius: 28px;
+}
+
+.download-panel-inner {
+  position: relative;
+  background: var(--card);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  border-radius: 22px;
+  padding: 32px 28px;
+  box-shadow: var(--shadow);
+}
+
+.download-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  text-align: start;
+}
+
+.download-logo {
+  flex-shrink: 0;
+  border-radius: 16px;
+}
+
+.download-panel-head h3 {
+  font-size: 1.25rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.download-panel-head p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.download-panel .install-badge {
+  margin-top: 0;
+}
+
+.download-panel .btn-block {
+  margin-top: 4px;
+}
+
+.download-links {
+  margin-top: 18px;
+}
+
+@media (max-width: 560px) {
+  .download-panel-head {
+    flex-direction: column;
+    text-align: center;
+  }
+}

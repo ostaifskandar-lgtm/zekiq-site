@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Noto+Sans+Arabic:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/site.css" />
 </head>
-<body data-page="home" data-i18n-title="meta_title" data-i18n-meta="meta_desc" data-version-id="homeVersion" data-version-extra="dl_ver_extra">
+<body data-page="home" data-i18n-title="meta_title" data-i18n-meta="meta_desc" data-version-id="homeVersion" data-version-extra="dl_ver_extra" data-dl-btn="homeDlBtn">
 
   <header>
     <div class="nav">
@@ -31,7 +31,7 @@
         <a href="#how" data-nav="home" data-i18n="nav_how">How it works</a>
         <a href="garson.html" data-nav="garson" data-i18n="nav_garson">Garson app</a>
         <a href="phone.html" data-nav="phone" data-i18n="nav_phone">Pair</a>
-        <a href="download.html" data-nav="download" data-i18n="nav_download">Download</a>
+        <a href="#download" data-nav="download" data-i18n="nav_download">Download</a>
         <div class="lang-switch" role="group" aria-label="Language">
           <button type="button" data-lang="en" class="on">EN</button>
           <button type="button" data-lang="tr">TR</button>
@@ -71,7 +71,7 @@
           ZEKiQ POS unites tables, kitchen & bar, accounting, and Android waiters.
         </p>
         <div class="cta-row">
-          <a href="download.html" class="btn btn-gold" data-i18n="hero_dl">Download for Windows</a>
+          <a href="#download" class="btn btn-gold" data-i18n="hero_dl">Download for Windows</a>
           <a href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/g/index.html" class="btn btn-ghost" data-i18n="hero_phone">Download Garson</a>
         </div>
         <p class="note" data-i18n="hero_note">After install: updates inside the app.</p>
@@ -116,7 +116,7 @@
         <h2 data-i18n="teaser_h">Try free for 30 days — full stack, no card</h2>
         <p data-i18n="teaser_p">Cashier + accounting + Garson + guest QR. Activate remotely after your trial.</p>
       </div>
-      <a href="download.html" class="btn btn-gold btn-lg teaser-btn" data-i18n="teaser_btn">Download & start trial</a>
+      <a href="#download" class="btn btn-gold btn-lg teaser-btn" data-i18n="teaser_btn">Download & start trial</a>
     </div>
   </section>
 
@@ -265,28 +265,59 @@
         <h3 data-i18n="price_plan">Annual plan</h3>
         <div class="price" data-price>$150 / year</div>
         <p data-i18n="price_inc">Full POS & accounting.</p>
-        <a href="download.html" class="btn btn-gold" data-i18n="price_dl">Download & start trial</a>
+        <a href="#download" class="btn btn-gold" data-i18n="price_dl">Download & start trial</a>
       </div>
     </div>
   </section>
 
-  <section id="download">
-    <div class="wrap section-center">
+  <section id="download" class="panel download-section reveal">
+    <div class="wrap">
       <div class="section-head">
         <h2 data-i18n="dl_h2">Ready to install?</h2>
         <p data-i18n-html-only="dl_sub"></p>
       </div>
-      <div class="cta-row center">
-        <a href="download.html" class="btn btn-gold btn-lg" data-i18n="dl_btn">Download ZEKiQ-POS-Setup.exe</a>
+      <div class="download-panel">
+        <div class="download-panel-glow" aria-hidden="true"></div>
+        <div class="download-panel-inner">
+          <div class="download-panel-head">
+            <img src="assets/logo.svg" width="64" height="64" alt="" class="download-logo" />
+            <div>
+              <h3 data-i18n="dl_h1">Download ZEKiQ POS for Windows</h3>
+              <p data-i18n-html-only="dl_p"></p>
+            </div>
+          </div>
+
+          <div class="install-badge">
+            <span class="install-badge-n" data-install-raw>0</span>
+            <span data-i18n-dl-counter>0 verified installs on registered devices</span>
+          </div>
+
+          <a id="homeDlBtn" class="btn btn-gold btn-lg btn-block" href="#" data-i18n="dl_preparing">Preparing link…</a>
+          <p class="ver-line" id="homeVersion" aria-live="polite">…</p>
+
+          <ul class="checklist align-start">
+            <li data-i18n="dl_li_1">Windows 10 or 11</li>
+            <li data-i18n="dl_li_2">Internet for first activation</li>
+            <li data-i18n-html-only="dl_li_3"></li>
+            <li data-i18n="dl_li_4">Updates from inside the app</li>
+          </ul>
+
+          <div class="warn-box" data-i18n-html-only="dl_warn"></div>
+
+          <p class="note center-links download-links">
+            <a href="garson.html" data-i18n="foot_garson">Download Garson</a>
+            ·
+            <a href="phone.html" data-i18n="dl_back_phone">Pair waiter app</a>
+          </p>
+        </div>
       </div>
-      <p class="ver-line" id="homeVersion" aria-live="polite">…</p>
     </div>
   </section>
 
   <footer>
     <div class="wrap">
       <div class="foot-links">
-        <a href="download.html" data-i18n="foot_dl">Download</a>
+        <a href="#download" data-i18n="foot_dl">Download</a>
         <a href="garson.html" data-i18n="foot_garson">Download Garson</a>
         <a href="phone.html" data-i18n="foot_phone">Pair Garson</a>
       </div>
@@ -305,7 +336,7 @@
   <aside class="sticky-dl" id="stickyDl" hidden>
     <div class="sticky-dl-inner">
       <p data-i18n="sticky_txt">30 days free · $150/year after</p>
-      <a href="download.html" class="btn btn-gold btn-sm" data-i18n="sticky_btn">Download</a>
+      <a href="#download" class="btn btn-gold btn-sm" data-i18n="sticky_btn">Download</a>
     </div>
   </aside>
 
