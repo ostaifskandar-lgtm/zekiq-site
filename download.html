@@ -23,12 +23,14 @@
         <span>Z</span>EKiQ <span class="brand-sub">POS</span>
       </a>
       <nav class="nav-links">
+        <a href="#manifesto" data-nav="home" data-i18n="nav_story">Story</a>
         <a href="#features" data-nav="home" data-i18n="nav_features">Features</a>
         <a href="#flow" data-nav="home" data-i18n="nav_flow">Order flow</a>
         <a href="#power" data-nav="home" data-i18n="nav_power">Why ZEKiQ</a>
         <a href="#compare" data-nav="home" data-i18n="nav_compare">Compare</a>
         <a href="#savings" data-nav="home" data-i18n="nav_savings">Savings</a>
         <a href="#how" data-nav="home" data-i18n="nav_how">How it works</a>
+        <a href="#faq" data-nav="home" data-i18n="nav_faq">FAQ</a>
         <a href="garson.html" data-nav="garson" data-i18n="nav_garson">Garson app</a>
         <a href="phone.html" data-nav="phone" data-i18n="nav_phone">Pair</a>
         <a href="#download" data-nav="download" data-i18n="nav_download">Download</a>
@@ -52,11 +54,16 @@
     </div>
   </div>
 
-  <section class="hero">
+  <section class="hero hero-epic">
+    <div class="hero-sparkles" aria-hidden="true">
+      <span class="spark s1"></span><span class="spark s2"></span><span class="spark s3"></span>
+      <span class="spark s4"></span><span class="spark s5"></span>
+    </div>
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="wrap hero-grid">
       <div>
-        <div class="badge pulse-badge" data-i18n="hero_badge">Windows · Local network · 3 languages</div>
+        <div class="badge pulse-badge badge-epic" data-i18n="hero_badge">Windows · Local network · 3 languages</div>
+        <p class="hero-epic-line" data-i18n="hero_epic">Upgrade your venue — from chaos to total control</p>
         <div class="trust-bar" id="trustBar">
           <span class="trust-dot" aria-hidden="true"></span>
           <span data-i18n-trust="trust_installs">0+ venues installed ZEKiQ on a registered device</span>
@@ -66,6 +73,10 @@
           <span class="hl shimmer" data-i18n="hero_h1_b">clear accounting</span><br />
           <span data-i18n="hero_h1_c">for your venue</span>
         </h1>
+        <p class="hero-rotate-wrap">
+          <span data-i18n="hero_rotate_label">One system for</span>
+          <strong class="hero-rotate" id="heroRotate" data-i18n-rotate="hero_rotate">POS · Accounting · QR · Stock · Garson</strong>
+        </p>
         <p class="hero-hook" data-i18n="hero_hook">Stop paying for 3 apps when one does it all.</p>
         <p class="lead" data-i18n="hero_lead" data-i18n-html="1">
           ZEKiQ POS unites tables, kitchen & bar, accounting, and Android waiters.
@@ -117,6 +128,70 @@
         <p data-i18n="teaser_p">Cashier + accounting + Garson + guest QR. Activate remotely after your trial.</p>
       </div>
       <a href="#download" class="btn btn-gold btn-lg teaser-btn" data-i18n="teaser_btn">Download & start trial</a>
+    </div>
+  </section>
+
+  <section id="manifesto" class="manifesto reveal">
+    <div class="wrap manifesto-inner">
+      <p class="manifesto-kicker" data-i18n="manifesto_kicker">The ZEKiQ promise</p>
+      <h2 data-i18n="manifesto_h">One order. One screen. Profit you can see.</h2>
+      <p data-i18n="manifesto_p">ZEKiQ is not just a cashier — it is your venue command center: floor, kitchen, stock, accounting, guest QR, and Android waiters — synced in real time.</p>
+    </div>
+  </section>
+
+  <section id="transform" class="panel reveal">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="transform_h2">Before ZEKiQ · After ZEKiQ</h2>
+        <p data-i18n="transform_sub">Feel the difference from the first service.</p>
+      </div>
+      <div class="transform-grid">
+        <article class="transform-card transform-before">
+          <span class="transform-tag" data-i18n="transform_before_tag">Without ZEKiQ</span>
+          <h3 data-i18n="transform_before_t">5 apps · 5 bills · chaos</h3>
+          <ul>
+            <li data-i18n="transform_b1">Internet drops — service stops</li>
+            <li data-i18n="transform_b2">Orders lost between paper & apps</li>
+            <li data-i18n="transform_b3">End-of-day reconciliation hell</li>
+            <li data-i18n="transform_b4">Hidden monthly fees everywhere</li>
+          </ul>
+        </article>
+        <div class="transform-arrow" aria-hidden="true">→</div>
+        <article class="transform-card transform-after">
+          <span class="transform-tag" data-i18n="transform_after_tag">With ZEKiQ</span>
+          <h3 data-i18n="transform_after_t">One install · one price · control</h3>
+          <ul>
+            <li data-i18n="transform_a1">LAN keeps running offline</li>
+            <li data-i18n="transform_a2">Guest QR → kitchen in seconds</li>
+            <li data-i18n="transform_a3">Sales & books in one place</li>
+            <li data-i18n="transform_a4">$150/year — predictable cost</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="stack" class="stack-killer reveal">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="stack_h2">Stop stacking apps</h2>
+        <p data-i18n="stack_sub">Five subscriptions collapse into one Windows install.</p>
+      </div>
+      <div class="stack-visual">
+        <div class="stack-apps">
+          <span data-i18n="stack_1">Cloud POS</span>
+          <span data-i18n="stack_2">QR menu</span>
+          <span data-i18n="stack_3">Stock app</span>
+          <span data-i18n="stack_4">Accounting</span>
+          <span data-i18n="stack_5">Waiter app</span>
+        </div>
+        <div class="stack-merge" aria-hidden="true">↓</div>
+        <div class="stack-one">
+          <img src="assets/logo.svg" width="48" height="48" alt="" />
+          <strong>ZEKiQ POS</strong>
+          <span data-i18n="stack_one">All included</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -267,6 +342,45 @@
         <p data-i18n="price_inc">Full POS & accounting.</p>
         <a href="#download" class="btn btn-gold" data-i18n="price_dl">Download & start trial</a>
       </div>
+    </div>
+  </section>
+
+  <section id="voices" class="panel reveal">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="voices_h2">Built for real venue owners</h2>
+        <p data-i18n="voices_sub">What changes when everything runs on one system.</p>
+      </div>
+      <div class="voices-grid">
+        <blockquote class="voice-card"><p data-i18n="voice_1_q">"We cut three monthly subscriptions — and service got faster, not slower."</p><footer data-i18n="voice_1_a">Restaurant owner · full service</footer></blockquote>
+        <blockquote class="voice-card voice-card-gold"><p data-i18n="voice_2_q">"Guest QR orders hit the kitchen while waiters confirm on Garson — no more lost tickets."</p><footer data-i18n="voice_2_a">Café manager · busy lunch rush</footer></blockquote>
+        <blockquote class="voice-card"><p data-i18n="voice_3_q">"Internet went down twice last month. Sales never stopped — that's why we switched."</p><footer data-i18n="voice_3_a">Fast-food operator · local LAN</footer></blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="reveal">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="faq_h2">Questions before you download</h2>
+        <p data-i18n="faq_sub">Straight answers — no sales fluff.</p>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item"><summary data-i18n="faq_1_q">Do I need internet every day?</summary><p data-i18n="faq_1_a">No. Daily sales run on your cashier PC and local Wi‑Fi. Internet is for license and updates only.</p></details>
+        <details class="faq-item"><summary data-i18n="faq_2_q">Is Garson included?</summary><p data-i18n="faq_2_a">Yes. Download the Android APK from our site and pair it to your cashier on the same network.</p></details>
+        <details class="faq-item"><summary data-i18n="faq_3_q">What happens after the free month?</summary><p data-i18n="faq_3_a">About $150/year for the full stack. No auto-charged card — remote activation after you decide.</p></details>
+        <details class="faq-item"><summary data-i18n="faq_4_q">Will I lose my data on update?</summary><p data-i18n="faq_4_a">No. Updates install from inside the app and keep your sales database with automatic backup.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="mega-cta reveal">
+    <div class="wrap mega-cta-inner">
+      <div class="mega-glow" aria-hidden="true"></div>
+      <p class="mega-kicker" data-i18n="mega_kicker">Your venue. Your data. Your move.</p>
+      <h2 data-i18n="mega_h">Ready to transform your restaurant?</h2>
+      <p data-i18n="mega_p">30 days free — full POS, accounting, QR, Garson. Start now, decide later.</p>
+      <a href="#download" class="btn btn-gold btn-lg mega-btn" data-i18n="mega_btn">Download ZEKiQ — start free</a>
     </div>
   </section>
 

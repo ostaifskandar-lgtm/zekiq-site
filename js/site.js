@@ -395,6 +395,7 @@
     var garsonBtnId = document.body.getAttribute("data-garson-dl-btn");
     var garsonVerId = document.body.getAttribute("data-garson-version-id");
     if (garsonBtnId) bindGarsonDownloadButton(garsonBtnId, garsonVerId || "");
+    if (global.reloadHeroRotate) global.reloadHeroRotate();
   }
 
   function initMarketingFx() {
@@ -442,6 +443,49 @@
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });
     }
+
+    initHeroRotate();
+  }
+
+  function initHeroRotate() {
+    var el = document.getElementById("heroRotate");
+    if (!el) return;
+    var key = el.getAttribute("data-i18n-rotate") || "hero_rotate";
+    if (window.__heroRotateTimer) clearInterval(window.__heroRotateTimer);
+
+    function words() {
+      var raw = global.ZekiqI18n ? global.ZekiqI18n.tr(key) : el.textContent;
+      return String(raw || "")
+        .split("|")
+        .map(function (w) {
+          return w.trim();
+        })
+        .filter(Boolean);
+    }
+
+    var list = words();
+    if (!list.length) list = ["POS"];
+    var idx = 0;
+    el.textContent = list[0];
+
+    window.__heroRotateTimer = setInterval(function () {
+      idx = (idx + 1) % list.length;
+      el.classList.add("hero-rotate-out");
+      setTimeout(function () {
+        el.textContent = list[idx];
+        el.classList.remove("hero-rotate-out");
+        el.classList.add("hero-rotate-in");
+        setTimeout(function () {
+          el.classList.remove("hero-rotate-in");
+        }, 350);
+      }, 180);
+    }, 2600);
+
+    global.reloadHeroRotate = function () {
+      list = words();
+      idx = 0;
+      el.textContent = list[0] || "POS";
+    };
   }
 
   function init() {
@@ -464,6 +508,7 @@
     var garsonBtn = document.body.getAttribute("data-garson-dl-btn");
     var garsonVer = document.body.getAttribute("data-garson-version-id");
     if (garsonBtn) bindGarsonDownloadButton(garsonBtn, garsonVer || "");
+    if (global.reloadHeroRotate) global.reloadHeroRotate();
   }
 
   global.ZekiqSite = {
