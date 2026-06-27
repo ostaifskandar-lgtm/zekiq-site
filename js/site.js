@@ -397,10 +397,54 @@
     if (garsonBtnId) bindGarsonDownloadButton(garsonBtnId, garsonVerId || "");
   }
 
+  function initMarketingFx() {
+    var track = document.querySelector(".marquee-track");
+    if (track && !track.dataset.cloned) {
+      track.dataset.cloned = "1";
+      track.innerHTML = track.innerHTML + track.innerHTML;
+    }
+
+    var reveals = document.querySelectorAll(".reveal");
+    if (reveals.length && "IntersectionObserver" in window) {
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+      );
+      reveals.forEach(function (el) {
+        io.observe(el);
+      });
+    } else {
+      reveals.forEach(function (el) {
+        el.classList.add("is-visible");
+      });
+    }
+
+    var sticky = document.getElementById("stickyDl");
+    if (sticky && window.matchMedia("(max-width: 820px)").matches) {
+      sticky.hidden = false;
+      var hero = document.querySelector(".hero");
+      var onScroll = function () {
+        var y = window.scrollY || document.documentElement.scrollTop;
+        var threshold = hero ? hero.offsetHeight * 0.55 : 320;
+        sticky.classList.toggle("is-shown", y > threshold);
+      };
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+    }
+  }
+
   function init() {
     if (global.ZekiqI18n) global.ZekiqI18n.init();
     setYear();
     markActiveNav();
+    initMarketingFx();
     initMeta().then(function () {
       return loadConfig().then(function (cfg) {
         trackPageView(cfg);
