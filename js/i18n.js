@@ -634,8 +634,8 @@
       nav_garson: "تطبيق الجرسون",
       nav_download: "تحميل",
       hero_badge: "Windows · شبكة محلية · 3 لغات",
-      hero_h1_a: "كاشير سريع",
-      hero_h1_b: "ومحاسبة واضحة",
+      hero_h1_a: "كاشير يطير",
+      hero_h1_b: "ومحاسبة شفافة",
       hero_h1_c: "لمطعمك",
       hero_hook: "توقف عن دفع 3 برامج — برنامج واحد يكفي.",
       hero_lead:

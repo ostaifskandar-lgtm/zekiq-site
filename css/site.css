@@ -2176,7 +2176,3 @@ html[dir="rtl"] .transform-arrow { transform: scaleX(-1); }
   background: linear-gradient(90deg, var(--gold), var(--gold-2));
   border-radius: 22px 22px 0 0;
 }
-
-.download-panel-inner {
-  padding-top: 44px;
-}
