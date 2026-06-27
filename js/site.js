@@ -276,6 +276,9 @@
       document.querySelectorAll("[data-price]").forEach(function (el) {
         el.textContent = price;
       });
+      document.querySelectorAll("[data-price-num]").forEach(function (el) {
+        el.textContent = "$" + String(cfg.annualPriceUsd || 150);
+      });
       document.querySelectorAll("[data-trial-days]").forEach(function (el) {
         el.textContent = String(cfg.trialDays || 30);
       });
