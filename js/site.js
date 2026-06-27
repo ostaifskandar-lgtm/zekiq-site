@@ -359,13 +359,13 @@
           document.head.appendChild(link);
         }
         var page = document.body.getAttribute("data-page") || "home";
-        var paths = { home: "", download: "download.html", phone: "phone.html", garson: "garson.html" };
+        var paths = { home: "download.html", download: "download.html", phone: "phone.html", garson: "garson.html" };
         link.href = cfg.siteUrl.replace(/\/$/, "") + "/" + (paths[page] || "");
       }
       var og = document.querySelector('meta[property="og:url"]');
       if (og && cfg.siteUrl) {
         var page = document.body.getAttribute("data-page") || "home";
-        var paths = { home: "", download: "download.html", phone: "phone.html", garson: "garson.html" };
+        var paths = { home: "download.html", download: "download.html", phone: "phone.html", garson: "garson.html" };
         og.content = cfg.siteUrl.replace(/\/$/, "") + "/" + (paths[page] || "");
       }
     });
@@ -397,10 +397,58 @@
     if (garsonBtnId) bindGarsonDownloadButton(garsonBtnId, garsonVerId || "");
   }
 
+  function initMarketingFx() {
+    var track = document.querySelector(".marquee-track");
+    if (track && !track.dataset.cloned) {
+      track.dataset.cloned = "1";
+      track.innerHTML = track.innerHTML + track.innerHTML;
+    }
+
+    var reveals = document.querySelectorAll(".reveal");
+    if (reveals.length && "IntersectionObserver" in window) {
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+      );
+      reveals.forEach(function (el) {
+        io.observe(el);
+      });
+    } else {
+      reveals.forEach(function (el) {
+        el.classList.add("is-visible");
+      });
+    }
+
+    var sticky = document.getElementById("stickyDl");
+    if (sticky && window.matchMedia("(max-width: 820px)").matches) {
+      sticky.hidden = false;
+      var hero = document.querySelector(".hero");
+      var downloadSection = document.getElementById("download");
+      var onScroll = function () {
+        var y = window.scrollY || document.documentElement.scrollTop;
+        var threshold = hero ? hero.offsetHeight * 0.55 : 320;
+        var nearDownload =
+          downloadSection &&
+          y + window.innerHeight > downloadSection.offsetTop + 80;
+        sticky.classList.toggle("is-shown", y > threshold && !nearDownload);
+      };
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+    }
+  }
+
   function init() {
     if (global.ZekiqI18n) global.ZekiqI18n.init();
     setYear();
     markActiveNav();
+    initMarketingFx();
     initMeta().then(function () {
       return loadConfig().then(function (cfg) {
         trackPageView(cfg);
