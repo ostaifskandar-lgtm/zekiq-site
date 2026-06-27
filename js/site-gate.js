@@ -51,6 +51,17 @@
       .join("");
   }
 
+  function normalizePin(raw) {
+    return String(raw || "")
+      .trim()
+      .replace(/[\u0660-\u0669\u06F0-\u06F9]/g, function (ch) {
+        var code = ch.charCodeAt(0);
+        if (code >= 0x0660 && code <= 0x0669) return String(code - 0x0660);
+        return String(code - 0x06f0);
+      })
+      .replace(/\s+/g, "");
+  }
+
   function t(key) {
     var lang = "en";
     try {
@@ -118,7 +129,7 @@
     form.addEventListener("submit", function (ev) {
       ev.preventDefault();
       void (async function () {
-        var pin = String(input.value || "").trim();
+        var pin = normalizePin(input.value);
         if (pin.length < 4) {
           err.textContent = t("wrong");
           err.hidden = false;
