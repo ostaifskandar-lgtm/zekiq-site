@@ -61,7 +61,7 @@
       fileName: "ZEKiQManager.apk",
       versionCode: NATIVE_BUILD,
       versionName: EXT_VERSION,
-      setupUrl: "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=213",
+      setupUrl: "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=214",
       updatedAt: new Date().toISOString()
     };
   }

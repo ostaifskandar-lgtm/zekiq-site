@@ -3,7 +3,7 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.1.3";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.1.4";
 
   var TABLE_ICON =
     '<svg class="zekiq-table-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" ' +

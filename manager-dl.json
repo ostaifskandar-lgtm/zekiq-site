@@ -1,13 +1,13 @@
 {
   "fileName": "ZEKiQManager.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=213",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=214",
   "setupUrlLegacy": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=206",
   "tablesWebPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-tables.html",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
-  "versionCode": 213,
-  "versionName": "2.1.3",
+  "versionCode": 214,
+  "versionName": "2.1.4",
   "packageId": "com.zekiq.manager",
   "signing": "ZEKiQ Debug — installs alongside com.tonino.owner",
-  "releaseNotes": "Reliable monitor row tap + session sync + table SVG icon. Use app not browser page.",
-  "updatedAt": "2026-06-28T19:30:00.000Z"
+  "releaseNotes": "Login panel with PIN + دخول button; collapsible settings; no overlay blocking native login.",
+  "updatedAt": "2026-06-28T20:00:00.000Z"
 }

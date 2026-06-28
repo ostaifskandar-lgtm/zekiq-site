@@ -1,14 +1,14 @@
 {
   "fileName": "ZEKiQManager.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=213",
-  "setupUrlMirror": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=213",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=214",
+  "setupUrlMirror": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=214",
   "setupUrlLegacy": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=206",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
-  "versionCode": 213,
-  "versionName": "2.1.3",
+  "versionCode": 214,
+  "versionName": "2.1.4",
   "appLabel": "ZEKiQ مدير",
   "packageId": "com.zekiq.manager",
   "signing": "Install alongside com.tonino.owner — no uninstall",
-  "releaseNotes": "Monitor row tap survives React refresh. Session token sync on login.",
-  "updatedAt": "2026-06-28T19:30:00.000Z"
+  "releaseNotes": "Direct login button in settings panel; save+4G applies tunnel immediately.",
+  "updatedAt": "2026-06-28T20:00:00.000Z"
 }

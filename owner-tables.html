@@ -10,26 +10,26 @@
     body{margin:0;font-family:system-ui,sans-serif;background:#f3ebe0;color:#2a2418;padding:16px;padding-bottom:40px}
     h1{font-size:1.2rem;color:#8f6218;margin:0 0 8px;text-align:center}
     .warn{background:#fef3c7;border:1px solid #fbbf24;border-radius:14px;padding:14px;margin-bottom:14px;font-size:13px;line-height:1.7;color:#78350f}
-    .warn b{color:#92400e}
     .box{background:#fff;border:1px solid #e2d2b3;border-radius:14px;padding:14px;margin-bottom:12px}
     label{display:block;font-size:12px;font-weight:700;margin:8px 0 4px}
     input{width:100%;padding:12px;border-radius:10px;border:1px solid #d8c6a0;font-size:16px}
-    button,.btnlink{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:800;margin-top:10px;text-align:center;text-decoration:none;display:block}
+    button,.btnlink{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:800;margin-top:10px;text-align:center;text-decoration:none;display:block;cursor:pointer}
     .primary{background:linear-gradient(135deg,#8f6218,#cfa73e);color:#fff}
+    .primary:disabled{opacity:.6;cursor:not-allowed}
     .app{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714}
     .note{font-size:12px;color:#78716c;text-align:center;line-height:1.6;margin-top:12px}
-    .err{color:#b91c1c;font-size:13px;margin-top:8px;text-align:center}
+    .err{color:#b91c1c;font-size:13px;margin-top:8px;text-align:center;min-height:1.2em}
   </style>
 </head>
 <body>
   <h1>⊞ ZEKiQ — الطاولات</h1>
 
   <div class="warn">
-    <b>⚠️ هذه صفحة ويب — لا تكفي وحدها.</b><br>
-    لفتح الطاولات بالضغط على 4G استخدم تطبيق <b>ZEKiQ Manager</b> (ليس المتصفح).
+    <b>⚠️ صفحة الويب لا تفتح الطاولات.</b><br>
+    زر الدخول هنا للاختبار فقط. للاستخدام الحقيقي ثبّت <b>ZEKiQ Manager</b>.
   </div>
 
-  <a class="btnlink app" href="manager.html">⬇️ حمّل ZEKiQ Manager v2.1.3</a>
+  <a class="btnlink app" href="manager.html">⬇️ حمّل ZEKiQ Manager (الحل الصحيح)</a>
 
   <div class="box">
     <label>🌐 النفق</label>
@@ -40,31 +40,47 @@
     <p class="err" id="err"></p>
   </div>
 
-  <p class="note">بعد تثبيت التطبيق: النفق → <b>حفظ + 4G</b> → PIN → اضغط صف الطاولة في المراقبة</p>
+  <p class="note">في التطبيق: افتح لوحة «⚙️ إعدادات» أسفل الشاشة → النفق → حفظ + 4G → PIN → <b>دخول</b></p>
 
   <script>
-    document.getElementById("loginBtn").onclick = async function () {
+    function runLogin() {
+      var btn = document.getElementById("loginBtn");
       var err = document.getElementById("err");
+      err.style.color = "#b91c1c";
       err.textContent = "";
       var tunnel = document.getElementById("tunnel").value.trim().replace(/^https?:\/\//, "");
       var pin = document.getElementById("pin").value.trim();
       if (!tunnel || !pin) { err.textContent = "أدخل النفق و PIN"; return; }
+      if (pin.length < 4) { err.textContent = "PIN يجب 4 أرقام"; return; }
+      btn.disabled = true;
+      btn.textContent = "جاري الدخول…";
       var base = "https://" + tunnel.replace(/\/+$/, "");
-      try {
-        var r = await fetch(base + "/api/owner/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ pin: pin })
+      fetch(base + "/api/owner/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: pin })
+      })
+        .then(function (r) {
+          if (!r.ok) throw new Error("bad");
+          return r.json();
+        })
+        .then(function (j) {
+          if (!j.sessionToken) { err.textContent = "PIN خاطئ"; return; }
+          err.style.color = "#15803d";
+          err.textContent = "✓ الدخول يعمل — ثبّت ZEKiQ Manager من الزر أعلاه";
+        })
+        .catch(function () {
+          err.textContent = "فشل — استخدم التطبيق ZEKiQ Manager (ليس المتصفح)";
+        })
+        .finally(function () {
+          btn.disabled = false;
+          btn.textContent = "اختبار الدخول";
         });
-        if (!r.ok) { err.textContent = "PIN خاطئ أو لا اتصال"; return; }
-        var j = await r.json();
-        if (!j.sessionToken) { err.textContent = "فشل الدخول"; return; }
-        err.style.color = "#15803d";
-        err.textContent = "✓ الدخول يعمل — الآن ثبّت ZEKiQ Manager من الزر أعلاه";
-      } catch (e) {
-        err.textContent = "لا يمكن من المتصفح — ثبّت ZEKiQ Manager";
-      }
-    };
+    }
+    document.getElementById("loginBtn").addEventListener("click", runLogin);
+    document.getElementById("pin").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") runLogin();
+    });
   </script>
 </body>
 </html>

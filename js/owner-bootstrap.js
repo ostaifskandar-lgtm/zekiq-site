@@ -10,7 +10,6 @@
   var KEYS = {
     remoteBase: "tonino-owner-remote-base",
     remoteForIp: "tonino-owner-remote-for-ip",
-    remoteForIp: "tonino-owner-remote-for-ip",
     server: "tonino-owner-server",
     activeApi: "tonino-owner-active-api",
     profiles: "tonino-owner-server-profiles",
@@ -123,16 +122,42 @@
       .catch(function () {});
   }
 
+  function applyRemoteNow(tunnel, lanUrl) {
+    tunnel = normalizeTunnelInput(tunnel);
+    if (!tunnel.startsWith("https://")) return false;
+    lanUrl = normalizeLanInput(lanUrl, defaultCfg());
+    try {
+      localStorage.setItem(KEYS.remoteBase, tunnel);
+      localStorage.setItem(KEYS.workingApi, tunnel);
+      localStorage.setItem(KEYS.server, tunnel);
+      localStorage.setItem(KEYS.activeApi, tunnel);
+      localStorage.setItem(KEYS.linkMode, "remote");
+      localStorage.setItem(KEYS.workingVia, "remote");
+      localStorage.setItem(KEYS.manualTarget, "1");
+      if (lanUrl && lanUrl.startsWith("http://")) {
+        localStorage.setItem(KEYS.remoteForIp, lanHostFromUrl(lanUrl));
+        localStorage.setItem(KEYS.profiles, JSON.stringify([{
+          id: "cashier",
+          label: "Shop",
+          server: lanUrl,
+          savedAt: Date.now()
+        }]));
+      }
+    } catch (e) { return false; }
+    if (window.__zekiqApplyRemoteOwnerStorage && lanUrl) {
+      window.__zekiqApplyRemoteOwnerStorage(tunnel, lanUrl, "");
+    }
+    window.dispatchEvent(new CustomEvent("tonino-owner-link-changed"));
+    return true;
+  }
+
   function saveDualConfig(mode, tunnelRaw, lanRaw) {
     var tunnel = normalizeTunnelInput(tunnelRaw);
     var lan = normalizeLanInput(lanRaw, defaultCfg());
     unlockNetwork();
 
     if (mode === "remote" && tunnel) {
-      try {
-        localStorage.setItem(KEYS.remoteBase, tunnel);
-        localStorage.setItem(KEYS.manualTarget, "1");
-      } catch (e) {}
+      applyRemoteNow(tunnel, lan);
       return syncProfileFromServer(tunnel, "");
     }
 
@@ -176,8 +201,14 @@
     s.id = "zekiq-owner-dual-css";
     s.textContent =
       "#zekiq-owner-dual-settings{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;" +
-      "background:rgba(251,246,236,.98);border-top:2px solid #e2d2b3;padding:12px 14px calc(12px + env(safe-area-inset-bottom));" +
-      "font-family:system-ui,-apple-system,sans-serif;box-shadow:0 -8px 28px rgba(0,0,0,.12)}" +
+      "background:rgba(251,246,236,.98);border-top:2px solid #e2d2b3;font-family:system-ui,-apple-system,sans-serif;" +
+      "box-shadow:0 -8px 28px rgba(0,0,0,.12);max-height:72dvh;overflow:auto;" +
+      "padding:0 14px calc(10px + env(safe-area-inset-bottom))}" +
+      "#zekiq-owner-dual-settings.collapsed .z-body{display:none}" +
+      "#zekiq-owner-dual-settings.collapsed{padding-bottom:calc(6px + env(safe-area-inset-bottom))}" +
+      "#zekiq-panel-toggle{width:100%;padding:10px 8px;border:none;background:transparent;font-size:13px;font-weight:800;color:#8f6218;cursor:pointer}" +
+      "body.zekiq-login-pad{padding-bottom:calc(240px + env(safe-area-inset-bottom))!important}" +
+      ".owner-login-compact, .owner-portal-card.owner-login-compact{position:relative;z-index:2147483002}" +
       "#zekiq-owner-conn-banner{position:fixed;left:12px;right:12px;top:calc(8px + env(safe-area-inset-top));z-index:2147483001;" +
       "padding:8px 12px;border-radius:12px;font-size:11px;font-weight:700;line-height:1.45;font-family:system-ui,sans-serif;" +
       "background:rgba(34,197,94,.12);color:#166534;border:1px solid rgba(34,197,94,.3)}" +
@@ -191,6 +222,7 @@
       "#zekiq-owner-dual-settings button{padding:11px 8px;border:none;border-radius:10px;font-size:12px;font-weight:800}" +
       "#zekiq-owner-dual-settings .z-remote{background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff}" +
       "#zekiq-owner-dual-settings .z-wifi{background:linear-gradient(135deg,#4ade80,#16a34a);color:#052e16}" +
+      "#zekiq-owner-dual-settings .z-login{background:linear-gradient(135deg,#8f6218,#cfa73e);color:#fff;grid-column:1/-1;margin-top:4px}" +
       "#zekiq-owner-dual-settings .z-status{font-size:10px;text-align:center;color:#78716c;margin-top:6px}";
     document.head.appendChild(s);
   }
@@ -241,22 +273,36 @@
     injectStyles();
     var wrap = document.createElement("div");
     wrap.id = "zekiq-owner-dual-settings";
+    wrap.className = "collapsed";
     wrap.innerHTML =
-      '<div class="z-title">⚙️ إعدادات الاتصال — أي محل</div>' +
-      '<label>🌐 النفق (4G) — مثال: tonino.zekiqmenu.com أو zekiq-dev.zekiqmenu.com</label>' +
-      '<input id="zekiq-tunnel" dir="ltr" autocomplete="off" spellcheck="false" placeholder="shop.zekiqmenu.com" />' +
-      '<label>📶 IP الكاشير (WiFi)</label>' +
+      '<button type="button" id="zekiq-panel-toggle">⚙️ إعدادات الاتصال — اضغط للفتح</button>' +
+      '<div class="z-body">' +
+      '<div class="z-title">⚙️ النفق + PIN</div>' +
+      '<label>🌐 النفق (4G)</label>' +
+      '<input id="zekiq-tunnel" dir="ltr" autocomplete="off" spellcheck="false" placeholder="tonino.zekiqmenu.com" />' +
+      '<label>📶 IP الكاشير (WiFi) — اختياري</label>' +
       '<input id="zekiq-lan" dir="ltr" autocomplete="off" spellcheck="false" placeholder="192.168.1.25:3000" />' +
+      '<label>🔢 PIN المدير</label>' +
+      '<input id="zekiq-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="****" />' +
       '<div class="z-btns">' +
       '<button type="button" class="z-remote" id="zekiq-save-remote">حفظ + 4G</button>' +
       '<button type="button" class="z-wifi" id="zekiq-save-wifi">حفظ + WiFi</button>' +
+      '<button type="button" class="z-login" id="zekiq-do-login">⬅️ دخول</button>' +
       '</div>' +
-      '<div class="z-status" id="zekiq-dual-status">احفظ ثم أدخل PIN — يعمل مع أي كاشير</div>';
+      '<div class="z-status" id="zekiq-dual-status">1) أدخل النفق 2) حفظ + 4G 3) PIN 4) دخول</div></div>';
 
     document.body.appendChild(wrap);
+    document.body.classList.add("zekiq-login-pad");
+
+    document.getElementById("zekiq-panel-toggle").onclick = function () {
+      wrap.classList.toggle("collapsed");
+      document.getElementById("zekiq-panel-toggle").textContent =
+        wrap.classList.contains("collapsed") ? "⚙️ إعدادات الاتصال — اضغط للفتح" : "▾ إخفاء الإعدادات";
+    };
 
     var tunnelEl = document.getElementById("zekiq-tunnel");
     var lanEl = document.getElementById("zekiq-lan");
+    var pinEl = document.getElementById("zekiq-pin");
     var statusEl = document.getElementById("zekiq-dual-status");
 
     tunnelEl.value = getStored(KEYS.remoteBase).replace(/^https:\/\//, "");
@@ -267,6 +313,52 @@
       }
     } catch (e) {}
 
+    function doLogin() {
+      var pin = (pinEl.value || "").trim();
+      if (!tunnelEl.value.trim()) {
+        statusEl.textContent = "✗ أدخل النفق أولاً";
+        wrap.classList.remove("collapsed");
+        return;
+      }
+      if (pin.length < 4) {
+        statusEl.textContent = "✗ أدخل PIN (4 أرقام)";
+        return;
+      }
+      statusEl.textContent = "جاري الدخول…";
+      applyRemoteNow(tunnelEl.value, lanEl.value);
+      var base = normalizeTunnelInput(tunnelEl.value);
+      fetch(base + "/api/owner/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: pin })
+      })
+        .then(function (r) { return r.ok ? r.json() : Promise.reject("network"); })
+        .then(function (j) {
+          if (!j || !j.sessionToken) {
+            statusEl.textContent = "✗ PIN خاطئ" + (j && j.reason ? " (" + j.reason + ")" : "");
+            return;
+          }
+          try {
+            localStorage.setItem("tonino-owner-session-token", j.sessionToken);
+            if (j.shopName) localStorage.setItem("tonino-owner-shop-name", j.shopName);
+            localStorage.setItem("tonino-owner-session-meta", JSON.stringify({
+              shopName: j.shopName,
+              ownerName: j.ownerName,
+              savedAt: Date.now()
+            }));
+          } catch (e) {}
+          statusEl.textContent = "✓ تم الدخول — جاري التحميل…";
+          saveDualConfig("remote", tunnelEl.value, lanEl.value).finally(function () {
+            setTimeout(function () {
+              try { window.location.reload(); } catch (e) {}
+            }, 400);
+          });
+        })
+        .catch(function () {
+          statusEl.textContent = "✗ لا اتصال — تحقق من النفق ثم حفظ + 4G";
+        });
+    }
+
     document.getElementById("zekiq-save-remote").onclick = function () {
       if (!tunnelEl.value.trim()) {
         statusEl.textContent = "✗ أدخل عنوان النفق أولاً";
@@ -274,8 +366,9 @@
       }
       statusEl.textContent = "جاري الحفظ والمزامنة…";
       saveDualConfig("remote", tunnelEl.value, lanEl.value).then(function () {
-        statusEl.textContent = "✓ تم — 4G / النفق · أدخل PIN الآن";
+        statusEl.textContent = "✓ تم — أدخل PIN واضغط «دخول»";
         renderConnBanner();
+        wrap.classList.remove("collapsed");
       });
     };
     document.getElementById("zekiq-save-wifi").onclick = function () {
@@ -285,10 +378,14 @@
       }
       statusEl.textContent = "جاري الحفظ…";
       saveDualConfig("wifi", tunnelEl.value, lanEl.value).then(function () {
-        statusEl.textContent = "✓ تم — WiFi · أدخل PIN الآن";
+        statusEl.textContent = "✓ تم — WiFi · أدخل PIN واضغط «دخول»";
         renderConnBanner();
       });
     };
+    document.getElementById("zekiq-do-login").onclick = doLogin;
+    pinEl.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") doLogin();
+    });
   }
 
   function ensureStandalone() {
@@ -416,6 +513,8 @@
     var inApp = !!document.querySelector(".owner-app-layout");
     if (panel) panel.style.display = onLogin && !inApp ? "block" : "none";
     if (banner) banner.style.display = onLogin && !inApp ? "block" : "none";
+    if (onLogin && !inApp) document.body.classList.add("zekiq-login-pad");
+    else document.body.classList.remove("zekiq-login-pad");
   }
 
   setInterval(syncLoginPanel, 1500);
