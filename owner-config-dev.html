@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>ZEKiQ Dev — ربط المطور</title>
+  <style>
+    body{margin:0;font-family:system-ui,sans-serif;background:#0f172a;color:#fff;padding:24px 16px}
+    .wrap{max-width:420px;margin:0 auto}
+    h1{font-size:1.2rem;margin-bottom:8px}
+    p{color:#94a3b8;line-height:1.6;font-size:.9rem}
+    code{background:#1e293b;padding:2px 6px;border-radius:6px;color:#fde68a}
+    .ok{margin-top:16px;padding:12px;border-radius:12px;background:rgba(34,197,94,.12);color:#86efac}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🧪 بيئة المطور ZEKiQ Dev</h1>
+    <p>النفق: <code dir="ltr">zekiq-dev.zekiqmenu.com</code></p>
+    <p>في <b>ZEKiQ Manager</b>: أدخل النفق أعلاه → <b>حفظ + 4G</b> → PIN المطور.</p>
+    <div class="ok" id="st">جاري الفحص…</div>
+  </div>
+  <script>
+    fetch("https://zekiq-dev.zekiqmenu.com/api/health", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (j) {
+        document.getElementById("st").textContent = "✓ Dev يعمل — " + (j.shop && j.shop.shopName ? j.shop.shopName : "OK");
+      })
+      .catch(function () {
+        document.getElementById("st").textContent = "✗ Dev غير متاح — شغّل الكاشير";
+      });
+  </script>
+</body>
+</html>

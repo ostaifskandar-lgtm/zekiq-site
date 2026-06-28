@@ -1,0 +1,9 @@
+{
+  "shopName": "ZEKiQ Dev",
+  "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
+  "lanHost": "192.168.1.84",
+  "lanPort": "3000",
+  "lanUrl": "http://192.168.1.84:3000",
+  "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api.json",
+  "updatedAt": "2026-06-28T19:30:00.000Z"
+}

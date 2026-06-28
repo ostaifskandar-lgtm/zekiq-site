@@ -2,6 +2,7 @@
   "use strict";
 
   var CONFIG_URLS = [
+    "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config-dev.json",
     "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json",
     "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/owner-config.json"
   ];

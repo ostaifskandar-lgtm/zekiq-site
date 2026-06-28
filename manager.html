@@ -14,15 +14,12 @@
     .tag{text-align:center;color:#94a3b8;font-size:.9rem;line-height:1.6;margin-bottom:20px}
     .btn{display:block;width:100%;padding:18px;border-radius:16px;font-size:1.05rem;font-weight:800;text-decoration:none;text-align:center;margin-bottom:12px}
     .btn.main{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714;box-shadow:0 8px 28px rgba(251,191,36,.35);font-size:1.15rem}
+    .btn.dev{background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff}
     .btn.tables{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff}
-    .btn.ghost{background:rgba(255,255,255,.07);color:#fde68a;border:1px solid rgba(245,158,11,.3);font-size:.88rem;padding:14px}
     .box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;margin-bottom:14px;font-size:.85rem;color:#cbd5e1;line-height:1.7}
     .box b{color:#fff}
     .box ol{padding-right:20px;margin-top:8px}
     .box li{margin:6px 0}
-    .warn{background:rgba(239,68,68,.12);border-color:rgba(248,113,113,.45)}
-    .warn b{color:#fca5a5}
-    .ok{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.35)}
     .note{font-size:.78rem;color:#94a3b8;text-align:center;margin-top:16px;line-height:1.6}
     code{font-family:ui-monospace,monospace;font-size:.72rem;color:#fde68a;background:rgba(0,0,0,.3);padding:2px 6px;border-radius:6px;word-break:break-all}
   </style>
@@ -31,37 +28,24 @@
   <div class="wrap">
     <div class="logo">Z</div>
     <h1>ZEKiQ مدير</h1>
-    <p class="tag"><b>v2.1.0</b> — إصلاح «متصل لكن 192.168»</p>
+    <p class="tag"><b>v2.1.1</b> — 4G + فتح الطاولات بالضغط</p>
 
-    <div class="box warn">
-      <b>⚠️ متصل بـ tonino.zekiqmenu.com لكن المراقبة تقول 192.168.1.25؟</b>
-      <ol>
-        <li>التطبيق القديم يحفظ IP محلي — لا يعمل على 4G</li>
-        <li><b>لا تحذف التطبيق القديم</b></li>
-        <li>حمّل <b>ZEKiQ Manager</b> أدناه — تطبيق جديد بجانب القديم</li>
-      </ol>
-    </div>
+    <a class="btn main" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=211">⬇️ ZEKiQ Manager v2.1.1 (بدون حذف)</a>
 
-    <a class="btn main" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=210">⬇️ ZEKiQ Manager v2.1.0 — بدون حذف</a>
-
-    <div class="box ok">
-      <b>بعد التثبيت:</b>
+    <div class="box">
+      <b>بعد التثبيت — Tonino:</b>
       <ol>
         <li>افتح <b>ZEKiQ مدير</b> (أيقونة جديدة)</li>
         <li>النفق: <code dir="ltr">tonino.zekiqmenu.com</code> → <b>حفظ + 4G</b></li>
-        <li>أدخل PIN → المراقبة تعمل على 4G</li>
+        <li>أدخل PIN → اضغط أي طاولة في المراقبة أو زر <b>🪑 الطاولات</b></li>
       </ol>
     </div>
 
-    <a class="btn tables" href="owner-tables.html">🪑 الطوارئ: الطاولات (متصفح)</a>
-    <a class="btn ghost" href="owner-connect.html">⚙️ ربط النفق / 4G</a>
+    <a class="btn dev" href="owner-config-dev.html">🧪 تجربة المطور — zekiq-dev.zekiqmenu.com</a>
 
-    <div class="box">
-      <b>Samsung — تحديث التطبيق القديم فقط:</b><br>
-      <a href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=206" style="color:#86efac">ToninoOwner.apk</a> (توقيع Tonino Garson — بدون إصلاح 4G)
-    </div>
+    <a class="btn tables" href="owner-tables.html">🪑 الطوارئ — الطاولات (متصفح)</a>
 
-    <p class="note">ZEKiQ Manager = com.zekiq.manager · يثبت بجانب التطبيق القديم · Play Protect → Yine de yükleyin</p>
+    <p class="note">Play Protect → Yine de yükleyin · شارة v2.1.1 أعلى الشاشة = الإصلاح مفعّل</p>
   </div>
 </body>
 </html>

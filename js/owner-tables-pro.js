@@ -3,7 +3,7 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.0.3";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.1.1";
 
   function isOwnerApp() {
     try {
@@ -53,12 +53,30 @@
   }
 
   function baseUrl() {
-    var keys = ["tonino-owner-working-api", "tonino-owner-remote-base", "tonino-owner-server"];
+    if (window.__zekiqGetOwnerTunnelUrl) {
+      var tunnel = window.__zekiqGetOwnerTunnelUrl();
+      if (tunnel.startsWith("https://")) return tunnel;
+    }
+    var mode = "";
+    try { mode = localStorage.getItem("tonino-owner-link-mode") || ""; } catch (e) {}
+    var keys = ["tonino-owner-working-api", "tonino-owner-remote-base", "tonino-owner-active-api", "tonino-owner-server"];
+    var tunnelUrl = "";
+    var lanUrl = "";
     for (var i = 0; i < keys.length; i++) {
       try {
         var v = (localStorage.getItem(keys[i]) || "").trim().replace(/\/+$/, "");
-        if (v.startsWith("http")) return v;
+        if (!v.startsWith("http")) continue;
+        if (v.startsWith("https://") && !tunnelUrl) tunnelUrl = v;
+        if (v.startsWith("http://") && /^192\.168\.|^10\.|^172\.(1[6-9]|2\d|3[01])\./.test(new URL(v).hostname) && !lanUrl) lanUrl = v;
       } catch (e) {}
+    }
+    if (mode === "remote" && tunnelUrl) return tunnelUrl;
+    if (tunnelUrl && lanUrl) return tunnelUrl;
+    for (var j = 0; j < keys.length; j++) {
+      try {
+        var u = (localStorage.getItem(keys[j]) || "").trim().replace(/\/+$/, "");
+        if (u.startsWith("http")) return u;
+      } catch (e2) {}
     }
     return "https://tonino.zekiqmenu.com";
   }
@@ -76,6 +94,7 @@
   }
 
   async function trpc(proc, input) {
+    if (window.__zekiqRepairOwnerStorageIfNeeded) window.__zekiqRepairOwnerStorageIfNeeded();
     var q = encodeURIComponent(JSON.stringify({ "0": { json: input || {} } }));
     var r = await fetch(baseUrl() + "/api/trpc/" + proc + "?batch=1&input=" + q, {
       cache: "no-store",
@@ -474,28 +493,46 @@
     return normalizeRow({ section: parsedSection, tableNum: tableNum });
   }
 
+  function openRowDetail(row, li) {
+    row = normalizeRow(row || parseTableFromRow(li));
+    if (!row || !row.section || !Number.isFinite(row.tableNum)) return false;
+    ensureUi();
+    showOpenDetail(row);
+    return true;
+  }
+
+  function bindRowOpen(li, row) {
+    if (li.getAttribute("data-zekiq-bound") === "1") return;
+    li.setAttribute("data-zekiq-bound", "1");
+    li.classList.add("zekiq-tappable");
+    li.style.cursor = "pointer";
+    function onTap(e) {
+      if (!openRowDetail(row, li)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+    }
+    li.addEventListener("click", onTap, true);
+    li.addEventListener("pointerup", onTap, true);
+  }
   function syncTableRowData() {
-    document.querySelectorAll(".owner-table-row, .owner-table-row.is-compact").forEach(function (li) {
+    document.querySelectorAll(".owner-table-row, .owner-table-row.is-compact, li.owner-table-row").forEach(function (li) {
       var row = parseTableFromRow(li);
       if (!row || !Number.isFinite(row.tableNum)) return;
       li.setAttribute("data-zekiq-section", row.section);
       li.setAttribute("data-zekiq-table-num", String(row.tableNum));
-      li.classList.add("zekiq-tappable");
-      li.style.cursor = "pointer";
+      bindRowOpen(li, row);
     });
   }
 
   function handleTableTap(e) {
     var li = e.target.closest && e.target.closest(".owner-table-row");
     if (!li) return;
-    if (!li.querySelector(".owner-table-name") && !li.classList.contains("is-compact")) return;
-    if (!isInApp() && !token()) return;
-    var row = parseTableFromRow(li);
-    if (!row) return;
-    e.preventDefault();
-    e.stopPropagation();
-    if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-    showOpenDetail(row);
+    if (openRowDetail(null, li)) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+    }
   }
 
   function installTableTapDelegation() {

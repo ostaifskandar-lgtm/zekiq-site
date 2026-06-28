@@ -34,7 +34,7 @@
     (document.head || document.documentElement).appendChild(s);
   }
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.0.6";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.1.1";
   try {
     localStorage.setItem("tonino-owner-native-apk", "1");
     localStorage.setItem("zekiq-manager-native", "1");
