@@ -1,0 +1,9 @@
+{
+  "shopName": "Tonino",
+  "tunnelUrl": "https://tonino.zekiqmenu.com",
+  "lanHost": "192.168.1.25",
+  "lanPort": "3000",
+  "lanUrl": "http://192.168.1.25:3000",
+  "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api-tonino.json",
+  "updatedAt": "2026-06-28T14:00:00.000Z"
+}
