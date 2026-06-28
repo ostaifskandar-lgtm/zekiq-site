@@ -175,9 +175,19 @@
         if (localStorage.getItem(KEYS.linkMode) === "wifi") mode = "wifi";
       } catch (e) {}
       saveDualConfig(cfg, mode, cfg.tunnelUrl, cfg.lanUrl);
-      renderPanel(cfg);
+      if (document.querySelector(".owner-login-compact")) renderPanel(cfg);
     });
   }
+
+  function syncLoginPanel() {
+    var panel = document.getElementById("zekiq-owner-dual-settings");
+    var onLogin = !!document.querySelector(".owner-login-compact");
+    var inApp = !!document.querySelector(".owner-app-layout");
+    if (panel) panel.style.display = onLogin && !inApp ? "block" : "none";
+  }
+
+  setInterval(syncLoginPanel, 1500);
+  syncLoginPanel();
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);

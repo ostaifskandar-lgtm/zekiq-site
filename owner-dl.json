@@ -1,13 +1,13 @@
 {
   "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=38",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=39",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
   "publicPageAlt": "https://tonino.zekiqmenu.com/owner?remote=1",
   "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api-tonino.json",
   "ownerConfigUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json",
-  "versionCode": 38,
-  "versionName": "1.0.38",
+  "versionCode": 39,
+  "versionName": "1.0.39",
   "sizeMb": "14.7",
-  "releaseNotes": "Professional table details: open/closed items, voids, comps, payment methods",
-  "updatedAt": "2026-06-28T14:30:00.000Z"
+  "releaseNotes": "Fix table details button visibility — header + bottom button",
+  "updatedAt": "2026-06-28T15:00:00.000Z"
 }
