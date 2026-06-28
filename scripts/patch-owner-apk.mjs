@@ -156,9 +156,13 @@ if (fs.existsSync(indexPath)) {
 console.log("Building APK...");
 run(`${APKTOOL} b "${decodeDir}" -o "${builtApk}"`);
 
-console.log("Signing APK...");
+console.log("Signing APK (v1+v2+v3)...");
+const uberSigner = process.env.UBER_APK_SIGNER || "/tmp/uber-apk-signer.jar";
+if (!fs.existsSync(uberSigner)) {
+  run(`curl -sL -o "${uberSigner}" https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar`);
+}
 run(
-  `jarsigner -sigalg SHA256withRSA -digestalg SHA-256 -keystore "${KEYSTORE}" -storepass "${STORE_PASS}" -keypass "${STORE_PASS}" "${builtApk}" androiddebugkey`
+  `java -jar "${uberSigner}" -a "${builtApk}" --ks "${KEYSTORE}" --ksAlias androiddebugkey --ksPass "${STORE_PASS}" --ksKeyPass "${STORE_PASS}" --allowResign --overwrite`
 );
 
 fs.copyFileSync(builtApk, OUT_APK);
