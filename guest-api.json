@@ -2,7 +2,7 @@
   "apiUrl": "https://zekiq-dev.zekiqmenu.com",
   "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
   "lanUrl": "http://192.168.1.84:3000",
-  "updatedAt": "2026-06-28T15:24:40.587Z",
+  "updatedAt": "2026-06-28T15:24:51.484Z",
   "shops": {
     "192.168.1.25": {
       "tunnelUrl": "https://tonino.zekiqmenu.com",
@@ -23,7 +23,7 @@
       "lanUrl": "http://192.168.1.84:3000",
       "shopName": "ZEKiQ Dev",
       "hostname": "zekiq-dev.zekiqmenu.com",
-      "updatedAt": "2026-06-28T15:24:40.587Z"
+      "updatedAt": "2026-06-28T15:24:51.484Z"
     },
     "zekiq-dev.zekiqmenu.com": {
       "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
