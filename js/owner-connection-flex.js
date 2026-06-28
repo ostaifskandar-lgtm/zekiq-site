@@ -19,7 +19,9 @@
     try {
       if (window.__TONINO_APP_TARGET__ === "owner") return true;
       if (localStorage.getItem(KEYS.nativeApk) === "1") return true;
-      if (window.Capacitor && window.Capacitor.config && window.Capacitor.config.appId === "com.tonino.owner") return true;
+      if (localStorage.getItem("zekiq-manager-native") === "1") return true;
+      var id = window.Capacitor && window.Capacitor.config && window.Capacitor.config.appId;
+      if (id === "com.tonino.owner" || id === "com.zekiq.manager") return true;
     } catch (e) {}
     return false;
   }
@@ -92,6 +94,7 @@
     lsSet(KEYS.manualTarget, "1");
     lsSet(KEYS.standalone, "1");
     lsSet(KEYS.nativeApk, "1");
+    lsSet("zekiq-manager-native", "1");
     if (url.startsWith("https://")) lsSet(KEYS.remoteBase, url);
     try {
       localStorage.removeItem("tonino-owner-remote-shell");
@@ -109,6 +112,7 @@
       lsSet(KEYS.standalone, "1");
       lsSet(KEYS.nativeApk, "1");
       lsSet(KEYS.manualTarget, "1");
+      lsSet("zekiq-manager-native", "1");
     } catch (e) {}
     var pick = bestUrl();
     if (pick) persistConnection(pick.url, pick.via);

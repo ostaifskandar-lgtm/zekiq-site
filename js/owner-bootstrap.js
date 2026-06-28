@@ -22,7 +22,9 @@
     try {
       if (window.__TONINO_APP_TARGET__ === "owner") return true;
       if (localStorage.getItem("tonino-owner-native-apk") === "1") return true;
-      if (window.Capacitor && window.Capacitor.config && window.Capacitor.config.appId === "com.tonino.owner") return true;
+      if (localStorage.getItem("zekiq-manager-native") === "1") return true;
+      var id = window.Capacitor && window.Capacitor.config && window.Capacitor.config.appId;
+      if (id === "com.tonino.owner" || id === "com.zekiq.manager") return true;
     } catch (e) {}
     return false;
   }

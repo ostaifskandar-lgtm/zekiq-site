@@ -3,8 +3,9 @@
 
   if (typeof window === "undefined") return;
 
-  var EXT_VERSION = window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.54";
-  var EXT_BUILD = parseInt(String(EXT_VERSION).split(".").pop(), 10) || 54;
+  var EXT_VERSION = window.__ZEKIQ_OWNER_EXT_VERSION__ || "2.0.0";
+  var EXT_BUILD = parseInt(String(EXT_VERSION).split(".").pop(), 10) || 0;
+  if (String(EXT_VERSION).indexOf("2.0") === 0) EXT_BUILD = 200;
   var NATIVE_BUILD = 99999;
   var DISMISS_KEY = "tonino-owner-update-dismissed";
   var UI_BUILD_KEY = "tonino-owner-ui-build";
@@ -15,7 +16,9 @@
     try {
       if (window.__TONINO_APP_TARGET__ === "owner") return true;
       if (localStorage.getItem("tonino-owner-native-apk") === "1") return true;
-      if (window.Capacitor && window.Capacitor.config && window.Capacitor.config.appId === "com.tonino.owner") return true;
+      if (localStorage.getItem("zekiq-manager-native") === "1") return true;
+      var id = window.Capacitor && window.Capacitor.config && window.Capacitor.config.appId;
+      if (id === "com.tonino.owner" || id === "com.zekiq.manager") return true;
     } catch (e) {}
     return false;
   }
@@ -55,10 +58,10 @@
 
   function ownerDlPayload() {
     return {
-      fileName: "ToninoOwner.apk",
+      fileName: "ZEKiQManager.apk",
       versionCode: NATIVE_BUILD,
       versionName: EXT_VERSION,
-      setupUrl: "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=" + EXT_BUILD,
+      setupUrl: "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=200",
       updatedAt: new Date().toISOString()
     };
   }
@@ -73,7 +76,7 @@
             build: String(NATIVE_BUILD),
             version: EXT_VERSION,
             name: "Owner",
-            id: "com.tonino.owner"
+            id: "com.zekiq.manager"
           });
         };
         app.__zekiqPatched = true;
@@ -106,7 +109,7 @@
     var t = (el.textContent || "").trim();
     if (t.length > 400) return false;
     return t.indexOf("تثبيت التحديث") >= 0 ||
-      (t.indexOf("تحديث تطبيق المالك") >= 0 && t.indexOf("لاحق") >= 0);
+      (t.indexOf("تحديث تطبيق") >= 0 && t.indexOf("لاحق") >= 0);
   }
 
   function removeUpdateModal() {

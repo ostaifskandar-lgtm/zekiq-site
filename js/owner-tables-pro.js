@@ -3,13 +3,15 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "1.0.54";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.0.0";
 
   function isOwnerApp() {
     try {
       if (window.__TONINO_APP_TARGET__ === "owner") return true;
       if (localStorage.getItem("tonino-owner-native-apk") === "1") return true;
-      if (window.Capacitor && window.Capacitor.config && window.Capacitor.config.appId === "com.tonino.owner") return true;
+      if (localStorage.getItem("zekiq-manager-native") === "1") return true;
+      var id = window.Capacitor && window.Capacitor.config && window.Capacitor.config.appId;
+      if (id === "com.tonino.owner" || id === "com.zekiq.manager") return true;
     } catch (e) {}
     return false;
   }
@@ -301,7 +303,7 @@
     if (document.getElementById("zekiq-ext-badge")) return;
     var badge = document.createElement("div");
     badge.id = "zekiq-ext-badge";
-    badge.textContent = "v" + (window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.54");
+    badge.textContent = "v" + (window.__ZEKIQ_OWNER_EXT_VERSION__ || "2.0.0");
     document.body.appendChild(badge);
   }
 
