@@ -3,8 +3,8 @@
 
   if (typeof window === "undefined") return;
 
-  var EXT_VERSION = window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.50";
-  var EXT_BUILD = parseInt(String(EXT_VERSION).split(".").pop(), 10) || 50;
+  var EXT_VERSION = window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.51";
+  var EXT_BUILD = parseInt(String(EXT_VERSION).split(".").pop(), 10) || 51;
   var DISMISS_KEY = "tonino-owner-update-dismissed";
   var UI_BUILD_KEY = "tonino-owner-ui-build";
   var BUNDLED_BUILD_KEY = "tonino-owner-bundled-ui-build";
@@ -107,6 +107,62 @@
     });
   }
 
+  function removeUpdateModal() {
+    hideUpdateUi();
+    document.querySelectorAll(
+      ".owner-update-sheet,.owner-update-sheet-backdrop,.owner-update-badge,.owner-update-banner,[class*='owner-update']"
+    ).forEach(function (el) { el.remove(); });
+    document.querySelectorAll("div, section, aside, dialog").forEach(function (el) {
+      var t = (el.textContent || "").trim();
+      if (t.indexOf("تثبيت التحديث") >= 0 || (t.indexOf("تحديث تطبيق المالك") >= 0 && t.indexOf("لاحق") >= 0)) {
+        el.remove();
+      }
+    });
+  }
+
+  function patchXhr() {
+    if (window.__zekiqXhrPatched || !window.XMLHttpRequest) return;
+    window.__zekiqXhrPatched = true;
+    var Orig = window.XMLHttpRequest;
+    window.XMLHttpRequest = function () {
+      var xhr = new Orig();
+      var _url = "";
+      var origOpen = xhr.open;
+      xhr.open = function (method, url) {
+        _url = String(url || "");
+        return origOpen.apply(xhr, arguments);
+      };
+      var origSend = xhr.send;
+      xhr.send = function () {
+        if (_url.indexOf("owner-dl.json") >= 0) {
+          markUpToDate();
+          setTimeout(function () {
+            Object.defineProperty(xhr, "readyState", { configurable: true, get: function () { return 4; } });
+            Object.defineProperty(xhr, "status", { configurable: true, get: function () { return 200; } });
+            Object.defineProperty(xhr, "responseText", { configurable: true, get: function () { return JSON.stringify(ownerDlPayload()); } });
+            if (xhr.onreadystatechange) xhr.onreadystatechange();
+            if (xhr.onload) xhr.onload();
+          }, 0);
+          return;
+        }
+        if (_url.indexOf("/api/owner/config") >= 0) {
+          origSend.apply(xhr, arguments);
+          xhr.addEventListener("load", function () {
+            try {
+              var j = JSON.parse(xhr.responseText);
+              patchConfigJson(j);
+              markUpToDate();
+              Object.defineProperty(xhr, "responseText", { configurable: true, get: function () { return JSON.stringify(j); } });
+            } catch (e) {}
+          });
+          return;
+        }
+        return origSend.apply(xhr, arguments);
+      };
+      return xhr;
+    };
+  }
+
   function patchFetch() {
     if (window.__zekiqFetchPatched) return;
     window.__zekiqFetchPatched = true;
@@ -136,9 +192,10 @@
 
   function boot() {
     patchFetch();
+    patchXhr();
     patchAppGetInfo();
     markUpToDate();
-    hideUpdateUi();
+    removeUpdateModal();
     injectNoUpdateCss();
   }
 
@@ -146,10 +203,10 @@
   setInterval(function () {
     patchAppGetInfo();
     markUpToDate();
-    hideUpdateUi();
-  }, 1500);
+    removeUpdateModal();
+  }, 800);
 
   if (typeof MutationObserver !== "undefined") {
-    new MutationObserver(hideUpdateUi).observe(document.documentElement, { childList: true, subtree: true });
+    new MutationObserver(removeUpdateModal).observe(document.documentElement, { childList: true, subtree: true });
   }
 })();

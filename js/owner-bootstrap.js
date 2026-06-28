@@ -286,20 +286,112 @@
     } catch (e) {}
   }
 
+  function isPrivateLanUrl(u) {
+    try {
+      var h = new URL(u).hostname;
+      return /^(192\.168\.|10\.|127\.|localhost$|172\.(1[6-9]|2\d|3[01])\.)/.test(h);
+    } catch (e) { return false; }
+  }
+
+  function getNetworkType() {
+    return new Promise(function (resolve) {
+      try {
+        var net = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Network;
+        if (net && net.getStatus) {
+          net.getStatus().then(function (s) { resolve((s && s.connectionType) || "unknown"); }).catch(function () { resolve("unknown"); });
+          return;
+        }
+      } catch (e) {}
+      resolve("unknown");
+    });
+  }
+
+  function probeApi(base, ms) {
+    var ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, ms || 2000);
+    return fetch(base + "/api/health", { cache: "no-store", signal: ctrl && ctrl.signal })
+      .then(function (r) { clearTimeout(timer); return r.ok; })
+      .catch(function () { clearTimeout(timer); return false; });
+  }
+
+  function switchToTunnel(tunnel, reason) {
+    tunnel = trimUrl(tunnel);
+    if (!tunnel.startsWith("http")) return false;
+    try {
+      localStorage.setItem(KEYS.workingApi, tunnel);
+      localStorage.setItem(KEYS.server, tunnel);
+      localStorage.setItem(KEYS.linkMode, "remote");
+      localStorage.setItem(KEYS.workingVia, "remote");
+      localStorage.setItem("tonino-owner-last-switch-reason", reason || "auto");
+      window.dispatchEvent(new CustomEvent("tonino-owner-link-changed"));
+    } catch (e) { return false; }
+    return true;
+  }
+
+  function smartConnectOnBoot() {
+    var api = trimUrl(getStored(KEYS.workingApi) || getStored(KEYS.server));
+    var tunnel = trimUrl(getStored(KEYS.remoteBase));
+    if (!api || !isPrivateLanUrl(api)) return Promise.resolve(false);
+    if (!tunnel) return Promise.resolve(false);
+
+    return getNetworkType().then(function (net) {
+      if (net === "cellular" || net === "none") {
+        return switchToTunnel(tunnel, "cellular");
+      }
+      if (net === "wifi" || net === "unknown") {
+        return probeApi(api, 1800).then(function (ok) {
+          if (!ok) return switchToTunnel(tunnel, "lan-unreachable");
+          return false;
+        });
+      }
+      return false;
+    }).then(function (switched) {
+      if (switched) {
+        try { window.location.reload(); } catch (e) {}
+      }
+      return switched;
+    });
+  }
+
+  function watchConnectionError() {
+    if (typeof MutationObserver === "undefined") return;
+    var done = false;
+    function tryFix() {
+      if (done) return;
+      var body = document.body && document.body.innerText || "";
+      if (body.indexOf("تعذر الاتصال") < 0 && body.indexOf("Connection failed") < 0) return;
+      var api = trimUrl(getStored(KEYS.workingApi) || getStored(KEYS.server));
+      var tunnel = trimUrl(getStored(KEYS.remoteBase));
+      if (!isPrivateLanUrl(api) || !tunnel) {
+        renderPanel();
+        return;
+      }
+      done = true;
+      if (switchToTunnel(tunnel, "error-screen")) {
+        setTimeout(function () { try { window.location.reload(); } catch (e) {} }, 400);
+      }
+    }
+    new MutationObserver(tryFix).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+    setInterval(tryFix, 2000);
+  }
+
   function boot() {
     ensureStandalone();
     unlockNetwork();
-    if (!hasUserConfig()) {
-      fetchConfig().then(function (cfg) {
-        if (cfg.tunnelUrl || cfg.lanUrl) {
-          saveDualConfig("remote", cfg.tunnelUrl || "", cfg.lanUrl || "");
-        }
-      });
-    }
-    if (document.querySelector(".owner-login-compact")) {
-      renderPanel();
-      renderConnBanner();
-    }
+    smartConnectOnBoot().then(function () {
+      if (!hasUserConfig()) {
+        fetchConfig().then(function (cfg) {
+          if (cfg.tunnelUrl || cfg.lanUrl) {
+            saveDualConfig("remote", cfg.tunnelUrl || "", cfg.lanUrl || "");
+          }
+        });
+      }
+      if (document.querySelector(".owner-login-compact")) {
+        renderPanel();
+        renderConnBanner();
+      }
+    });
+    watchConnectionError();
   }
 
   function syncLoginPanel() {

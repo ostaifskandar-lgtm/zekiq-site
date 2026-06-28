@@ -1,14 +1,14 @@
 {
   "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=50",
-  "setupUrlCdn": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=50",
+  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=51",
+  "setupUrlCdn": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=51",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
   "publicPageAlt": "https://tonino.zekiqmenu.com/owner?remote=1",
   "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api-tonino.json",
   "ownerConfigUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json",
-  "versionCode": 50,
-  "versionName": "1.0.50",
+  "versionCode": 51,
+  "versionName": "1.0.51",
   "sizeMb": "14.7",
-  "releaseNotes": "Disable fake in-app update loop — fetch intercept + hide update banner",
-  "updatedAt": "2026-06-28T22:00:00.000Z"
+  "releaseNotes": "No fake update modal + auto-switch from dead LAN IP to 4G tunnel",
+  "updatedAt": "2026-06-28T23:30:00.000Z"
 }
