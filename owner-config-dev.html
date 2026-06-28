@@ -3,22 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>ZEKiQ Dev — ربط المطور</title>
+  <title>ZEKiQ Dev — بيئة المطور</title>
   <style>
+    *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,sans-serif;background:#0f172a;color:#fff;padding:24px 16px}
     .wrap{max-width:420px;margin:0 auto}
     h1{font-size:1.2rem;margin-bottom:8px}
     p{color:#94a3b8;line-height:1.6;font-size:.9rem}
     code{background:#1e293b;padding:2px 6px;border-radius:6px;color:#fde68a}
-    .ok{margin-top:16px;padding:12px;border-radius:12px;background:rgba(34,197,94,.12);color:#86efac}
+    .ok,.bad{margin-top:16px;padding:12px;border-radius:12px;font-size:.9rem;line-height:1.6}
+    .ok{background:rgba(34,197,94,.12);color:#86efac}
+    .bad{background:rgba(239,68,68,.12);color:#fca5a5}
+    .box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;margin:16px 0;font-size:.85rem;line-height:1.8;color:#cbd5e1}
+    .box ol{padding-right:20px;margin:8px 0}
+    a.btn{display:block;margin-top:12px;padding:14px;border-radius:12px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714;text-decoration:none;font-weight:800;text-align:center}
+    a.dev{display:block;margin-top:10px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;text-decoration:none;font-weight:800;text-align:center;font-size:.9rem}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>🧪 بيئة المطور ZEKiQ Dev</h1>
+    <h1>🧪 ZEKiQ Dev</h1>
     <p>النفق: <code dir="ltr">zekiq-dev.zekiqmenu.com</code></p>
-    <p>في <b>ZEKiQ Manager</b>: أدخل النفق أعلاه → <b>حفظ + 4G</b> → PIN المطور.</p>
     <div class="ok" id="st">جاري الفحص…</div>
+
+    <div class="box">
+      <b>خطوات التجربة (في التطبيق):</b>
+      <ol>
+        <li>ثبّت <b>ZEKiQ Manager</b> من الرابط أدناه</li>
+        <li>افتح التطبيق → أدخل <code dir="ltr">zekiq-dev.zekiqmenu.com</code></li>
+        <li>اضغط <b>حفظ + 4G</b></li>
+        <li>أدخل PIN المطور → المراقبة → اضغط أي طاولة</li>
+      </ol>
+      <p style="color:#94a3b8;margin-top:8px">هذه الصفحة للفحص فقط — الطاولات لا تُفتح من المتصفح.</p>
+    </div>
+
+    <a class="btn" href="manager.html">⬇️ ZEKiQ Manager v2.1.3</a>
+    <a class="dev" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=213">تحميل APK مباشر</a>
   </div>
   <script>
     fetch("https://zekiq-dev.zekiqmenu.com/api/health", { cache: "no-store" })
@@ -27,7 +47,8 @@
         document.getElementById("st").textContent = "✓ Dev يعمل — " + (j.shop && j.shop.shopName ? j.shop.shopName : "OK");
       })
       .catch(function () {
-        document.getElementById("st").textContent = "✗ Dev غير متاح — شغّل الكاشير";
+        document.getElementById("st").className = "bad";
+        document.getElementById("st").textContent = "✗ Dev غير متاح — شغّل الكاشير أولاً";
       });
   </script>
 </body>

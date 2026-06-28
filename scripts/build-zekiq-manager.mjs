@@ -19,8 +19,8 @@ const KEYSTORE = path.join(ROOT, "android", "owner-debug.keystore");
 const STORE_PASS = "android";
 const APKTOOL = process.env.APKTOOL || "java -jar /tmp/apktool.jar";
 const PKG = "com.zekiq.manager";
-const VERSION_CODE = "212";
-const VERSION_NAME = "2.1.2";
+const VERSION_CODE = "213";
+const VERSION_NAME = "2.1.3";
 
 const SCRIPTS = [
   "owner-runtime-fix.js",

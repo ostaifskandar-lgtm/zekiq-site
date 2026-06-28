@@ -83,7 +83,16 @@
         if (typeof input === "string") input = fixed;
         else input = new Request(fixed, input);
       }
-      return orig(input, init);
+      return orig(input, init).then(function (res) {
+        if (String(url).indexOf("/api/owner/login") >= 0 && res && res.ok) {
+          res.clone().json().then(function (j) {
+            if (j && j.sessionToken) {
+              try { localStorage.setItem("tonino-owner-session-token", j.sessionToken); } catch (e) {}
+            }
+          }).catch(function () {});
+        }
+        return res;
+      });
     };
   }
 

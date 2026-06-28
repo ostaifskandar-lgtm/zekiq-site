@@ -3,7 +3,7 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.1.2";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.1.3";
 
   var TABLE_ICON =
     '<svg class="zekiq-table-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" ' +
@@ -70,7 +70,7 @@
     }
     var mode = "";
     try { mode = localStorage.getItem("tonino-owner-link-mode") || ""; } catch (e) {}
-    var keys = ["tonino-owner-working-api", "tonino-owner-remote-base", "tonino-owner-active-api", "tonino-owner-server"];
+    var keys = ["tonino-owner-remote-base", "tonino-owner-working-api", "tonino-owner-active-api", "tonino-owner-server"];
     var tunnelUrl = "";
     var lanUrl = "";
     for (var i = 0; i < keys.length; i++) {
@@ -81,15 +81,25 @@
         if (v.startsWith("http://") && /^192\.168\.|^10\.|^172\.(1[6-9]|2\d|3[01])\./.test(new URL(v).hostname) && !lanUrl) lanUrl = v;
       } catch (e) {}
     }
-    if (mode === "remote" && tunnelUrl) return tunnelUrl;
-    if (tunnelUrl && lanUrl) return tunnelUrl;
-    for (var j = 0; j < keys.length; j++) {
-      try {
-        var u = (localStorage.getItem(keys[j]) || "").trim().replace(/\/+$/, "");
-        if (u.startsWith("http")) return u;
-      } catch (e2) {}
+    if (tunnelUrl && (mode === "remote" || lanUrl)) return tunnelUrl;
+    if (tunnelUrl) return tunnelUrl;
+    if (lanUrl && mode !== "remote") return lanUrl;
+    return tunnelUrl || lanUrl || "";
+  }
+
+  function toast(msg, isErr) {
+    var el = document.getElementById("zekiq-toast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "zekiq-toast";
+      el.style.cssText = "position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:2147483647;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;color:#fff;background:rgba(30,24,16,.92);box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:90vw;text-align:center;pointer-events:none;opacity:0;transition:opacity .2s";
+      document.body.appendChild(el);
     }
-    return "https://tonino.zekiqmenu.com";
+    el.textContent = msg;
+    el.style.background = isErr ? "rgba(185,28,28,.94)" : "rgba(30,24,16,.92)";
+    el.style.opacity = "1";
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.style.opacity = "0"; }, 2600);
   }
 
   function money(n) {
@@ -105,9 +115,13 @@
   }
 
   async function trpc(proc, input) {
-    if (window.__zekiqRepairOwnerStorageIfNeeded) window.__zekiqRepairOwnerStorageIfNeeded();
+    if (window.__zekiqRepairOwnerStorageIfNeeded) {
+      await Promise.resolve(window.__zekiqRepairOwnerStorageIfNeeded());
+    }
+    var api = baseUrl();
+    if (!api) throw new Error("no_server");
     var q = encodeURIComponent(JSON.stringify({ "0": { json: input || {} } }));
-    var r = await fetch(baseUrl() + "/api/trpc/" + proc + "?batch=1&input=" + q, {
+    var r = await fetch(api + "/api/trpc/" + proc + "?batch=1&input=" + q, {
       cache: "no-store",
       headers: token() ? { Authorization: "Bearer " + token() } : {}
     });
@@ -377,7 +391,8 @@
       state.closedRows = await trpc("pos.closedOrders", { date: todayIso() });
       renderList();
     } catch (e) {
-      list.innerHTML = '<div class="z-empty">' + (token() ? "تعذّر التحميل — تحقق من الاتصال" : "سجّل الدخول أولاً") + "</div>";
+      list.innerHTML = '<div class="z-empty">' + (token() ? "تعذّر التحميل — تحقق من الاتصال (4G)" : "سجّل الدخول أولاً") + "</div>";
+      if (token()) toast("تعذّر تحميل الطاولات — تحقق من 4G", true);
     }
   }
 
@@ -480,15 +495,24 @@
     var section = li.getAttribute("data-zekiq-section");
     var tableNumRaw = li.getAttribute("data-zekiq-table-num");
     if (section && tableNumRaw) {
-      return normalizeRow({ section: section, tableNum: Number(tableNumRaw) });
+      var n = Number(tableNumRaw);
+      if (Number.isFinite(n)) return normalizeRow({ section: section, tableNum: n });
     }
 
     var nameEl = li.querySelector(".owner-table-name");
     if (!nameEl) return null;
-    var text = (nameEl.textContent || li.textContent || "").trim();
-    text = text.replace(/\s*\([^)]*\)\s*$/g, "").trim();
-    var sep = text.indexOf(" · ");
-    if (sep < 0) sep = text.indexOf(" - ");
+    var text = (nameEl.textContent || "").trim();
+    text = text.replace(/\s*\([^)]*\)\s*/g, " ").replace(/\s+/g, " ").trim();
+    var seps = [" · ", " ·", "· ", " - ", " – ", " — "];
+    var sep = -1;
+    var sepLen = 3;
+    for (var s = 0; s < seps.length; s++) {
+      var idx = text.indexOf(seps[s]);
+      if (idx >= 0 && (sep < 0 || idx < sep)) {
+        sep = idx;
+        sepLen = seps[s].length;
+      }
+    }
     if (sep < 0) {
       for (var i = 0; i < openRowsCache.length; i++) {
         var cached = openRowsCache[i];
@@ -500,9 +524,8 @@
       return null;
     }
     var parsedSection = text.slice(0, sep).trim();
-    var rest = text.slice(sep + 3).trim();
-    var tableNumStr = rest.replace(/\s*\([^)]*\)\s*$/g, "").trim();
-    var tableNum = Number(tableNumStr);
+    var rest = text.slice(sep + sepLen).trim();
+    var tableNum = Number(rest.split(/\s+/)[0]);
     if (!parsedSection || !Number.isFinite(tableNum)) return null;
     for (var j = 0; j < openRowsCache.length; j++) {
       var r = openRowsCache[j];
@@ -511,9 +534,19 @@
     return normalizeRow({ section: parsedSection, tableNum: tableNum });
   }
 
+  function isMonitorTableRow(li) {
+    if (!li || !li.classList) return false;
+    if (li.classList.contains("is-compact") && li.querySelector(".owner-amount")) return true;
+    if (li.querySelector(".owner-table-name") && li.querySelector(".owner-amount") && !li.querySelector(".owner-rank-badge")) return true;
+    return false;
+  }
+
   function openRowDetail(row, li) {
     row = normalizeRow(row || parseTableFromRow(li));
-    if (!row || !row.section || !Number.isFinite(row.tableNum)) return false;
+    if (!row || !row.section || !Number.isFinite(row.tableNum)) {
+      if (li) toast("تعذّر قراءة الطاولة — جرّب زر الطاولات", true);
+      return false;
+    }
     ensureUi();
     showOpenDetail(row);
     return true;
@@ -536,7 +569,7 @@
     li.style.cursor = "pointer";
     injectRowTableIcon(li);
     function onTap(e) {
-      if (!openRowDetail(row, li)) return;
+      if (!openRowDetail(null, li)) return;
       e.preventDefault();
       e.stopPropagation();
       if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
@@ -554,7 +587,8 @@
     }
   }
   function syncTableRowData() {
-    document.querySelectorAll(".owner-table-row, .owner-table-row.is-compact, li.owner-table-row").forEach(function (li) {
+    document.querySelectorAll(".owner-table-row.is-compact, li.owner-table-row.is-compact").forEach(function (li) {
+      if (!isMonitorTableRow(li)) return;
       var row = parseTableFromRow(li);
       if (!row || !Number.isFinite(row.tableNum)) return;
       li.setAttribute("data-zekiq-section", row.section);
@@ -563,9 +597,19 @@
     });
   }
 
+  function installMonitorObserver() {
+    if (window.__zekiqMonitorObserver) return;
+    if (!window.MutationObserver) return;
+    window.__zekiqMonitorObserver = true;
+    var obs = new MutationObserver(function () {
+      syncTableRowData();
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+  }
+
   function handleTableTap(e) {
-    var li = e.target.closest && e.target.closest(".owner-table-row");
-    if (!li) return;
+    var li = e.target.closest && e.target.closest(".owner-table-row.is-compact, li.owner-table-row.is-compact");
+    if (!li || !isMonitorTableRow(li)) return;
     if (openRowDetail(null, li)) {
       e.preventDefault();
       e.stopPropagation();
@@ -580,6 +624,12 @@
     document.addEventListener("touchend", function (e) {
       if (e.changedTouches && e.changedTouches.length === 1) handleTableTap(e);
     }, { capture: true, passive: false });
+    document.addEventListener("touchstart", function (e) {
+      if (e.touches && e.touches.length === 1) {
+        var li = e.target.closest && e.target.closest(".owner-table-row.is-compact");
+        if (li && isMonitorTableRow(li)) li.setAttribute("data-zekiq-touch", "1");
+      }
+    }, { capture: true, passive: true });
   }
 
   function setButtonsVisible(show) {
@@ -593,6 +643,7 @@
   function tick() {
     ensureVersionBadge();
     installTableTapDelegation();
+    installMonitorObserver();
     if (!shouldShowTables()) {
       setButtonsVisible(false);
       return;
