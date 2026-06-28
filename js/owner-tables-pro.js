@@ -3,7 +3,7 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "1.0.39";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "1.0.40";
 
   function isOwnerApp() {
     try {
@@ -18,6 +18,19 @@
 
   function isInApp() {
     return !!(document.querySelector(".owner-app-layout") || document.querySelector(".owner-header-compact") || document.querySelector(".owner-header"));
+  }
+
+  function isOnLoginScreen() {
+    return !!document.querySelector(".owner-login-compact");
+  }
+
+  function isLoggedIn() {
+    return !!token();
+  }
+
+  function shouldShowTables() {
+    if (isOnLoginScreen() && !isLoggedIn()) return false;
+    return isLoggedIn() || isInApp();
   }
 
   var SESSION_KEY = "tonino-owner-session-token";
@@ -101,10 +114,15 @@
     s.textContent =
       "#zekiq-tables-header-btn{margin-inline-start:8px;padding:7px 12px;border:none;border-radius:10px;" +
       "background:linear-gradient(135deg,#8f6218,#cfa73e);color:#fff;font-size:12px;font-weight:800;white-space:nowrap}" +
-      "#zekiq-tables-fab{position:fixed;right:16px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:2147483640;" +
-      "min-width:120px;height:48px;padding:0 14px;border-radius:14px;border:none;" +
-      "background:linear-gradient(135deg,#8f6218,#cfa73e);color:#fff;font-size:13px;font-weight:800;" +
-      "box-shadow:0 8px 28px rgba(0,0,0,.28)}" +
+      "#zekiq-tables-fab{position:fixed;right:16px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:2147483640;" +
+      "min-width:132px;height:52px;padding:0 16px;border-radius:14px;border:2px solid rgba(255,255,255,.35);" +
+      "background:linear-gradient(135deg,#8f6218,#cfa73e);color:#fff;font-size:14px;font-weight:800;" +
+      "box-shadow:0 10px 32px rgba(0,0,0,.35)}" +
+      "#zekiq-tables-nav-btn{min-width:3.2rem!important;color:#cfa73e!important}" +
+      "#zekiq-tables-nav-btn.is-active{color:#fbbf24!important}" +
+      "#zekiq-ext-badge{position:fixed;left:10px;top:calc(10px + env(safe-area-inset-top));z-index:2147483647;" +
+      "padding:5px 9px;border-radius:999px;background:rgba(143,98,24,.92);color:#fff;font-size:10px;font-weight:800;" +
+      "pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}" +
       "#zekiq-tables-overlay{position:fixed;inset:0;z-index:2147483644;background:rgba(0,0,0,.45);display:none}" +
       "#zekiq-tables-overlay.open{display:flex;flex-direction:column;justify-content:flex-end}" +
       "#zekiq-tables-sheet{max-height:92dvh;background:#f3ebe0;border-radius:20px 20px 0 0;display:flex;flex-direction:column;" +
@@ -247,14 +265,37 @@
   }
 
   function injectHeaderButton() {
+    if (document.getElementById("zekiq-tables-header-btn")) return;
     var header = document.querySelector(".owner-header");
-    if (!header || document.getElementById("zekiq-tables-header-btn")) return;
+    if (!header) return;
+    var host = header.querySelector(".flex.items-center.justify-between") || header;
     var btn = document.createElement("button");
     btn.id = "zekiq-tables-header-btn";
     btn.type = "button";
     btn.textContent = "🪑 الطاولات";
     btn.onclick = openSheet;
-    header.appendChild(btn);
+    host.appendChild(btn);
+  }
+
+  function injectNavButton() {
+    if (document.getElementById("zekiq-tables-nav-btn")) return;
+    var inner = document.querySelector(".owner-nav-inner");
+    if (!inner) return;
+    var btn = document.createElement("button");
+    btn.id = "zekiq-tables-nav-btn";
+    btn.type = "button";
+    btn.className = "owner-nav-btn relative min-w-[2.85rem] flex-1 py-1.5 px-0.5 flex flex-col items-center justify-end gap-0.5 text-[9px] leading-tight shrink-0";
+    btn.innerHTML = '<span style="font-size:20px;line-height:1">🪑</span><span>طاولات</span><span class="owner-nav-dot"></span>';
+    btn.onclick = openSheet;
+    inner.insertBefore(btn, inner.firstChild);
+  }
+
+  function ensureVersionBadge() {
+    if (document.getElementById("zekiq-ext-badge")) return;
+    var badge = document.createElement("div");
+    badge.id = "zekiq-ext-badge";
+    badge.textContent = "v" + (window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.40");
+    document.body.appendChild(badge);
   }
 
   function openSheet() {
@@ -365,20 +406,24 @@
     });
   }
 
+  function setButtonsVisible(show) {
+    ["zekiq-tables-fab", "zekiq-tables-header-btn", "zekiq-tables-nav-btn"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = show ? (id === "zekiq-tables-fab" ? "block" : "inline-flex") : "none";
+    });
+  }
+
   function tick() {
-    if (!isInApp()) {
-      var fab = document.getElementById("zekiq-tables-fab");
-      var hdr = document.getElementById("zekiq-tables-header-btn");
-      if (fab) fab.style.display = "none";
-      if (hdr) hdr.style.display = "none";
+    ensureVersionBadge();
+    if (!shouldShowTables()) {
+      setButtonsVisible(false);
       return;
     }
     ensureUi();
     injectHeaderButton();
-    var fab = document.getElementById("zekiq-tables-fab");
-    var hdr = document.getElementById("zekiq-tables-header-btn");
-    if (fab) fab.style.display = "block";
-    if (hdr) hdr.style.display = "inline-block";
+    injectNavButton();
+    setButtonsVisible(true);
     enhanceExistingRows();
   }
 
