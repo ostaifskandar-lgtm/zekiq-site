@@ -1,13 +1,13 @@
 {
   "fileName": "ZEKiQManager.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=211",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=212",
   "setupUrlLegacy": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=206",
   "tablesWebPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-tables.html",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
-  "versionCode": 211,
-  "versionName": "2.1.1",
+  "versionCode": 212,
+  "versionName": "2.1.2",
   "packageId": "com.zekiq.manager",
   "signing": "ZEKiQ Debug — installs alongside com.tonino.owner",
-  "releaseNotes": "Fix monitor on 4G: tunnel not 192.168. Install without uninstall.",
-  "updatedAt": "2026-06-28T19:00:00.000Z"
+  "releaseNotes": "Table SVG icon + tap layer opens table detail on monitor rows.",
+  "updatedAt": "2026-06-27T12:00:00.000Z"
 }

@@ -17,7 +17,7 @@
   </style>
 </head>
 <body>
-  <h1>🪑 ZEKiQ — الطاولات</h1>
+  <h1>⊞ ZEKiQ — الطاولات</h1>
   <p class="note">يعمل فوراً في المتصفح — بدون إعادة تثبيت التطبيق</p>
 
   <div class="box">
@@ -41,7 +41,7 @@
   <script src="js/owner-login-fix.js?v=204"></script>
   <script src="js/owner-connection-flex.js?v=204"></script>
   <script src="js/owner-bootstrap.js?v=204"></script>
-  <script src="js/owner-tables-pro.js?v=204"></script>
+  <script src="js/owner-tables-pro.js?v=212"></script>
   <script>
     document.getElementById("loginBtn").onclick = async function () {
       var err = document.getElementById("err");
@@ -68,7 +68,7 @@
       if (!j.sessionToken) { err.textContent = "فشل الدخول"; return; }
       try { localStorage.setItem("tonino-owner-session-token", j.sessionToken); } catch (e) {}
       if (window.zekiqOpenTables) window.zekiqOpenTables();
-      else err.textContent = "تم الدخول — اضغط زر 🪑 الطاولات أسفل الشاشة";
+      else err.textContent = "تم الدخول — اضغط زر الطاولات أسفل الشاشة";
     };
   </script>
 </body>

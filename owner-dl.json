@@ -1,14 +1,14 @@
 {
   "fileName": "ZEKiQManager.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=211",
-  "setupUrlMirror": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=211",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=212",
+  "setupUrlMirror": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=212",
   "setupUrlLegacy": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=206",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
-  "versionCode": 211,
-  "versionName": "2.1.1",
+  "versionCode": 212,
+  "versionName": "2.1.2",
   "appLabel": "ZEKiQ مدير",
   "packageId": "com.zekiq.manager",
   "signing": "Install alongside com.tonino.owner — no uninstall",
-  "releaseNotes": "Table tap opens detail + 4G tunnel fix. Install without uninstall.",
-  "updatedAt": "2026-06-28T19:00:00.000Z"
+  "releaseNotes": "Table icon instead of chair + reliable row tap to open detail.",
+  "updatedAt": "2026-06-27T12:00:00.000Z"
 }

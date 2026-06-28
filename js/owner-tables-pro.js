@@ -3,7 +3,18 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.1.1";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.1.2";
+
+  var TABLE_ICON =
+    '<svg class="zekiq-table-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
+    '<rect x="3" y="7" width="18" height="4" rx="1.2"/>' +
+    '<path d="M6 11v7M12 11v7M18 11v7"/></svg>';
+
+  function tableIconHtml(size) {
+    size = size || 18;
+    return TABLE_ICON.replace('class="zekiq-table-svg"', 'class="zekiq-table-svg" width="' + size + '" height="' + size + '"');
+  }
 
   function isOwnerApp() {
     try {
@@ -138,6 +149,13 @@
     s.textContent =
       "#zekiq-tables-header-btn{margin-inline-start:8px;padding:7px 12px;border:none;border-radius:10px;" +
       "background:linear-gradient(135deg,#8f6218,#cfa73e);color:#fff;font-size:12px;font-weight:800;white-space:nowrap}" +
+      "#zekiq-tables-fab{display:flex;align-items:center;justify-content:center;gap:8px}" +
+      "#zekiq-tables-fab .zekiq-table-svg,#zekiq-tables-header-btn .zekiq-table-svg,#zekiq-tables-nav-btn .zekiq-table-svg{flex-shrink:0}" +
+      ".zekiq-table-ico{display:inline-flex;align-items:center;margin-inline-end:6px;vertical-align:middle;color:#8f6218}" +
+      ".zekiq-tap-layer{position:absolute;inset:0;z-index:50;cursor:pointer;background:transparent}" +
+      ".owner-table-row{position:relative!important}" +
+      "#zekiq-table-detail{z-index:2147483647!important}" +
+      "#zekiq-tables-overlay{z-index:2147483646!important}" +
       "#zekiq-tables-fab{position:fixed;right:16px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:2147483640;" +
       "min-width:132px;height:52px;padding:0 16px;border-radius:14px;border:2px solid rgba(255,255,255,.35);" +
       "background:linear-gradient(135deg,#8f6218,#cfa73e);color:#fff;font-size:14px;font-weight:800;" +
@@ -252,7 +270,7 @@
       var fab = document.createElement("button");
       fab.id = "zekiq-tables-fab";
       fab.type = "button";
-      fab.textContent = "🪑 الطاولات";
+      fab.innerHTML = tableIconHtml(20) + "<span>الطاولات</span>";
       fab.onclick = openSheet;
       document.body.appendChild(fab);
     }
@@ -300,7 +318,7 @@
     var btn = document.createElement("button");
     btn.id = "zekiq-tables-header-btn";
     btn.type = "button";
-    btn.textContent = "🪑 الطاولات";
+    btn.innerHTML = tableIconHtml(16) + "<span>الطاولات</span>";
     btn.onclick = openSheet;
     host.appendChild(btn);
   }
@@ -313,7 +331,7 @@
     btn.id = "zekiq-tables-nav-btn";
     btn.type = "button";
     btn.className = "owner-nav-btn relative min-w-[2.85rem] flex-1 py-1.5 px-0.5 flex flex-col items-center justify-end gap-0.5 text-[9px] leading-tight shrink-0";
-    btn.innerHTML = '<span style="font-size:20px;line-height:1">🪑</span><span>طاولات</span><span class="owner-nav-dot"></span>';
+    btn.innerHTML = '<span style="display:flex;height:20px;align-items:center;justify-content:center">' + tableIconHtml(20) + '</span><span>طاولات</span><span class="owner-nav-dot"></span>';
     btn.onclick = openSheet;
     inner.insertBefore(btn, inner.firstChild);
   }
@@ -501,11 +519,22 @@
     return true;
   }
 
+  function injectRowTableIcon(li) {
+    if (li.querySelector(".zekiq-table-ico")) return;
+    var nameEl = li.querySelector(".owner-table-name");
+    if (!nameEl) return;
+    var ico = document.createElement("span");
+    ico.className = "zekiq-table-ico";
+    ico.innerHTML = tableIconHtml(16);
+    nameEl.insertBefore(ico, nameEl.firstChild);
+  }
+
   function bindRowOpen(li, row) {
     if (li.getAttribute("data-zekiq-bound") === "1") return;
     li.setAttribute("data-zekiq-bound", "1");
     li.classList.add("zekiq-tappable");
     li.style.cursor = "pointer";
+    injectRowTableIcon(li);
     function onTap(e) {
       if (!openRowDetail(row, li)) return;
       e.preventDefault();
@@ -514,6 +543,15 @@
     }
     li.addEventListener("click", onTap, true);
     li.addEventListener("pointerup", onTap, true);
+    if (!li.querySelector(".zekiq-tap-layer")) {
+      var layer = document.createElement("div");
+      layer.className = "zekiq-tap-layer";
+      layer.setAttribute("role", "button");
+      layer.setAttribute("aria-label", "فتح الطاولة");
+      layer.addEventListener("click", onTap, true);
+      layer.addEventListener("pointerup", onTap, true);
+      li.appendChild(layer);
+    }
   }
   function syncTableRowData() {
     document.querySelectorAll(".owner-table-row, .owner-table-row.is-compact, li.owner-table-row").forEach(function (li) {
@@ -548,7 +586,7 @@
     ["zekiq-tables-fab", "zekiq-tables-header-btn", "zekiq-tables-nav-btn"].forEach(function (id) {
       var el = document.getElementById(id);
       if (!el) return;
-      el.style.display = show ? (id === "zekiq-tables-fab" ? "block" : "inline-flex") : "none";
+      el.style.display = show ? (id === "zekiq-tables-fab" ? "flex" : "inline-flex") : "none";
     });
   }
 
