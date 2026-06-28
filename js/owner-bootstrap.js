@@ -10,6 +10,7 @@
     remoteBase: "tonino-owner-remote-base",
     remoteForIp: "tonino-owner-remote-for-ip",
     server: "tonino-owner-server",
+    activeApi: "tonino-owner-active-api",
     profiles: "tonino-owner-server-profiles",
     linkMode: "tonino-owner-link-mode",
     workingApi: "tonino-owner-working-api",
@@ -131,11 +132,13 @@
         localStorage.setItem(KEYS.server, tunnel);
         localStorage.setItem(KEYS.linkMode, "remote");
         localStorage.setItem(KEYS.workingApi, tunnel);
+        localStorage.setItem(KEYS.activeApi, tunnel);
         localStorage.setItem(KEYS.workingVia, "remote");
       } else if (lan) {
         localStorage.setItem(KEYS.server, lan);
         localStorage.setItem(KEYS.linkMode, "wifi");
         localStorage.setItem(KEYS.workingApi, lan);
+        localStorage.setItem(KEYS.activeApi, lan);
         localStorage.setItem(KEYS.workingVia, "lan");
       }
       localStorage.setItem(KEYS.manualTarget, "1");
@@ -320,8 +323,10 @@
     try {
       localStorage.setItem(KEYS.workingApi, tunnel);
       localStorage.setItem(KEYS.server, tunnel);
+      localStorage.setItem(KEYS.activeApi, tunnel);
       localStorage.setItem(KEYS.linkMode, "remote");
       localStorage.setItem(KEYS.workingVia, "remote");
+      localStorage.setItem(KEYS.manualTarget, "1");
       localStorage.setItem("tonino-owner-last-switch-reason", reason || "auto");
       window.dispatchEvent(new CustomEvent("tonino-owner-link-changed"));
     } catch (e) { return false; }

@@ -1,14 +1,14 @@
 {
   "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=52",
-  "setupUrlCdn": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=52",
+  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=53",
+  "setupUrlCdn": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=53",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
   "publicPageAlt": "https://tonino.zekiqmenu.com/owner?remote=1",
   "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api-tonino.json",
   "ownerConfigUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json",
-  "versionCode": 52,
-  "versionName": "1.0.52",
+  "versionCode": 53,
+  "versionName": "1.0.53",
   "sizeMb": "14.7",
-  "releaseNotes": "Fix table tap — parse full section · tableNum from React DOM",
-  "updatedAt": "2026-06-28T23:55:00.000Z"
+  "releaseNotes": "Updates disabled completely + fix reconnect shop when already connected",
+  "updatedAt": "2026-06-29T00:10:00.000Z"
 }
