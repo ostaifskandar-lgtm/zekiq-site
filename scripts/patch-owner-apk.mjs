@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Patch ToninoOwner.apk with latest owner extension scripts and re-sign.
+ * Patch ToninoOwner.apk: bump native versionCode, inject extension scripts, re-sign.
  * Usage: node scripts/patch-owner-apk.mjs [versionCode]
  */
 import { execSync } from "child_process";
@@ -10,19 +10,25 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const VERSION = String(process.argv[2] || "40");
+const VERSION = String(process.argv[2] || "41");
 const VERSION_NAME = `1.0.${VERSION}`;
 const APK_PATH = path.join(ROOT, "downloads", "ToninoOwner.apk");
 const KEYSTORE = path.join(ROOT, "android", "owner-debug.keystore");
 const STORE_PASS = "android";
+const APKTOOL = process.env.APKTOOL || "java -jar /tmp/apktool.jar";
 
 const FILES = [
   ["js/owner-bootstrap.js", "assets/public/owner-bootstrap.js"],
-  ["js/owner-tables-pro.js", "assets/public/owner-tables-pro.js"]
+  ["js/owner-tables-pro.js", "assets/public/owner-tables-pro.js"],
+  ["js/owner-update-guard.js", "assets/public/owner-update-guard.js"]
 ];
 
 function run(cmd, opts = {}) {
   execSync(cmd, { stdio: "inherit", ...opts });
+}
+
+function sh(cmd) {
+  return execSync(cmd, { encoding: "utf8" }).trim();
 }
 
 if (!fs.existsSync(APK_PATH)) {
@@ -31,15 +37,25 @@ if (!fs.existsSync(APK_PATH)) {
 }
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "owner-apk-"));
-const extractDir = path.join(tmp, "apk");
-fs.mkdirSync(extractDir);
+const decodeDir = path.join(tmp, "decode");
+const builtApk = path.join(tmp, "dist.apk");
+const signedApk = path.join(tmp, "signed.apk");
 
-console.log("Extracting APK...");
-run(`unzip -q "${APK_PATH}" -d "${extractDir}"`);
+console.log("Decoding APK with apktool...");
+run(`${APKTOOL} d -f "${APK_PATH}" -o "${decodeDir}"`);
+
+const ymlPath = path.join(decodeDir, "apktool.yml");
+if (fs.existsSync(ymlPath)) {
+  let yml = fs.readFileSync(ymlPath, "utf8");
+  yml = yml.replace(/versionCode:\s*\d+/, `versionCode: ${VERSION}`);
+  yml = yml.replace(/versionName:\s*[^\n]+/, `versionName: ${VERSION_NAME}`);
+  fs.writeFileSync(ymlPath, yml);
+  console.log("Bumped native version ->", VERSION_NAME, `(code ${VERSION})`);
+}
 
 for (const [src, dest] of FILES) {
   const from = path.join(ROOT, src);
-  const to = path.join(extractDir, dest);
+  const to = path.join(decodeDir, dest);
   if (!fs.existsSync(from)) {
     console.error("Missing:", from);
     process.exit(1);
@@ -49,31 +65,46 @@ for (const [src, dest] of FILES) {
   console.log("Updated", dest);
 }
 
-const indexPath = path.join(extractDir, "assets/public/index.html");
+const indexPath = path.join(decodeDir, "assets/public/index.html");
 if (fs.existsSync(indexPath)) {
   let html = fs.readFileSync(indexPath, "utf8");
   html = html.replace(
     /window\.__ZEKIQ_OWNER_EXT_VERSION__\s*=\s*"[^"]*"/,
     `window.__ZEKIQ_OWNER_EXT_VERSION__="${VERSION_NAME}"`
   );
+  html = html.replace(
+    /try\{localStorage\.setItem\('tonino-owner-bundled-ui-build',"[^"]*"\)\}catch\(e\)\{\}/,
+    "try{localStorage.setItem('tonino-owner-bundled-ui-build',\"2026-06-27-134326\")}catch(e){}"
+  );
+  if (!html.includes("owner-update-guard.js")) {
+    html = html.replace(
+      '<script src="/owner-tables-pro.js"></script>',
+      '<script src="/owner-tables-pro.js"></script>\n    <script src="/owner-update-guard.js"></script>'
+    );
+  }
   if (!html.includes("owner-bootstrap.js")) {
     html = html.replace(
       "</head>",
-      '    <script src="/owner-bootstrap.js"></script>\n    <script src="/owner-tables-pro.js"></script>\n  </head>'
+      '    <script src="/owner-bootstrap.js"></script>\n    <script src="/owner-tables-pro.js"></script>\n    <script src="/owner-update-guard.js"></script>\n  </head>'
     );
   }
   fs.writeFileSync(indexPath, html);
-  console.log("Updated index.html version ->", VERSION_NAME);
+  console.log("Updated index.html");
 }
 
-const outApk = path.join(tmp, "unsigned.apk");
-console.log("Repacking APK...");
-run(`cd "${extractDir}" && zip -qr "${outApk}" .`);
+console.log("Building APK...");
+run(`${APKTOOL} b "${decodeDir}" -o "${builtApk}"`);
 
-fs.copyFileSync(outApk, APK_PATH);
 console.log("Signing APK...");
 run(
-  `jarsigner -sigalg SHA256withRSA -digestalg SHA-256 -keystore "${KEYSTORE}" -storepass "${STORE_PASS}" -keypass "${STORE_PASS}" "${APK_PATH}" androiddebugkey`
+  `jarsigner -sigalg SHA256withRSA -digestalg SHA-256 -keystore "${KEYSTORE}" -storepass "${STORE_PASS}" -keypass "${STORE_PASS}" "${builtApk}" androiddebugkey`
 );
 
-console.log(`Done: ToninoOwner.apk patched to v${VERSION_NAME}`);
+fs.copyFileSync(builtApk, APK_PATH);
+const verify = sh(`${APKTOOL.replace(/ d .*/, " d")} 2>/dev/null || true`);
+try {
+  const verifyYml = sh(`grep versionCode "${decodeDir}/apktool.yml"`);
+  console.log("Verified:", verifyYml);
+} catch {}
+
+console.log(`Done: ToninoOwner.apk -> v${VERSION_NAME} (native code ${VERSION})`);

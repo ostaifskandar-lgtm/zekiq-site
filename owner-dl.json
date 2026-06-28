@@ -1,13 +1,13 @@
 {
   "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=40",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=41",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
   "publicPageAlt": "https://tonino.zekiqmenu.com/owner?remote=1",
   "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api-tonino.json",
   "ownerConfigUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json",
-  "versionCode": 40,
-  "versionName": "1.0.40",
+  "versionCode": 41,
+  "versionName": "1.0.41",
   "sizeMb": "14.7",
-  "releaseNotes": "Tables button in bottom nav + version badge v1.0.40 — shows after login via session",
-  "updatedAt": "2026-06-28T16:00:00.000Z"
+  "releaseNotes": "Fix fake update loop — native versionCode now matches site version",
+  "updatedAt": "2026-06-28T17:00:00.000Z"
 }
