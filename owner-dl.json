@@ -1,10 +1,11 @@
 {
   "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=54",
-  "setupUrlCdn": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=54",
-  "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
-  "versionCode": 54,
-  "versionName": "1.0.54",
-  "releaseNotes": "Fix connected banner vs 192.168 error — force tunnel over dead LAN",
-  "updatedAt": "2026-06-29T01:00:00.000Z"
+  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=201",
+  "setupUrlCdn": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=201",
+  "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
+  "versionCode": 201,
+  "versionName": "2.0.1",
+  "appLabel": "ZEKiQ مدير",
+  "releaseNotes": "Samsung install fix — ZEKiQ Manager relabel, same package",
+  "updatedAt": "2026-06-29T03:00:00.000Z"
 }

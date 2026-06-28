@@ -21,68 +21,66 @@
     .box li{margin:6px 0}
     .note{font-size:.78rem;color:#94a3b8;text-align:center;margin-top:16px;line-height:1.6}
     code{font-family:ui-monospace,monospace;font-size:.78rem;color:#fde68a;background:rgba(0,0,0,.3);padding:2px 6px;border-radius:6px}
+    .fix{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.4)}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="logo">Z</div>
     <h1>ZEKiQ مدير</h1>
-    <p class="tag">متابعة المبيعات والطاولات من أي مكان — 4G أو WiFi<br><b>تطبيق جديد</b> — لا يتعارض مع «تطبيق المالك» القديم</p>
+    <p class="tag">متابعة المبيعات والطاولات — 4G أو WiFi<br><b>v2.0.1</b> — إصلاح تثبيت سامسونج</p>
 
-    <a class="btn main" href="https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=200c">⬇️ تحميل ZEKiQ مدير v2.0</a>
+    <a class="btn main" href="https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=201">⬇️ تحميل ZEKiQ مدير v2.0.1</a>
+
+    <div class="box fix">
+      <b style="color:#86efac">✅ إصلاح v2.0.1 — ماذا تغيّر؟</b>
+      <ol>
+        <li>النسخة السابقة (v2.0.0) غيّرت اسم الحزمة → سامسونج رفض التثبيت</li>
+        <li>v2.0.1 يستخدم <b>نفس الحزمة المثبتة سابقاً</b> — يثبت مثل التطبيق القديم</li>
+        <li>الاسم فقط: <b>ZEKiQ مدير</b> + شارة <b>v2.0.1</b></li>
+      </ol>
+    </div>
 
     <div class="box" style="border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.12)">
-      <b style="color:#fecaca">⛔ Google Play Protect — الصورة الأولى</b>
+      <b style="color:#fecaca">⛔ خطوة 1 — احذف التطبيق القديم أولاً</b>
       <ol>
-        <li>يظهر: <b>Uygulama, cihazınızı korumak için engellendi</b></li>
-        <li>معناها: «تم حظر التطبيق» — <b>ليس فيrus</b>، التطبيق جديد وغير من Play Store</li>
-        <li><b style="color:#86efac">اضغط: Yine de yükleyin</b> (= ثبّت على أي حال)</li>
-        <li><b style="color:#fecaca">لا تضغط: Anladım</b> (= فهمت) — هذا يلغي التثبيت!</li>
+        <li>الإعدادات → التطبيقات → ابحث عن <b>تطبيق المالك</b> أو <b>ZEKiQ مدير</b></li>
+        <li>Turkish: <b>Ayarlar → Uygulamalar → Tonino</b> أو <b>Malik</b></li>
+        <li>اضغط <b>إلغاء التثبيت</b> (Kaldır)</li>
+        <li>احذف <b>كل</b> ملفات ZEKiQManager.apk من İndirilenler</li>
       </ol>
     </div>
 
     <div class="box" style="border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.1)">
-      <b style="color:#fde68a">📱 Uygulama yüklenmedi — الصورة الثانية</b>
+      <b style="color:#fde68a">📱 خطوة 2 — سامسونج: السماح بالتثبيت</b>
       <ol>
-        <li>معناها: «لم يُثبَّت التطبيق» — يظهر <b>Kapat</b> (إغلاق) فقط</li>
-        <li>السبب: ضغطت <b>Anladım</b> في الشاشة السابقة، أو Play Protect منع التثبيت</li>
-        <li>احذف <b>كل</b> ملفات ZEKiQManager.apk من İndirilenler</li>
-        <li>حمّل من جديد → عند Play Protect → <b>Yine de yükleyin</b></li>
-        <li>أو: الإعدادات → Google → الأمان → Play Protect → أوقف الفحص مؤقتاً</li>
+        <li><b>Ayarlar → Uygulamalar → Özel uygulama erişimi</b></li>
+        <li><b>Bilinmeyen uygulamaları yükle</b> → فعّل لـ <b>Chrome</b> أو <b>Dosyalarım</b></li>
+        <li>حمّل APK → افتح من التنزيلات → <b>Yükle</b> (تثبيت)</li>
+      </ol>
+    </div>
+
+    <div class="box" style="border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.12)">
+      <b style="color:#fecaca">⛔ خطوة 3 — Google Play Protect</b>
+      <ol>
+        <li>يظهر: <b>Uygulama, cihazınızı korumak için engellendi</b></li>
+        <li><b style="color:#86efac">اضغط: Yine de yükleyin</b> (= ثبّت على أي حال)</li>
+        <li><b style="color:#fecaca">لا تضغط: Anladım</b> — يلغي التثبيت ويظهر Kapat!</li>
       </ol>
     </div>
 
     <div class="box">
-      <b>خطوات التثبيت (3 فقط):</b>
+      <b>بعد التثبيت:</b>
       <ol>
-        <li>اضغط <b>تحميل</b> → افتح <b>التنزيلات</b> → <b>تثبيت</b></li>
-        <li>افتح التطبيق → أدخل النفق: <code dir="ltr">tonino.zekiqmenu.com</code> أو <code dir="ltr">zekiq-dev.zekiqmenu.com</code></li>
-        <li>اضغط <b>حفظ + 4G</b> → أدخل PIN المدير (4 أرقام)</li>
+        <li>افتح التطبيق → أدخل النفق: <code dir="ltr">tonino.zekiqmenu.com</code></li>
+        <li><b>حفظ + 4G</b> → PIN المدير</li>
+        <li>تأكد من شارة <b>v2.0.1</b> أعلى يسار</li>
       </ol>
     </div>
 
-    <div class="box">
-      <b>لماذا تطبيق جديد؟</b>
-      <ol>
-        <li>اسم أوضح: <b>ZEKiQ مدير</b> بدل «تطبيق المالك»</li>
-        <li>تثبيت <b>نظيف</b> — بدون «أغلق التطبيق» أو تحديثات كاذبة</li>
-        <li>شارة <b>v2.0.0</b> أعلى يسار للتأكد</li>
-        <li>إن ظهر «لم يُثبَّت» على سامسونج: احذف الملف من التنزيلات → حمّل من جديد</li>
-      </ol>
-    </div>
+    <a class="btn ghost" href="owner.html">← الصفحة القديمة</a>
 
-    <div class="box">
-      <b>داخل التطبيق:</b>
-      <ol>
-        <li>لا يوجد زر تحديث أصفر</li>
-        <li>اضغط الطاولة → تظهر الأصناف</li>
-        <li>يعمل مع أي كاشير / أي نفق</li>
-      </ol>
-    </div>
-
-    <a class="btn ghost" href="owner.html">← الصفحة القديمة (تطبيق المالك)</a>
-
-    <p class="note">ZEKiQ POS · ZEKiQ مدير v2.0 · build 200</p>
+    <p class="note">ZEKiQ POS · ZEKiQ مدير v2.0.1 · build 201 · com.tonino.owner</p>
   </div>
 </body>
 </html>

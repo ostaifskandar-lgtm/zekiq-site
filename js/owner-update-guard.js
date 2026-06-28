@@ -3,9 +3,9 @@
 
   if (typeof window === "undefined") return;
 
-  var EXT_VERSION = window.__ZEKIQ_OWNER_EXT_VERSION__ || "2.0.0";
+  var EXT_VERSION = window.__ZEKIQ_OWNER_EXT_VERSION__ || "2.0.1";
   var EXT_BUILD = parseInt(String(EXT_VERSION).split(".").pop(), 10) || 0;
-  if (String(EXT_VERSION).indexOf("2.0") === 0) EXT_BUILD = 200;
+  if (String(EXT_VERSION).indexOf("2.0") === 0) EXT_BUILD = 201;
   var NATIVE_BUILD = 99999;
   var DISMISS_KEY = "tonino-owner-update-dismissed";
   var UI_BUILD_KEY = "tonino-owner-ui-build";
@@ -61,7 +61,7 @@
       fileName: "ZEKiQManager.apk",
       versionCode: NATIVE_BUILD,
       versionName: EXT_VERSION,
-      setupUrl: "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=200",
+      setupUrl: "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=201",
       updatedAt: new Date().toISOString()
     };
   }
@@ -76,7 +76,7 @@
             build: String(NATIVE_BUILD),
             version: EXT_VERSION,
             name: "Owner",
-            id: "com.zekiq.manager"
+            id: "com.tonino.owner"
           });
         };
         app.__zekiqPatched = true;

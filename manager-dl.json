@@ -1,12 +1,12 @@
 {
   "fileName": "ZEKiQManager.apk",
-  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=200",
+  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=201",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
   "legacyPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
-  "versionCode": 200,
-  "versionName": "2.0.0",
+  "versionCode": 201,
+  "versionName": "2.0.1",
   "appLabel": "ZEKiQ مدير",
-  "packageId": "com.zekiq.manager",
-  "releaseNotes": "Fresh rebrand — ZEKiQ Manager, new package, no update loop",
-  "updatedAt": "2026-06-29T02:00:00.000Z"
+  "packageId": "com.tonino.owner",
+  "releaseNotes": "Samsung install fix — same proven package, relabeled ZEKiQ Manager",
+  "updatedAt": "2026-06-29T03:00:00.000Z"
 }

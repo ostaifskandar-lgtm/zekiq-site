@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Patch Owner/Manager APK: bump version, optional rebrand to com.zekiq.manager, inject scripts.
+ * Patch Owner/Manager APK: bump version, inject scripts, optional relabel.
  * Usage:
  *   node scripts/patch-owner-apk.mjs [versionCode]           → ToninoOwner.apk (legacy)
- *   node scripts/patch-owner-apk.mjs manager [versionCode]   → ZEKiQManager.apk (new app)
+ *   node scripts/patch-owner-apk.mjs manager [versionCode]   → ZEKiQManager.apk (relabel, same package)
  */
 import { execSync } from "child_process";
 import fs from "fs";
@@ -14,8 +14,8 @@ import { fileURLToPath } from "url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
 const MANAGER = args[0] === "manager";
-const VERSION = String(MANAGER ? (args[1] || "200") : (args[0] || "54"));
-const VERSION_NAME = MANAGER ? "2.0.0" : `1.0.${VERSION}`;
+const VERSION = String(MANAGER ? (args[1] || "201") : (args[0] || "54"));
+const VERSION_NAME = MANAGER ? "2.0.1" : `1.0.${VERSION}`;
 const LEGACY_APK = path.join(ROOT, "downloads", "ToninoOwner.apk");
 const MANAGER_APK = path.join(ROOT, "downloads", "ZEKiQManager.apk");
 const SOURCE_APK = LEGACY_APK;
@@ -23,8 +23,7 @@ const OUT_APK = MANAGER ? MANAGER_APK : LEGACY_APK;
 const KEYSTORE = path.join(ROOT, "android", "owner-debug.keystore");
 const STORE_PASS = "android";
 const APKTOOL = process.env.APKTOOL || "java -jar /tmp/apktool.jar";
-const OLD_PKG = "com.tonino.owner";
-const NEW_PKG = "com.zekiq.manager";
+const PKG = "com.tonino.owner";
 const APP_LABEL_AR = "ZEKiQ مدير";
 const APP_LABEL_EN = "ZEKiQ Manager";
 
@@ -39,27 +38,25 @@ function run(cmd, opts = {}) {
   execSync(cmd, { stdio: "inherit", ...opts });
 }
 
-function sh(cmd) {
-  return execSync(cmd, { encoding: "utf8" }).trim();
-}
-
-function replaceInTree(dir, from, to, exts) {
-  const stack = [dir];
-  while (stack.length) {
-    const cur = stack.pop();
-    for (const name of fs.readdirSync(cur)) {
-      const p = path.join(cur, name);
-      const st = fs.statSync(p);
-      if (st.isDirectory()) {
-        stack.push(p);
-        continue;
-      }
-      if (!exts.some((e) => name.endsWith(e))) continue;
-      let text = fs.readFileSync(p, "utf8");
-      if (!text.includes(from)) continue;
-      fs.writeFileSync(p, text.split(from).join(to));
-    }
+function relabelApp(decodeDir) {
+  const capCfg = path.join(decodeDir, "assets/capacitor.config.json");
+  if (fs.existsSync(capCfg)) {
+    const buf = fs.readFileSync(capCfg);
+    const off = buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf ? 3 : 0;
+    const j = JSON.parse(buf.slice(off).toString("utf8"));
+    j.appId = PKG;
+    j.appName = APP_LABEL_EN;
+    fs.writeFileSync(capCfg, JSON.stringify(j, null, 2));
   }
+  const stringsPath = path.join(decodeDir, "res/values/strings.xml");
+  if (fs.existsSync(stringsPath)) {
+    let s = fs.readFileSync(stringsPath, "utf8");
+    s = s.replace(/تطبيق المالك/g, APP_LABEL_AR);
+    s = s.replace(/<string name="app_name">[^<]*<\/string>/, `<string name="app_name">${APP_LABEL_AR}</string>`);
+    s = s.replace(/<string name="title_activity_main">[^<]*<\/string>/, `<string name="title_activity_main">${APP_LABEL_AR}</string>`);
+    fs.writeFileSync(stringsPath, s);
+  }
+  console.log("Relabeled ->", APP_LABEL_AR, "| package kept ->", PKG);
 }
 
 if (!fs.existsSync(SOURCE_APK)) {
@@ -71,7 +68,7 @@ const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "zekiq-apk-"));
 const decodeDir = path.join(tmp, "decode");
 const builtApk = path.join(tmp, "dist.apk");
 
-console.log(MANAGER ? "Building ZEKiQ Manager (new package)..." : "Patching ToninoOwner.apk...");
+console.log(MANAGER ? "Building ZEKiQ Manager (same package, Samsung-safe)..." : "Patching ToninoOwner.apk...");
 run(`${APKTOOL} d -f "${SOURCE_APK}" -o "${decodeDir}"`);
 
 const ymlPath = path.join(decodeDir, "apktool.yml");
@@ -79,40 +76,13 @@ if (fs.existsSync(ymlPath)) {
   let yml = fs.readFileSync(ymlPath, "utf8");
   yml = yml.replace(/versionCode:\s*\d+/, `versionCode: ${VERSION}`);
   yml = yml.replace(/versionName:\s*[^\n]+/, `versionName: ${VERSION_NAME}`);
-  if (MANAGER && !yml.includes("renameManifestPackage:")) {
-    yml = yml.replace(/versionInfo:\n/, `versionInfo:\n`);
-  }
-  if (MANAGER) {
-    if (/renameManifestPackage:\s*\S+/.test(yml)) {
-      yml = yml.replace(/renameManifestPackage:\s*\S+/, `renameManifestPackage: ${NEW_PKG}`);
-    } else {
-      yml = yml.replace(/apkFileName:/, `renameManifestPackage: '${NEW_PKG}'\napkFileName:`);
-    }
-  }
+  yml = yml.replace(/renameManifestPackage:.*\n/g, "");
   fs.writeFileSync(ymlPath, yml);
   console.log("Version ->", VERSION_NAME, `(code ${VERSION})`);
 }
 
 if (MANAGER) {
-  const capCfg = path.join(decodeDir, "assets/capacitor.config.json");
-  if (fs.existsSync(capCfg)) {
-    const buf = fs.readFileSync(capCfg);
-    let off = buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf ? 3 : 0;
-    const j = JSON.parse(buf.slice(off).toString("utf8"));
-    j.appId = NEW_PKG;
-    j.appName = APP_LABEL_EN;
-    fs.writeFileSync(capCfg, JSON.stringify(j, null, 2));
-  }
-  replaceInTree(decodeDir, OLD_PKG, NEW_PKG, [".xml", ".smali", ".html", ".js", ".properties"]);
-  const stringsPath = path.join(decodeDir, "res/values/strings.xml");
-  if (fs.existsSync(stringsPath)) {
-    let s = fs.readFileSync(stringsPath, "utf8");
-    s = s.replace(/تطبيق المالك/g, APP_LABEL_AR);
-    s = s.replace(/<string name="app_name">[^<]*<\/string>/, `<string name="app_name">${APP_LABEL_AR}</string>`);
-    s = s.replace(/<string name="title_activity_main">[^<]*<\/string>/, `<string name="title_activity_main">${APP_LABEL_AR}</string>`);
-    fs.writeFileSync(stringsPath, s);
-  }
-  console.log("Rebranded package ->", NEW_PKG, "| label ->", APP_LABEL_AR);
+  relabelApp(decodeDir);
 }
 
 for (const [src, dest] of FILES) {
@@ -134,10 +104,6 @@ if (fs.existsSync(indexPath)) {
     `window.__ZEKIQ_OWNER_EXT_VERSION__="${VERSION_NAME}"`
   );
   if (MANAGER) {
-    html = html.replace(
-      /appId==="com\.tonino\.owner"/g,
-      `appId==="${NEW_PKG}"||appId==="com.tonino.owner"`
-    );
     html = html.replace(
       /localStorage\.setItem\("tonino-owner-native-apk","1"\)/,
       `localStorage.setItem("tonino-owner-native-apk","1");localStorage.setItem("zekiq-manager-native","1")`
@@ -166,4 +132,11 @@ run(
 );
 
 fs.copyFileSync(builtApk, OUT_APK);
-console.log(`Done: ${path.basename(OUT_APK)} -> v${VERSION_NAME} (${MANAGER ? NEW_PKG : OLD_PKG})`);
+if (MANAGER) {
+  fs.copyFileSync(builtApk, LEGACY_APK);
+  console.log("Also updated ToninoOwner.apk (same build)");
+}
+const idsig = OUT_APK + ".idsig";
+if (fs.existsSync(idsig)) fs.unlinkSync(idsig);
+
+console.log(`Done: ${path.basename(OUT_APK)} -> v${VERSION_NAME} (${PKG})`);
