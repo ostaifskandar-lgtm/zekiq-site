@@ -3,8 +3,8 @@
 
   if (typeof window === "undefined") return;
 
-  var EXT_VERSION = window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.42";
-  var EXT_BUILD = parseInt(String(EXT_VERSION).split(".").pop(), 10) || 42;
+  var EXT_VERSION = window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.43";
+  var EXT_BUILD = parseInt(String(EXT_VERSION).split(".").pop(), 10) || 43;
   var DISMISS_KEY = "tonino-owner-update-dismissed";
   var UI_BUILD_KEY = "tonino-owner-ui-build";
   var BUNDLED_BUILD_KEY = "tonino-owner-bundled-ui-build";

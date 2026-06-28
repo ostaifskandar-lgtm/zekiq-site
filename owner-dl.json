@@ -1,13 +1,13 @@
 {
   "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=42",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=43",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
   "publicPageAlt": "https://tonino.zekiqmenu.com/owner?remote=1",
   "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api-tonino.json",
   "ownerConfigUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json",
-  "versionCode": 42,
-  "versionName": "1.0.42",
+  "versionCode": 43,
+  "versionName": "1.0.43",
   "sizeMb": "14.7",
-  "releaseNotes": "Tap open table row to show items inside — direct detail sheet",
-  "updatedAt": "2026-06-28T18:00:00.000Z"
+  "releaseNotes": "Fix wrong dev tunnel connection + login PIN banner on login screen",
+  "updatedAt": "2026-06-28T19:00:00.000Z"
 }

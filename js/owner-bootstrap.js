@@ -1,6 +1,8 @@
 (function () {
   "use strict";
 
+  var TONINO_TUNNEL = "https://tonino.zekiqmenu.com";
+  var DEV_HOSTS = ["zekiq-dev.zekiqmenu.com", "192.168.1.84"];
   var CONFIG_URLS = [
     "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json",
     "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/owner-config.json"
@@ -26,6 +28,123 @@
   }
 
   if (!isOwnerApp()) return;
+
+  function isDevHost(url) {
+    var u = String(url || "").toLowerCase();
+    for (var i = 0; i < DEV_HOSTS.length; i++) {
+      if (u.indexOf(DEV_HOSTS[i]) >= 0) return true;
+    }
+    return u.indexOf("zekiq-dev") >= 0;
+  }
+
+  function getStored(key) {
+    try { return localStorage.getItem(key) || ""; } catch (e) { return ""; }
+  }
+
+  function forceTonino(cfg, mode) {
+    saveDualConfig(cfg || {
+      shopName: "Tonino",
+      tunnelUrl: TONINO_TUNNEL,
+      lanHost: "192.168.1.25",
+      lanPort: "3000",
+      lanUrl: "http://192.168.1.25:3000"
+    }, mode || "remote", TONINO_TUNNEL, (cfg && cfg.lanUrl) || "http://192.168.1.25:3000");
+    try {
+      localStorage.setItem("tonino-owner-shop-name", "Tonino");
+      localStorage.setItem("tonino-owner-network-locked", "1");
+      localStorage.setItem("tonino-owner-network-locked-host", "tonino.zekiqmenu.com");
+    } catch (e) {}
+  }
+
+  function currentApiUrl() {
+    var keys = [KEYS.workingApi, KEYS.server, KEYS.remoteBase];
+    for (var i = 0; i < keys.length; i++) {
+      var v = trimUrl(getStored(keys[i]));
+      if (v.startsWith("http")) return v;
+    }
+    return "";
+  }
+
+  function injectConnStyles() {
+    if (document.getElementById("zekiq-owner-conn-css")) return;
+    var s = document.createElement("style");
+    s.id = "zekiq-owner-conn-css";
+    s.textContent =
+      "#zekiq-owner-conn-banner{position:fixed;left:12px;right:12px;top:calc(8px + env(safe-area-inset-top));z-index:2147483001;" +
+      "padding:10px 12px;border-radius:12px;font-size:11px;font-weight:700;line-height:1.5;font-family:system-ui,sans-serif}" +
+      "#zekiq-owner-conn-banner.ok{background:rgba(34,197,94,.15);color:#166534;border:1px solid rgba(34,197,94,.35)}" +
+      "#zekiq-owner-conn-banner.bad{background:rgba(239,68,68,.12);color:#991b1b;border:1px solid rgba(239,68,68,.35)}" +
+      "#zekiq-owner-conn-banner .host{font-family:ui-monospace,monospace;font-size:10px;opacity:.9;word-break:break-all}" +
+      "#zekiq-owner-conn-banner button{margin-top:8px;width:100%;padding:9px;border:none;border-radius:10px;font-size:12px;font-weight:800;" +
+      "background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714}";
+    document.head.appendChild(s);
+  }
+
+  function renderConnBanner(cfg) {
+    if (!document.querySelector(".owner-login-compact")) return;
+    injectConnStyles();
+    var id = "zekiq-owner-conn-banner";
+    var el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement("div");
+      el.id = id;
+      document.body.appendChild(el);
+    }
+    var api = currentApiUrl();
+    var badDev = isDevHost(api);
+    el.className = badDev ? "bad" : "ok";
+    el.innerHTML =
+      (badDev
+        ? "<b>⚠️ متصل بنفق المطور — ليس Tonino!</b><br>الرمز لن يعمل هنا. استخدم <b>tonino.zekiqmenu.com</b>"
+        : "<b>✓ الاتصال</b> — تأكد أن الاسم <b>Tonino</b> وليس ZEKiQ Dev") +
+      '<div class="host" dir="ltr">' + (api || "…") + '</div>' +
+      '<div id="zekiq-conn-shop" style="margin-top:4px">جاري التحقق…</div>' +
+      (badDev ? '<button type="button" id="zekiq-fix-tonino">🔧 إصلاح → Tonino</button>' : "");
+
+    var fixBtn = document.getElementById("zekiq-fix-tonino");
+    if (fixBtn) {
+      fixBtn.onclick = function () {
+        forceTonino(cfg, "remote");
+        renderConnBanner(cfg);
+        window.dispatchEvent(new CustomEvent("tonino-owner-link-changed"));
+        setTimeout(function () { location.reload(); }, 400);
+      };
+    }
+
+    var probe = badDev ? TONINO_TUNNEL : (api || TONINO_TUNNEL);
+    fetch(probe + "/api/owner/config", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        var shopEl = document.getElementById("zekiq-conn-shop");
+        if (!shopEl || !j) return;
+        shopEl.textContent = "المحل: " + (j.shopName || "?") + " · المالك: " + (j.ownerName || "?");
+        if (j.shopName && j.shopName !== "Tonino" && !badDev) {
+          el.className = "bad";
+          el.innerHTML =
+            "<b>⚠️ متصل بـ " + j.shopName + " — ليس Tonino!</b>" +
+            '<div class="host" dir="ltr">' + probe + "</div>" +
+            '<div id="zekiq-conn-shop">' + shopEl.textContent + "</div>" +
+            '<button type="button" id="zekiq-fix-tonino">🔧 إصلاح → Tonino</button>';
+          document.getElementById("zekiq-fix-tonino").onclick = fixBtn ? fixBtn.onclick : function () {
+            forceTonino(cfg, "remote");
+            location.reload();
+          };
+        }
+      })
+      .catch(function () {
+        var shopEl = document.getElementById("zekiq-conn-shop");
+        if (shopEl) shopEl.textContent = "✗ لا يمكن الوصول للكاشير — تحقق من 4G أو النفق";
+      });
+  }
+
+  function guardWrongServer(cfg) {
+    var api = currentApiUrl();
+    if (isDevHost(api)) {
+      forceTonino(cfg, "remote");
+      return true;
+    }
+    return false;
+  }
 
   function trimUrl(u) {
     return String(u || "").trim().replace(/\/+$/, "");
@@ -141,7 +260,7 @@
       '<button type="button" class="z-remote" id="zekiq-save-remote">حفظ + 4G</button>' +
       '<button type="button" class="z-wifi" id="zekiq-save-wifi">حفظ + WiFi</button>' +
       '</div>' +
-      '<div class="z-status" id="zekiq-dual-status">الوضعان محفوظان — اختر 4G خارج المحل أو WiFi داخل المحل</div>';
+      '<div class="z-status" id="zekiq-dual-status">4G = tonino.zekiqmenu.com · ليس zekiq-dev (نفق المطور)</div>';
 
     document.body.appendChild(wrap);
 
@@ -174,16 +293,28 @@
       try {
         if (localStorage.getItem(KEYS.linkMode) === "wifi") mode = "wifi";
       } catch (e) {}
+      if (guardWrongServer(cfg)) mode = "remote";
       saveDualConfig(cfg, mode, cfg.tunnelUrl, cfg.lanUrl);
-      if (document.querySelector(".owner-login-compact")) renderPanel(cfg);
+      if (document.querySelector(".owner-login-compact")) {
+        renderPanel(cfg);
+        renderConnBanner(cfg);
+      }
     });
   }
 
   function syncLoginPanel() {
     var panel = document.getElementById("zekiq-owner-dual-settings");
+    var banner = document.getElementById("zekiq-owner-conn-banner");
     var onLogin = !!document.querySelector(".owner-login-compact");
     var inApp = !!document.querySelector(".owner-app-layout");
     if (panel) panel.style.display = onLogin && !inApp ? "block" : "none";
+    if (banner) banner.style.display = onLogin && !inApp ? "block" : "none";
+    if (onLogin && !inApp) {
+      fetchConfig().then(function (cfg) {
+        guardWrongServer(cfg);
+        renderConnBanner(cfg);
+      });
+    }
   }
 
   setInterval(syncLoginPanel, 1500);
