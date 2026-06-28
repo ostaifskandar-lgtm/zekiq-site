@@ -1,13 +1,13 @@
 {
   "fileName": "ZEKiQManager.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=214",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=220",
   "setupUrlLegacy": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=206",
   "tablesWebPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-tables.html",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
-  "versionCode": 214,
-  "versionName": "2.1.4",
+  "versionCode": 220,
+  "versionName": "2.2.0",
   "packageId": "com.zekiq.manager",
   "signing": "ZEKiQ Debug — installs alongside com.tonino.owner",
-  "releaseNotes": "Login panel with PIN + دخول button; collapsible settings; no overlay blocking native login.",
-  "updatedAt": "2026-06-28T20:00:00.000Z"
+  "releaseNotes": "Expenses tab: browse invoices and photos for past 90 days with date picker.",
+  "updatedAt": "2026-06-28T20:10:00.000Z"
 }

@@ -19,8 +19,8 @@ const KEYSTORE = path.join(ROOT, "android", "owner-debug.keystore");
 const STORE_PASS = "android";
 const APKTOOL = process.env.APKTOOL || "java -jar /tmp/apktool.jar";
 const PKG = "com.zekiq.manager";
-const VERSION_CODE = "214";
-const VERSION_NAME = "2.1.4";
+const VERSION_CODE = "220";
+const VERSION_NAME = "2.2.0";
 
 const SCRIPTS = [
   "owner-runtime-fix.js",
@@ -29,7 +29,8 @@ const SCRIPTS = [
   "owner-login-fix.js",
   "owner-connection-flex.js",
   "owner-bootstrap.js",
-  "owner-tables-pro.js"
+  "owner-tables-pro.js",
+  "owner-expenses-history.js"
 ];
 
 const ASSET_MAP = SCRIPTS.map((f) => [`js/${f}`, `assets/public/${f}`]);

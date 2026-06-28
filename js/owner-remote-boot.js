@@ -12,7 +12,8 @@
     "owner-login-fix.js",
     "owner-connection-flex.js",
     "owner-bootstrap.js",
-    "owner-tables-pro.js"
+    "owner-tables-pro.js",
+    "owner-expenses-history.js"
   ];
   var i = 0;
 
@@ -34,7 +35,7 @@
     (document.head || document.documentElement).appendChild(s);
   }
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.1.4";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.2.0";
   try {
     localStorage.setItem("tonino-owner-native-apk", "1");
     localStorage.setItem("zekiq-manager-native", "1");
