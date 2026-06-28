@@ -18,6 +18,7 @@ const STORE_PASS = "android";
 const APKTOOL = process.env.APKTOOL || "java -jar /tmp/apktool.jar";
 
 const FILES = [
+  ["js/owner-connection-flex.js", "assets/public/owner-connection-flex.js"],
   ["js/owner-bootstrap.js", "assets/public/owner-bootstrap.js"],
   ["js/owner-tables-pro.js", "assets/public/owner-tables-pro.js"],
   ["js/owner-update-guard.js", "assets/public/owner-update-guard.js"]
@@ -76,6 +77,12 @@ if (fs.existsSync(indexPath)) {
     /try\{localStorage\.setItem\('tonino-owner-bundled-ui-build',"[^"]*"\)\}catch\(e\)\{\}/,
     "try{localStorage.setItem('tonino-owner-bundled-ui-build',\"2026-06-27-134326\")}catch(e){}"
   );
+  if (!html.includes("owner-connection-flex.js")) {
+    html = html.replace(
+      '<script src="/owner-bootstrap.js"></script>',
+      '<script src="/owner-connection-flex.js"></script>\n    <script src="/owner-bootstrap.js"></script>'
+    );
+  }
   if (!html.includes("owner-update-guard.js")) {
     html = html.replace(
       '<script src="/owner-tables-pro.js"></script>',
