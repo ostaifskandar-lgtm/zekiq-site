@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1a1714" />
+  <title>ربط تطبيق المالك — Tonino</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100dvh;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(165deg,#1c1917,#0f172a 55%,#1a1714);color:#fff;padding:24px 16px}
+    .wrap{max-width:480px;margin:0 auto}
+    h1{font-size:1.35rem;font-weight:800;margin-bottom:6px;text-align:center}
+    .sub{color:#94a3b8;font-size:.9rem;line-height:1.6;text-align:center;margin-bottom:20px}
+    .mode{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:18px;margin-bottom:14px}
+    .mode h2{font-size:1rem;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+    .mode p{color:#cbd5e1;font-size:.82rem;line-height:1.65;margin-bottom:12px}
+    .tag{font-size:.7rem;font-weight:800;padding:3px 8px;border-radius:999px;background:rgba(245,158,11,.15);color:#fde68a;border:1px solid rgba(245,158,11,.35)}
+    .btn{display:block;width:100%;padding:16px;border-radius:14px;font-size:1rem;font-weight:800;text-decoration:none;text-align:center;margin-bottom:8px}
+    .btn.tunnel{background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff}
+    .btn.wifi{background:linear-gradient(135deg,#4ade80,#16a34a);color:#052e16}
+    .btn.ghost{background:rgba(255,255,255,.08);color:#fde68a;border:1px solid rgba(245,158,11,.35);font-size:.9rem;padding:12px}
+    .code{font-family:ui-monospace,monospace;font-size:.78rem;color:#fde68a;word-break:break-all;background:rgba(0,0,0,.25);padding:8px 10px;border-radius:10px;margin-top:8px;direction:ltr;text-align:left}
+    .status{text-align:center;margin:12px 0;padding:10px;border-radius:12px;font-size:.82rem;font-weight:700}
+    .status.ok{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(74,222,128,.3)}
+    .status.bad{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(248,113,113,.3)}
+    .steps{margin-top:16px;padding:14px;border-radius:14px;background:rgba(59,130,246,.1);border:1px solid rgba(96,165,250,.25);font-size:.8rem;color:#bfdbfe;line-height:1.7}
+    .steps ol{padding-right:18px;margin-top:8px}
+    .steps li{margin:6px 0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>ربط تطبيق المالك</h1>
+    <p class="sub">اختر طريقة الاتصال بالكاشير المستهدف — Tonino</p>
+    <div id="tunnelStatus" class="status">جاري فحص نفق 4G…</div>
+
+    <div class="mode">
+      <h2><span class="tag">4G / خارج المحل</span> الاتصال بالنفق</h2>
+      <p>استخدمه عندما تكون خارج المطعم أو على بيانات الهاتف. يتصل عبر <b>tonino.zekiqmenu.com</b>.</p>
+      <a class="btn tunnel" href="https://tonino.zekiqmenu.com/owner?remote=1">🌐 ربط عبر النفق (4G)</a>
+      <div class="code">tonino.zekiqmenu.com</div>
+    </div>
+
+    <div class="mode">
+      <h2><span class="tag">WiFi المحل</span> الاتصال المباشر بالسيرفر</h2>
+      <p>استخدمه داخل المطعم على شبكة WiFi نفس شبكة الكاشير. أسرع وأكثر ثباتاً داخل المحل.</p>
+      <a class="btn wifi" href="tonino://owner?host=192.168.1.25&port=3000">📶 ربط عبر WiFi المحل</a>
+      <div class="code">192.168.1.25:3000</div>
+    </div>
+
+    <a class="btn ghost" href="owner.html">⬇️ تحميل / إعادة تثبيت التطبيق</a>
+
+    <div class="steps">
+      <b>بعد الربط — داخل التطبيق:</b>
+      <ol>
+        <li>افتح <b>الإعدادات</b> (⚙️) في أسفل الشاشة</li>
+        <li>ستجد خيارين: <b>WiFi المحل</b> و <b>4G — خارج المحل</b></li>
+        <li>يمكنك التبديل بينهما في أي وقت</li>
+        <li>أدخل <b>PIN المالك</b> (4 أرقام) — ليس PIN الكاشير</li>
+      </ol>
+      <p style="margin-top:10px"><b>إن ظهر 404:</b> امسح بيانات التطبيق → أعد الربط من هذه الصفحة → ثبت من جديد إن لزم.</p>
+    </div>
+  </div>
+  <script>
+    fetch("https://tonino.zekiqmenu.com/api/health", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (j) {
+        var el = document.getElementById("tunnelStatus");
+        el.textContent = "✓ نفق Tonino يعمل — " + (j.shop && j.shop.shopName ? j.shop.shopName : "OK");
+        el.className = "status ok";
+      })
+      .catch(function () {
+        var el = document.getElementById("tunnelStatus");
+        el.textContent = "✗ النفق غير متاح — شغّل الكاشير وفعّل النفق من إعدادات الكاشير";
+        el.className = "status bad";
+      });
+  </script>
+</body>
+</html>
