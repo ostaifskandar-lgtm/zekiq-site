@@ -61,7 +61,7 @@
       fileName: "ZEKiQManager.apk",
       versionCode: NATIVE_BUILD,
       versionName: EXT_VERSION,
-      setupUrl: "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=201",
+      setupUrl: "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=202",
       updatedAt: new Date().toISOString()
     };
   }

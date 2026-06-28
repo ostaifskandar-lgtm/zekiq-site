@@ -1,12 +1,13 @@
 {
   "fileName": "ZEKiQManager.apk",
-  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=201",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=202",
+  "setupUrlMirror": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=202",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
-  "legacyPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
-  "versionCode": 201,
-  "versionName": "2.0.1",
-  "appLabel": "ZEKiQ مدير",
+  "versionCode": 36,
+  "versionName": "1.0.36",
+  "appLabel": "تطبيق المالك",
   "packageId": "com.tonino.owner",
-  "releaseNotes": "Samsung install fix — same proven package, relabeled ZEKiQ Manager",
-  "updatedAt": "2026-06-29T03:00:00.000Z"
+  "signing": "Tonino Garson release (same as ToninoOwner.apk)",
+  "releaseNotes": "Same release-signed APK as ToninoOwner — Samsung compatible",
+  "updatedAt": "2026-06-29T04:00:00.000Z"
 }

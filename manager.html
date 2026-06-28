@@ -14,82 +14,60 @@
     .tag{text-align:center;color:#94a3b8;font-size:.9rem;line-height:1.6;margin-bottom:20px}
     .btn{display:block;width:100%;padding:18px;border-radius:16px;font-size:1.05rem;font-weight:800;text-decoration:none;text-align:center;margin-bottom:12px}
     .btn.main{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714;box-shadow:0 8px 28px rgba(245,158,11,.3)}
+    .btn.cdn{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;box-shadow:0 8px 28px rgba(34,197,94,.25)}
     .btn.ghost{background:rgba(255,255,255,.07);color:#fde68a;border:1px solid rgba(245,158,11,.3);font-size:.88rem;padding:14px}
     .box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;margin-bottom:14px;font-size:.85rem;color:#cbd5e1;line-height:1.7}
     .box b{color:#fff}
     .box ol{padding-right:20px;margin-top:8px}
     .box li{margin:6px 0}
     .note{font-size:.78rem;color:#94a3b8;text-align:center;margin-top:16px;line-height:1.6}
-    code{font-family:ui-monospace,monospace;font-size:.78rem;color:#fde68a;background:rgba(0,0,0,.3);padding:2px 6px;border-radius:6px}
+    code{font-family:ui-monospace,monospace;font-size:.72rem;color:#fde68a;background:rgba(0,0,0,.3);padding:2px 6px;border-radius:6px;word-break:break-all}
     .fix{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.4)}
-    .qr{text-align:center;padding:12px 0 4px}
-    .qr img{width:200px;height:200px;border-radius:16px;background:#fff;padding:10px}
-    .qr p{font-size:.78rem;color:#94a3b8;margin-top:10px}
+    .qr{text-align:center;padding:8px 0 4px}
+    .qr img{width:180px;height:180px;border-radius:14px;background:#fff;padding:8px}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="logo">Z</div>
     <h1>ZEKiQ مدير</h1>
-    <p class="tag">متابعة المبيعات والطاولات — 4G أو WiFi<br><b>v2.0.1</b> — إصلاح تثبيت سامسونج</p>
+    <p class="tag">تحميل تطبيق المالك — نفس التوقيع الأصلي<br><b>v2.0.2</b> — يثبت على سامسونج ✅</p>
 
     <div class="box qr">
-      <b>📷 امسح QR للتحميل</b>
-      <img src="manager-qr.png" alt="QR ZEKiQ مدير" width="200" height="200" />
-      <p>يفتح صفحة التحميل على الهاتف</p>
+      <b>📷 امسح QR</b><br><br>
+      <img src="manager-qr.png" alt="QR" width="180" height="180" />
     </div>
 
-    <a class="btn main" href="https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=201">⬇️ تحميل ZEKiQ مدير v2.0.1</a>
+    <a class="btn cdn" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=202">⬇️ تحميل — CDN (يعمل على سامسونج)</a>
+
+    <a class="btn main" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=202">⬇️ نفس الملف — ZEKiQManager.apk</a>
 
     <div class="box fix">
-      <b style="color:#86efac">✅ إصلاح v2.0.1 — ماذا تغيّر؟</b>
+      <b style="color:#86efac">✅ لماذا النسخة القديمة v37 كانت تعمل؟</b>
       <ol>
-        <li>النسخة السابقة (v2.0.0) غيّرت اسم الحزمة → سامسونج رفض التثبيت</li>
-        <li>v2.0.1 يستخدم <b>نفس الحزمة المثبتة سابقاً</b> — يثبت مثل التطبيق القديم</li>
-        <li>الاسم فقط: <b>ZEKiQ مدير</b> + شارة <b>v2.0.1</b></li>
-      </ol>
-    </div>
-
-    <div class="box" style="border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.12)">
-      <b style="color:#fecaca">⛔ خطوة 1 — احذف التطبيق القديم أولاً</b>
-      <ol>
-        <li>الإعدادات → التطبيقات → ابحث عن <b>تطبيق المالك</b> أو <b>ZEKiQ مدير</b></li>
-        <li>Turkish: <b>Ayarlar → Uygulamalar → Tonino</b> أو <b>Malik</b></li>
-        <li>اضغط <b>إلغاء التثبيت</b> (Kaldır)</li>
-        <li>احذف <b>كل</b> ملفات ZEKiQManager.apk من İndirilenler</li>
+        <li>موقّعة بمفتاح <b>Tonino Garson</b> الأصلي (Gradle)</li>
+        <li>النسخ «الجديدة» أُعيد توقيعها بمفتاح <b>Debug</b> → سامسونج يرفض: <b>Uygulama yüklenmedi</b></li>
+        <li>الآن رجّعنا <b>نفس التوقيع الأصلي</b> — يثبت فوق التطبيق الموجود</li>
       </ol>
     </div>
 
     <div class="box" style="border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.1)">
-      <b style="color:#fde68a">📱 خطوة 2 — سامسونج: السماح بالتثبيت</b>
+      <b style="color:#fde68a">📱 Play Protect — Yine de yükleyin</b>
       <ol>
-        <li><b>Ayarlar → Uygulamalar → Özel uygulama erişimi</b></li>
-        <li><b>Bilinmeyen uygulamaları yükle</b> → فعّل لـ <b>Chrome</b> أو <b>Dosyalarım</b></li>
-        <li>حمّل APK → افتح من التنزيلات → <b>Yükle</b> (تثبيت)</li>
-      </ol>
-    </div>
-
-    <div class="box" style="border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.12)">
-      <b style="color:#fecaca">⛔ خطوة 3 — Google Play Protect</b>
-      <ol>
-        <li>يظهر: <b>Uygulama, cihazınızı korumak için engellendi</b></li>
-        <li><b style="color:#86efac">اضغط: Yine de yükleyin</b> (= ثبّت على أي حال)</li>
-        <li><b style="color:#fecaca">لا تضغط: Anladım</b> — يلغي التثبيت ويظهر Kapat!</li>
+        <li>لا تضغط <b>Anladım</b> — يلغي التثبيت</li>
+        <li>اضغط <b>Yine de yükleyin</b> (= ثبّت على أي حال)</li>
       </ol>
     </div>
 
     <div class="box">
       <b>بعد التثبيت:</b>
       <ol>
-        <li>افتح التطبيق → أدخل النفق: <code dir="ltr">tonino.zekiqmenu.com</code></li>
+        <li>افتح التطبيق → النفق: <code dir="ltr">tonino.zekiqmenu.com</code></li>
         <li><b>حفظ + 4G</b> → PIN المدير</li>
-        <li>تأكد من شارة <b>v2.0.1</b> أعلى يسار</li>
       </ol>
     </div>
 
-    <a class="btn ghost" href="owner.html">← الصفحة القديمة</a>
-
-    <p class="note">ZEKiQ POS · ZEKiQ مدير v2.0.1 · build 201 · com.tonino.owner</p>
+    <p class="note">CDN:<br><code dir="ltr">cdn.jsdelivr.net/.../ToninoOwner.apk?v=202</code></p>
   </div>
 </body>
 </html>
