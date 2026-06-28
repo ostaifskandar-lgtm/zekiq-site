@@ -27,15 +27,21 @@
   function patchLocationReplace() {
     if (window.__zekiqOwnerNoRedirect) return;
     window.__zekiqOwnerNoRedirect = true;
-    var orig = window.location.replace.bind(window.location);
-    window.location.replace = function (url) {
+    function blockRemoteNav(url) {
       try {
         var u = String(url || "");
-        if (u.indexOf("/owner?") >= 0 && (u.indexOf("remote=1") >= 0 || u.indexOf("shell=remote") >= 0)) {
-          return;
-        }
-      } catch (e) {}
-      return orig(url);
+        return u.indexOf("/owner?") >= 0 && (u.indexOf("remote=1") >= 0 || u.indexOf("shell=remote") >= 0 || u.indexOf("link=1") >= 0);
+      } catch (e) { return false; }
+    }
+    var origReplace = window.location.replace.bind(window.location);
+    window.location.replace = function (url) {
+      if (blockRemoteNav(url)) return;
+      return origReplace(url);
+    };
+    var origAssign = window.location.assign.bind(window.location);
+    window.location.assign = function (url) {
+      if (blockRemoteNav(url)) return;
+      return origAssign(url);
     };
   }
 

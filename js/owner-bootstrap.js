@@ -182,8 +182,13 @@
     document.head.appendChild(s);
   }
 
+  var bannerLastCheck = 0;
+
   function renderConnBanner() {
     if (!document.querySelector(".owner-login-compact")) return;
+    var now = Date.now();
+    if (now - bannerLastCheck < 10000 && document.getElementById("zekiq-conn-shop")) return;
+    bannerLastCheck = now;
     injectStyles();
     var el = document.getElementById("zekiq-owner-conn-banner");
     if (!el) {
@@ -210,7 +215,6 @@
           return;
         }
         shopEl.textContent = "المحل: " + (j.shopName || "?") + " · المالك: " + (j.ownerName || "?");
-        syncProfileFromServer(api, j.shopName);
       })
       .catch(function () {
         var shopEl = document.getElementById("zekiq-conn-shop");
@@ -305,7 +309,6 @@
     var inApp = !!document.querySelector(".owner-app-layout");
     if (panel) panel.style.display = onLogin && !inApp ? "block" : "none";
     if (banner) banner.style.display = onLogin && !inApp ? "block" : "none";
-    if (onLogin && !inApp) renderConnBanner();
   }
 
   setInterval(syncLoginPanel, 1500);

@@ -3,7 +3,7 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "1.0.44";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "1.0.45";
 
   function isOwnerApp() {
     try {
@@ -81,7 +81,10 @@
     });
     if (!r.ok) throw new Error("network");
     var j = await r.json();
-    if (j[0] && j[0].error) throw new Error(j[0].error.json?.message || "api");
+    if (j[0] && j[0].error) {
+      var errMsg = (j[0].error.json && j[0].error.json.message) || "api";
+      throw new Error(errMsg);
+    }
     return j[0].result.data.json;
   }
 
@@ -158,7 +161,7 @@
       ".z-summary .line{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}" +
       ".z-summary .line.total{font-size:16px;font-weight:900;color:#8f6218;margin-top:6px;padding-top:8px;border-top:1px dashed #dcc9a8}" +
       ".owner-table-row.zekiq-tappable{cursor:pointer!important}" +
-      ".owner-table-row.zekiq-tappable:active{opacity:.85;transform:scale(.99)}";
+      ".owner-table-row.zekiq-tappable:active{background:rgba(143,98,24,.15)!important}";
     document.head.appendChild(s);
   }
 
@@ -298,7 +301,7 @@
     if (document.getElementById("zekiq-ext-badge")) return;
     var badge = document.createElement("div");
     badge.id = "zekiq-ext-badge";
-    badge.textContent = "v" + (window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.44");
+    badge.textContent = "v" + (window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.45");
     document.body.appendChild(badge);
   }
 
@@ -368,7 +371,24 @@
     });
   }
 
+  function normalizeRow(row) {
+    if (!row) return null;
+    return {
+      section: String(row.section || ""),
+      tableNum: Number(row.tableNum),
+      orderId: row.orderId || row.id,
+      total: row.total,
+      paid: row.paid,
+      remaining: row.remaining,
+      itemCount: row.itemCount,
+      isPartial: row.isPartial
+    };
+  }
+
   async function showOpenDetail(row) {
+    row = normalizeRow(row);
+    if (!row || !row.section || !row.tableNum) return;
+    ensureUi();
     openDetail(row.section + " · " + row.tableNum, '<div class="z-empty">جاري التحميل…</div>');
     try {
       var d = await trpc("pos.openTableDetail", { section: row.section, tableNum: row.tableNum });
@@ -381,7 +401,8 @@
       html += renderSummary(total, paid, remaining, Number(order.discount || 0));
       document.getElementById("zekiq-detail-body").innerHTML = html;
     } catch (e) {
-      document.getElementById("zekiq-detail-body").innerHTML = '<div class="z-empty">تعذّر تحميل التفاصيل</div>';
+      document.getElementById("zekiq-detail-body").innerHTML =
+        '<div class="z-empty">تعذّر تحميل التفاصيل' + (token() ? "" : " — سجّل الدخول") + "</div>";
     }
   }
 
@@ -426,30 +447,36 @@
     if (sep < 0) return null;
     var section = text.slice(0, sep).trim();
     var rest = text.slice(sep + 3).trim();
-    var tableNum = rest.replace(/\s*\([^)]*\)\s*$/, "").trim();
-    if (!section || !tableNum) return null;
+    var tableNumStr = rest.replace(/\s*\([^)]*\)\s*$/, "").trim();
+    var tableNum = Number(tableNumStr);
+    if (!section || !tableNumStr || !tableNum) return null;
     for (var i = 0; i < openRowsCache.length; i++) {
       var r = openRowsCache[i];
-      if (String(r.section) === section && String(r.tableNum) === tableNum) return r;
+      if (String(r.section) === section && Number(r.tableNum) === tableNum) return normalizeRow(r);
     }
-    return { section: section, tableNum: tableNum };
+    return normalizeRow({ section: section, tableNum: tableNum });
   }
 
-  function enhanceExistingRows() {
-    document.querySelectorAll(".owner-table-row").forEach(function (li) {
-      if (!li.querySelector(".owner-table-name")) return;
-      if (li.dataset.zekiqEnhanced) return;
-      li.dataset.zekiqEnhanced = "1";
-      li.classList.add("zekiq-tappable");
-      li.addEventListener("click", function (e) {
-        var row = parseTableFromRow(li);
-        if (!row) return;
-        e.preventDefault();
-        e.stopPropagation();
-        ensureUi();
-        showOpenDetail(row);
-      }, true);
+  function markTableRows() {
+    document.querySelectorAll(".owner-table-row .owner-table-name").forEach(function (nameEl) {
+      var li = nameEl.closest(".owner-table-row");
+      if (li) li.classList.add("zekiq-tappable");
     });
+  }
+
+  function installTableTapDelegation() {
+    if (document.documentElement.dataset.zekiqTap) return;
+    document.documentElement.dataset.zekiqTap = "1";
+    document.addEventListener("click", function (e) {
+      var li = e.target.closest && e.target.closest(".owner-table-row");
+      if (!li || !li.querySelector(".owner-table-name")) return;
+      if (!isInApp() && !token()) return;
+      var row = parseTableFromRow(li);
+      if (!row) return;
+      e.preventDefault();
+      e.stopPropagation();
+      showOpenDetail(row);
+    }, true);
   }
 
   function setButtonsVisible(show) {
@@ -462,6 +489,7 @@
 
   function tick() {
     ensureVersionBadge();
+    installTableTapDelegation();
     if (!shouldShowTables()) {
       setButtonsVisible(false);
       return;
@@ -471,10 +499,12 @@
     injectNavButton();
     setButtonsVisible(true);
     refreshOpenRowsCache();
-    enhanceExistingRows();
+    markTableRows();
   }
 
+  installTableTapDelegation();
   window.zekiqOpenTables = openSheet;
+  window.zekiqShowTableDetail = showOpenDetail;
   setInterval(tick, 1200);
   tick();
 })();

@@ -1,13 +1,13 @@
 {
   "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=44",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=45",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
   "publicPageAlt": "https://tonino.zekiqmenu.com/owner?remote=1",
   "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api-tonino.json",
   "ownerConfigUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json",
-  "versionCode": 44,
-  "versionName": "1.0.44",
+  "versionCode": 45,
+  "versionName": "1.0.45",
   "sizeMb": "14.7",
-  "releaseNotes": "Flexible connection — any cashier/tunnel, no forced relink loop",
-  "updatedAt": "2026-06-28T20:00:00.000Z"
+  "releaseNotes": "Fix table tap — numeric tableNum + persistent click handler; stabilize login",
+  "updatedAt": "2026-06-28T21:00:00.000Z"
 }
