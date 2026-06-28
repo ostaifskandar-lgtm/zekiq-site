@@ -4,6 +4,7 @@
   window.__ZEKIQ_REMOTE_BOOT__ = true;
 
   var CDN = "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/js/";
+  var LOCAL = "/";
   var SCRIPTS = [
     "owner-update-guard.js",
     "owner-storage-native.js",
@@ -16,17 +17,23 @@
 
   function next() {
     if (i >= SCRIPTS.length) return;
+    var name = SCRIPTS[i];
     var s = document.createElement("script");
-    s.src = CDN + SCRIPTS[i] + "?v=205";
     s.async = false;
-    s.onload = s.onerror = function () {
+    s.onload = function () { i += 1; next(); };
+    s.onerror = function () {
+      if (s.src.indexOf(CDN) < 0) {
+        s.src = CDN + name + "?v=206";
+        return;
+      }
       i += 1;
       next();
     };
+    s.src = LOCAL + name;
     (document.head || document.documentElement).appendChild(s);
   }
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.0.5";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.0.6";
   try {
     localStorage.setItem("tonino-owner-native-apk", "1");
     localStorage.setItem("zekiq-manager-native", "1");
