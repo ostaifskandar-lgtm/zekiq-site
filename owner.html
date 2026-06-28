@@ -42,7 +42,8 @@
     <p class="sub">مصمّم للعمل على <b>4G</b> — بدون WiFi المحل</p>
     <div class="badge-wrap"><span class="badge">📶 وضع 4G / النفق</span></div>
 
-    <div id="tunnelStatus" class="status wait">جاري فحص نفق Tonino…</div>
+    <div id="tunnelStatus" class="status wait">جاري فحص النفق…</div>
+    <p id="tunnelHint" class="sub" style="margin-top:-8px;margin-bottom:14px;font-size:.78rem;color:#94a3b8;text-align:center"></p>
 
     <a class="btn apk" id="apkBtn" href="https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=54">⬇️ 1 — تحميل v1.0.54 (احذف القديم أولاً!)</a>
     <a class="btn tunnel" href="https://tonino.zekiqmenu.com/owner?remote=1">🌐 2 — ربط عبر 4G (بعد التثبيت)</a>
@@ -233,16 +234,36 @@
   <script>
     (function () {
       var el = document.getElementById("tunnelStatus");
-      fetch("https://tonino.zekiqmenu.com/api/health", { cache: "no-store" })
-        .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-        .then(function (j) {
-          el.textContent = "✓ نفق Tonino يعمل — " + (j.shop && j.shop.shopName ? j.shop.shopName : "OK");
+      var hint = document.getElementById("tunnelHint");
+      var tunnels = [
+        { url: "https://tonino.zekiqmenu.com", label: "Tonino" },
+        { url: "https://zekiq-dev.zekiqmenu.com", label: "ZEKiQ Dev" }
+      ];
+
+      function checkOne(t) {
+        return fetch(t.url + "/api/health", { cache: "no-store", mode: "cors" })
+          .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+          .then(function (j) {
+            return { ok: true, label: t.label, shop: (j.shop && j.shop.shopName) || t.label };
+          })
+          .catch(function () { return { ok: false, label: t.label }; });
+      }
+
+      Promise.all(tunnels.map(checkOne)).then(function (results) {
+        var up = results.filter(function (r) { return r.ok; });
+        if (up.length) {
+          el.textContent = "✓ نفق يعمل: " + up.map(function (r) { return r.shop; }).join(" · ");
           el.className = "status ok";
-        })
-        .catch(function () {
-          el.textContent = "✗ النفق غير متاح — شغّل الكاشير في المحل وفعّل النفق";
-          el.className = "status bad";
-        });
+          hint.textContent = "الكاشير شغّال — يمكنك التحميل والربط على 4G.";
+          return;
+        }
+        el.textContent = "⚠️ لم يُؤكَّد النفق من هذه الصفحة — التحميل مسموح";
+        el.className = "status wait";
+        hint.innerHTML =
+          "هذا <b>ليس</b> منعاً للتثبيت. قد يعني: الكاشير مغلق، أو النفق غير مفعّل، " +
+          "أو المتصفح يمنع الفحص. حمّل التطبيق ثم في الإعدادات أدخل نفقك: " +
+          "<code dir=\"ltr\">tonino.zekiqmenu.com</code> أو <code dir=\"ltr\">zekiq-dev.zekiqmenu.com</code>";
+      });
     })();
   </script>
 </body>
