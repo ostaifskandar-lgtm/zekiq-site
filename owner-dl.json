@@ -1,13 +1,14 @@
 {
   "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=45",
+  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=50",
+  "setupUrlCdn": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=50",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
   "publicPageAlt": "https://tonino.zekiqmenu.com/owner?remote=1",
   "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api-tonino.json",
   "ownerConfigUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json",
-  "versionCode": 45,
-  "versionName": "1.0.45",
+  "versionCode": 50,
+  "versionName": "1.0.50",
   "sizeMb": "14.7",
-  "releaseNotes": "Fix table tap — numeric tableNum + persistent click handler; stabilize login",
-  "updatedAt": "2026-06-28T21:00:00.000Z"
+  "releaseNotes": "Disable fake in-app update loop — fetch intercept + hide update banner",
+  "updatedAt": "2026-06-28T22:00:00.000Z"
 }

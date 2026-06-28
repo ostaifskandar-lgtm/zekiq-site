@@ -3,11 +3,12 @@
 
   if (typeof window === "undefined") return;
 
-  var EXT_VERSION = window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.45";
-  var EXT_BUILD = parseInt(String(EXT_VERSION).split(".").pop(), 10) || 45;
+  var EXT_VERSION = window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.50";
+  var EXT_BUILD = parseInt(String(EXT_VERSION).split(".").pop(), 10) || 50;
   var DISMISS_KEY = "tonino-owner-update-dismissed";
   var UI_BUILD_KEY = "tonino-owner-ui-build";
   var BUNDLED_BUILD_KEY = "tonino-owner-bundled-ui-build";
+  var APK_KEY = "apk:" + EXT_BUILD;
 
   function isOwnerApp() {
     try {
@@ -20,22 +21,44 @@
 
   if (!isOwnerApp()) return;
 
-  function syncUiBuild(buildVersion) {
-    if (!buildVersion) return;
-    try {
-      localStorage.setItem(UI_BUILD_KEY, buildVersion);
-      localStorage.setItem(BUNDLED_BUILD_KEY, buildVersion);
-    } catch (e) {}
-    try {
-      window.__TONINO_OWNER_UI_BUILD__ = buildVersion;
-    } catch (e) {}
+  window.__ZEKIQ_NO_INAPP_UPDATE__ = true;
+
+  function lsSet(k, v) {
+    try { localStorage.setItem(k, v); } catch (e) {}
   }
 
-  function dismissUpdateKeys() {
-    try {
-      localStorage.setItem(DISMISS_KEY, "apk:" + EXT_BUILD);
-      localStorage.setItem(UI_BUILD_KEY + ":dismiss", "ui:synced-" + EXT_BUILD);
-    } catch (e) {}
+  function syncUiBuild(v) {
+    if (!v) return;
+    lsSet(UI_BUILD_KEY, v);
+    lsSet(BUNDLED_BUILD_KEY, v);
+    try { window.__TONINO_OWNER_UI_BUILD__ = v; } catch (e) {}
+  }
+
+  function markUpToDate() {
+    lsSet(DISMISS_KEY, APK_KEY);
+    lsSet("tonino-owner-update-dismissed-at", String(Date.now()));
+    lsSet(UI_BUILD_KEY + ":dismiss", "ui:" + EXT_BUILD);
+  }
+
+  function patchConfigJson(j) {
+    if (!j || typeof j !== "object") return j;
+    if (j.apk && typeof j.apk === "object") {
+      j.apk.versionCode = EXT_BUILD;
+      j.apk.versionName = EXT_VERSION;
+      j.apk.available = false;
+    }
+    if (j.buildVersion) syncUiBuild(String(j.buildVersion).trim());
+    return j;
+  }
+
+  function ownerDlPayload() {
+    return {
+      fileName: "ToninoOwner.apk",
+      versionCode: EXT_BUILD,
+      versionName: EXT_VERSION,
+      setupUrl: "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=" + EXT_BUILD,
+      updatedAt: new Date().toISOString()
+    };
   }
 
   function patchAppGetInfo() {
@@ -44,57 +67,89 @@
       var app = cap && cap.Plugins && cap.Plugins.App;
       if (!app || app.__zekiqPatched) return;
       var orig = app.getInfo && app.getInfo.bind(app);
-      if (!orig) return;
-      app.getInfo = function () {
-        return Promise.resolve(orig()).then(function (info) {
-          info = info || {};
-          info.build = String(EXT_BUILD);
-          info.version = EXT_VERSION;
-          return info;
-        });
-      };
+      if (!orig) {
+        app.getInfo = function () {
+          return Promise.resolve({ build: String(EXT_BUILD), version: EXT_VERSION, name: "Owner", id: "com.tonino.owner" });
+        };
+      } else {
+        app.getInfo = function () {
+          return Promise.resolve(orig()).then(function (info) {
+            info = info || {};
+            info.build = String(EXT_BUILD);
+            info.version = EXT_VERSION;
+            return info;
+          });
+        };
+      }
       app.__zekiqPatched = true;
     } catch (e) {}
   }
 
-  function hideUpdateSheet() {
-    document.querySelectorAll(".owner-update-sheet-backdrop, .owner-update-sheet").forEach(function (el) {
+  function injectNoUpdateCss() {
+    if (document.getElementById("zekiq-no-update-css")) return;
+    var s = document.createElement("style");
+    s.id = "zekiq-no-update-css";
+    s.textContent =
+      ".owner-update-sheet,.owner-update-sheet-backdrop,.owner-update-badge," +
+      "[class*='owner-update-sheet'],.owner-update-banner{display:none!important;visibility:hidden!important;" +
+      "pointer-events:none!important;height:0!important;overflow:hidden!important}";
+    (document.head || document.documentElement).appendChild(s);
+  }
+
+  function hideUpdateUi() {
+    injectNoUpdateCss();
+    document.querySelectorAll(
+      ".owner-update-sheet,.owner-update-sheet-backdrop,.owner-update-badge,.owner-update-banner"
+    ).forEach(function (el) {
       el.style.display = "none";
+      el.style.visibility = "hidden";
+      el.setAttribute("aria-hidden", "true");
     });
-    document.querySelectorAll(".owner-update-badge").forEach(function (el) {
-      el.style.display = "none";
-    });
   }
 
-  function baseUrl() {
-    var keys = ["tonino-owner-working-api", "tonino-owner-remote-base", "tonino-owner-server"];
-    for (var i = 0; i < keys.length; i++) {
-      try {
-        var v = (localStorage.getItem(keys[i]) || "").trim().replace(/\/+$/, "");
-        if (v.startsWith("http")) return v;
-      } catch (e) {}
-    }
-    return "";
+  function patchFetch() {
+    if (window.__zekiqFetchPatched) return;
+    window.__zekiqFetchPatched = true;
+    var orig = window.fetch.bind(window);
+    window.fetch = function (input, init) {
+      var url = typeof input === "string" ? input : (input && input.url) || "";
+      if (url.indexOf("owner-dl.json") >= 0) {
+        markUpToDate();
+        return Promise.resolve(new Response(JSON.stringify(ownerDlPayload()), {
+          status: 200,
+          headers: { "Content-Type": "application/json" }
+        }));
+      }
+      return orig(input, init).then(function (res) {
+        if (url.indexOf("/api/owner/config") < 0) return res;
+        return res.clone().json().then(function (j) {
+          patchConfigJson(j);
+          markUpToDate();
+          return new Response(JSON.stringify(j), {
+            status: res.status,
+            headers: { "Content-Type": "application/json" }
+          });
+        }).catch(function () { return res; });
+      });
+    };
   }
 
-  function syncFromServer() {
-    fetch(baseUrl() + "/api/owner/config", { cache: "no-store" })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (cfg) {
-        if (!cfg) return;
-        if (cfg.buildVersion) syncUiBuild(String(cfg.buildVersion).trim());
-        dismissUpdateKeys();
-        hideUpdateSheet();
-      })
-      .catch(function () {});
+  function boot() {
+    patchFetch();
+    patchAppGetInfo();
+    markUpToDate();
+    hideUpdateUi();
+    injectNoUpdateCss();
   }
 
-  patchAppGetInfo();
-  dismissUpdateKeys();
-  syncFromServer();
+  boot();
   setInterval(function () {
     patchAppGetInfo();
-    dismissUpdateKeys();
-  }, 5000);
-  setInterval(hideUpdateSheet, 2000);
+    markUpToDate();
+    hideUpdateUi();
+  }, 1500);
+
+  if (typeof MutationObserver !== "undefined") {
+    new MutationObserver(hideUpdateUi).observe(document.documentElement, { childList: true, subtree: true });
+  }
 })();

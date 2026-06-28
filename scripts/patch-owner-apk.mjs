@@ -18,10 +18,10 @@ const STORE_PASS = "android";
 const APKTOOL = process.env.APKTOOL || "java -jar /tmp/apktool.jar";
 
 const FILES = [
+  ["js/owner-update-guard.js", "assets/public/owner-update-guard.js"],
   ["js/owner-connection-flex.js", "assets/public/owner-connection-flex.js"],
   ["js/owner-bootstrap.js", "assets/public/owner-bootstrap.js"],
-  ["js/owner-tables-pro.js", "assets/public/owner-tables-pro.js"],
-  ["js/owner-update-guard.js", "assets/public/owner-update-guard.js"]
+  ["js/owner-tables-pro.js", "assets/public/owner-tables-pro.js"]
 ];
 
 function run(cmd, opts = {}) {
@@ -77,24 +77,14 @@ if (fs.existsSync(indexPath)) {
     /try\{localStorage\.setItem\('tonino-owner-bundled-ui-build',"[^"]*"\)\}catch\(e\)\{\}/,
     "try{localStorage.setItem('tonino-owner-bundled-ui-build',\"2026-06-27-134326\")}catch(e){}"
   );
-  if (!html.includes("owner-connection-flex.js")) {
-    html = html.replace(
-      '<script src="/owner-bootstrap.js"></script>',
-      '<script src="/owner-connection-flex.js"></script>\n    <script src="/owner-bootstrap.js"></script>'
-    );
-  }
-  if (!html.includes("owner-update-guard.js")) {
-    html = html.replace(
-      '<script src="/owner-tables-pro.js"></script>',
-      '<script src="/owner-tables-pro.js"></script>\n    <script src="/owner-update-guard.js"></script>'
-    );
-  }
-  if (!html.includes("owner-bootstrap.js")) {
-    html = html.replace(
-      "</head>",
-      '    <script src="/owner-bootstrap.js"></script>\n    <script src="/owner-tables-pro.js"></script>\n    <script src="/owner-update-guard.js"></script>\n  </head>'
-    );
-  }
+  // Always inject in fixed order; update-guard MUST run first.
+  html = html.replace(/<script src="\/owner-(?:update-guard|connection-flex|bootstrap|tables-pro)\.js"><\/script>\s*/g, "");
+  const inject =
+    '    <script src="/owner-update-guard.js"></script>\n' +
+    '    <script src="/owner-connection-flex.js"></script>\n' +
+    '    <script src="/owner-bootstrap.js"></script>\n' +
+    '    <script src="/owner-tables-pro.js"></script>\n';
+  html = html.replace("<head>", "<head>\n" + inject);
   fs.writeFileSync(indexPath, html);
   console.log("Updated index.html");
 }
