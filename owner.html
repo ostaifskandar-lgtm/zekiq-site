@@ -3,80 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" content="#1a1714" />
-  <title>تحميل تطبيق المالك</title>
-  <meta name="description" content="تطبيق المالك — مراقبة المبيعات والطاولات من أي مكان (4G)" />
+  <title>تطبيق المالك — 4G</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{min-height:100dvh;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(165deg,#1c1917,#0f172a 55%,#1a1714);color:#fff;padding:24px 20px;display:flex;align-items:center;justify-content:center}
-    .card{max-width:480px;width:100%;text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:28px 22px}
-    .logo{width:88px;height:88px;border-radius:22px;background:#1a1714;border:2px solid rgba(245,158,11,.45);display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:900;color:#fbbf24;margin:0 auto 16px;box-shadow:0 12px 32px rgba(0,0,0,.35)}
-    h1{font-size:1.45rem;font-weight:800;margin-bottom:8px}
-    p{color:#94a3b8;font-size:.92rem;line-height:1.65;margin-bottom:20px}
-    .btn{display:block;width:100%;padding:18px;border-radius:16px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714;font-size:1.1rem;font-weight:800;text-decoration:none;box-shadow:0 8px 24px rgba(245,158,11,.28);margin-bottom:10px}
-    .btn.secondary{background:rgba(255,255,255,.08);color:#fde68a;border:1px solid rgba(245,158,11,.35);box-shadow:none;font-size:.95rem;padding:14px}
+    body{min-height:100dvh;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(165deg,#1c1917,#0f172a 55%,#1a1714);color:#fff;padding:20px 16px 32px}
+    .wrap{max-width:480px;margin:0 auto}
+    .logo{width:72px;height:72px;border-radius:18px;background:#1a1714;border:2px solid rgba(245,158,11,.45);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:900;color:#fbbf24;margin:0 auto 12px}
+    h1{font-size:1.35rem;font-weight:800;text-align:center;margin-bottom:6px}
+    .sub{color:#94a3b8;font-size:.88rem;line-height:1.6;text-align:center;margin-bottom:16px}
+    .badge{display:inline-block;padding:6px 12px;border-radius:999px;font-size:.75rem;font-weight:800;background:rgba(56,189,248,.15);color:#7dd3fc;border:1px solid rgba(56,189,248,.35);margin:0 auto 16px;text-align:center}
+    .badge-wrap{text-align:center}
+    .btn{display:block;width:100%;padding:17px;border-radius:16px;font-size:1.02rem;font-weight:800;text-decoration:none;text-align:center;margin-bottom:10px}
+    .btn.apk{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714;box-shadow:0 8px 24px rgba(245,158,11,.28)}
+    .btn.tunnel{background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;box-shadow:0 8px 24px rgba(56,189,248,.25)}
+    .btn.ghost{background:rgba(255,255,255,.08);color:#fde68a;border:1px solid rgba(245,158,11,.35);font-size:.88rem;padding:13px}
     .btn:active{transform:scale(.98)}
-    .ver{margin-top:14px;font-size:.78rem;color:#fde68a}
-    .hint{margin-top:18px;font-size:.8rem;color:#cbd5e1;line-height:1.65;text-align:right}
-    .hint li{margin:6px 0}
-    .warn{margin-top:16px;padding:12px;border-radius:12px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);font-size:.78rem;color:#fde68a;line-height:1.55;text-align:right}
-    .note{margin-top:14px;padding:12px;border-radius:12px;background:rgba(34,197,94,.1);border:1px solid rgba(74,222,128,.25);font-size:.78rem;color:#bbf7d0;line-height:1.55;text-align:right}
-    .fix{margin-top:14px;padding:12px;border-radius:12px;background:rgba(59,130,246,.1);border:1px solid rgba(96,165,250,.25);font-size:.78rem;color:#bfdbfe;line-height:1.65;text-align:right}
-    .fix b{color:#dbeafe}
-    .status{display:inline-block;margin-top:8px;padding:6px 12px;border-radius:999px;font-size:.75rem;font-weight:700}
-    .status.ok{background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(74,222,128,.35)}
-    .status.bad{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(248,113,113,.35)}
+    .status{text-align:center;padding:10px;border-radius:12px;font-size:.8rem;font-weight:700;margin-bottom:14px}
+    .status.ok{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(74,222,128,.3)}
+    .status.bad{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(248,113,113,.3)}
+    .status.wait{background:rgba(245,158,11,.12);color:#fde68a;border:1px solid rgba(245,158,11,.3)}
+    .box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px;margin-bottom:12px;font-size:.8rem;color:#cbd5e1;line-height:1.65}
+    .box b{color:#fff}
+    .box ol{padding-right:18px;margin-top:8px}
+    .box li{margin:5px 0}
+    .mirror{margin-top:14px;padding:12px;border-radius:14px;background:rgba(239,68,68,.08);border:1px solid rgba(248,113,113,.25);font-size:.78rem;color:#fecaca;line-height:1.6}
+    .mirror a{color:#93c5fd;word-break:break-all}
+    code{font-family:ui-monospace,monospace;font-size:.76rem;color:#fde68a;background:rgba(0,0,0,.25);padding:2px 6px;border-radius:6px}
   </style>
 </head>
 <body>
-  <div class="card">
+  <div class="wrap">
     <div class="logo">Z</div>
     <h1>تطبيق المالك — Tonino</h1>
-    <p>راقب مبيعات مطعمك من أي بلد — يعمل على 4G بعد تثبيت التطبيق.</p>
-    <a class="btn" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=36">⬇️ تحميل ZEKiQ Owner</a>
-    <a class="btn secondary" href="owner-connect.html">⚙️ ربط التطبيق — نفق 4G أو WiFi المحل</a>
-    <a class="btn secondary" href="https://tonino.zekiqmenu.com/owner?remote=1">🌐 ربط سريع عبر النفق (4G)</a>
-    <p class="ver">الإصدار 1.0.36 · build 36 · ~14.6 MB</p>
-    <div id="serverStatus" class="status">جاري فحص الاتصال…</div>
-    <ul class="hint">
-      <li>• حمّل وثبّت من «التنزيلات» — وليس من Chrome مباشرة</li>
-      <li>• افتح من أيقونة «تطبيق المالك» على الشاشة الرئيسية</li>
-      <li>• أدخل <b>PIN المالك</b> (4 أرقام) — <b>ليس</b> PIN الكاشير أو الجرسون</li>
-      <li>• يمكن تثبيت التطبيق على أكثر من هاتف — كل شريك يستخدم نفس PIN المالك</li>
-    </ul>
-    <div class="note">
-      <b>بعد التثبيت:</b> التطبيق يتصل تلقائياً بـ <code>tonino.zekiqmenu.com</code>.
-      تأكد أن الكاشير شغّال وأن نفق 4G مفعّل في المحل.
-    </div>
-    <div class="fix">
-      <b>وضعان للاتصال (موجودان في إعدادات التطبيق):</b>
-      <ol style="margin-top:8px;padding-right:18px">
-        <li><b>4G / النفق</b> — خارج المحل → <code>tonino.zekiqmenu.com</code></li>
-        <li><b>WiFi المحل</b> — داخل المطعم → <code>192.168.1.25:3000</code></li>
-      </ol>
-      <p style="margin-top:8px">افتح <a href="owner-connect.html" style="color:#93c5fd">صفحة الربط</a> لاختيار الوضع المناسب.</p>
-      <b style="display:block;margin-top:12px">لا يفتح أو PIN خطأ أو 404؟</b>
-      <ol style="margin-top:8px;padding-right:18px">
-        <li>تأكد أن كاشير Tonino يعمل على جهاز المحل</li>
-        <li>افتح التطبيق → الإعدادات → اختر «4G / Remote»</li>
-        <li>أو اضغط زر «ربط مباشر» أعلاه</li>
-        <li>إن استمرت المشكلة: احذف بيانات التطبيق (إعدادات أندرويد → التطبيقات → ZEKiQ Owner → مسح البيانات) ثم أعد التثبيت</li>
-        <li>تأكد أن PIN المالك مضبوط في الكاشير (إعدادات → PIN المالك)</li>
+    <p class="sub">مصمّم للعمل على <b>4G</b> — بدون WiFi المحل</p>
+    <div class="badge-wrap"><span class="badge">📶 وضع 4G / النفق</span></div>
+
+    <div id="tunnelStatus" class="status wait">جاري فحص نفق Tonino…</div>
+
+    <a class="btn apk" id="apkBtn" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=36">⬇️ 1 — تحميل التطبيق (APK)</a>
+    <a class="btn tunnel" href="https://tonino.zekiqmenu.com/owner?remote=1">🌐 2 — ربط عبر 4G (بعد التثبيت)</a>
+
+    <div class="box">
+      <b>خطوات سريعة على 4G:</b>
+      <ol>
+        <li>اضغط <b>تحميل التطبيق</b> → ثبّت من «التنزيلات»</li>
+        <li>اضغط <b>ربط عبر 4G</b> → يفتح التطبيق ويتصل بـ <code>tonino.zekiqmenu.com</code></li>
+        <li>أدخل <b>PIN المالك</b> (4 أرقام) — ليس PIN الكاشير</li>
+        <li>تأكد أن الكاشير في المحل <b>شغّال</b> والنفق مفعّل</li>
       </ol>
     </div>
-    <div class="warn"><b>Play Protect:</b> إذا ظهر تحذير → ⋮ → تثبيت على أي حال</div>
+
+    <div class="box">
+      <b>داخل التطبيق — الإعدادات ⚙️:</b>
+      <ol>
+        <li>اختر <b>4G — خارج المحل</b></li>
+        <li>العنوان: <code>tonino.zekiqmenu.com</code></li>
+        <li>يمكن التبديل لـ WiFi المحل (<code>192.168.1.25:3000</code>) داخل المحل فقط</li>
+      </ol>
+    </div>
+
+    <a class="btn ghost" href="https://tonino.zekiqmenu.com/owner?remote=1">إعادة ربط 4G</a>
+
+    <div class="mirror">
+      <b>إن ظهر 404 على github.io — لا مشكلة، استخدم هذه الروابط مباشرة:</b><br><br>
+      تحميل APK:<br>
+      <a href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=36">cdn.jsdelivr.net/.../ToninoOwner.apk</a><br><br>
+      ربط 4G:<br>
+      <a href="https://tonino.zekiqmenu.com/owner?remote=1">tonino.zekiqmenu.com/owner?remote=1</a><br><br>
+      صفحة بديلة:<br>
+      <a href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/owner.html">cdn.jsdelivr.net/.../owner.html</a>
+    </div>
   </div>
   <script>
     (function () {
-      var el = document.getElementById("serverStatus");
+      var el = document.getElementById("tunnelStatus");
       fetch("https://tonino.zekiqmenu.com/api/health", { cache: "no-store" })
         .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
         .then(function (j) {
-          el.textContent = "✓ خادم Tonino متصل — " + (j.shop && j.shop.shopName ? j.shop.shopName : "OK");
+          el.textContent = "✓ نفق Tonino يعمل — " + (j.shop && j.shop.shopName ? j.shop.shopName : "OK");
           el.className = "status ok";
         })
         .catch(function () {
-          el.textContent = "✗ خادم Tonino غير متاح — تأكد أن الكاشير يعمل";
+          el.textContent = "✗ النفق غير متاح — شغّل الكاشير في المحل وفعّل النفق";
           el.className = "status bad";
         });
     })();
