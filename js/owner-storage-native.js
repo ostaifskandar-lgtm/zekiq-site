@@ -56,8 +56,12 @@
 
   function profileNeedsRepair() {
     var prof = readProfile();
+    var tunnel = getTunnelUrl();
+    var mode = lsGet(KEYS.linkMode);
+    var server = trimUrl(lsGet(KEYS.server));
+    if (tunnel.startsWith("https://") && isPrivateLanUrl(server) && mode !== "remote") return true;
     if (!prof || !prof.server) return false;
-    var server = trimUrl(prof.server);
+    server = trimUrl(prof.server);
     if (server.startsWith("https://")) return true;
     var host = hostFromUrl(server);
     if (!host || !isPrivateLanUrl(server)) return false;

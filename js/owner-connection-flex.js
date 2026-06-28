@@ -43,14 +43,9 @@
       return false;
     }
     persistConnection(tunnel, "remote");
-    try {
-      var profiles = JSON.parse(lsGet("tonino-owner-server-profiles") || "[]");
-      if (profiles[0]) {
-        profiles[0].server = tunnel;
-        profiles[0].savedAt = Date.now();
-        lsSet("tonino-owner-server-profiles", JSON.stringify(profiles));
-      }
-    } catch (e) {}
+    if (window.__zekiqRepairOwnerStorageIfNeeded) {
+      window.__zekiqRepairOwnerStorageIfNeeded();
+    }
     return true;
   }
 

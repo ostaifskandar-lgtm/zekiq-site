@@ -18,6 +18,7 @@ const BOOT_TAG =
   '<script src="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/js/owner-remote-boot.js?v=205"></script>';
 
 const FILES = [
+  ["js/owner-runtime-fix.js", "assets/public/owner-runtime-fix.js"],
   ["js/owner-remote-boot.js", "assets/public/owner-remote-boot.js"],
   ["js/owner-update-guard.js", "assets/public/owner-update-guard.js"],
   ["js/owner-storage-native.js", "assets/public/owner-storage-native.js"],

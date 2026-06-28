@@ -1,13 +1,14 @@
 {
-  "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=206",
-  "setupUrlMirror": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=206",
+  "fileName": "ZEKiQManager.apk",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=210",
+  "setupUrlMirror": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=210",
+  "setupUrlLegacy": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=206",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
-  "versionCode": 36,
-  "versionName": "1.0.36",
-  "appLabel": "تطبيق المالك",
-  "packageId": "com.tonino.owner",
-  "signing": "Tonino Garson release (Gradle)",
-  "releaseNotes": "Restored original release signature — Samsung install fix",
-  "updatedAt": "2026-06-29T04:00:00.000Z"
+  "versionCode": 210,
+  "versionName": "2.1.0",
+  "appLabel": "ZEKiQ مدير",
+  "packageId": "com.zekiq.manager",
+  "signing": "Install alongside com.tonino.owner — no uninstall",
+  "releaseNotes": "Fix 4G monitor: uses tunnel not 192.168.1.25",
+  "updatedAt": "2026-06-28T19:00:00.000Z"
 }

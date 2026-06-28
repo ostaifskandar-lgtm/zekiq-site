@@ -7,6 +7,7 @@
   var LOCAL = "/";
   var SCRIPTS = [
     "owner-update-guard.js",
+    "owner-runtime-fix.js",
     "owner-storage-native.js",
     "owner-login-fix.js",
     "owner-connection-flex.js",
