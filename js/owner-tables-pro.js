@@ -3,7 +3,7 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.0.0";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.0.3";
 
   function isOwnerApp() {
     try {
@@ -448,15 +448,15 @@
 
     var nameEl = li.querySelector(".owner-table-name");
     if (!nameEl) return null;
-    var text = (nameEl.textContent || "").trim();
-    text = text.replace(/\s*\([^)]*\)\s*$/, "").trim();
+    var text = (nameEl.textContent || li.textContent || "").trim();
+    text = text.replace(/\s*\([^)]*\)\s*$/g, "").trim();
     var sep = text.indexOf(" · ");
     if (sep < 0) sep = text.indexOf(" - ");
     if (sep < 0) {
       for (var i = 0; i < openRowsCache.length; i++) {
         var cached = openRowsCache[i];
         var label = String(cached.section || "") + " · " + String(cached.tableNum || "");
-        if (text === label || text.indexOf(String(cached.section)) >= 0 && text.endsWith(String(cached.tableNum))) {
+        if (text === label || (text.indexOf(String(cached.section)) >= 0 && text.endsWith(String(cached.tableNum)))) {
           return normalizeRow(cached);
         }
       }
@@ -464,7 +464,7 @@
     }
     var parsedSection = text.slice(0, sep).trim();
     var rest = text.slice(sep + 3).trim();
-    var tableNumStr = rest.replace(/\s*\([^)]*\)\s*$/, "").trim();
+    var tableNumStr = rest.replace(/\s*\([^)]*\)\s*$/g, "").trim();
     var tableNum = Number(tableNumStr);
     if (!parsedSection || !Number.isFinite(tableNum)) return null;
     for (var j = 0; j < openRowsCache.length; j++) {
@@ -475,18 +475,20 @@
   }
 
   function syncTableRowData() {
-    document.querySelectorAll(".owner-table-row").forEach(function (li) {
+    document.querySelectorAll(".owner-table-row, .owner-table-row.is-compact").forEach(function (li) {
       var row = parseTableFromRow(li);
       if (!row || !Number.isFinite(row.tableNum)) return;
       li.setAttribute("data-zekiq-section", row.section);
       li.setAttribute("data-zekiq-table-num", String(row.tableNum));
       li.classList.add("zekiq-tappable");
+      li.style.cursor = "pointer";
     });
   }
 
   function handleTableTap(e) {
     var li = e.target.closest && e.target.closest(".owner-table-row");
-    if (!li || !li.querySelector(".owner-table-name")) return;
+    if (!li) return;
+    if (!li.querySelector(".owner-table-name") && !li.classList.contains("is-compact")) return;
     if (!isInApp() && !token()) return;
     var row = parseTableFromRow(li);
     if (!row) return;

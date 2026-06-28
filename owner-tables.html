@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#8f6218" />
+  <title>ZEKiQ — الطاولات (طوارئ)</title>
+  <style>
+    body{margin:0;font-family:system-ui,sans-serif;background:#f3ebe0;color:#2a2418;padding:16px;padding-bottom:40px}
+    h1{font-size:1.2rem;color:#8f6218;margin:0 0 12px;text-align:center}
+    .box{background:#fff;border:1px solid #e2d2b3;border-radius:14px;padding:14px;margin-bottom:12px}
+    label{display:block;font-size:12px;font-weight:700;margin:8px 0 4px}
+    input{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid #d8c6a0;font-size:16px}
+    button{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:800;margin-top:10px;background:linear-gradient(135deg,#8f6218,#cfa73e);color:#fff}
+    .note{font-size:12px;color:#78716c;text-align:center;line-height:1.6;margin-top:12px}
+    .err{color:#b91c1c;font-size:13px;margin-top:8px;text-align:center}
+  </style>
+</head>
+<body>
+  <h1>🪑 ZEKiQ — الطاولات</h1>
+  <p class="note">يعمل فوراً في المتصفح — بدون إعادة تثبيت التطبيق</p>
+
+  <div class="box">
+    <label>🌐 النفق أو السيرفر</label>
+    <input id="tunnel" dir="ltr" placeholder="tonino.zekiqmenu.com" />
+    <label>🔢 PIN المدير (4 أرقام)</label>
+    <input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="****" />
+    <button type="button" id="loginBtn">دخول → الطاولات</button>
+    <p class="err" id="err"></p>
+  </div>
+
+  <script>
+    window.__TONINO_APP_TARGET__ = "owner";
+    window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.0.3-web";
+    try {
+      localStorage.setItem("tonino-owner-native-apk", "1");
+      var t = localStorage.getItem("tonino-owner-remote-base") || localStorage.getItem("tonino-owner-server") || "";
+      if (t) document.getElementById("tunnel").value = t.replace(/^https?:\/\//, "");
+    } catch (e) {}
+  </script>
+  <script src="js/owner-connection-flex.js?v=203"></script>
+  <script src="js/owner-bootstrap.js?v=203"></script>
+  <script src="js/owner-tables-pro.js?v=203"></script>
+  <script>
+    document.getElementById("loginBtn").onclick = async function () {
+      var err = document.getElementById("err");
+      err.textContent = "";
+      var tunnel = document.getElementById("tunnel").value.trim().replace(/^https?:\/\//, "");
+      var pin = document.getElementById("pin").value.trim();
+      if (!tunnel || !pin) { err.textContent = "أدخل النفق و PIN"; return; }
+      var base = tunnel.startsWith("http") ? tunnel.replace(/\/+$/, "") : "https://" + tunnel.replace(/\/+$/, "");
+      try {
+        localStorage.setItem("tonino-owner-remote-base", base);
+        localStorage.setItem("tonino-owner-server", base);
+        localStorage.setItem("tonino-owner-working-api", base);
+        localStorage.setItem("tonino-owner-active-api", base);
+        localStorage.setItem("tonino-owner-link-mode", "remote");
+        localStorage.setItem("tonino-owner-manual-target", "1");
+      } catch (e) {}
+      var r = await fetch(base + "/api/owner/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: pin })
+      });
+      if (!r.ok) { err.textContent = "PIN خاطئ أو لا اتصال"; return; }
+      var j = await r.json();
+      if (!j.sessionToken) { err.textContent = "فشل الدخول"; return; }
+      try { localStorage.setItem("tonino-owner-session-token", j.sessionToken); } catch (e) {}
+      if (window.zekiqOpenTables) window.zekiqOpenTables();
+      else err.textContent = "تم الدخول — اضغط زر 🪑 الطاولات أسفل الشاشة";
+    };
+  </script>
+</body>
+</html>

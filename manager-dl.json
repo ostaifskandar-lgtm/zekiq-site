@@ -1,13 +1,12 @@
 {
-  "fileName": "ZEKiQManager.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=202",
-  "setupUrlMirror": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=202",
+  "fileName": "ToninoOwner-patched.apk",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner-patched.apk?v=203",
+  "setupUrlLegacy": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=202",
+  "tablesWebPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-tables.html",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
-  "versionCode": 36,
-  "versionName": "1.0.36",
-  "appLabel": "تطبيق المالك",
+  "versionCode": 203,
+  "versionName": "2.0.3",
   "packageId": "com.tonino.owner",
-  "signing": "Tonino Garson release (same as ToninoOwner.apk)",
-  "releaseNotes": "Same release-signed APK as ToninoOwner — Samsung compatible",
-  "updatedAt": "2026-06-29T04:00:00.000Z"
+  "releaseNotes": "Tables tap fix + remote boot — uninstall old app first for patched APK",
+  "updatedAt": "2026-06-29T05:00:00.000Z"
 }
