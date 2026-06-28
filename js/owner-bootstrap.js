@@ -96,10 +96,12 @@
         var ip = typeof cfg.ip === "string" ? cfg.ip.trim() : "";
         var port = cfg.port || 3000;
         var lan = ip ? "http://" + ip + ":" + port : "";
+        var linkMode = getStored(KEYS.linkMode);
+        var tunnel = trimUrl(getStored(KEYS.remoteBase) || base);
         var profile = {
           id: "cashier",
           label: cfg.shopName || shopLabel || "Shop",
-          server: lan || base,
+          server: (linkMode === "remote" && tunnel.startsWith("https://")) ? tunnel : (lan || base),
           savedAt: Date.now()
         };
         try {
@@ -119,7 +121,19 @@
 
     try {
       if (tunnel) localStorage.setItem(KEYS.remoteBase, tunnel);
-      if (lan) {
+      if (mode === "remote" && tunnel) {
+        localStorage.setItem(KEYS.profiles, JSON.stringify([{
+          id: "cashier",
+          label: "Shop",
+          server: tunnel,
+          savedAt: Date.now()
+        }]));
+        localStorage.setItem(KEYS.server, tunnel);
+        localStorage.setItem(KEYS.linkMode, "remote");
+        localStorage.setItem(KEYS.workingApi, tunnel);
+        localStorage.setItem(KEYS.activeApi, tunnel);
+        localStorage.setItem(KEYS.workingVia, "remote");
+      } else if (lan) {
         localStorage.setItem(KEYS.remoteForIp, lanHostFromUrl(lan));
         localStorage.setItem(KEYS.profiles, JSON.stringify([{
           id: "cashier",
@@ -127,14 +141,6 @@
           server: lan,
           savedAt: Date.now()
         }]));
-      }
-      if (mode === "remote" && tunnel) {
-        localStorage.setItem(KEYS.server, tunnel);
-        localStorage.setItem(KEYS.linkMode, "remote");
-        localStorage.setItem(KEYS.workingApi, tunnel);
-        localStorage.setItem(KEYS.activeApi, tunnel);
-        localStorage.setItem(KEYS.workingVia, "remote");
-      } else if (lan) {
         localStorage.setItem(KEYS.server, lan);
         localStorage.setItem(KEYS.linkMode, "wifi");
         localStorage.setItem(KEYS.workingApi, lan);

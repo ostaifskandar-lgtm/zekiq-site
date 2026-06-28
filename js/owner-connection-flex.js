@@ -26,6 +26,27 @@
 
   if (!isOwnerApp()) return;
 
+  function forceTunnelOverLanNow() {
+    var tunnel = trimUrl(lsGet(KEYS.remoteBase));
+    if (!tunnel.startsWith("https://")) {
+      var alt = trimUrl(lsGet(KEYS.workingApi));
+      if (alt.startsWith("https://")) tunnel = alt;
+    }
+    if (!tunnel.startsWith("https://")) return false;
+    var server = trimUrl(lsGet(KEYS.server));
+    if (!isPrivateLanUrl(server) && server.startsWith("https://")) return false;
+    persistConnection(tunnel, "remote");
+    try {
+      var profiles = JSON.parse(lsGet("tonino-owner-server-profiles") || "[]");
+      if (profiles[0]) {
+        profiles[0].server = tunnel;
+        profiles[0].savedAt = Date.now();
+        lsSet("tonino-owner-server-profiles", JSON.stringify(profiles));
+      }
+    } catch (e) {}
+    return true;
+  }
+
   function trimUrl(u) {
     return String(u || "").trim().replace(/\/+$/, "");
   }
@@ -151,6 +172,14 @@
 
   keepBundledUi();
   patchLocationReplace();
+  if (forceTunnelOverLanNow()) {
+    try {
+      if (!sessionStorage.getItem("zekiq-tunnel-fixed-v54")) {
+        sessionStorage.setItem("zekiq-tunnel-fixed-v54", "1");
+        location.reload();
+      }
+    } catch (e) {}
+  }
   probeAndFixConnection();
   setInterval(keepBundledUi, 2000);
   setInterval(probeAndFixConnection, 3000);

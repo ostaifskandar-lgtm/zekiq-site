@@ -3,7 +3,7 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "1.0.53";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "1.0.54";
 
   function isOwnerApp() {
     try {
@@ -301,7 +301,7 @@
     if (document.getElementById("zekiq-ext-badge")) return;
     var badge = document.createElement("div");
     badge.id = "zekiq-ext-badge";
-    badge.textContent = "v" + (window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.53");
+    badge.textContent = "v" + (window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.54");
     document.body.appendChild(badge);
   }
 
