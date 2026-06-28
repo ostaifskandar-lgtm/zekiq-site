@@ -1,14 +1,14 @@
 {
   "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=51",
-  "setupUrlCdn": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=51",
+  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=52",
+  "setupUrlCdn": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=52",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
   "publicPageAlt": "https://tonino.zekiqmenu.com/owner?remote=1",
   "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api-tonino.json",
   "ownerConfigUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json",
-  "versionCode": 51,
-  "versionName": "1.0.51",
+  "versionCode": 52,
+  "versionName": "1.0.52",
   "sizeMb": "14.7",
-  "releaseNotes": "No fake update modal + auto-switch from dead LAN IP to 4G tunnel",
-  "updatedAt": "2026-06-28T23:30:00.000Z"
+  "releaseNotes": "Fix table tap — parse full section · tableNum from React DOM",
+  "updatedAt": "2026-06-28T23:55:00.000Z"
 }

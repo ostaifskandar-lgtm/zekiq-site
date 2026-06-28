@@ -3,7 +3,7 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "1.0.51";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "1.0.52";
 
   function isOwnerApp() {
     try {
@@ -301,7 +301,7 @@
     if (document.getElementById("zekiq-ext-badge")) return;
     var badge = document.createElement("div");
     badge.id = "zekiq-ext-badge";
-    badge.textContent = "v" + (window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.51");
+    badge.textContent = "v" + (window.__ZEKIQ_OWNER_EXT_VERSION__ || "1.0.52");
     document.body.appendChild(badge);
   }
 
@@ -387,7 +387,7 @@
 
   async function showOpenDetail(row) {
     row = normalizeRow(row);
-    if (!row || !row.section || !row.tableNum) return;
+    if (!row || !row.section || !Number.isFinite(row.tableNum)) return;
     ensureUi();
     openDetail(row.section + " · " + row.tableNum, '<div class="z-empty">جاري التحميل…</div>');
     try {
@@ -401,8 +401,11 @@
       html += renderSummary(total, paid, remaining, Number(order.discount || 0));
       document.getElementById("zekiq-detail-body").innerHTML = html;
     } catch (e) {
+      var msg = (e && e.message) ? String(e.message) : "";
       document.getElementById("zekiq-detail-body").innerHTML =
-        '<div class="z-empty">تعذّر تحميل التفاصيل' + (token() ? "" : " — سجّل الدخول") + "</div>";
+        '<div class="z-empty">تعذّر تحميل التفاصيل' +
+        (msg && msg !== "network" && msg !== "api" ? " — " + esc(msg) : "") +
+        (token() ? "" : " — سجّل الدخول") + "</div>";
     }
   }
 
@@ -423,60 +426,81 @@
   }
 
   function refreshOpenRowsCache() {
-    if (!token()) return;
+    if (!token()) return Promise.resolve();
     var now = Date.now();
-    if (now - cacheAt < 8000) return;
+    if (now - cacheAt < 4000 && openRowsCache.length) return Promise.resolve();
     cacheAt = now;
-    trpc("owner.live", {}).then(function (live) {
+    return trpc("owner.live", {}).then(function (live) {
       openRowsCache = live.tables && live.tables.open ? live.tables.open.rows || [] : [];
+      syncTableRowData();
     }).catch(function () {});
   }
 
   function parseTableFromRow(li) {
+    if (!li) return null;
+    var section = li.getAttribute("data-zekiq-section");
+    var tableNumRaw = li.getAttribute("data-zekiq-table-num");
+    if (section && tableNumRaw) {
+      return normalizeRow({ section: section, tableNum: Number(tableNumRaw) });
+    }
+
     var nameEl = li.querySelector(".owner-table-name");
     if (!nameEl) return null;
-    var text = "";
-    if (nameEl.firstChild && nameEl.firstChild.nodeType === 3) {
-      text = nameEl.firstChild.textContent || "";
-    } else {
-      text = nameEl.textContent || "";
-    }
-    text = text.trim();
+    var text = (nameEl.textContent || "").trim();
+    text = text.replace(/\s*\([^)]*\)\s*$/, "").trim();
     var sep = text.indexOf(" · ");
     if (sep < 0) sep = text.indexOf(" - ");
-    if (sep < 0) return null;
-    var section = text.slice(0, sep).trim();
+    if (sep < 0) {
+      for (var i = 0; i < openRowsCache.length; i++) {
+        var cached = openRowsCache[i];
+        var label = String(cached.section || "") + " · " + String(cached.tableNum || "");
+        if (text === label || text.indexOf(String(cached.section)) >= 0 && text.endsWith(String(cached.tableNum))) {
+          return normalizeRow(cached);
+        }
+      }
+      return null;
+    }
+    var parsedSection = text.slice(0, sep).trim();
     var rest = text.slice(sep + 3).trim();
     var tableNumStr = rest.replace(/\s*\([^)]*\)\s*$/, "").trim();
     var tableNum = Number(tableNumStr);
-    if (!section || !tableNumStr || !tableNum) return null;
-    for (var i = 0; i < openRowsCache.length; i++) {
-      var r = openRowsCache[i];
-      if (String(r.section) === section && Number(r.tableNum) === tableNum) return normalizeRow(r);
+    if (!parsedSection || !Number.isFinite(tableNum)) return null;
+    for (var j = 0; j < openRowsCache.length; j++) {
+      var r = openRowsCache[j];
+      if (String(r.section) === parsedSection && Number(r.tableNum) === tableNum) return normalizeRow(r);
     }
-    return normalizeRow({ section: section, tableNum: tableNum });
+    return normalizeRow({ section: parsedSection, tableNum: tableNum });
   }
 
-  function markTableRows() {
-    document.querySelectorAll(".owner-table-row .owner-table-name").forEach(function (nameEl) {
-      var li = nameEl.closest(".owner-table-row");
-      if (li) li.classList.add("zekiq-tappable");
+  function syncTableRowData() {
+    document.querySelectorAll(".owner-table-row").forEach(function (li) {
+      var row = parseTableFromRow(li);
+      if (!row || !Number.isFinite(row.tableNum)) return;
+      li.setAttribute("data-zekiq-section", row.section);
+      li.setAttribute("data-zekiq-table-num", String(row.tableNum));
+      li.classList.add("zekiq-tappable");
     });
+  }
+
+  function handleTableTap(e) {
+    var li = e.target.closest && e.target.closest(".owner-table-row");
+    if (!li || !li.querySelector(".owner-table-name")) return;
+    if (!isInApp() && !token()) return;
+    var row = parseTableFromRow(li);
+    if (!row) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+    showOpenDetail(row);
   }
 
   function installTableTapDelegation() {
     if (document.documentElement.dataset.zekiqTap) return;
     document.documentElement.dataset.zekiqTap = "1";
-    document.addEventListener("click", function (e) {
-      var li = e.target.closest && e.target.closest(".owner-table-row");
-      if (!li || !li.querySelector(".owner-table-name")) return;
-      if (!isInApp() && !token()) return;
-      var row = parseTableFromRow(li);
-      if (!row) return;
-      e.preventDefault();
-      e.stopPropagation();
-      showOpenDetail(row);
-    }, true);
+    document.addEventListener("click", handleTableTap, true);
+    document.addEventListener("touchend", function (e) {
+      if (e.changedTouches && e.changedTouches.length === 1) handleTableTap(e);
+    }, { capture: true, passive: false });
   }
 
   function setButtonsVisible(show) {
@@ -499,7 +523,7 @@
     injectNavButton();
     setButtonsVisible(true);
     refreshOpenRowsCache();
-    markTableRows();
+    syncTableRowData();
   }
 
   installTableTapDelegation();
