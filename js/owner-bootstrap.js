@@ -9,6 +9,7 @@
   var KEYS = {
     remoteBase: "tonino-owner-remote-base",
     remoteForIp: "tonino-owner-remote-for-ip",
+    remoteForIp: "tonino-owner-remote-for-ip",
     server: "tonino-owner-server",
     activeApi: "tonino-owner-active-api",
     profiles: "tonino-owner-server-profiles",
@@ -99,12 +100,16 @@
         var port = cfg.port || 3000;
         var lan = ip ? "http://" + ip + ":" + port : "";
         var linkMode = getStored(KEYS.linkMode);
-        var tunnel = trimUrl(getStored(KEYS.remoteBase) || cfg.tunnelUrl || base);
-        var useRemote = linkMode === "remote" || tunnel.startsWith("https://");
+        var tunnel = trimUrl(getStored(KEYS.remoteBase) || cfg.tunnelUrl || (base.startsWith("https://") ? base : ""));
+        var useRemote = linkMode === "remote" || base.startsWith("https://") || tunnel.startsWith("https://");
+        if (useRemote && tunnel.startsWith("https://") && window.__zekiqApplyRemoteOwnerStorage) {
+          window.__zekiqApplyRemoteOwnerStorage(tunnel, lan, cfg.shopName || shopLabel);
+          return;
+        }
         var profile = {
           id: "cashier",
           label: cfg.shopName || shopLabel || "Shop",
-          server: (useRemote && tunnel.startsWith("https://")) ? tunnel : (lan || base),
+          server: lan || base,
           savedAt: Date.now()
         };
         try {
@@ -112,13 +117,6 @@
           if (cfg.shopName) localStorage.setItem("tonino-owner-shop-name", cfg.shopName);
           if (cfg.tunnelUrl) localStorage.setItem(KEYS.remoteBase, trimUrl(cfg.tunnelUrl));
           localStorage.setItem(KEYS.profiles, JSON.stringify([profile]));
-          if (useRemote && tunnel.startsWith("https://")) {
-            localStorage.setItem(KEYS.server, tunnel);
-            localStorage.setItem(KEYS.workingApi, tunnel);
-            localStorage.setItem(KEYS.activeApi, tunnel);
-            localStorage.setItem(KEYS.linkMode, "remote");
-            localStorage.setItem(KEYS.workingVia, "remote");
-          }
         } catch (e) {}
       })
       .catch(function () {});
@@ -129,21 +127,17 @@
     var lan = normalizeLanInput(lanRaw, defaultCfg());
     unlockNetwork();
 
+    if (mode === "remote" && tunnel) {
+      try {
+        localStorage.setItem(KEYS.remoteBase, tunnel);
+        localStorage.setItem(KEYS.manualTarget, "1");
+      } catch (e) {}
+      return syncProfileFromServer(tunnel, "");
+    }
+
     try {
       if (tunnel) localStorage.setItem(KEYS.remoteBase, tunnel);
-      if (mode === "remote" && tunnel) {
-        localStorage.setItem(KEYS.profiles, JSON.stringify([{
-          id: "cashier",
-          label: "Shop",
-          server: tunnel,
-          savedAt: Date.now()
-        }]));
-        localStorage.setItem(KEYS.server, tunnel);
-        localStorage.setItem(KEYS.linkMode, "remote");
-        localStorage.setItem(KEYS.workingApi, tunnel);
-        localStorage.setItem(KEYS.activeApi, tunnel);
-        localStorage.setItem(KEYS.workingVia, "remote");
-      } else if (lan) {
+      if (lan) {
         localStorage.setItem(KEYS.remoteForIp, lanHostFromUrl(lan));
         localStorage.setItem(KEYS.profiles, JSON.stringify([{
           id: "cashier",
@@ -161,8 +155,7 @@
       window.dispatchEvent(new CustomEvent("tonino-owner-link-changed"));
     } catch (e) {}
 
-    var probe = mode === "remote" ? tunnel : lan;
-    return syncProfileFromServer(probe, "");
+    return syncProfileFromServer(lan || tunnel, "");
   }
 
   function fetchConfig() {
