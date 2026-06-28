@@ -99,11 +99,12 @@
         var port = cfg.port || 3000;
         var lan = ip ? "http://" + ip + ":" + port : "";
         var linkMode = getStored(KEYS.linkMode);
-        var tunnel = trimUrl(getStored(KEYS.remoteBase) || base);
+        var tunnel = trimUrl(getStored(KEYS.remoteBase) || cfg.tunnelUrl || base);
+        var useRemote = linkMode === "remote" || tunnel.startsWith("https://");
         var profile = {
           id: "cashier",
           label: cfg.shopName || shopLabel || "Shop",
-          server: (linkMode === "remote" && tunnel.startsWith("https://")) ? tunnel : (lan || base),
+          server: (useRemote && tunnel.startsWith("https://")) ? tunnel : (lan || base),
           savedAt: Date.now()
         };
         try {
@@ -111,6 +112,13 @@
           if (cfg.shopName) localStorage.setItem("tonino-owner-shop-name", cfg.shopName);
           if (cfg.tunnelUrl) localStorage.setItem(KEYS.remoteBase, trimUrl(cfg.tunnelUrl));
           localStorage.setItem(KEYS.profiles, JSON.stringify([profile]));
+          if (useRemote && tunnel.startsWith("https://")) {
+            localStorage.setItem(KEYS.server, tunnel);
+            localStorage.setItem(KEYS.workingApi, tunnel);
+            localStorage.setItem(KEYS.activeApi, tunnel);
+            localStorage.setItem(KEYS.linkMode, "remote");
+            localStorage.setItem(KEYS.workingVia, "remote");
+          }
         } catch (e) {}
       })
       .catch(function () {});

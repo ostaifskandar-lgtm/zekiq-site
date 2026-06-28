@@ -177,12 +177,7 @@
   keepBundledUi();
   patchLocationReplace();
   if (forceTunnelOverLanNow()) {
-    try {
-      if (!sessionStorage.getItem("zekiq-tunnel-fixed-v54")) {
-        sessionStorage.setItem("zekiq-tunnel-fixed-v54", "1");
-        location.reload();
-      }
-    } catch (e) {}
+    /* fixed silently — no reload (reload broke PIN login) */
   }
   probeAndFixConnection();
   setInterval(keepBundledUi, 2000);

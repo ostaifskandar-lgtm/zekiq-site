@@ -6,6 +6,7 @@
   var CDN = "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/js/";
   var SCRIPTS = [
     "owner-update-guard.js",
+    "owner-login-fix.js",
     "owner-connection-flex.js",
     "owner-bootstrap.js",
     "owner-tables-pro.js"
@@ -15,7 +16,7 @@
   function next() {
     if (i >= SCRIPTS.length) return;
     var s = document.createElement("script");
-    s.src = CDN + SCRIPTS[i] + "?v=203";
+    s.src = CDN + SCRIPTS[i] + "?v=204";
     s.async = false;
     s.onload = s.onerror = function () {
       i += 1;
