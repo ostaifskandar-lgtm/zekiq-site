@@ -3,33 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZEKiQ POS</title>
-  <meta name="description" content="ZEKiQ POS — restaurant & café POS for Windows" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="ZEKiQ POS" />
-  <meta property="og:url" content="https://ostaifskandar-lgtm.github.io/zekiq-site/download.html" />
+  <title>Download ZEKiQ POS</title>
+  <meta name="description" content="Download ZEKiQ POS for Windows" />
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Noto+Sans+Arabic:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/site.css" />
 </head>
-<body data-page="download" data-i18n-title="meta_title" data-i18n-meta="meta_desc" data-version-id="dlVersion" data-version-extra="dl_ver_extra" data-dl-btn="dlBtn">
+<body data-page="download" data-i18n-title="dl_page_title" data-i18n-meta="dl_page_meta" data-dl-btn="dlBtn" data-version-id="dlVersion">
 
   <header>
     <div class="nav">
-      <a href="download.html" class="brand">
+      <a href="index.html" class="brand">
         <img src="assets/logo.svg" width="40" height="40" alt="ZEKiQ" />
         <span>Z</span>EKiQ <span class="brand-sub">POS</span>
       </a>
       <nav class="nav-links">
-        <a href="#fixes" data-i18n="nav_fixes">Problems</a>
-        <a href="#flow" data-i18n="nav_flow">Flow</a>
-        <a href="#features" data-i18n="nav_features">Features</a>
-        <a href="#price" data-i18n="nav_price">Price</a>
-        <a href="#faq" data-i18n="nav_faq">FAQ</a>
-        <a href="#download" data-nav="download" data-i18n="nav_download">Download</a>
-        <div class="lang-switch" role="group" aria-label="Language">
+        <a href="index.html" data-nav="home" data-i18n="nav_features">Features</a>
+        <a href="garson.html" data-nav="garson" data-i18n="nav_garson">Garson app</a>
+        <a href="phone.html" data-nav="phone" data-i18n="nav_phone">Pair</a>
+        <a href="download.html" data-nav="download" data-i18n="nav_download">Download</a>
+        <div class="lang-switch" role="group">
           <button type="button" data-lang="en" class="on">EN</button>
           <button type="button" data-lang="tr">TR</button>
           <button type="button" data-lang="ar">AR</button>
@@ -38,239 +33,42 @@
     </div>
   </header>
 
-  <div class="marquee-band" aria-hidden="true">
-    <div class="marquee-track">
-      <span data-i18n="marquee_1">One install · every feature</span>
-      <span data-i18n="marquee_3">Guest QR + Garson + kitchen</span>
-      <span data-i18n="marquee_inv">Invoice photos saved in the app</span>
-      <span data-i18n="marquee_5">30-day free trial</span>
+  <main class="page-center">
+    <div class="page-card">
+      <img src="assets/logo.svg" width="72" height="72" alt="" class="page-logo" />
+      <h1 data-i18n="dl_h1">Download ZEKiQ POS for Windows</h1>
+      <p data-i18n-html-only="dl_p"></p>
+
+      <div class="install-badge">
+        <span class="install-badge-n" data-install-raw>0</span>
+        <span data-i18n-dl-counter>0 verified installs on registered devices</span>
+      </div>
+
+      <a id="dlBtn" class="btn btn-gold btn-block" href="#" data-i18n="dl_preparing">Preparing link…</a>
+      <p class="ver-line" id="dlVersion" aria-live="polite"></p>
+
+      <ul class="checklist align-start">
+        <li data-i18n="dl_li_1">Windows 10 or 11</li>
+        <li data-i18n="dl_li_2">Internet for first activation</li>
+        <li data-i18n-html-only="dl_li_3"></li>
+        <li data-i18n="dl_li_4">Updates from inside the app</li>
+      </ul>
+
+      <div class="warn-box" data-i18n-html-only="dl_warn"></div>
+
+      <p class="note center-links">
+        <a href="garson.html" data-i18n="foot_garson">Download Garson</a>
+        ·
+        <a href="phone.html" data-i18n="dl_back_phone">Pair waiter app</a>
+        ·
+        <a href="index.html" data-i18n="dl_back_home">Back to home</a>
+      </p>
     </div>
-  </div>
-
-  <section class="hero hero-lean">
-    <div class="hero-glow" aria-hidden="true"></div>
-    <div class="wrap hero-grid">
-      <div>
-        <div class="badge pulse-badge" data-i18n="hero_badge">Windows · Local network · 3 languages</div>
-        <h1>
-          <span data-i18n="hero_h1_a">Fast POS</span><br />
-          <span class="hl shimmer" data-i18n="hero_h1_b">clear accounting</span><br />
-          <span data-i18n="hero_h1_c">for your venue</span>
-        </h1>
-        <p class="hero-hook" data-i18n="hero_hook">Stop paying for 3 apps when one does it all.</p>
-        <p class="lead" data-i18n="hero_lead" data-i18n-html="1">One system for the floor, kitchen, accounting, and guests.</p>
-        <div class="cta-row">
-          <a href="#download" class="btn btn-gold" data-i18n="hero_dl">Download for Windows</a>
-          <a href="garson.html" class="btn btn-ghost" data-i18n="hero_phone">Download Garson</a>
-        </div>
-        <div class="hero-mini-stats">
-          <span><strong data-trial-days>30</strong> <span data-i18n="stat_trial">days free</span></span>
-          <span><strong data-price-num>$150</strong> <span data-i18n="stat_price">/ year</span></span>
-          <span><strong>3</strong> <span data-i18n="stat_langs">languages</span></span>
-        </div>
-      </div>
-      <div class="preview" aria-hidden="true">
-        <div class="preview-card">
-          <div class="preview-toast"><span class="preview-toast-dot"></span><span data-i18n="preview_toast">Table 3 · new order · kitchen printing…</span></div>
-          <div class="preview-top">
-            <span class="pill on">Masalar</span><span class="pill">Sipariş</span><span class="pill">Rapor</span>
-          </div>
-          <div class="preview-grid">
-            <div class="table-tile empty">1</div><div class="table-tile busy pulse-table">2</div>
-            <div class="table-tile partial">3</div><div class="table-tile empty">4</div>
-            <div class="table-tile busy">5</div><div class="table-tile empty">6</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="fixes" class="fixes-section">
-    <div class="wrap">
-      <div class="section-head">
-        <h2 data-i18n="fixes_h2">Your problem → ZEKiQ fix</h2>
-        <p data-i18n="fixes_sub">Five headaches restaurant owners know — and how one program ends them.</p>
-      </div>
-
-      <article class="fix-row reveal">
-        <div class="fix-viz viz-wifi" aria-hidden="true">
-          <div class="viz-bad"><span>📡</span><span class="viz-x">✗</span></div>
-          <div class="viz-arrow">→</div>
-          <div class="viz-good"><span>💻</span><span class="viz-ok">✓</span></div>
-        </div>
-        <div class="fix-copy">
-          <p class="fix-prob" data-i18n="fix_1_prob">Internet cuts — cashier stops, guests wait</p>
-          <p class="fix-sol" data-i18n="fix_1_sol">ZEKiQ runs on your local network. Sales keep flowing even offline.</p>
-        </div>
-      </article>
-
-      <article class="fix-row fix-row-alt reveal">
-        <div class="fix-viz viz-stack" aria-hidden="true">
-          <div class="viz-stack-pile"><i></i><i></i><i></i></div>
-          <div class="viz-arrow">→</div>
-          <div class="viz-one-logo"><img src="assets/logo.svg" width="36" height="36" alt="" /></div>
-        </div>
-        <div class="fix-copy">
-          <p class="fix-prob" data-i18n="fix_2_prob">POS + QR + stock = three monthly bills</p>
-          <p class="fix-sol" data-i18n="fix_2_sol">One Windows install. Full stack. About $150/year — not per month.</p>
-        </div>
-      </article>
-
-      <article class="fix-row reveal">
-        <div class="fix-viz viz-order" aria-hidden="true">
-          <span class="viz-phone">📱</span><span class="viz-line"></span><span class="viz-waiter">🤵</span><span class="viz-line"></span><span class="viz-kitchen">🍳</span>
-        </div>
-        <div class="fix-copy">
-          <p class="fix-prob" data-i18n="fix_3_prob">Orders lost between paper tickets and apps</p>
-          <p class="fix-sol" data-i18n="fix_3_sol">Guest QR + Garson on the same brain — kitchen prints in seconds.</p>
-        </div>
-      </article>
-
-      <article class="fix-row fix-row-alt fix-row-star reveal">
-        <div class="fix-viz viz-invoice" aria-hidden="true">
-          <div class="viz-inv-paper">
-            <span>🧾</span>
-            <small data-i18n="viz_inv_paper">Paper invoice</small>
-          </div>
-          <div class="viz-scan-beam"></div>
-          <div class="viz-inv-screen">
-            <span>🖼️</span>
-            <small data-i18n="viz_inv_saved">Photo saved</small>
-          </div>
-        </div>
-        <div class="fix-copy">
-          <p class="fix-prob" data-i18n="fix_4_prob">Supplier invoices scattered — photos on phones, papers in drawers</p>
-          <p class="fix-sol" data-i18n="fix_4_sol">Scan the invoice in ZEKiQ — the photo is saved in the program, linked to stock & accounting.</p>
-        </div>
-      </article>
-
-      <article class="fix-row reveal">
-        <div class="fix-viz viz-excel" aria-hidden="true">
-          <div class="viz-sheet">📊<span>Excel</span></div>
-          <div class="viz-arrow">→</div>
-          <div class="viz-report">📈<span>ZEKiQ</span></div>
-        </div>
-        <div class="fix-copy">
-          <p class="fix-prob" data-i18n="fix_5_prob">End-of-day reports in Excel until midnight</p>
-          <p class="fix-sol" data-i18n="fix_5_sol">Sales, expenses, suppliers & reports — one app, one truth.</p>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section id="flow" class="panel reveal">
-    <div class="wrap">
-      <div class="section-head">
-        <h2 data-i18n="flow_h2">One order — four screens</h2>
-        <p data-i18n="flow_sub">From the guest's phone to kitchen print in seconds.</p>
-      </div>
-      <div class="flow-pipeline">
-        <article class="flow-step"><span class="flow-ic">📱</span><h3 data-i18n="flow_1_t">Guest QR</h3></article>
-        <span class="flow-arrow" aria-hidden="true">→</span>
-        <article class="flow-step"><span class="flow-ic">🤵</span><h3 data-i18n="flow_2_t">Garson</h3></article>
-        <span class="flow-arrow" aria-hidden="true">→</span>
-        <article class="flow-step"><span class="flow-ic">🍳</span><h3 data-i18n="flow_3_t">Kitchen</h3></article>
-        <span class="flow-arrow" aria-hidden="true">→</span>
-        <article class="flow-step flow-step-gold"><span class="flow-ic">💳</span><h3 data-i18n="flow_4_t">Cashier</h3></article>
-      </div>
-    </div>
-  </section>
-
-  <section id="features" class="reveal">
-    <div class="wrap">
-      <div class="section-head">
-        <h2 data-i18n="feat_h2">What you get — no empty promises</h2>
-      </div>
-      <div class="feat-compact">
-        <div class="feat-chip"><span>💳</span><div><h3 data-i18n="feat_1_t">Windows POS</h3><p data-i18n="feat_1_d"></p></div></div>
-        <div class="feat-chip"><span>📊</span><div><h3 data-i18n="feat_2_t">Accounting</h3><p data-i18n="feat_2_d"></p></div></div>
-        <div class="feat-chip feat-chip-gold"><span>🧾</span><div><h3 data-i18n="feat_inv_t">Invoice photos</h3><p data-i18n="feat_inv_d"></p></div></div>
-        <div class="feat-chip"><span>📱</span><div><h3 data-i18n="feat_4_t">Table QR</h3><p data-i18n="feat_4_d"></p></div></div>
-        <div class="feat-chip"><span>🤵</span><div><h3 data-i18n="feat_3_t">Garson app</h3><p data-i18n="feat_3_d"></p></div></div>
-        <div class="feat-chip"><span>📦</span><div><h3 data-i18n="feat_stock_t">Smart stock</h3><p data-i18n="feat_stock_d"></p></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="price" class="price-lean reveal">
-    <div class="wrap">
-      <div class="price-lean-card">
-        <div class="price-lean-offer">
-          <div><span class="price-big" data-trial-days>30</span><span data-i18n="ad_spot_trial">days free</span></div>
-          <span class="price-sep">→</span>
-          <div><span class="price-big" data-price-num>$150</span><span data-i18n="ad_spot_year">/ year after</span></div>
-        </div>
-        <p data-i18n="price_lean_p">No credit card · Garson included · invoice photos included · remote activation</p>
-        <a href="#download" class="btn btn-gold btn-lg" data-i18n="teaser_btn">Download & start trial</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="faq" class="panel reveal">
-    <div class="wrap">
-      <div class="section-head"><h2 data-i18n="faq_h2">Quick answers</h2></div>
-      <div class="faq-list">
-        <details class="faq-item"><summary data-i18n="faq_1_q">Do I need internet every day?</summary><p data-i18n="faq_1_a"></p></details>
-        <details class="faq-item"><summary data-i18n="faq_inv_q">Are supplier invoice photos really saved?</summary><p data-i18n="faq_inv_a"></p></details>
-        <details class="faq-item"><summary data-i18n="faq_2_q">Is Garson included?</summary><p data-i18n="faq_2_a"></p></details>
-        <details class="faq-item"><summary data-i18n="faq_3_q">What happens after the free month?</summary><p data-i18n="faq_3_a"></p></details>
-      </div>
-    </div>
-  </section>
-
-  <section id="download" class="download-section reveal">
-    <div class="wrap">
-      <div class="download-panel">
-        <div class="ad-dl-ribbon" data-i18n="ad_dl_ribbon">Official download</div>
-        <div class="download-panel-inner">
-          <div class="download-panel-head">
-            <img src="assets/logo.svg" width="56" height="56" alt="" class="download-logo" />
-            <div>
-              <h2 data-i18n="dl_h1">Download ZEKiQ POS</h2>
-              <p data-i18n-html-only="dl_p"></p>
-            </div>
-          </div>
-          <div class="install-badge">
-            <span class="install-badge-n" data-install-raw>0</span>
-            <span data-i18n-dl-counter>0 verified installs</span>
-          </div>
-          <a id="dlBtn" class="btn btn-gold btn-lg btn-block" href="#" data-i18n="dl_preparing">Preparing link…</a>
-          <p class="ver-line" id="dlVersion" aria-live="polite">…</p>
-          <ul class="checklist align-start">
-            <li data-i18n="dl_li_1"></li>
-            <li data-i18n="dl_li_2"></li>
-            <li data-i18n-html-only="dl_li_3"></li>
-            <li data-i18n="dl_li_4"></li>
-          </ul>
-          <div class="warn-box" data-i18n-html-only="dl_warn"></div>
-          <p class="note center-links download-links">
-            <a href="garson.html" data-i18n="foot_garson">Garson</a> · <a href="phone.html" data-i18n="dl_back_phone">Pair</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="wrap">
-      <div class="foot-links">
-        <a href="#download" data-i18n="foot_dl">Download</a>
-        <a href="garson.html" data-i18n="foot_garson">Garson</a>
-        <a href="phone.html" data-i18n="foot_phone">Pair</a>
-      </div>
-      <p class="copy">© <span id="year"></span> ZEKiQ</p>
-    </div>
-  </footer>
+  </main>
 
   <script src="js/site-gate.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/site.js"></script>
-  <aside class="sticky-dl" id="stickyDl" hidden>
-    <div class="sticky-dl-inner">
-      <p data-i18n="sticky_txt">30 days free · $150/year after</p>
-      <a href="#download" class="btn btn-gold btn-sm" data-i18n="sticky_btn">Download</a>
-    </div>
-  </aside>
   <script>ZekiqSiteGate.run(function () { ZekiqSite.init(); });</script>
 </body>
 </html>
