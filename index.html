@@ -1,16 +1,244 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ZEKiQ POS</title>
-  <meta http-equiv="refresh" content="0; url=download.html" />
-  <link rel="canonical" href="download.html" />
-  <script>location.replace("download.html");</script>
+  <meta name="description" content="ZEKiQ POS — restaurant & café POS for Windows" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ZEKiQ POS" />
+  <meta property="og:url" content="https://ostaifskandar-lgtm.github.io/zekiq-site/" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Noto+Sans+Arabic:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/site.css" />
 </head>
-<body>
-  <p style="font-family:system-ui,sans-serif;padding:2rem;text-align:center">
-    <a href="download.html">ZEKiQ POS</a>
-  </p>
+<body data-page="home" data-i18n-title="meta_title" data-i18n-meta="meta_desc" data-version-id="homeVersion" data-version-extra="dl_ver_extra">
+
+  <header>
+    <div class="nav">
+      <a href="index.html" class="brand">
+        <img src="assets/logo.svg" width="40" height="40" alt="ZEKiQ" />
+        <span>Z</span>EKiQ <span class="brand-sub">POS</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#features" data-nav="home" data-i18n="nav_features">Features</a>
+        <a href="#power" data-nav="home" data-i18n="nav_power">Why ZEKiQ</a>
+        <a href="#compare" data-nav="home" data-i18n="nav_compare">Compare</a>
+        <a href="#savings" data-nav="home" data-i18n="nav_savings">Savings</a>
+        <a href="#how" data-nav="home" data-i18n="nav_how">How it works</a>
+        <a href="garson.html" data-nav="garson" data-i18n="nav_garson">Garson app</a>
+        <a href="phone.html" data-nav="phone" data-i18n="nav_phone">Pair</a>
+        <a href="download.html" data-nav="download" data-i18n="nav_download">Download</a>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" data-lang="en" class="on">EN</button>
+          <button type="button" data-lang="tr">TR</button>
+          <button type="button" data-lang="ar">AR</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="badge" data-i18n="hero_badge">Windows · Local network · 3 languages</div>
+        <div class="trust-bar" id="trustBar">
+          <span class="trust-dot" aria-hidden="true"></span>
+          <span data-i18n-trust="trust_installs">0+ venues installed ZEKiQ on a registered device</span>
+        </div>
+        <h1>
+          <span data-i18n="hero_h1_a">Fast POS</span><br />
+          <span class="hl" data-i18n="hero_h1_b">clear accounting</span><br />
+          <span data-i18n="hero_h1_c">for your venue</span>
+        </h1>
+        <p class="lead" data-i18n="hero_lead" data-i18n-html="1">
+          ZEKiQ POS unites tables, kitchen & bar, accounting, and Android waiters.
+        </p>
+        <div class="cta-row">
+          <a href="download.html" class="btn btn-gold" data-i18n="hero_dl">Download for Windows</a>
+          <a href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/g/index.html" class="btn btn-ghost" data-i18n="hero_phone">Download Garson</a>
+        </div>
+        <p class="note" data-i18n="hero_note">After install: updates inside the app.</p>
+        <p class="note subtle" data-i18n="trust_devices">Each install is counted once per device fingerprint</p>
+      </div>
+      <div class="preview" aria-hidden="true">
+        <div class="preview-card">
+          <div class="preview-top">
+            <span class="pill on">Masalar</span>
+            <span class="pill">Sipariş</span>
+            <span class="pill">Rapor</span>
+          </div>
+          <div class="preview-grid">
+            <div class="table-tile empty">1</div>
+            <div class="table-tile busy">2</div>
+            <div class="table-tile partial">3</div>
+            <div class="table-tile empty">4</div>
+            <div class="table-tile busy">5</div>
+            <div class="table-tile empty">6</div>
+            <div class="table-tile empty">7</div>
+            <div class="table-tile busy">8</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap stats">
+      <div class="stat"><div class="n" data-trial-days>30</div><div class="l" data-i18n="stat_trial">days free trial</div></div>
+      <div class="stat"><div class="n" id="statInstalls">0</div><div class="l" data-i18n="stat_installs">verified installs</div></div>
+      <div class="stat"><div class="n">3</div><div class="l" data-i18n="stat_langs">UI languages</div></div>
+      <div class="stat"><div class="n" data-price>$150</div><div class="l" data-i18n="stat_price">per year</div></div>
+    </div>
+  </section>
+
+  <section id="power" class="panel">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="power_h2">Why venues choose ZEKiQ</h2>
+        <p data-i18n="power_sub">One system for the floor, kitchen, accounting, and guests — built for real restaurants.</p>
+      </div>
+      <div class="power-grid">
+        <article class="power-card"><span class="power-num">01</span><h3 data-i18n="power_1_t">All-in-one</h3><p data-i18n="power_1_d"></p></article>
+        <article class="power-card"><span class="power-num">02</span><h3 data-i18n="power_2_t">Works offline</h3><p data-i18n="power_2_d"></p></article>
+        <article class="power-card"><span class="power-num">03</span><h3 data-i18n="power_3_t">Guest QR + Garson</h3><p data-i18n="power_3_d"></p></article>
+        <article class="power-card"><span class="power-num">04</span><h3 data-i18n="power_4_t">Smart stock</h3><p data-i18n="power_4_d"></p></article>
+        <article class="power-card"><span class="power-num">05</span><h3 data-i18n="power_5_t">Clear price</h3><p data-i18n="power_5_d"></p></article>
+        <article class="power-card"><span class="power-num">06</span><h3 data-i18n="power_6_t">Your data stays yours</h3><p data-i18n="power_6_d"></p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="compare_h2">ZEKiQ vs typical POS</h2>
+        <p data-i18n="compare_sub">What you usually pay for separately — included here.</p>
+      </div>
+      <div class="compare-wrap">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th data-i18n="compare_col_feat">Feature</th>
+              <th class="col-zekiq" data-i18n="compare_col_zekiq">ZEKiQ POS</th>
+              <th data-i18n="compare_col_other">Typical cloud POS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td data-i18n="compare_r1_t"></td><td class="col-zekiq"><span class="cmp-yes">✓</span> <span data-i18n="compare_r1_z"></span></td><td><span class="cmp-no">✗</span> <span data-i18n="compare_r1_o"></span></td></tr>
+            <tr><td data-i18n="compare_r2_t"></td><td class="col-zekiq"><span class="cmp-yes">✓</span> <span data-i18n="compare_r2_z"></span></td><td><span class="cmp-no">✗</span> <span data-i18n="compare_r2_o"></span></td></tr>
+            <tr><td data-i18n="compare_r3_t"></td><td class="col-zekiq"><span class="cmp-yes">✓</span> <span data-i18n="compare_r3_z"></span></td><td><span class="cmp-no">✗</span> <span data-i18n="compare_r3_o"></span></td></tr>
+            <tr><td data-i18n="compare_r4_t"></td><td class="col-zekiq"><span class="cmp-yes">✓</span> <span data-i18n="compare_r4_z"></span></td><td><span class="cmp-no">✗</span> <span data-i18n="compare_r4_o"></span></td></tr>
+            <tr><td data-i18n="compare_r5_t"></td><td class="col-zekiq"><span class="cmp-yes">✓</span> <span data-i18n="compare_r5_z"></span></td><td><span class="cmp-no">✗</span> <span data-i18n="compare_r5_o"></span></td></tr>
+            <tr><td data-i18n="compare_r6_t"></td><td class="col-zekiq"><span class="cmp-yes">✓</span> <span data-i18n="compare_r6_z"></span></td><td><span class="cmp-no">✗</span> <span data-i18n="compare_r6_o"></span></td></tr>
+            <tr><td data-i18n="compare_r7_t"></td><td class="col-zekiq"><span class="cmp-yes">✓</span> <span data-i18n="compare_r7_z"></span></td><td><span class="cmp-no">✗</span> <span data-i18n="compare_r7_o"></span></td></tr>
+            <tr><td data-i18n="compare_r8_t"></td><td class="col-zekiq"><span class="cmp-yes">✓</span> <span data-i18n="compare_r8_z"></span></td><td><span class="cmp-no">✗</span> <span data-i18n="compare_r8_o"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="compare-note" data-i18n="compare_note"></p>
+    </div>
+  </section>
+
+  <section id="savings" class="panel">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="savings_h2">Real savings for your venue</h2>
+        <p data-i18n="savings_sub">Less waste, fewer apps, faster service — money back in your pocket.</p>
+      </div>
+      <div class="savings-grid">
+        <div class="savings-card"><div class="savings-amt" data-i18n="savings_1_n"></div><h3 data-i18n="savings_1_t"></h3><p data-i18n="savings_1_d"></p></div>
+        <div class="savings-card"><div class="savings-amt" data-i18n="savings_2_n"></div><h3 data-i18n="savings_2_t"></h3><p data-i18n="savings_2_d"></p></div>
+        <div class="savings-card"><div class="savings-amt" data-i18n="savings_3_n"></div><h3 data-i18n="savings_3_t"></h3><p data-i18n="savings_3_d"></p></div>
+        <div class="savings-card"><div class="savings-amt" data-i18n="savings_4_n"></div><h3 data-i18n="savings_4_t"></h3><p data-i18n="savings_4_d"></p></div>
+        <div class="savings-card savings-card-wide"><div class="savings-amt" data-i18n="savings_5_n"></div><h3 data-i18n="savings_5_t"></h3><p data-i18n-html-only="savings_5_d"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="feat_h2">What you actually get</h2>
+        <p data-i18n="feat_sub">Features in the current release.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><div class="ic">💳</div><h3 data-i18n="feat_1_t">Windows POS</h3><p data-i18n="feat_1_d"></p></div>
+        <div class="card"><div class="ic">📊</div><h3 data-i18n="feat_2_t">Accounting</h3><p data-i18n="feat_2_d"></p></div>
+        <div class="card"><div class="ic">📱</div><h3 data-i18n="feat_3_t">Android waiter</h3><p data-i18n="feat_3_d"></p></div>
+        <div class="card"><div class="ic">🍽️</div><h3 data-i18n="feat_4_t">Table QR</h3><p data-i18n="feat_4_d"></p></div>
+        <div class="card"><div class="ic">🔐</div><h3 data-i18n="feat_5_t">License & trial</h3><p data-i18n="feat_5_d"></p></div>
+        <div class="card"><div class="ic">🔄</div><h3 data-i18n="feat_6_t">Safe updates</h3><p data-i18n="feat_6_d"></p></div>
+        <div class="card"><div class="ic">💾</div><h3 data-i18n="feat_7_t">Backup</h3><p data-i18n="feat_7_d"></p></div>
+        <div class="card"><div class="ic">🌐</div><h3 data-i18n="feat_8_t">AR / TR / EN</h3><p data-i18n="feat_8_d"></p></div>
+        <div class="card"><div class="ic">💬</div><h3 data-i18n="feat_9_t">Direct support</h3><p data-i18n="feat_9_d"></p></div>
+      </div>
+      <div class="alert" data-i18n-html-only="alert_trans"></div>
+    </div>
+  </section>
+
+  <section id="how" class="panel">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="how_h2">From download to first order</h2>
+        <p data-i18n="how_sub">Four clear steps.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><h3 data-i18n="how_1_t">Download & install</h3><p data-i18n-html-only="how_1_d"></p></div>
+        <div class="step"><h3 data-i18n="how_2_t">Start trial</h3><p data-i18n="how_2_d"></p></div>
+        <div class="step"><h3 data-i18n="how_3_t">Pair waiter app</h3><p data-i18n="how_3_d"></p></div>
+        <div class="step"><h3 data-i18n="how_4_t">Run daily</h3><p data-i18n="how_4_d"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="price_h2">One clear price</h2>
+        <p data-i18n="price_sub">No auto-charged card.</p>
+      </div>
+      <div class="pricing-box">
+        <div class="tag" data-i18n="price_tag">First month free</div>
+        <h3 data-i18n="price_plan">Annual plan</h3>
+        <div class="price" data-price>$150 / year</div>
+        <p data-i18n="price_inc">Full POS & accounting.</p>
+        <a href="download.html" class="btn btn-gold" data-i18n="price_dl">Download & start trial</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="wrap section-center">
+      <div class="section-head">
+        <h2 data-i18n="dl_h2">Ready to install?</h2>
+        <p data-i18n-html-only="dl_sub"></p>
+      </div>
+      <div class="cta-row center">
+        <a href="download.html" class="btn btn-gold btn-lg" data-i18n="dl_btn">Download ZEKiQ-POS-Setup.exe</a>
+      </div>
+      <p class="ver-line" id="homeVersion" aria-live="polite">…</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-links">
+        <a href="download.html" data-i18n="foot_dl">Download</a>
+        <a href="garson.html" data-i18n="foot_garson">Download Garson</a>
+        <a href="phone.html" data-i18n="foot_phone">Pair Garson</a>
+      </div>
+      <div class="brand brand-center">
+        <img src="assets/logo.svg" width="32" height="32" alt="" />
+        <span>Z</span>EKiQ POS
+      </div>
+      <p data-i18n="foot_tag">POS & accounting for restaurants</p>
+      <p class="copy">© <span id="year"></span> ZEKiQ</p>
+    </div>
+  </footer>
+
+  <script src="js/site-gate.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/site.js"></script>
+  <script>ZekiqSiteGate.run(function () { ZekiqSite.init(); });</script>
 </body>
 </html>
