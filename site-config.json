@@ -2,8 +2,7 @@
   "brandName": "ZEKiQ",
   "siteUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/",
   "garsonDownloadUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/g/",
-  "ownerDownloadUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
-  "ownerConnect4gUrl": "https://tonino.zekiqmenu.com/owner?remote=1",
+  "ownerDownloadUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
   "customDomain": "",
   "statsApiUrl": "",
   "annualPriceUsd": 150,
@@ -14,5 +13,5 @@
   "trialNoteTr": "İlk ay ücretsiz — ödemeden dene",
   "productTagline": "Restaurant & café POS — Windows + Android waiter",
   "guestOrderPageUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/table/index.html",
-  "guestApiUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api-tonino.json"
+  "guestApiUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api.json"
 }
