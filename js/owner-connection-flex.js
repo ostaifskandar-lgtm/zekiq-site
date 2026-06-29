@@ -36,16 +36,16 @@
     }
     if (!tunnel.startsWith("https://")) return false;
     var server = trimUrl(lsGet(KEYS.server));
-    if (!isPrivateLanUrl(server) && server.startsWith("https://")) return false;
-    persistConnection(tunnel, "remote");
-    try {
-      var profiles = JSON.parse(lsGet("tonino-owner-server-profiles") || "[]");
-      if (profiles[0]) {
-        profiles[0].server = tunnel;
-        profiles[0].savedAt = Date.now();
-        lsSet("tonino-owner-server-profiles", JSON.stringify(profiles));
+    if (!isPrivateLanUrl(server) && server.startsWith("https://")) {
+      if (window.__zekiqRepairOwnerStorageIfNeeded) {
+        window.__zekiqRepairOwnerStorageIfNeeded();
       }
-    } catch (e) {}
+      return false;
+    }
+    persistConnection(tunnel, "remote");
+    if (window.__zekiqRepairOwnerStorageIfNeeded) {
+      window.__zekiqRepairOwnerStorageIfNeeded();
+    }
     return true;
   }
 
@@ -95,7 +95,12 @@
     lsSet(KEYS.standalone, "1");
     lsSet(KEYS.nativeApk, "1");
     lsSet("zekiq-manager-native", "1");
-    if (url.startsWith("https://")) lsSet(KEYS.remoteBase, url);
+    if (url.startsWith("https://")) {
+      lsSet(KEYS.remoteBase, url);
+      if (window.__zekiqRepairOwnerStorageIfNeeded) {
+        window.__zekiqRepairOwnerStorageIfNeeded();
+      }
+    }
     try {
       localStorage.removeItem("tonino-owner-remote-shell");
       localStorage.removeItem("tonino-owner-network-locked");

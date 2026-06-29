@@ -3,7 +3,18 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.0.3";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.2.0";
+
+  var TABLE_ICON =
+    '<svg class="zekiq-table-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
+    '<rect x="3" y="7" width="18" height="4" rx="1.2"/>' +
+    '<path d="M6 11v7M12 11v7M18 11v7"/></svg>';
+
+  function tableIconHtml(size) {
+    size = size || 18;
+    return TABLE_ICON.replace('class="zekiq-table-svg"', 'class="zekiq-table-svg" width="' + size + '" height="' + size + '"');
+  }
 
   function isOwnerApp() {
     try {
@@ -53,14 +64,42 @@
   }
 
   function baseUrl() {
-    var keys = ["tonino-owner-working-api", "tonino-owner-remote-base", "tonino-owner-server"];
+    if (window.__zekiqGetOwnerTunnelUrl) {
+      var tunnel = window.__zekiqGetOwnerTunnelUrl();
+      if (tunnel.startsWith("https://")) return tunnel;
+    }
+    var mode = "";
+    try { mode = localStorage.getItem("tonino-owner-link-mode") || ""; } catch (e) {}
+    var keys = ["tonino-owner-remote-base", "tonino-owner-working-api", "tonino-owner-active-api", "tonino-owner-server"];
+    var tunnelUrl = "";
+    var lanUrl = "";
     for (var i = 0; i < keys.length; i++) {
       try {
         var v = (localStorage.getItem(keys[i]) || "").trim().replace(/\/+$/, "");
-        if (v.startsWith("http")) return v;
+        if (!v.startsWith("http")) continue;
+        if (v.startsWith("https://") && !tunnelUrl) tunnelUrl = v;
+        if (v.startsWith("http://") && /^192\.168\.|^10\.|^172\.(1[6-9]|2\d|3[01])\./.test(new URL(v).hostname) && !lanUrl) lanUrl = v;
       } catch (e) {}
     }
-    return "https://tonino.zekiqmenu.com";
+    if (tunnelUrl && (mode === "remote" || lanUrl)) return tunnelUrl;
+    if (tunnelUrl) return tunnelUrl;
+    if (lanUrl && mode !== "remote") return lanUrl;
+    return tunnelUrl || lanUrl || "";
+  }
+
+  function toast(msg, isErr) {
+    var el = document.getElementById("zekiq-toast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "zekiq-toast";
+      el.style.cssText = "position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:2147483647;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;color:#fff;background:rgba(30,24,16,.92);box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:90vw;text-align:center;pointer-events:none;opacity:0;transition:opacity .2s";
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.style.background = isErr ? "rgba(185,28,28,.94)" : "rgba(30,24,16,.92)";
+    el.style.opacity = "1";
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.style.opacity = "0"; }, 2600);
   }
 
   function money(n) {
@@ -76,8 +115,13 @@
   }
 
   async function trpc(proc, input) {
+    if (window.__zekiqRepairOwnerStorageIfNeeded) {
+      await Promise.resolve(window.__zekiqRepairOwnerStorageIfNeeded());
+    }
+    var api = baseUrl();
+    if (!api) throw new Error("no_server");
     var q = encodeURIComponent(JSON.stringify({ "0": { json: input || {} } }));
-    var r = await fetch(baseUrl() + "/api/trpc/" + proc + "?batch=1&input=" + q, {
+    var r = await fetch(api + "/api/trpc/" + proc + "?batch=1&input=" + q, {
       cache: "no-store",
       headers: token() ? { Authorization: "Bearer " + token() } : {}
     });
@@ -119,6 +163,13 @@
     s.textContent =
       "#zekiq-tables-header-btn{margin-inline-start:8px;padding:7px 12px;border:none;border-radius:10px;" +
       "background:linear-gradient(135deg,#8f6218,#cfa73e);color:#fff;font-size:12px;font-weight:800;white-space:nowrap}" +
+      "#zekiq-tables-fab{display:flex;align-items:center;justify-content:center;gap:8px}" +
+      "#zekiq-tables-fab .zekiq-table-svg,#zekiq-tables-header-btn .zekiq-table-svg,#zekiq-tables-nav-btn .zekiq-table-svg{flex-shrink:0}" +
+      ".zekiq-table-ico{display:inline-flex;align-items:center;margin-inline-end:6px;vertical-align:middle;color:#8f6218}" +
+      ".zekiq-tap-layer{position:absolute;inset:0;z-index:50;cursor:pointer;background:transparent}" +
+      ".owner-table-row{position:relative!important}" +
+      "#zekiq-table-detail{z-index:2147483647!important}" +
+      "#zekiq-tables-overlay{z-index:2147483646!important}" +
       "#zekiq-tables-fab{position:fixed;right:16px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:2147483640;" +
       "min-width:132px;height:52px;padding:0 16px;border-radius:14px;border:2px solid rgba(255,255,255,.35);" +
       "background:linear-gradient(135deg,#8f6218,#cfa73e);color:#fff;font-size:14px;font-weight:800;" +
@@ -233,7 +284,7 @@
       var fab = document.createElement("button");
       fab.id = "zekiq-tables-fab";
       fab.type = "button";
-      fab.textContent = "🪑 الطاولات";
+      fab.innerHTML = tableIconHtml(20) + "<span>الطاولات</span>";
       fab.onclick = openSheet;
       document.body.appendChild(fab);
     }
@@ -281,7 +332,7 @@
     var btn = document.createElement("button");
     btn.id = "zekiq-tables-header-btn";
     btn.type = "button";
-    btn.textContent = "🪑 الطاولات";
+    btn.innerHTML = tableIconHtml(16) + "<span>الطاولات</span>";
     btn.onclick = openSheet;
     host.appendChild(btn);
   }
@@ -294,7 +345,7 @@
     btn.id = "zekiq-tables-nav-btn";
     btn.type = "button";
     btn.className = "owner-nav-btn relative min-w-[2.85rem] flex-1 py-1.5 px-0.5 flex flex-col items-center justify-end gap-0.5 text-[9px] leading-tight shrink-0";
-    btn.innerHTML = '<span style="font-size:20px;line-height:1">🪑</span><span>طاولات</span><span class="owner-nav-dot"></span>';
+    btn.innerHTML = '<span style="display:flex;height:20px;align-items:center;justify-content:center">' + tableIconHtml(20) + '</span><span>طاولات</span><span class="owner-nav-dot"></span>';
     btn.onclick = openSheet;
     inner.insertBefore(btn, inner.firstChild);
   }
@@ -340,7 +391,8 @@
       state.closedRows = await trpc("pos.closedOrders", { date: todayIso() });
       renderList();
     } catch (e) {
-      list.innerHTML = '<div class="z-empty">' + (token() ? "تعذّر التحميل — تحقق من الاتصال" : "سجّل الدخول أولاً") + "</div>";
+      list.innerHTML = '<div class="z-empty">' + (token() ? "تعذّر التحميل — تحقق من الاتصال (4G)" : "سجّل الدخول أولاً") + "</div>";
+      if (token()) toast("تعذّر تحميل الطاولات — تحقق من 4G", true);
     }
   }
 
@@ -443,15 +495,24 @@
     var section = li.getAttribute("data-zekiq-section");
     var tableNumRaw = li.getAttribute("data-zekiq-table-num");
     if (section && tableNumRaw) {
-      return normalizeRow({ section: section, tableNum: Number(tableNumRaw) });
+      var n = Number(tableNumRaw);
+      if (Number.isFinite(n)) return normalizeRow({ section: section, tableNum: n });
     }
 
     var nameEl = li.querySelector(".owner-table-name");
     if (!nameEl) return null;
-    var text = (nameEl.textContent || li.textContent || "").trim();
-    text = text.replace(/\s*\([^)]*\)\s*$/g, "").trim();
-    var sep = text.indexOf(" · ");
-    if (sep < 0) sep = text.indexOf(" - ");
+    var text = (nameEl.textContent || "").trim();
+    text = text.replace(/\s*\([^)]*\)\s*/g, " ").replace(/\s+/g, " ").trim();
+    var seps = [" · ", " ·", "· ", " - ", " – ", " — "];
+    var sep = -1;
+    var sepLen = 3;
+    for (var s = 0; s < seps.length; s++) {
+      var idx = text.indexOf(seps[s]);
+      if (idx >= 0 && (sep < 0 || idx < sep)) {
+        sep = idx;
+        sepLen = seps[s].length;
+      }
+    }
     if (sep < 0) {
       for (var i = 0; i < openRowsCache.length; i++) {
         var cached = openRowsCache[i];
@@ -463,9 +524,8 @@
       return null;
     }
     var parsedSection = text.slice(0, sep).trim();
-    var rest = text.slice(sep + 3).trim();
-    var tableNumStr = rest.replace(/\s*\([^)]*\)\s*$/g, "").trim();
-    var tableNum = Number(tableNumStr);
+    var rest = text.slice(sep + sepLen).trim();
+    var tableNum = Number(rest.split(/\s+/)[0]);
     if (!parsedSection || !Number.isFinite(tableNum)) return null;
     for (var j = 0; j < openRowsCache.length; j++) {
       var r = openRowsCache[j];
@@ -474,28 +534,87 @@
     return normalizeRow({ section: parsedSection, tableNum: tableNum });
   }
 
+  function isMonitorTableRow(li) {
+    if (!li || !li.classList) return false;
+    if (li.classList.contains("is-compact") && li.querySelector(".owner-amount")) return true;
+    if (li.querySelector(".owner-table-name") && li.querySelector(".owner-amount") && !li.querySelector(".owner-rank-badge")) return true;
+    return false;
+  }
+
+  function openRowDetail(row, li) {
+    row = normalizeRow(row || parseTableFromRow(li));
+    if (!row || !row.section || !Number.isFinite(row.tableNum)) {
+      if (li) toast("تعذّر قراءة الطاولة — جرّب زر الطاولات", true);
+      return false;
+    }
+    ensureUi();
+    showOpenDetail(row);
+    return true;
+  }
+
+  function injectRowTableIcon(li) {
+    if (li.querySelector(".zekiq-table-ico")) return;
+    var nameEl = li.querySelector(".owner-table-name");
+    if (!nameEl) return;
+    var ico = document.createElement("span");
+    ico.className = "zekiq-table-ico";
+    ico.innerHTML = tableIconHtml(16);
+    nameEl.insertBefore(ico, nameEl.firstChild);
+  }
+
+  function bindRowOpen(li, row) {
+    if (li.getAttribute("data-zekiq-bound") === "1") return;
+    li.setAttribute("data-zekiq-bound", "1");
+    li.classList.add("zekiq-tappable");
+    li.style.cursor = "pointer";
+    injectRowTableIcon(li);
+    function onTap(e) {
+      if (!openRowDetail(null, li)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+    }
+    li.addEventListener("click", onTap, true);
+    li.addEventListener("pointerup", onTap, true);
+    if (!li.querySelector(".zekiq-tap-layer")) {
+      var layer = document.createElement("div");
+      layer.className = "zekiq-tap-layer";
+      layer.setAttribute("role", "button");
+      layer.setAttribute("aria-label", "فتح الطاولة");
+      layer.addEventListener("click", onTap, true);
+      layer.addEventListener("pointerup", onTap, true);
+      li.appendChild(layer);
+    }
+  }
   function syncTableRowData() {
-    document.querySelectorAll(".owner-table-row, .owner-table-row.is-compact").forEach(function (li) {
+    document.querySelectorAll(".owner-table-row.is-compact, li.owner-table-row.is-compact").forEach(function (li) {
+      if (!isMonitorTableRow(li)) return;
       var row = parseTableFromRow(li);
       if (!row || !Number.isFinite(row.tableNum)) return;
       li.setAttribute("data-zekiq-section", row.section);
       li.setAttribute("data-zekiq-table-num", String(row.tableNum));
-      li.classList.add("zekiq-tappable");
-      li.style.cursor = "pointer";
+      bindRowOpen(li, row);
     });
   }
 
+  function installMonitorObserver() {
+    if (window.__zekiqMonitorObserver) return;
+    if (!window.MutationObserver) return;
+    window.__zekiqMonitorObserver = true;
+    var obs = new MutationObserver(function () {
+      syncTableRowData();
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+  }
+
   function handleTableTap(e) {
-    var li = e.target.closest && e.target.closest(".owner-table-row");
-    if (!li) return;
-    if (!li.querySelector(".owner-table-name") && !li.classList.contains("is-compact")) return;
-    if (!isInApp() && !token()) return;
-    var row = parseTableFromRow(li);
-    if (!row) return;
-    e.preventDefault();
-    e.stopPropagation();
-    if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-    showOpenDetail(row);
+    var li = e.target.closest && e.target.closest(".owner-table-row.is-compact, li.owner-table-row.is-compact");
+    if (!li || !isMonitorTableRow(li)) return;
+    if (openRowDetail(null, li)) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+    }
   }
 
   function installTableTapDelegation() {
@@ -505,19 +624,26 @@
     document.addEventListener("touchend", function (e) {
       if (e.changedTouches && e.changedTouches.length === 1) handleTableTap(e);
     }, { capture: true, passive: false });
+    document.addEventListener("touchstart", function (e) {
+      if (e.touches && e.touches.length === 1) {
+        var li = e.target.closest && e.target.closest(".owner-table-row.is-compact");
+        if (li && isMonitorTableRow(li)) li.setAttribute("data-zekiq-touch", "1");
+      }
+    }, { capture: true, passive: true });
   }
 
   function setButtonsVisible(show) {
     ["zekiq-tables-fab", "zekiq-tables-header-btn", "zekiq-tables-nav-btn"].forEach(function (id) {
       var el = document.getElementById(id);
       if (!el) return;
-      el.style.display = show ? (id === "zekiq-tables-fab" ? "block" : "inline-flex") : "none";
+      el.style.display = show ? (id === "zekiq-tables-fab" ? "flex" : "inline-flex") : "none";
     });
   }
 
   function tick() {
     ensureVersionBadge();
     installTableTapDelegation();
+    installMonitorObserver();
     if (!shouldShowTables()) {
       setButtonsVisible(false);
       return;

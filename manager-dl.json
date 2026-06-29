@@ -1,12 +1,13 @@
 {
-  "fileName": "ToninoOwner-patched.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner-patched.apk?v=203",
-  "setupUrlLegacy": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=202",
+  "fileName": "ZEKiQManager.apk",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=220",
+  "setupUrlLegacy": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=206",
   "tablesWebPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner-tables.html",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
-  "versionCode": 203,
-  "versionName": "2.0.3",
-  "packageId": "com.tonino.owner",
-  "releaseNotes": "Tables tap fix + remote boot — uninstall old app first for patched APK",
-  "updatedAt": "2026-06-29T05:00:00.000Z"
+  "versionCode": 220,
+  "versionName": "2.2.0",
+  "packageId": "com.zekiq.manager",
+  "signing": "ZEKiQ Debug — installs alongside com.tonino.owner",
+  "releaseNotes": "Expenses tab: browse invoices and photos for past 90 days with date picker.",
+  "updatedAt": "2026-06-28T20:10:00.000Z"
 }

@@ -1,13 +1,14 @@
 {
-  "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=202",
-  "setupUrlMirror": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=202",
+  "fileName": "ZEKiQManager.apk",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=220",
+  "setupUrlMirror": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ZEKiQManager.apk?v=220",
+  "setupUrlLegacy": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=206",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
-  "versionCode": 36,
-  "versionName": "1.0.36",
-  "appLabel": "تطبيق المالك",
-  "packageId": "com.tonino.owner",
-  "signing": "Tonino Garson release (Gradle)",
-  "releaseNotes": "Restored original release signature — Samsung install fix",
-  "updatedAt": "2026-06-29T04:00:00.000Z"
+  "versionCode": 220,
+  "versionName": "2.2.0",
+  "appLabel": "ZEKiQ مدير",
+  "packageId": "com.zekiq.manager",
+  "signing": "Install alongside com.tonino.owner — no uninstall",
+  "releaseNotes": "Historical expense invoices with photos — 90 day calendar in expenses tab.",
+  "updatedAt": "2026-06-28T20:10:00.000Z"
 }

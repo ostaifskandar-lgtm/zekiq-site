@@ -13,68 +13,39 @@
     h1{font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:8px}
     .tag{text-align:center;color:#94a3b8;font-size:.9rem;line-height:1.6;margin-bottom:20px}
     .btn{display:block;width:100%;padding:18px;border-radius:16px;font-size:1.05rem;font-weight:800;text-decoration:none;text-align:center;margin-bottom:12px}
-    .btn.tables{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;box-shadow:0 8px 28px rgba(168,85,247,.35);font-size:1.15rem}
-    .btn.cdn{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
-    .btn.patched{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714}
-    .btn.ghost{background:rgba(255,255,255,.07);color:#fde68a;border:1px solid rgba(245,158,11,.3);font-size:.88rem;padding:14px}
+    .btn.main{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714;box-shadow:0 8px 28px rgba(251,191,36,.35);font-size:1.15rem}
+    .btn.dev{background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff}
+    .btn.tables{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff}
     .box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;margin-bottom:14px;font-size:.85rem;color:#cbd5e1;line-height:1.7}
     .box b{color:#fff}
     .box ol{padding-right:20px;margin-top:8px}
     .box li{margin:6px 0}
     .note{font-size:.78rem;color:#94a3b8;text-align:center;margin-top:16px;line-height:1.6}
     code{font-family:ui-monospace,monospace;font-size:.72rem;color:#fde68a;background:rgba(0,0,0,.3);padding:2px 6px;border-radius:6px;word-break:break-all}
-    .urgent{background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.45)}
-    .qr{text-align:center;padding:8px 0 4px}
-    .qr img{width:180px;height:180px;border-radius:14px;background:#fff;padding:8px}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="logo">Z</div>
     <h1>ZEKiQ مدير</h1>
-    <p class="tag"><b>v2.0.3</b> — إصلاح الطاولات</p>
+    <p class="tag"><b>v2.2.0</b> — فواتير الأيام السابقة + صور المصاريف</p>
 
-    <div class="box urgent">
-      <b style="color:#e9d5ff">🪑 لا تستطيع الدخول للطاولات؟</b>
-      <ol>
-        <li>التطبيق الحالي ي<b>عرض</b> الطاولات لكن لا يفتح التفاصيل عند الضغط</li>
-        <li><b>الحل الفوري (بدون إعادة تثبيت):</b></li>
-      </ol>
-    </div>
-
-    <a class="btn tables" href="owner-tables.html">🪑 فتح الطاولات الآن (متصفح)</a>
+    <a class="btn main" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ZEKiQManager.apk?v=220">⬇️ ZEKiQ Manager v2.2.0 (بدون حذف)</a>
 
     <div class="box">
-      <b>صفحة الطوارئ — 3 خطوات:</b>
+      <b>بعد التثبيت — Tonino:</b>
       <ol>
-        <li>اضغط الزر البنفسجي أعلاه</li>
-        <li>أدخل <code dir="ltr">tonino.zekiqmenu.com</code> + PIN المدير</li>
-        <li>اضغط <b>دخول</b> → ثم <b>🪑 الطاولات</b> → اضغط أي طاولة</li>
+        <li>افتح <b>ZEKiQ مدير</b> (أيقونة جديدة)</li>
+        <li>تبويب <b>مصاريف</b> → <b>فواتير الأيام السابقة</b> — اختر التاريخ واضغط الفاتورة</li>
+        <li>أدخل PIN → اضغط أي طاولة في المراقبة أو زر <b>الطاولات</b> (أيقونة طاولة)</li>
       </ol>
     </div>
 
-    <div class="box qr">
-      <b>📷 QR للطاولات</b><br><br>
-      <img src="owner-tables-qr.png" alt="QR tables" width="180" height="180" />
-    </div>
+    <a class="btn dev" href="owner-config-dev.html">🧪 تجربة المطور — zekiq-dev.zekiqmenu.com</a>
 
-    <div class="box">
-      <b>أو — تطبيق كامل مع الطاولات (يتطلب إعادة تثبيت):</b>
-      <ol>
-        <li>احذف التطبيق القديم (Kaldır)</li>
-        <li>حمّل <b>ToninoOwner-patched.apk</b> أدناه</li>
-        <li>Play Protect → <b>Yine de yükleyin</b></li>
-        <li>ستظهر شارة <b>v2.0.3</b> + زر 🪑 الطاولات</li>
-      </ol>
-    </div>
+    <a class="btn tables" href="owner-tables.html">⊞ الطوارئ — الطاولات (متصفح)</a>
 
-    <a class="btn patched" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner-patched.apk?v=204">⬇️ ToninoOwner-patched v2.0.4 (PIN + طاولات)</a>
-
-    <a class="btn cdn" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=202">⬇️ ToninoOwner عادي (تثبيت فقط — بدون طاولات)</a>
-
-    <a class="btn ghost" href="owner-connect.html">⚙️ ربط النفق / 4G</a>
-
-    <p class="note">ToninoOwner-patched = uninstall ثم install · owner-tables.html = فوري بدون uninstall</p>
+    <p class="note">Play Protect → Yine de yükleyin · شارة <b>v2.2.0</b> أعلى الشاشة</p>
   </div>
 </body>
 </html>
