@@ -1,13 +1,11 @@
 {
   "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=202",
-  "setupUrlMirror": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=202",
-  "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/manager.html",
+  "setupUrl": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=36",
+  "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/o/index.html",
+  "publicPageAlt": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
+  "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api.json",
   "versionCode": 36,
   "versionName": "1.0.36",
-  "appLabel": "تطبيق المالك",
-  "packageId": "com.tonino.owner",
-  "signing": "Tonino Garson release (Gradle)",
-  "releaseNotes": "Restored original release signature — Samsung install fix",
-  "updatedAt": "2026-06-29T04:00:00.000Z"
+  "sizeMb": "14.6",
+  "updatedAt": "2026-06-27T17:54:33.6838324Z"
 }
