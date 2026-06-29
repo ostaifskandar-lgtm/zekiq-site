@@ -1,9 +1,9 @@
 {
   "fileName": "ToninoBuyer.apk",
-  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoBuyer.apk?v=13",
+  "setupUrl": "https://raw.githubusercontent.com/ostaifskandar-lgtm/zekiq-site/main/downloads/ToninoBuyer.apk",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/m/",
-  "versionCode": 13,
-  "versionName": "1.0.13",
-  "sizeMb": "3.6",
-  "updatedAt": "2026-06-09T12:19:08.6889569Z"
+  "versionCode": 26,
+  "versionName": "1.0.26",
+  "sizeMb": "14.7",
+  "updatedAt": "2026-06-29T13:43:41.1091737Z"
 }
