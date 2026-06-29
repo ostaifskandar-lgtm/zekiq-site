@@ -276,9 +276,6 @@
       document.querySelectorAll("[data-price]").forEach(function (el) {
         el.textContent = price;
       });
-      document.querySelectorAll("[data-price-num]").forEach(function (el) {
-        el.textContent = "$" + String(cfg.annualPriceUsd || 150);
-      });
       document.querySelectorAll("[data-trial-days]").forEach(function (el) {
         el.textContent = String(cfg.trialDays || 30);
       });
@@ -362,13 +359,13 @@
           document.head.appendChild(link);
         }
         var page = document.body.getAttribute("data-page") || "home";
-        var paths = { home: "download.html", download: "download.html", phone: "phone.html", garson: "garson.html" };
+        var paths = { home: "", download: "download.html", phone: "phone.html", garson: "garson.html" };
         link.href = cfg.siteUrl.replace(/\/$/, "") + "/" + (paths[page] || "");
       }
       var og = document.querySelector('meta[property="og:url"]');
       if (og && cfg.siteUrl) {
         var page = document.body.getAttribute("data-page") || "home";
-        var paths = { home: "download.html", download: "download.html", phone: "phone.html", garson: "garson.html" };
+        var paths = { home: "", download: "download.html", phone: "phone.html", garson: "garson.html" };
         og.content = cfg.siteUrl.replace(/\/$/, "") + "/" + (paths[page] || "");
       }
     });
@@ -398,104 +395,12 @@
     var garsonBtnId = document.body.getAttribute("data-garson-dl-btn");
     var garsonVerId = document.body.getAttribute("data-garson-version-id");
     if (garsonBtnId) bindGarsonDownloadButton(garsonBtnId, garsonVerId || "");
-    if (global.reloadHeroRotate) global.reloadHeroRotate();
-  }
-
-  function initMarketingFx() {
-    var track = document.querySelector(".marquee-track");
-    if (track && !track.dataset.cloned) {
-      track.dataset.cloned = "1";
-      track.innerHTML = track.innerHTML + track.innerHTML;
-    }
-
-    var reveals = document.querySelectorAll(".reveal");
-    if (reveals.length && "IntersectionObserver" in window) {
-      var io = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("is-visible");
-              io.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-      );
-      reveals.forEach(function (el) {
-        io.observe(el);
-      });
-    } else {
-      reveals.forEach(function (el) {
-        el.classList.add("is-visible");
-      });
-    }
-
-    var sticky = document.getElementById("stickyDl");
-    if (sticky && window.matchMedia("(max-width: 820px)").matches) {
-      sticky.hidden = false;
-      var hero = document.querySelector(".hero");
-      var downloadSection = document.getElementById("download");
-      var onScroll = function () {
-        var y = window.scrollY || document.documentElement.scrollTop;
-        var threshold = hero ? hero.offsetHeight * 0.55 : 320;
-        var nearDownload =
-          downloadSection &&
-          y + window.innerHeight > downloadSection.offsetTop + 80;
-        sticky.classList.toggle("is-shown", y > threshold && !nearDownload);
-      };
-      onScroll();
-      window.addEventListener("scroll", onScroll, { passive: true });
-    }
-
-    initHeroRotate();
-  }
-
-  function initHeroRotate() {
-    var el = document.getElementById("heroRotate");
-    if (!el) return;
-    var key = el.getAttribute("data-i18n-rotate") || "hero_rotate";
-    if (window.__heroRotateTimer) clearInterval(window.__heroRotateTimer);
-
-    function words() {
-      var raw = global.ZekiqI18n ? global.ZekiqI18n.tr(key) : el.textContent;
-      return String(raw || "")
-        .split("|")
-        .map(function (w) {
-          return w.trim();
-        })
-        .filter(Boolean);
-    }
-
-    var list = words();
-    if (!list.length) list = ["POS"];
-    var idx = 0;
-    el.textContent = list[0];
-
-    window.__heroRotateTimer = setInterval(function () {
-      idx = (idx + 1) % list.length;
-      el.classList.add("hero-rotate-out");
-      setTimeout(function () {
-        el.textContent = list[idx];
-        el.classList.remove("hero-rotate-out");
-        el.classList.add("hero-rotate-in");
-        setTimeout(function () {
-          el.classList.remove("hero-rotate-in");
-        }, 350);
-      }, 180);
-    }, 2600);
-
-    global.reloadHeroRotate = function () {
-      list = words();
-      idx = 0;
-      el.textContent = list[0] || "POS";
-    };
   }
 
   function init() {
     if (global.ZekiqI18n) global.ZekiqI18n.init();
     setYear();
     markActiveNav();
-    initMarketingFx();
     initMeta().then(function () {
       return loadConfig().then(function (cfg) {
         trackPageView(cfg);
@@ -511,7 +416,6 @@
     var garsonBtn = document.body.getAttribute("data-garson-dl-btn");
     var garsonVer = document.body.getAttribute("data-garson-version-id");
     if (garsonBtn) bindGarsonDownloadButton(garsonBtn, garsonVer || "");
-    if (global.reloadHeroRotate) global.reloadHeroRotate();
   }
 
   global.ZekiqSite = {
