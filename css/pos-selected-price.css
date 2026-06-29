@@ -1,0 +1,27 @@
+/**
+ * Selected POS order lines: slightly larger, blue price for visibility.
+ * Applies when row has blue left border (checked / seçili).
+ */
+[class*="border-l-blue-600"] .text-amber-600,
+[class*="border-l-blue-600"] .text-violet-700,
+[class*="border-l-blue-600"] .tabular-nums.text-sm.font-bold:not(.line-through) {
+  font-size: 1.0625rem !important;
+  font-weight: 900 !important;
+  color: #1d4ed8 !important;
+  letter-spacing: -0.02em;
+}
+
+[class*="border-l-blue-600"] .text-right .text-\[11px\].text-violet-700,
+[class*="border-l-blue-600"] .text-right .text-\[10px\].text-gray-400 {
+  font-size: 0.8125rem !important;
+}
+
+[class*="border-l-blue-600"] .text-right span:last-child {
+  font-size: 1.0625rem !important;
+  font-weight: 900 !important;
+  color: #1d4ed8 !important;
+}
+
+[class*="border-l-blue-600"].ring-blue-400 .tabular-nums {
+  text-shadow: 0 0 1px rgba(29, 78, 216, 0.25);
+}
