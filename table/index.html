@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v30: orders clip menu top — scale stays fixed -->
+  <!-- guest-table-ui-v31: menu fixed position — orders overlay only, no clip/lift -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -522,10 +522,6 @@
       display:flex;
       flex-direction:column;
       overflow:hidden;
-    }
-    #menuStage.orders-overlay #menuViewport{
-      clip-path:inset(var(--order-dock-h,0px) 0 0 0);
-      -webkit-clip-path:inset(var(--order-dock-h,0px) 0 0 0);
     }
     #menuCategoryBar{
       flex-shrink:0;
@@ -3569,8 +3565,6 @@
       if (window.__zekiqBindSceneFullscreen) window.__zekiqBindSceneFullscreen();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       bindBookSwipe();
-      initOrderDockObserver();
-      syncOrderDockInset();
       syncSwipeBar();
       buildCategoryBar();
     }
@@ -3797,24 +3791,6 @@
       closePopup();
     };
 
-    function syncOrderDockInset() {
-      const stage = document.getElementById("menuStage");
-      const dock = document.getElementById("menuOrderDock");
-      if (!stage || !dock) return;
-      if (!stage.classList.contains("orders-overlay")) {
-        stage.style.removeProperty("--order-dock-h");
-        return;
-      }
-      const h = Math.ceil(dock.getBoundingClientRect().height);
-      stage.style.setProperty("--order-dock-h", Math.max(0, h) + "px");
-      if (window.__zekiqRelayout) window.__zekiqRelayout();
-    }
-    function initOrderDockObserver() {
-      const dock = document.getElementById("menuOrderDock");
-      if (!dock || dock.__dockRoBound) return;
-      dock.__dockRoBound = true;
-      new ResizeObserver(() => syncOrderDockInset()).observe(dock);
-    }
     function syncOrderListView(listEl) {
       if (!listEl) return;
       requestAnimationFrame(() => {
@@ -3833,7 +3809,7 @@
         if (lineCount > 0) {
           listEl.scrollTop = listEl.scrollHeight;
         }
-        syncOrderDockInset();
+        if (window.__zekiqRelayout) window.__zekiqRelayout();
       });
     }
     function flashOrderLine(itemId) {
@@ -3853,7 +3829,6 @@
         if (listEl) {
           listEl.scrollTop = listEl.scrollHeight;
         }
-        syncOrderDockInset();
       });
     }
     function addToCart(item, opts) {
@@ -3920,7 +3895,6 @@
         if (listEl) listEl.innerHTML = "";
         const chip = document.getElementById("guestOrderChip");
         if (chip) chip.classList.remove("orders-folded", "orders-expanded");
-        syncOrderDockInset();
         return;
       }
       if (guideEl) guideEl.classList.remove("show");
@@ -3947,8 +3921,6 @@
         const sceneClear = listEl.querySelector("#sceneClearCart");
         if (sceneClear) sceneClear.onclick = e => { e.stopPropagation(); clearCart(); };
         syncOrderListView(listEl);
-      } else {
-        syncOrderDockInset();
       }
     }
     function openCartConfirm(e) {
@@ -3962,7 +3934,6 @@
       if (chip && chip.classList.contains("orders-folded")) {
         chip.classList.remove("orders-folded");
         chip.classList.add("orders-expanded");
-        syncOrderDockInset();
         return;
       }
       openCart();
