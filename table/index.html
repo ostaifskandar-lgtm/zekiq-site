@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v16: swipe text + animated arrow row -->
+  <!-- guest-table-ui-v17: order line flash instead of add toast -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -557,6 +557,17 @@
       color:#ffe082;
     }
     .order-chip-line:last-child{border-bottom:none;}
+    .order-chip-line.flash-added{
+      animation:orderLineFlash 1.1s ease-out 1;
+      border-radius:10px;
+      margin:0 -6px;
+      padding:6px 6px;
+    }
+    @keyframes orderLineFlash{
+      0%{background:rgba(46,180,60,.42);box-shadow:0 0 0 0 rgba(76,220,90,.65),inset 0 0 0 1px rgba(120,255,130,.55);}
+      45%{background:rgba(46,180,60,.28);box-shadow:0 0 18px 4px rgba(76,220,90,.45),inset 0 0 0 1px rgba(120,255,130,.75);}
+      100%{background:transparent;box-shadow:none;}
+    }
     .order-chip-name{flex:1;min-width:0;text-align:right;word-break:break-word;}
     .order-chip-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
     .order-chip-dec,.order-chip-del{
@@ -1452,10 +1463,12 @@
     #overlay.show{opacity:1;pointer-events:all;}
 
     #toast{
-      position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-120px);
+      position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;
+      transform:translateX(-50%) translateY(120px);
       background:linear-gradient(135deg,#155715,#1e8a1e);color:#fff;padding:14px 26px;border-radius:14px;
       font-size:14px;font-weight:700;z-index:500;transition:transform .5s cubic-bezier(.34,1.56,.64,1);
       box-shadow:0 8px 25px rgba(0,150,0,.4);text-align:center;white-space:pre-line;
+      pointer-events:none;
     }
     #toast.show{transform:translateX(-50%) translateY(0);}
 
@@ -3083,8 +3096,7 @@
 
     function quickAddItem(item) {
       if (!coachDone) return;
-      addToCart(item);
-      showToast("✅ " + item.name + "\n" + guestT("toastAdded") + " · " + money(item.price));
+      addToCart(item, { flash: true });
     }
     function openMenuList() {
       if (!coachDone) return;
@@ -3451,15 +3463,25 @@
     document.getElementById("pqInc").onclick = () => { popupQty++; document.getElementById("p-qty").textContent = popupQty; };
     document.getElementById("popupAdd").onclick = () => {
       if (!coachDone || !popupItem) return;
-      for (let i = 0; i < popupQty; i++) addToCart(popupItem);
+      for (let i = 0; i < popupQty; i++) addToCart(popupItem, { flash: i === popupQty - 1 });
       closePopup();
-      showToast("✅ " + popupItem.name + "\n" + popupQty + "× " + guestT("toastAdded"));
     };
 
-    function addToCart(item) {
+    function flashOrderLine(itemId) {
+      requestAnimationFrame(() => {
+        const row = document.querySelector('#sceneOrderList .order-chip-line[data-item-id="' + itemId + '"]');
+        if (!row) return;
+        row.classList.remove("flash-added");
+        void row.offsetWidth;
+        row.classList.add("flash-added");
+        setTimeout(() => row.classList.remove("flash-added"), 1200);
+      });
+    }
+    function addToCart(item, opts) {
       const ex = cart.find(i => i.item.id === item.id);
       if (ex) ex.qty++; else cart.push({ item, qty: 1, note: "" });
       updateBadge();
+      if (opts && opts.flash) flashOrderLine(item.id);
       if (navigator.vibrate) navigator.vibrate(12);
     }
     function syncSceneHud() {
@@ -3503,7 +3525,7 @@
       if (summaryEl) summaryEl.textContent = "🛒 " + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
       if (listEl) {
         listEl.innerHTML = cart.map(l => `
-          <div class="order-chip-line">
+          <div class="order-chip-line" data-item-id="${l.item.id}">
             <span class="order-chip-name">${l.qty}× ${esc(l.item.name)}</span>
             <div class="order-chip-actions">
               <button type="button" class="order-chip-dec" data-dec-id="${l.item.id}" aria-label="−">−</button>
