@@ -2428,11 +2428,16 @@
       const plusOnly = singlePagePlusOnly || plusButtonsAllPages || bookPages.length <= 1 || hasPlusManual;
       if (plusOnly) {
         const spots = (manualSpots[String(pageIdx)] || manualSpots[pageIdx] || []).filter(s => s && (s.kind === "plus" || plusButtonsAllPages));
+        const pageItems = itemsForPage(pageIdx);
+        const sorted = spots.slice().sort((a, b) => Number(a.y) - Number(b.y) || Number(a.x) - Number(b.x));
+        const offset = plusSpotMenuOffset(sorted, pageItems);
+        const used = new Set();
         const out = [];
-        for (const spot of spots) {
-          if (spot.menuItemId == null) continue;
-          const item = menu.find(m => m.id === Number(spot.menuItemId));
+        for (let i = 0; i < sorted.length; i++) {
+          const spot = sorted[i];
+          const item = resolvePlusSpotItem(spot, pageItems, pageItems, i, offset, used);
           if (!item) continue;
+          used.add(item.id);
           out.push({ item, spot: {
             x: spot.x, y: spot.y,
             w: spot.w || 0.055, h: spot.h || 0.032,
@@ -2642,6 +2647,11 @@
       return bestOff;
     }
     function resolvePlusSpotItem(spot, pool, allPageItems, spotIdx, offset, used) {
+      const iid = spot.itemId ? String(spot.itemId).trim() : "";
+      if (iid) {
+        const byItemId = allPageItems.find(it => it.itemId && String(it.itemId) === iid && !used.has(it.id));
+        if (byItemId) return byItemId;
+      }
       if (spot.menuItemId != null) {
         const byId = allPageItems.find(it => it.id === Number(spot.menuItemId) && !used.has(it.id));
         if (byId) return byId;
