@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v29: table # in white foot bar, compact swipe -->
+  <!-- guest-table-ui-v30: orders overlay top — menu stays full size -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -472,33 +472,48 @@
       flex:1;
       min-height:0;
       position:relative;
-      display:flex;
-      flex-direction:column;
       overflow:hidden;
       width:100%;
       padding-top:calc(44px + env(safe-area-inset-top,0px));
+      display:block;
     }
     html.coach-locked #menuStage{padding-top:0;}
     #menuOrderDock{
-      flex-shrink:0;
-      position:relative;
-      z-index:20;
+      position:absolute;
+      left:0;
+      right:0;
+      top:0;
+      z-index:35;
       width:100%;
-      pointer-events:auto;
-      background:linear-gradient(180deg,#e4dcc8 0%,#ebe4d3 100%);
-      border-bottom:2px solid rgba(180,140,80,.32);
-      box-shadow:0 4px 14px rgba(0,0,0,.07);
+      pointer-events:none;
+      max-height:0;
+      overflow:hidden;
+      background:transparent;
+      border:none;
+      box-shadow:none;
+    }
+    #menuStage.orders-overlay #menuOrderDock{
+      max-height:min(46vh,268px);
+      overflow:hidden;
+      background:linear-gradient(180deg,#e4dcc8 0%,#ebe4d3 92%,rgba(235,228,211,.9) 100%);
+      border-bottom:2px solid rgba(180,140,80,.35);
+      box-shadow:0 6px 20px rgba(0,0,0,.14);
     }
     #menuOrderDock #guestGuide,
-    #menuOrderDock #guestOrderChip{pointer-events:auto;}
+    #menuOrderDock #guestOrderChip,
+    #menuOrderDock #guestOrderChip *{pointer-events:auto;}
     #menuBookWrap{
-      flex:1;
-      min-height:0;
-      position:relative;
+      position:absolute;
+      left:0;
+      right:0;
+      top:0;
+      bottom:0;
+      z-index:1;
       display:flex;
       flex-direction:column;
       overflow:hidden;
       padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));
+      min-height:0;
     }
     #menuCategoryBar{
       flex-shrink:0;
@@ -635,7 +650,7 @@
     .order-chip-list{
       --order-line-h:34px;
       max-height:calc(var(--order-line-h) * 3 + 8px);
-      max-height:min(20vh,calc(var(--order-line-h) * 3 + 8px));
+      max-height:min(18vh,calc(var(--order-line-h) * 3 + 8px));
       overflow-y:auto;
       overflow-x:hidden;
       -webkit-overflow-scrolling:touch;
@@ -646,7 +661,13 @@
       scroll-behavior:smooth;
     }
     .order-chip-list.has-overflow{
-      max-height:min(26vh,calc(var(--order-line-h) * 4 + 8px));
+      max-height:min(24vh,calc(var(--order-line-h) * 4 + 8px));
+    }
+    #menuStage.orders-overlay .order-chip-list{
+      max-height:min(30vh,calc(var(--order-line-h) * 5 + 8px));
+    }
+    #menuStage.orders-overlay .order-chip-list.has-overflow{
+      max-height:min(36vh,calc(var(--order-line-h) * 6 + 8px));
     }
     .order-chip-list.has-overflow::before{
       content:"";
@@ -3778,6 +3799,7 @@
         if (lineCount > 0) {
           listEl.scrollTop = listEl.scrollHeight;
         }
+        if (window.__zekiqRelayout) window.__zekiqRelayout();
       });
     }
     function flashOrderLine(itemId) {
@@ -3832,6 +3854,8 @@
       const sendBadge = document.getElementById("sceneSendBadge");
       const guideEl = document.getElementById("guestGuide");
       const chipEl = document.getElementById("guestOrderChip");
+      const stageEl = document.getElementById("menuStage");
+      if (stageEl) stageEl.classList.toggle("orders-overlay", t > 0);
       const summaryEl = document.getElementById("sceneOrderSummary");
       const listEl = document.getElementById("sceneOrderList");
       if (shopEl && shopName) shopEl.textContent = shopName;
