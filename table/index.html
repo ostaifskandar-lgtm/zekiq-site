@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v13: full-screen menu, swipe hint bottom, no nav buttons -->
+  <!-- guest-table-ui-v14: letterbox rails + smart menu fill -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -588,7 +588,7 @@
       width:var(--app-w,100vw);height:var(--app-h,100dvh);z-index:1;
       display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
       overflow:hidden;
-      background:#1e1208;
+      background:#ebe4d3;
       perspective:2400px;
       padding:0;
       cursor:pointer;
@@ -825,6 +825,69 @@
       position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;
       border-radius:0;box-shadow:none;
     }
+    .pf-rail-top,.pf-rail-bottom{
+      position:absolute;left:0;right:0;z-index:6;
+      display:flex;align-items:center;justify-content:center;
+      padding:0 12px;
+      pointer-events:none;
+      text-align:center;
+    }
+    .pf-rail-top{
+      top:0;
+      background:linear-gradient(180deg,#ebe4d3 0%,rgba(235,228,211,.96) 88%,rgba(235,228,211,.72) 100%);
+      border-bottom:1px solid rgba(180,150,100,.22);
+    }
+    .pf-rail-top-inner{
+      display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+      gap:6px 10px;width:100%;max-width:420px;
+    }
+    .pf-rail-cat{
+      font-size:11px;font-weight:900;letter-spacing:.04em;
+      color:#6b4a12;
+      background:rgba(200,134,10,.12);
+      border:1px solid rgba(200,134,10,.28);
+      border-radius:14px;padding:4px 10px;
+      line-height:1.2;
+    }
+    .pf-rail-pg{
+      font-size:10px;font-weight:800;color:rgba(107,74,18,.65);
+      letter-spacing:.06em;
+    }
+    .pf-rail-bottom{
+      background:linear-gradient(0deg,#ebe4d3 0%,rgba(235,228,211,.96) 82%,rgba(235,228,211,.7) 100%);
+      border-top:1px solid rgba(180,150,100,.22);
+      pointer-events:auto;
+      cursor:grab;
+      flex-direction:column;
+      gap:4px;
+      padding:6px 12px 8px;
+    }
+    .pf-rail-bottom:active{cursor:grabbing;}
+    .pf-rail-swipe{
+      display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+    }
+    .pf-rail-arrow{
+      font-size:26px;font-weight:900;line-height:1;color:#c8860a;
+      animation:swipeArrowPulse 2.2s ease-in-out infinite;
+      text-shadow:0 0 10px rgba(230,168,23,.35);
+    }
+    .pf-rail-arrow:first-child{animation-delay:0s;}
+    .pf-rail-arrow:last-child{animation-delay:1.1s;}
+    .pf-rail-swipe-txt{
+      font-size:12px;font-weight:900;color:#7a5510;line-height:1.25;
+      animation:swipeLabelFlash 2.2s ease-in-out infinite;
+      max-width:min(72vw,240px);
+    }
+    .pf-rail-order{
+      font-size:10px;font-weight:800;color:rgba(90,120,70,.9);
+      letter-spacing:.02em;
+    }
+    html.letterbox-nav #pageSwipeBar{display:none!important;}
+    html.swipe-learned .pf-rail-arrow{animation:none;opacity:.5;}
+    html.swipe-learned .pf-rail-swipe-txt{animation:none;font-size:11px;}
+    html.swipe-mastered .pf-rail-swipe-txt{display:none;}
+    html.swipe-mastered .pf-rail-arrow{display:none;}
+    html.swipe-mastered .pf-rail-bottom{padding:4px 12px;}
     .pb{
       transform:rotateY(180deg);
       background:linear-gradient(148deg,#f6f0e4 0%,#ebe4d3 42%,#e0d6c4 100%);
@@ -1683,6 +1746,7 @@
       next: "التالي ▶",
       orientLock: "أبقِ الهاتف عمودياً لاستخدام المينو",
       swipeHint: "اسحب يميناً أو يساراً لقلب الشاشة",
+      railOrderHint: "اضغط + الأخضر على الصورة للطلب",
       fsHint: "👆 اضغط على المينو لملء الشاشة",
       fsHintIos: "↑ اسحب للأعلى قليلاً لإخفاء شريط Safari وملء الشاشة",
       menuTitle: "📋 قائمة الأطباق",
@@ -1757,6 +1821,7 @@
       next: "Sonraki ▶",
       orientLock: "Telefonu dikey tutun",
       swipeHint: "Sayfayı çevirmek için sağa/sola kaydırın",
+      railOrderHint: "Sipariş için resimdeki yeşil + düğmesine basın",
       fsHint: "👆 Tam ekran için menüye dokunun",
       fsHintIos: "↑ Safari çubuğunu gizlemek için yukarı kaydırın",
       menuTitle: "📋 Yemek listesi",
@@ -1831,6 +1896,7 @@
       next: "Next ▶",
       orientLock: "Keep your phone upright to browse the menu",
       swipeHint: "Swipe left or right to turn the page",
+      railOrderHint: "Tap the green + on the image to order",
       fsHint: "👆 Tap the menu for full screen",
       fsHintIos: "↑ Swipe up slightly to hide Safari bar and fill the screen",
       menuTitle: "📋 Dish list",
@@ -2113,11 +2179,6 @@
         document.addEventListener("mousemove", onMove);
         document.addEventListener("mouseup", onUp);
       });
-    }
-    function syncSwipeBar() {
-      const bar = document.getElementById("pageSwipeBar");
-      if (!bar) return;
-      bar.style.display = bookSpread.length <= 1 ? "none" : "";
     }
     function bumpSwipeLearned() {
       try {
@@ -2617,13 +2678,138 @@
       const p = Math.round(Number(item.price));
       return list.find(s => Math.round(Number(s.price)) === p) || null;
     }
+    function pageCategoryLabels(menuIdx) {
+      const cats = pageCategories[String(menuIdx)] || pageCategories[menuIdx] || [];
+      return Array.isArray(cats) ? cats.filter(Boolean) : [];
+    }
+    function applyMenuImageFit(pf) {
+      const img = pf.querySelector(".pf-bg");
+      if (!img) return;
+      const nw = Number(pf.dataset.nw), nh = Number(pf.dataset.nh);
+      if (!nw || !nh) return;
+      const cw = pf.clientWidth, ch = pf.clientHeight;
+      if (!cw || !ch) return;
+      const containScale = Math.min(cw / nw, ch / nh);
+      const wasteY = ch - nh * containScale;
+      const imgAspect = nw / nh;
+      const boxAspect = cw / ch;
+      if (wasteY > Math.max(36, ch * 0.09) && imgAspect > boxAspect * 0.88) {
+        img.style.objectFit = "cover";
+        img.style.objectPosition = "center top";
+        pf.dataset.fitMode = "cover-top";
+      } else if (wasteY > Math.max(52, ch * 0.14)) {
+        const boost = Math.min(1.14, Math.max(cw / nw, ch / nh) / containScale);
+        img.style.objectFit = "contain";
+        img.style.objectPosition = "center center";
+        img.style.transform = "scale(" + boost.toFixed(4) + ")";
+        pf.dataset.fitMode = "boost";
+        pf.dataset.fitBoost = String(boost);
+      } else {
+        img.style.objectFit = "contain";
+        img.style.objectPosition = "center center";
+        img.style.transform = "";
+        pf.dataset.fitMode = "contain";
+        pf.dataset.fitBoost = "";
+      }
+    }
     function imageOverlayRect(pf) {
       const nw = Number(pf.dataset.nw), nh = Number(pf.dataset.nh);
       if (!nw || !nh) return null;
       const cw = pf.clientWidth, ch = pf.clientHeight;
-      const scale = Math.min(cw / nw, ch / nh);
-      const dw = nw * scale, dh = nh * scale;
-      return { ox: (cw - dw) / 2, oy: (ch - dh) / 2, dw, dh };
+      if (!cw || !ch) return null;
+      applyMenuImageFit(pf);
+      const mode = pf.dataset.fitMode || "contain";
+      let scale, dw, dh, ox, oy;
+      if (mode === "cover-top") {
+        scale = Math.max(cw / nw, ch / nh);
+        dw = nw * scale;
+        dh = nh * scale;
+        ox = (cw - dw) / 2;
+        oy = 0;
+      } else if (mode === "boost") {
+        const boost = Number(pf.dataset.fitBoost) || 1;
+        scale = Math.min(cw / nw, ch / nh) * boost;
+        dw = nw * scale;
+        dh = nh * scale;
+        ox = (cw - dw) / 2;
+        oy = (ch - dh) / 2;
+      } else {
+        scale = Math.min(cw / nw, ch / nh);
+        dw = nw * scale;
+        dh = nh * scale;
+        ox = (cw - dw) / 2;
+        oy = (ch - dh) / 2;
+      }
+      return {
+        ox, oy, dw, dh, mode,
+        wasteTop: Math.max(0, oy),
+        wasteBottom: Math.max(0, ch - oy - dh),
+      };
+    }
+    function layoutLetterboxRails(pf, menuIdx) {
+      if (!pf || pf.classList.contains("book-cover") || menuIdx < 0) {
+        pf?.querySelectorAll(".pf-rail-top,.pf-rail-bottom").forEach(el => { el.style.display = "none"; });
+        return false;
+      }
+      const rect = imageOverlayRect(pf);
+      if (!rect) return false;
+      let topRail = pf.querySelector(".pf-rail-top");
+      let botRail = pf.querySelector(".pf-rail-bottom");
+      if (!topRail) {
+        topRail = document.createElement("div");
+        topRail.className = "pf-rail-top";
+        pf.appendChild(topRail);
+      }
+      if (!botRail) {
+        botRail = document.createElement("div");
+        botRail.className = "pf-rail-bottom";
+        pf.appendChild(botRail);
+      }
+      const minRail = 30;
+      const topH = rect.wasteTop >= minRail ? rect.wasteTop : 0;
+      const botH = rect.wasteBottom >= minRail ? rect.wasteBottom : 0;
+      topRail.style.display = topH ? "flex" : "none";
+      topRail.style.height = topH + "px";
+      botRail.style.display = botH ? "flex" : "none";
+      botRail.style.height = botH + "px";
+      botRail.style.top = (rect.oy + rect.dh) + "px";
+      if (topH) {
+        const cats = pageCategoryLabels(menuIdx);
+        const pageNum = (menuIdx + 1) + " / " + menuPageCount;
+        let catHtml = "";
+        if (cats.length) {
+          catHtml = cats.map(c => '<span class="pf-rail-cat">' + esc(c) + (catLabelAr(c) ? " · " + esc(catLabelAr(c)) : "") + "</span>").join("");
+        } else {
+          catHtml = '<span class="pf-rail-cat">' + esc(shopName || "Menu") + "</span>";
+        }
+        topRail.innerHTML = '<div class="pf-rail-top-inner">' + catHtml + '<span class="pf-rail-pg">' + pageNum + "</span></div>";
+      } else {
+        topRail.innerHTML = "";
+      }
+      if (botH) {
+        botRail.innerHTML =
+          '<div class="pf-rail-swipe">' +
+          '<span class="pf-rail-arrow" aria-hidden="true">‹</span>' +
+          '<span class="pf-rail-swipe-txt">' + esc(guestT("swipeHint")) + "</span>" +
+          '<span class="pf-rail-arrow" aria-hidden="true">›</span>' +
+          "</div>" +
+          '<div class="pf-rail-order">' + esc(guestT("railOrderHint")) + "</div>";
+      } else {
+        botRail.innerHTML = "";
+      }
+      return botH >= minRail;
+    }
+    function syncSwipeBar() {
+      const bar = document.getElementById("pageSwipeBar");
+      const menuIdx = menuIdxFromCur(cur);
+      const pf = document.querySelector("#pw" + cur + " .pf");
+      let useRail = false;
+      if (pf && menuIdx >= 0 && bookSpread.length > 1) {
+        useRail = layoutLetterboxRails(pf, menuIdx);
+      }
+      document.documentElement.classList.toggle("letterbox-nav", !!useRail);
+      if (!bar) return;
+      bar.style.display = bookSpread.length <= 1 || useRail ? "none" : "";
     }
     function primePageBg(pf, src, onReady) {
       const img = document.createElement("img");
@@ -2636,6 +2822,7 @@
       img.onload = () => {
         pf.dataset.nw = String(img.naturalWidth);
         pf.dataset.nh = String(img.naturalHeight);
+        applyMenuImageFit(pf);
         if (onReady) onReady();
       };
       img.onerror = () => { if (onReady) onReady(); };
@@ -2680,9 +2867,19 @@
         }
         h.style.transform = spotTransform(h.dataset.anchor || (isPlus ? "center" : "right"));
       });
+      const menuIdx = (() => {
+        const pw = pf.closest(".pw");
+        if (!pw || !pw.id) return menuIdxFromCur(cur);
+        const spreadIdx = Number(String(pw.id).replace(/^pw/, ""));
+        return menuIdxFromCur(spreadIdx);
+      })();
+      layoutLetterboxRails(pf, menuIdx);
     }
     function layoutAllHotspots() {
-      document.querySelectorAll(".pf").forEach(layoutPfHotspots);
+      document.querySelectorAll(".pf").forEach(pf => {
+        layoutPfHotspots(pf);
+      });
+      syncSwipeBar();
     }
     window.__zekiqRelayout = function() {
       layoutAllHotspots();
