@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v28: NO crop NO zoom — pure contain only -->
+  <!-- guest-table-ui-v29: table # in white foot bar, compact swipe -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -395,49 +395,38 @@
     }
     .scene-hud-table{display:none!important;}
     #tableFootBadge{
-      position:absolute;
-      left:12px;
-      bottom:calc(12px + env(safe-area-inset-bottom,0px));
-      z-index:335;
+      flex-shrink:0;
       display:none;
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap:1px;
-      min-width:72px;
-      padding:8px 16px 10px;
-      border-radius:18px;
-      background:linear-gradient(145deg,rgba(13,5,0,.94),rgba(42,24,8,.9));
-      border:2px solid rgba(230,168,23,.7);
-      box-shadow:0 6px 22px rgba(0,0,0,.45),0 0 20px rgba(200,134,10,.22);
+      gap:0;
+      min-width:52px;
+      padding:2px 8px 2px 4px;
+      border-radius:12px;
+      background:rgba(200,134,10,.1);
+      border:1px solid rgba(200,134,10,.28);
       pointer-events:none;
     }
     #tableFootBadge.show{display:flex;}
-    html:not(.single-page) #tableFootBadge{
-      bottom:calc(92px + env(safe-area-inset-bottom,0px));
-    }
-    html.letterbox-nav #tableFootBadge{
-      bottom:calc(88px + env(safe-area-inset-bottom,0px));
-    }
     .table-foot-label{
-      font-size:10px;
+      font-size:9px;
       font-weight:800;
-      color:rgba(255,224,130,.8);
-      letter-spacing:.08em;
+      color:rgba(107,74,18,.75);
+      letter-spacing:.06em;
     }
     .table-foot-num{
-      font-size:30px;
+      font-size:22px;
       font-weight:900;
-      color:#fff4c2;
+      color:#5a3d08;
       line-height:1;
       letter-spacing:.02em;
-      text-shadow:0 0 14px rgba(255,224,130,.4);
     }
     .table-foot-section{
-      font-size:9px;
+      font-size:8px;
       font-weight:700;
-      color:rgba(200,134,10,.75);
-      max-width:88px;
+      color:rgba(107,74,18,.55);
+      max-width:52px;
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
@@ -509,6 +498,7 @@
       display:flex;
       flex-direction:column;
       overflow:hidden;
+      padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));
     }
     #menuCategoryBar{
       flex-shrink:0;
@@ -764,36 +754,51 @@
       left:0;right:0;bottom:0;
       z-index:330;
       display:flex;
-      align-items:flex-end;
+      align-items:stretch;
       justify-content:center;
-      padding:0 10px calc(8px + env(safe-area-inset-bottom,0px));
+      padding:0;
       min-height:0;
+      max-height:calc(78px + env(safe-area-inset-bottom,0px));
       height:auto;
       touch-action:none;
       user-select:none;
       -webkit-user-select:none;
       pointer-events:none;
-      background:linear-gradient(0deg,rgba(30,18,8,.92) 0%,rgba(30,18,8,.45) 42%,transparent 100%);
+      background:linear-gradient(0deg,#ebe4d3 0%,#ebe4d3 70%,rgba(235,228,211,.55) 100%);
+      border-top:1px solid rgba(180,150,100,.28);
     }
-    #pageSwipeBar:active{cursor:grabbing;}
-    html.single-page #pageSwipeBar{display:none!important;}
-    .swipe-hint{
+    .swipe-foot-panel{
       pointer-events:auto;
       display:flex;
+      align-items:center;
+      gap:6px;
+      width:100%;
+      max-width:100%;
+      padding:5px 10px calc(5px + env(safe-area-inset-bottom,0px));
+      min-height:0;
+      overflow:hidden;
+      cursor:grab;
+    }
+    .swipe-foot-panel:active{cursor:grabbing;}
+    html.single-page #pageSwipeBar{display:none!important;}
+    .swipe-hint{
+      pointer-events:none;
+      display:flex;
+      flex:1;
+      min-width:0;
       flex-direction:column;
       align-items:center;
       justify-content:center;
       gap:0;
-      width:min(96%,340px);
-      padding:10px 14px 11px;
-      border-radius:22px;
-      border:1.5px solid rgba(230,168,23,.55);
-      background:rgba(13,5,0,.78);
-      box-shadow:0 0 22px rgba(230,168,23,.28),0 6px 22px rgba(0,0,0,.45);
-      animation:swipeHintBob 2.4s ease-in-out infinite;
-      cursor:grab;
+      width:auto;
+      padding:0 4px;
+      border-radius:0;
+      border:none;
+      background:transparent;
+      box-shadow:none;
+      animation:none;
+      cursor:inherit;
     }
-    .swipe-hint:active{cursor:grabbing;}
     @keyframes swipeHintBob{
       0%,100%{transform:translateY(0);box-shadow:0 0 18px rgba(230,168,23,.22),0 4px 16px rgba(0,0,0,.4);}
       50%{transform:translateY(-3px);box-shadow:0 0 28px rgba(255,224,130,.45),0 8px 24px rgba(0,0,0,.5);}
@@ -810,38 +815,39 @@
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:6px;
+      gap:2px;
       width:100%;
+      max-width:280px;
     }
     .swipe-order-hint{
-      font-size:13px;
-      font-weight:900;
-      color:#7cff9a;
+      font-size:10px;
+      font-weight:800;
+      color:#2d5a28;
       text-align:center;
-      line-height:1.35;
+      line-height:1.25;
       margin:0;
-      padding:0 8px;
+      padding:0 4px;
       pointer-events:none;
-      text-shadow:0 1px 6px rgba(0,0,0,.35);
+      text-shadow:none;
     }
     .swipe-hint-text,.swipe-label{
-      font-size:15px;
+      font-size:11px;
       font-weight:900;
-      letter-spacing:.03em;
-      color:#fff8e1;
+      letter-spacing:.02em;
+      color:#4a3208;
       text-align:center;
-      line-height:1.35;
+      line-height:1.25;
       margin:0;
-      padding:0 6px;
+      padding:0 4px;
       pointer-events:none;
-      text-shadow:0 1px 8px rgba(0,0,0,.45),0 0 14px rgba(255,224,130,.4);
+      text-shadow:none;
       animation:swipeLabelFlash 2s ease-in-out infinite;
       display:block!important;
     }
     .pf-rail-swipe-txt{
-      font-size:15px;
+      font-size:11px;
       font-weight:900;
-      color:#3d2806;
+      color:#4a3208;
       text-shadow:none;
       animation:swipeLabelFlash 2s ease-in-out infinite;
       display:block!important;
@@ -850,14 +856,14 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      width:min(100%,280px);
-      height:40px;
+      width:min(100%,168px);
+      height:24px;
       overflow:hidden;
       position:relative;
-      border-radius:20px;
-      background:linear-gradient(90deg,rgba(255,152,0,.22) 0%,rgba(13,5,0,.35) 48%,rgba(38,198,218,.22) 100%);
-      border:2px solid rgba(255,224,130,.55);
-      box-shadow:inset 0 0 12px rgba(255,193,7,.15),0 0 16px rgba(255,152,0,.12);
+      border-radius:12px;
+      background:linear-gradient(90deg,rgba(255,152,0,.18) 0%,rgba(235,228,211,.65) 48%,rgba(38,198,218,.18) 100%);
+      border:1px solid rgba(200,134,10,.35);
+      box-shadow:inset 0 0 6px rgba(255,193,7,.12);
     }
     .pf-rail-bottom .swipe-arrow-track{
       background:linear-gradient(90deg,rgba(255,152,0,.28) 0%,rgba(235,228,211,.5) 48%,rgba(38,198,218,.28) 100%);
@@ -868,15 +874,15 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:4px;
+      gap:2px;
       animation:swipeTrackMove 1.5s ease-in-out infinite;
       will-change:transform;
     }
     .swipe-track-chev{
-      font-size:28px;
+      font-size:16px;
       font-weight:900;
       line-height:1;
-      color:rgba(255,255,255,.35);
+      color:rgba(90,61,8,.35);
     }
     .swipe-track-chev.lit.left{
       color:#ffb300;
@@ -892,14 +898,14 @@
     .swipe-track-chev.lit.right.delay-2{animation-delay:.36s;}
     .swipe-track-chev.lit.right.delay-3{animation-delay:.54s;}
     .swipe-track-dot{
-      font-size:14px;
+      font-size:9px;
       font-weight:900;
-      color:rgba(255,224,130,.55);
-      padding:0 2px;
+      color:rgba(107,74,18,.45);
+      padding:0 1px;
     }
     @keyframes swipeTrackMove{
-      0%,100%{transform:translateX(-22px);}
-      50%{transform:translateX(22px);}
+      0%,100%{transform:translateX(-10px);}
+      50%{transform:translateX(10px);}
     }
     @keyframes swipeChevFlashL{
       0%,100%{opacity:.7;transform:scale(.94);}
@@ -914,20 +920,22 @@
       50%{opacity:1;}
     }
     .swipe-page-num{
-      font-size:10px;
+      font-size:8px;
       font-weight:800;
-      color:rgba(200,134,10,.75);
-      letter-spacing:.06em;
+      color:rgba(107,74,18,.55);
+      letter-spacing:.04em;
       pointer-events:none;
+      line-height:1;
     }
     html.swipe-learned #pageSwipeBar{
-      background:linear-gradient(0deg,rgba(30,18,8,.72) 0%,transparent 72%);
+      background:linear-gradient(0deg,#ebe4d3 0%,rgba(235,228,211,.92) 100%);
     }
     html.swipe-learned .swipe-hint{
       animation:none;
-      padding:7px 12px 8px;
-      border-color:rgba(200,134,10,.35);
-      box-shadow:0 4px 14px rgba(0,0,0,.35);
+      padding:0 4px;
+      border:none;
+      box-shadow:none;
+      background:transparent;
     }
     html.swipe-learned .swipe-hand,
     html.swipe-learned .swipe-track-slide{animation-duration:2.4s;}
@@ -935,31 +943,28 @@
     html.swipe-learned .swipe-label,
     html.swipe-learned .pf-rail-swipe-txt{
       animation:none;
-      font-size:14px;
-      color:#fff8e1;
+      font-size:10px;
+      color:#4a3208;
       display:block!important;
     }
-    html.swipe-learned .pf-rail-swipe-txt{color:#3d2806;}
+    html.swipe-learned .pf-rail-swipe-txt{color:#4a3208;}
     html.swipe-mastered #pageSwipeBar{
-      padding-bottom:calc(4px + env(safe-area-inset-bottom,0px));
-      background:linear-gradient(0deg,rgba(30,18,8,.55) 0%,transparent 85%);
+      max-height:calc(62px + env(safe-area-inset-bottom,0px));
+      background:#ebe4d3;
     }
     html.swipe-mastered .swipe-hint{
-      width:auto;
-      min-width:120px;
-      padding:5px 14px;
-      gap:4px;
-      background:rgba(13,5,0,.55);
-      border-color:rgba(200,134,10,.22);
+      padding:0 2px;
+      background:transparent;
+      border:none;
       animation:none;
     }
     html.swipe-mastered .swipe-hint-text,
     html.swipe-mastered .swipe-label,
     html.swipe-mastered .pf-rail-swipe-txt{
       display:block!important;
-      font-size:13px;
+      font-size:10px;
     }
-    html.swipe-mastered .swipe-arrow-track{height:22px;width:120px;}
+    html.swipe-mastered .swipe-arrow-track{height:20px;width:140px;}
     html.swipe-mastered .swipe-hint-mid{flex-direction:row;gap:8px;}
     #book{
       position:relative;flex:1;min-height:0;width:100%;max-width:100vw;
@@ -1815,29 +1820,30 @@
       </div>
       <div id="book"></div>
       <div id="pageSwipeBar" aria-live="polite" aria-label="اسحب لقلب الصفحة">
-        <div class="swipe-hint">
-          <div class="swipe-hint-block">
-            <p class="swipe-hint-text" id="i18n-swipeHint">اسحب لقلب الشاشة</p>
-            <div class="swipe-arrow-track" aria-hidden="true">
-              <div class="swipe-track-slide">
-                <span class="swipe-track-chev lit left">‹</span>
-                <span class="swipe-track-chev lit left delay-1">‹</span>
-                <span class="swipe-track-dot">•</span>
-                <span class="swipe-track-chev lit right delay-2">›</span>
-                <span class="swipe-track-chev lit right delay-3">›</span>
+        <div class="swipe-foot-panel">
+          <div id="tableFootBadge" aria-live="polite" hidden>
+            <span class="table-foot-section" id="tableFootSection"></span>
+            <span class="table-foot-label" id="tableFootLabel">طاولة</span>
+            <bdi class="table-foot-num" id="tableFootNum" dir="ltr">—</bdi>
+          </div>
+          <div class="swipe-hint">
+            <div class="swipe-hint-block">
+              <p class="swipe-hint-text" id="i18n-swipeHint">اسحب لقلب الشاشة</p>
+              <div class="swipe-arrow-track" aria-hidden="true">
+                <div class="swipe-track-slide">
+                  <span class="swipe-track-chev lit left">‹</span>
+                  <span class="swipe-track-chev lit left delay-1">‹</span>
+                  <span class="swipe-track-chev lit right delay-2">›</span>
+                  <span class="swipe-track-chev lit right delay-3">›</span>
+                </div>
               </div>
+              <p class="swipe-order-hint" id="i18n-railOrderHint">اضغط + الأخضر على الصورة للطلب</p>
+              <bdi class="swipe-page-num" id="swipePgnum" dir="ltr">1 / 1</bdi>
             </div>
-            <p class="swipe-order-hint" id="i18n-railOrderHint">اضغط + الأخضر على الصورة للطلب</p>
-            <bdi class="swipe-page-num" id="swipePgnum" dir="ltr">1 / 1</bdi>
           </div>
         </div>
       </div>
       </div>
-    </div>
-    <div id="tableFootBadge" aria-live="polite" hidden>
-      <span class="table-foot-section" id="tableFootSection"></span>
-      <span class="table-foot-label" id="tableFootLabel">طاولة</span>
-      <bdi class="table-foot-num" id="tableFootNum" dir="ltr">—</bdi>
     </div>
     <div id="nav" hidden aria-hidden="true">
       <button type="button" class="nav-arrow" id="prevBtn" tabindex="-1"><span class="nav-label" id="i18n-prev">◀ السابق</span></button>
@@ -3017,7 +3023,6 @@
         '<div class="swipe-track-slide">' +
         '<span class="swipe-track-chev lit left">‹</span>' +
         '<span class="swipe-track-chev lit left delay-1">‹</span>' +
-        '<span class="swipe-track-dot">•</span>' +
         '<span class="swipe-track-chev lit right delay-2">›</span>' +
         '<span class="swipe-track-chev lit right delay-3">›</span>' +
         "</div></div>";
