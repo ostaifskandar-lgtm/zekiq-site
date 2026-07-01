@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v31: menu fixed position — orders overlay only, no clip/lift -->
+  <!-- guest-table-ui-v32: menu flush above fixed white foot bar -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -513,7 +513,6 @@
       display:flex;
       flex-direction:column;
       overflow:hidden;
-      padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));
       min-height:0;
     }
     #menuViewport{
@@ -779,21 +778,22 @@
       padding-top:0;
     }
     #pageSwipeBar{
-      position:absolute;
-      left:0;right:0;bottom:0;
+      position:relative;
+      flex:0 0 auto;
+      left:0;right:0;
       z-index:330;
       display:flex;
       align-items:stretch;
       justify-content:center;
       padding:0;
-      min-height:0;
+      width:100%;
+      min-height:calc(66px + env(safe-area-inset-bottom,0px));
       max-height:calc(78px + env(safe-area-inset-bottom,0px));
-      height:auto;
       touch-action:none;
       user-select:none;
       -webkit-user-select:none;
       pointer-events:none;
-      background:linear-gradient(0deg,#ebe4d3 0%,#ebe4d3 70%,rgba(235,228,211,.55) 100%);
+      background:#ebe4d3;
       border-top:1px solid rgba(180,150,100,.28);
     }
     .swipe-foot-panel{
@@ -1156,7 +1156,7 @@
     .pw.turning .hotspot{pointer-events:none!important;opacity:.35;}
     .pf-bg,.pb-bg{
       position:absolute;inset:0;width:100%;height:100%;
-      object-fit:contain;object-position:center;
+      object-fit:contain;object-position:center bottom;
       background-color:#ebe4d3;
       pointer-events:none;user-select:none;-webkit-user-select:none;
       -webkit-user-drag:none;-webkit-touch-callout:none;
@@ -3025,9 +3025,10 @@
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
       const img = pf.querySelector(".pf-bg");
+      const isCover = pf.classList.contains("book-cover");
       if (img) {
         img.style.objectFit = "contain";
-        img.style.objectPosition = "center";
+        img.style.objectPosition = isCover ? "center" : "center bottom";
         img.style.transform = "";
         img.style.width = "";
         img.style.height = "";
@@ -3042,11 +3043,11 @@
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
-      const oy = (ch - dh) / 2;
+      const oy = isCover ? (ch - dh) / 2 : (ch - dh);
       return {
         ox, oy, dw, dh,
         wasteTop: Math.max(0, oy),
-        wasteBottom: Math.max(0, ch - oy - dh),
+        wasteBottom: isCover ? Math.max(0, ch - oy - dh) : 0,
       };
     }
     function swipeArrowTrackHtml() {
