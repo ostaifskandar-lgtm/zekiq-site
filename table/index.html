@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v12: fix flip lock + thin paper -->
+  <!-- guest-table-ui-v13: full-screen menu, swipe hint bottom, no nav buttons -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -334,17 +334,19 @@
     .pg-num{font-size:11px;padding:2px 8px;}
 
     #sceneHud{
+      position:absolute;
+      top:0;left:0;right:0;
       flex-shrink:0;
       display:none;
       flex-direction:column;
       gap:0;
-      padding:0 10px 4px;
-      padding-top:max(env(safe-area-inset-top,6px),6px);
-      background:linear-gradient(180deg,rgba(13,5,0,.82) 0%,rgba(13,5,0,.55) 85%,rgba(13,5,0,.22) 100%);
-      pointer-events:auto;
-      position:relative;
+      padding:0 8px 6px;
+      padding-top:max(env(safe-area-inset-top,4px),4px);
+      background:linear-gradient(180deg,rgba(13,5,0,.88) 0%,rgba(13,5,0,.52) 70%,transparent 100%);
+      pointer-events:none;
       z-index:950;
     }
+    #sceneHud .hud-row{pointer-events:auto;}
     .hud-row{
       display:flex;
       align-items:center;
@@ -448,6 +450,7 @@
       display:flex;
       flex-direction:column;
       overflow:hidden;
+      width:100%;
     }
     #menuOrderDock{
       position:absolute;
@@ -580,8 +583,6 @@
     #scene:-webkit-full-screen #guestGuide.show{display:flex!important;}
     #scene:fullscreen #guestOrderChip.show,
     #scene:-webkit-full-screen #guestOrderChip.show{display:block!important;}
-    #scene:fullscreen #nav,
-    #scene:-webkit-full-screen #nav{display:flex!important;}
     #scene{
       position:fixed;left:0;right:0;top:var(--vv-top,0px);
       width:var(--app-w,100vw);height:var(--app-h,100dvh);z-index:1;
@@ -621,66 +622,144 @@
       padding-top:0;
     }
     #pageSwipeBar{
-      flex-shrink:0;
-      height:46px;
-      min-height:46px;
+      position:absolute;
+      left:0;right:0;bottom:0;
+      z-index:330;
       display:flex;
-      align-items:center;
+      align-items:flex-end;
       justify-content:center;
+      padding:0 10px calc(8px + env(safe-area-inset-bottom,0px));
+      min-height:0;
+      height:auto;
       touch-action:none;
       user-select:none;
       -webkit-user-select:none;
-      position:relative;
-      z-index:320;
-      background:linear-gradient(180deg,rgba(13,5,0,.28) 0%,rgba(13,5,0,.08) 55%,transparent 100%);
-      cursor:grab;
+      pointer-events:none;
+      background:linear-gradient(0deg,rgba(30,18,8,.92) 0%,rgba(30,18,8,.45) 42%,transparent 100%);
     }
     #pageSwipeBar:active{cursor:grabbing;}
     html.single-page #pageSwipeBar{display:none!important;}
     .swipe-hint{
+      pointer-events:auto;
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:14px;
-      width:min(92%,300px);
-      padding:4px 10px;
-      border-radius:20px;
-      border:1px solid rgba(200,134,10,.18);
-      background:rgba(13,5,0,.35);
+      gap:10px;
+      width:min(96%,340px);
+      padding:10px 14px 11px;
+      border-radius:22px;
+      border:1.5px solid rgba(230,168,23,.55);
+      background:rgba(13,5,0,.78);
+      box-shadow:0 0 22px rgba(230,168,23,.28),0 6px 22px rgba(0,0,0,.45);
+      animation:swipeHintBob 2.4s ease-in-out infinite;
+      cursor:grab;
+    }
+    .swipe-hint:active{cursor:grabbing;}
+    @keyframes swipeHintBob{
+      0%,100%{transform:translateY(0);box-shadow:0 0 18px rgba(230,168,23,.22),0 4px 16px rgba(0,0,0,.4);}
+      50%{transform:translateY(-3px);box-shadow:0 0 28px rgba(255,224,130,.45),0 8px 24px rgba(0,0,0,.5);}
+    }
+    .swipe-hint-mid{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:3px;
+      min-width:0;
+      flex:1;
+    }
+    .swipe-hand{
+      display:block;
+      font-size:18px;
+      line-height:1;
+      animation:swipeHandSlide 1.8s ease-in-out infinite;
+      filter:drop-shadow(0 0 6px rgba(255,224,130,.6));
+    }
+    @keyframes swipeHandSlide{
+      0%,100%{transform:translateX(-8px);opacity:.55;}
+      50%{transform:translateX(8px);opacity:1;}
     }
     .swipe-arrow{
-      font-size:24px;
+      font-size:28px;
       line-height:1;
-      color:rgba(255,224,130,.28);
-      text-shadow:0 0 6px rgba(230,168,23,.12);
+      font-weight:900;
+      color:rgba(255,224,130,.35);
+      text-shadow:0 0 8px rgba(230,168,23,.15);
       transition:opacity .2s ease,transform .2s ease,text-shadow .2s ease,color .2s ease;
-      animation:swipeArrowPulse 2.6s ease-in-out infinite;
+      animation:swipeArrowPulse 2.2s ease-in-out infinite;
       pointer-events:none;
+      flex-shrink:0;
     }
     .swipe-arrow-prev{animation-delay:0s;}
-    .swipe-arrow-next{animation-delay:1.3s;}
+    .swipe-arrow-next{animation-delay:1.1s;}
     @keyframes swipeArrowPulse{
-      0%,100%{opacity:.22;transform:scale(.9);text-shadow:0 0 4px rgba(230,168,23,.08);color:rgba(255,224,130,.25);}
-      45%,55%{opacity:1;transform:scale(1.12);text-shadow:0 0 14px rgba(255,224,130,.9),0 0 26px rgba(230,168,23,.55);color:#ffe082;}
+      0%,100%{opacity:.28;transform:scale(.88);text-shadow:0 0 6px rgba(230,168,23,.1);color:rgba(255,224,130,.3);}
+      45%,55%{opacity:1;transform:scale(1.18);text-shadow:0 0 16px rgba(255,224,130,1),0 0 30px rgba(230,168,23,.65);color:#fff8d8;}
     }
     #pageSwipeBar.swipe-left-hint .swipe-arrow-next,
     #pageSwipeBar.swiping.swipe-left-hint .swipe-arrow-next{
-      opacity:1;transform:scale(1.15);animation:none;
-      text-shadow:0 0 18px rgba(255,224,130,1),0 0 32px rgba(230,168,23,.7);color:#fff4c2;
+      opacity:1;transform:scale(1.2);animation:none;
+      text-shadow:0 0 20px rgba(255,224,130,1),0 0 36px rgba(230,168,23,.75);color:#fff4c2;
     }
     #pageSwipeBar.swipe-right-hint .swipe-arrow-prev,
     #pageSwipeBar.swiping.swipe-right-hint .swipe-arrow-prev{
-      opacity:1;transform:scale(1.15);animation:none;
-      text-shadow:0 0 18px rgba(255,224,130,1),0 0 32px rgba(230,168,23,.7);color:#fff4c2;
+      opacity:1;transform:scale(1.2);animation:none;
+      text-shadow:0 0 20px rgba(255,224,130,1),0 0 36px rgba(230,168,23,.75);color:#fff4c2;
     }
     .swipe-label{
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.04em;
-      color:rgba(200,134,10,.5);
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.02em;
+      color:#ffe082;
+      text-align:center;
+      line-height:1.25;
       white-space:nowrap;
       pointer-events:none;
+      text-shadow:0 0 12px rgba(255,224,130,.35);
+      animation:swipeLabelFlash 2.2s ease-in-out infinite;
     }
+    @keyframes swipeLabelFlash{
+      0%,100%{opacity:.78;}
+      50%{opacity:1;}
+    }
+    .swipe-page-num{
+      font-size:10px;
+      font-weight:800;
+      color:rgba(200,134,10,.75);
+      letter-spacing:.06em;
+      pointer-events:none;
+    }
+    html.swipe-learned #pageSwipeBar{
+      background:linear-gradient(0deg,rgba(30,18,8,.72) 0%,transparent 72%);
+    }
+    html.swipe-learned .swipe-hint{
+      animation:none;
+      padding:7px 12px 8px;
+      border-color:rgba(200,134,10,.35);
+      box-shadow:0 4px 14px rgba(0,0,0,.35);
+    }
+    html.swipe-learned .swipe-hand,
+    html.swipe-learned .swipe-arrow{animation:none;opacity:.45;}
+    html.swipe-learned .swipe-label{
+      animation:none;
+      font-size:11px;
+      color:rgba(255,224,130,.85);
+    }
+    html.swipe-mastered #pageSwipeBar{
+      padding-bottom:calc(4px + env(safe-area-inset-bottom,0px));
+      background:linear-gradient(0deg,rgba(30,18,8,.55) 0%,transparent 85%);
+    }
+    html.swipe-mastered .swipe-hint{
+      width:auto;
+      min-width:120px;
+      padding:5px 14px;
+      gap:8px;
+      background:rgba(13,5,0,.55);
+      border-color:rgba(200,134,10,.22);
+    }
+    html.swipe-mastered .swipe-hand,
+    html.swipe-mastered .swipe-arrow{display:none;}
+    html.swipe-mastered .swipe-hint-mid{flex-direction:row;gap:8px;}
+    html.swipe-mastered .swipe-label{font-size:10px;color:rgba(255,224,130,.7);}
     #book{
       position:relative;flex:1;min-height:0;width:100%;max-width:100vw;
       transform-style:preserve-3d;transform:translateZ(0);
@@ -688,6 +767,7 @@
       perspective:2200px;
       perspective-origin:50% 50%;
       background:#ebe4d3;
+      margin-bottom:0;
     }
     #bookPad{
       position:absolute;inset:0;z-index:48;
@@ -1347,15 +1427,14 @@
     .ml-empty{text-align:center;color:rgba(200,134,10,.45);padding:40px 16px;font-size:14px;}
 
     #nav{
-      flex-shrink:0;
-      position:relative;
-      width:100%;
-      min-height:48px;
-      padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));
-      background:linear-gradient(0deg,rgba(13,5,0,.62) 0%,rgba(13,5,0,.28) 65%,transparent 100%);
-      border:none;
-      display:flex;align-items:center;gap:8px;
-      z-index:200;
+      display:none!important;
+      visibility:hidden!important;
+      height:0!important;
+      min-height:0!important;
+      padding:0!important;
+      margin:0!important;
+      overflow:hidden!important;
+      pointer-events:none!important;
     }
     .nav-label{font-size:11px;font-weight:800;white-space:nowrap;}
     .nav-pg{
@@ -1393,10 +1472,7 @@
       height:var(--app-h,100dvh)!important;
     }
     html.immersive #header{top:var(--vv-top,0px)!important;}
-    html.immersive #nav{
-      top:auto!important;
-      bottom:auto!important;
-    }
+    html.immersive #nav{display:none!important;}
     html.immersive #cart-panel{
       top:var(--vv-top,0px)!important;
       height:var(--app-h,100dvh)!important;
@@ -1409,19 +1485,6 @@
     html.immersive.fs-active #header .cart-btn{display:none!important;}
     html.immersive.chrome-hidden #header,
     html.immersive.fs-active #header{display:none!important;}
-    html.immersive.chrome-hidden #nav,
-    html.immersive.fs-active #nav{
-      display:flex!important;
-      position:relative!important;
-      flex-shrink:0!important;
-      top:auto!important;
-      bottom:auto!important;
-      left:auto!important;
-      right:auto!important;
-      background:linear-gradient(0deg,rgba(13,5,0,.62) 0%,rgba(13,5,0,.28) 65%,transparent 100%);
-    }
-    html.immersive.chrome-hidden #nav #thumbs,
-    html.immersive.fs-active #nav #thumbs{display:none;}
     html.single-page .pg-num{display:none;}
     html:fullscreen,html:-webkit-full-screen{background:#1e1208;}
     body:fullscreen,body:-webkit-full-screen{background:#1e1208;}
@@ -1490,19 +1553,23 @@
           </div>
         </div>
       </div>
-      <div id="pageSwipeBar" aria-label="اسحب لقلب الصفحة">
+      <div id="book"></div>
+      <div id="pageSwipeBar" aria-live="polite" aria-label="اسحب لقلب الصفحة">
         <div class="swipe-hint">
           <span class="swipe-arrow swipe-arrow-prev" aria-hidden="true">‹</span>
-          <span class="swipe-label" id="i18n-swipeHint">اسحب لقلب الصفحة</span>
+          <div class="swipe-hint-mid">
+            <span class="swipe-hand" aria-hidden="true">↔</span>
+            <span class="swipe-label" id="i18n-swipeHint">اسحب يميناً أو يساراً لقلب الشاشة</span>
+            <bdi class="swipe-page-num" id="swipePgnum" dir="ltr">1 / 1</bdi>
+          </div>
           <span class="swipe-arrow swipe-arrow-next" aria-hidden="true">›</span>
         </div>
       </div>
-      <div id="book"></div>
     </div>
-    <div id="nav">
-      <button type="button" class="nav-arrow" id="prevBtn"><span class="nav-label" id="i18n-prev">◀ السابق</span></button>
+    <div id="nav" hidden aria-hidden="true">
+      <button type="button" class="nav-arrow" id="prevBtn" tabindex="-1"><span class="nav-label" id="i18n-prev">◀ السابق</span></button>
       <div class="nav-pg"><bdi id="navPgnum" dir="ltr">1 / 1</bdi></div>
-      <button type="button" class="nav-arrow" id="nextBtn"><span class="nav-label" id="i18n-next">التالي ▶</span></button>
+      <button type="button" class="nav-arrow" id="nextBtn" tabindex="-1"><span class="nav-label" id="i18n-next">التالي ▶</span></button>
       <div id="thumbs" aria-hidden="true"></div>
     </div>
   </div>
@@ -1521,7 +1588,7 @@
   <div id="coach">
     <div id="coach-card">
       <h2 id="i18n-coach-title">كيف تطلب؟</h2>
-      <div class="coach-step"><span class="coach-num">1</span><span id="i18n-coach-1">تصفّح <strong>المينو</strong> — اسحب يميناً/يساراً على الصورة أو استخدم <strong>السابق / التالي</strong></span></div>
+      <div class="coach-step"><span class="coach-num">1</span><span id="i18n-coach-1">تصفّح <strong>المينو</strong> — اسحب يميناً أو يساراً على الصورة لقلب الصفحة</span></div>
       <div class="coach-step"><span class="coach-num">2</span><span id="i18n-coach-2">اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام</span></div>
       <div class="coach-step"><span class="coach-num">3</span><span id="i18n-coach-3">اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong></span></div>
       <div class="coach-step"><span class="coach-num">4</span><span id="i18n-coach-4">في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال</span></div>
@@ -1597,7 +1664,7 @@
       guide1: '<span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة',
       guide2: '<span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد',
       coachTitle: "كيف تطلب؟",
-      coach1: 'تصفّح <strong>المينو</strong> — اسحب يميناً/يساراً على الصورة أو استخدم <strong>السابق / التالي</strong>',
+      coach1: 'تصفّح <strong>المينو</strong> — اسحب يميناً أو يساراً على الصورة لقلب الصفحة',
       coach2: 'اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام',
       coach3: 'اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong>',
       coach4: 'في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال',
@@ -1615,7 +1682,7 @@
       prev: "◀ السابق",
       next: "التالي ▶",
       orientLock: "أبقِ الهاتف عمودياً لاستخدام المينو",
-      swipeHint: "اسحب لقلب الصفحة",
+      swipeHint: "اسحب يميناً أو يساراً لقلب الشاشة",
       fsHint: "👆 اضغط على المينو لملء الشاشة",
       fsHintIos: "↑ اسحب للأعلى قليلاً لإخفاء شريط Safari وملء الشاشة",
       menuTitle: "📋 قائمة الأطباق",
@@ -1671,7 +1738,7 @@
       guide1: '<span class="guide-n">1</span> Resimdeki yeşil <strong>+</strong> düğmesine basın',
       guide2: '<span class="guide-n">2</span> Sonra onay için <strong>Gönder</strong>',
       coachTitle: "Nasıl sipariş verilir?",
-      coach1: '<strong>Menüde</strong> gezinin — resimde sağa/sola kaydırın veya <strong>Önceki / Sonraki</strong>',
+      coach1: '<strong>Menüde</strong> gezinin — sayfayı çevirmek için resimde sağa/sola kaydırın',
       coach2: 'Yemek eklemek için resimdeki <strong>yeşil +</strong> düğmesine basın',
       coach3: 'Üstte <strong>Gönder</strong> → sepeti kontrol et → <strong>Onayla</strong>',
       coach4: 'Göndermeden önce her ürünün altına <strong>açık bir not</strong> yazabilirsiniz',
@@ -1689,7 +1756,7 @@
       prev: "◀ Önceki",
       next: "Sonraki ▶",
       orientLock: "Telefonu dikey tutun",
-      swipeHint: "Sayfayı çevirmek için kaydır",
+      swipeHint: "Sayfayı çevirmek için sağa/sola kaydırın",
       fsHint: "👆 Tam ekran için menüye dokunun",
       fsHintIos: "↑ Safari çubuğunu gizlemek için yukarı kaydırın",
       menuTitle: "📋 Yemek listesi",
@@ -1745,7 +1812,7 @@
       guide1: '<span class="guide-n">1</span> Tap the green <strong>+</strong> on the image',
       guide2: '<span class="guide-n">2</span> Then <strong>Send</strong> to confirm',
       coachTitle: "How to order?",
-      coach1: 'Browse the <strong>menu</strong> — swipe left/right on the image or use <strong>Prev / Next</strong>',
+      coach1: 'Browse the <strong>menu</strong> — swipe left or right on the image to turn the page',
       coach2: 'Tap the green <strong>+</strong> on the image to add food',
       coach3: 'Tap <strong>Send</strong> at top → review cart → <strong>Confirm</strong>',
       coach4: 'In the cart, add a <strong>clear note</strong> under each item before sending',
@@ -1763,7 +1830,7 @@
       prev: "◀ Prev",
       next: "Next ▶",
       orientLock: "Keep your phone upright to browse the menu",
-      swipeHint: "Swipe to turn the page",
+      swipeHint: "Swipe left or right to turn the page",
       fsHint: "👆 Tap the menu for full screen",
       fsHintIos: "↑ Swipe up slightly to hide Safari bar and fill the screen",
       menuTitle: "📋 Dish list",
@@ -1954,6 +2021,7 @@
         if (!canFlip() || !isHorizontalSwipe(dx, dy)) return false;
         if (dx < 0) nextPage();
         else prevPage();
+        bumpSwipeLearned();
         return true;
       }
       function swipeZone(el) {
@@ -2050,6 +2118,23 @@
       const bar = document.getElementById("pageSwipeBar");
       if (!bar) return;
       bar.style.display = bookSpread.length <= 1 ? "none" : "";
+    }
+    function bumpSwipeLearned() {
+      try {
+        const n = Number(sessionStorage.getItem("zekiq_swipe_flips") || 0) + 1;
+        sessionStorage.setItem("zekiq_swipe_flips", String(n));
+        const root = document.documentElement;
+        if (n >= 1) root.classList.add("swipe-learned");
+        if (n >= 3) root.classList.add("swipe-mastered");
+      } catch (_) {}
+    }
+    function initSwipeHint() {
+      try {
+        const n = Number(sessionStorage.getItem("zekiq_swipe_flips") || 0);
+        const root = document.documentElement;
+        if (n >= 1) root.classList.add("swipe-learned");
+        if (n >= 3) root.classList.add("swipe-mastered");
+      } catch (_) {}
     }
     function rebuildBookSpread() {
       bookSpread = [{ kind: "cover-start" }];
@@ -3137,8 +3222,12 @@
       if (pg) pg.textContent = pgText;
       const navPg = document.getElementById("navPgnum");
       if (navPg) navPg.textContent = pgText;
-      document.getElementById("prevBtn").disabled = cur === 0;
-      document.getElementById("nextBtn").disabled = cur >= bookSpread.length - 1;
+      const swipePg = document.getElementById("swipePgnum");
+      if (swipePg) swipePg.textContent = pgText;
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      if (prevBtn) prevBtn.disabled = cur === 0;
+      if (nextBtn) nextBtn.disabled = cur >= bookSpread.length - 1;
       syncSwipeBar();
       refreshCoverTitles();
       if (!duringFlip) {
@@ -3618,6 +3707,7 @@
     }
 
     async function boot() {
+      initSwipeHint();
       if (!TOKEN) { showErr(guestT("errScanQr"), guestT("errScanQrD")); return; }
       if (!SHOP) { showErr(guestT("errOldQr"), guestT("errOldQrD")); return; }
 
