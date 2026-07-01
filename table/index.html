@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v24: revert logo crop zoom — contain as before -->
+  <!-- guest-table-ui-v25: clip top logo + bottom hints only -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -414,10 +414,10 @@
     }
     #tableFootBadge.show{display:flex;}
     html:not(.single-page) #tableFootBadge{
-      bottom:calc(64px + env(safe-area-inset-bottom,0px));
+      bottom:calc(92px + env(safe-area-inset-bottom,0px));
     }
     html.letterbox-nav #tableFootBadge{
-      bottom:calc(58px + env(safe-area-inset-bottom,0px));
+      bottom:calc(88px + env(safe-area-inset-bottom,0px));
     }
     .table-foot-label{
       font-size:10px;
@@ -810,8 +810,19 @@
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:8px;
+      gap:6px;
       width:100%;
+    }
+    .swipe-order-hint{
+      font-size:13px;
+      font-weight:900;
+      color:#7cff9a;
+      text-align:center;
+      line-height:1.35;
+      margin:0;
+      padding:0 8px;
+      pointer-events:none;
+      text-shadow:0 1px 6px rgba(0,0,0,.35);
     }
     .swipe-hint-text,.swipe-label{
       font-size:15px;
@@ -1063,7 +1074,7 @@
       margin-top:4px;
       line-height:1.35;
     }
-    html.letterbox-nav #pageSwipeBar{display:none!important;}
+    html.letterbox-nav .pf-rail-top-only .pf-rail-bottom{display:none!important;}
     html.swipe-learned .pf-rail-swipe .swipe-track-slide{animation-duration:2.4s;}
     html.swipe-learned .pf-rail-swipe-txt{font-size:14px;}
     html.swipe-mastered .pf-rail-swipe .swipe-arrow-track{height:28px;}
@@ -1118,6 +1129,11 @@
       touch-action:none;
       -webkit-backface-visibility:hidden;backface-visibility:hidden;
       transform:translateZ(0);
+    }
+    .pf.pf-crop-active .pf-bg.pf-bg-crop{
+      object-fit:none;
+      max-width:none;
+      max-height:none;
     }
     .pf-bg[src=""],.pb-bg[src=""]{opacity:0;}
     .pf.book-cover{
@@ -1816,6 +1832,7 @@
                 <span class="swipe-track-chev lit right delay-3">›</span>
               </div>
             </div>
+            <p class="swipe-order-hint" id="i18n-railOrderHint">اضغط + الأخضر على الصورة للطلب</p>
             <bdi class="swipe-page-num" id="swipePgnum" dir="ltr">1 / 1</bdi>
           </div>
         </div>
@@ -2172,6 +2189,7 @@
       "i18n-prev": "prev",
       "i18n-next": "next",
       "i18n-swipeHint": "swipeHint",
+      "i18n-railOrderHint": "railOrderHint",
       "i18n-orientLock": "orientLock",
       "i18n-fsHint": "fsHint",
       "i18n-menu-title": "menuTitle",
@@ -2251,6 +2269,8 @@
 
     let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "";
     let bookPages = [], bookSpread = [], menuPageCount = 0, pageCategories = {}, pageHotspots = {}, manualSpots = {};
+    const PAGE_CROP = { top: 0.135, bottom: 0.02, left: 0, right: 0 };
+    let pageCropPages = null;
     let singlePagePlusOnly = false;
     let plusButtonsAllPages = false;
     let bookCacheVer = "";
@@ -2584,6 +2604,36 @@
       "tatlilar": "حلويات", "cay": "شاي", "kahve": "قهوة", "soguk icecek": "مشروبات باردة",
       "icecek": "مشروبات", "nargile": "أرجيلة",
     };
+    function clampCrop(v, lo, hi) {
+      const n = Number(v);
+      if (!Number.isFinite(n)) return lo;
+      return Math.min(hi, Math.max(lo, n));
+    }
+    function pageCropFor(menuIdx) {
+      const per = pageCropPages && (pageCropPages[String(menuIdx)] || pageCropPages[menuIdx]);
+      return {
+        top: clampCrop(per?.top ?? PAGE_CROP.top, 0, 0.35),
+        bottom: clampCrop(per?.bottom ?? PAGE_CROP.bottom, 0, 0.2),
+        left: clampCrop(per?.left ?? PAGE_CROP.left, 0, 0.2),
+        right: clampCrop(per?.right ?? PAGE_CROP.right, 0, 0.2),
+      };
+    }
+    function pfMenuIdx(pf) {
+      const pw = pf && pf.closest(".pw");
+      if (!pw || !pw.id) return menuIdxFromCur(cur);
+      return menuIdxFromCur(Number(String(pw.id).replace(/^pw/, "")));
+    }
+    function applyBookPageCrop(book) {
+      const pc = book && book.pageCrop;
+      if (!pc) return;
+      if (typeof pc.top === "number" || typeof pc.bottom === "number") {
+        PAGE_CROP.top = Number(pc.top) || 0;
+        PAGE_CROP.bottom = Number(pc.bottom) || 0;
+        PAGE_CROP.left = Number(pc.left) || 0;
+        PAGE_CROP.right = Number(pc.right) || 0;
+        pageCropPages = pc.pages || null;
+      }
+    }
     const CATEGORY_SHORT = {
       "kahvalti": "Kahvaltı",
       "baslangic": "Başlangıç",
@@ -2975,10 +3025,43 @@
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
       const img = pf.querySelector(".pf-bg");
+      const menuIdx = pfMenuIdx(pf);
+      const isCover = pf.classList.contains("book-cover");
+      const crop = isCover ? { top: 0, bottom: 0, left: 0, right: 0 } : pageCropFor(menuIdx);
+      const cropW = 1 - crop.left - crop.right;
+      const cropH = 1 - crop.top - crop.bottom;
+      const cropped = !isCover && cropW > 0.5 && cropH > 0.5 && (crop.top + crop.bottom + crop.left + crop.right) > 0.005;
+      const scale = Math.min(cw / nw, ch / nh);
+      const dw = nw * scale;
+      const dh = nh * scale;
+      pf.classList.toggle("pf-crop-active", cropped);
+      if (cropped) {
+        const visDw = dw * cropW;
+        const visDh = dh * cropH;
+        const ox = (cw - visDw) / 2;
+        const oy = 0;
+        if (img) {
+          img.classList.add("pf-bg-crop");
+          img.style.position = "absolute";
+          img.style.objectFit = "none";
+          img.style.width = dw + "px";
+          img.style.height = dh + "px";
+          img.style.maxWidth = "none";
+          img.style.maxHeight = "none";
+          img.style.left = (ox - crop.left * dw) + "px";
+          img.style.top = (oy - crop.top * dh) + "px";
+          img.style.transform = "";
+        }
+        return {
+          ox, oy, dw: visDw, dh: visDh, crop, cropW, cropH, cropped: true,
+          wasteTop: 0,
+          wasteBottom: Math.max(0, ch - visDh),
+        };
+      }
       if (img) {
+        img.classList.remove("pf-bg-crop");
         img.style.objectFit = "contain";
         img.style.objectPosition = "center";
-        img.style.transform = "";
         img.style.width = "";
         img.style.height = "";
         img.style.left = "";
@@ -2986,16 +3069,13 @@
         img.style.position = "";
         img.style.maxWidth = "";
         img.style.maxHeight = "";
-        img.classList.remove("pf-bg-crop");
+        img.style.transform = "";
       }
-      pf.classList.remove("pf-crop-active");
-      const scale = Math.min(cw / nw, ch / nh);
-      const dw = nw * scale;
-      const dh = nh * scale;
       const ox = (cw - dw) / 2;
       const oy = (ch - dh) / 2;
       return {
         ox, oy, dw, dh,
+        crop, cropW: 1, cropH: 1, cropped: false,
         wasteTop: Math.max(0, oy),
         wasteBottom: Math.max(0, ch - oy - dh),
       };
@@ -3014,7 +3094,8 @@
       let html =
         '<div class="swipe-hint-block">' +
         '<p class="swipe-hint-text pf-rail-swipe-txt">' + esc(guestT("swipeHint")) + "</p>" +
-        swipeArrowTrackHtml();
+        swipeArrowTrackHtml() +
+        '<p class="swipe-order-hint">' + esc(guestT("railOrderHint")) + "</p>";
       if (pageNumText) {
         html += '<bdi class="swipe-page-num" dir="ltr">' + esc(pageNumText) + "</bdi>";
       }
@@ -3023,6 +3104,7 @@
     function layoutLetterboxRails(pf, menuIdx) {
       if (!pf || pf.classList.contains("book-cover") || menuIdx < 0) {
         pf?.querySelectorAll(".pf-rail-top,.pf-rail-bottom").forEach(el => { el.style.display = "none"; });
+        pf.classList.remove("pf-rail-top-only");
         return false;
       }
       const rect = imageOverlayRect(pf);
@@ -3039,14 +3121,13 @@
         botRail.className = "pf-rail-bottom";
         pf.appendChild(botRail);
       }
-      const minRail = 30;
+      botRail.style.display = "none";
+      botRail.innerHTML = "";
+      pf.classList.add("pf-rail-top-only");
+      const minRail = 28;
       const topH = rect.wasteTop >= minRail ? rect.wasteTop : 0;
-      const botH = rect.wasteBottom >= minRail ? rect.wasteBottom : 0;
       topRail.style.display = topH ? "flex" : "none";
       topRail.style.height = topH + "px";
-      botRail.style.display = botH ? "flex" : "none";
-      botRail.style.height = botH + "px";
-      botRail.style.top = (rect.oy + rect.dh) + "px";
       if (topH) {
         const cats = pageCategoryLabels(menuIdx);
         const pageNum = (menuIdx + 1) + " / " + menuPageCount;
@@ -3060,27 +3141,21 @@
       } else {
         topRail.innerHTML = "";
       }
-      if (botH) {
-        const pageNum = (menuIdx + 1) + " / " + menuPageCount;
-        botRail.innerHTML =
-          '<div class="pf-rail-swipe">' + swipeHintBlockHtml(pageNum) + "</div>" +
-          '<div class="pf-rail-order">' + esc(guestT("railOrderHint")) + "</div>";
-      } else {
-        botRail.innerHTML = "";
-      }
-      return botH >= minRail;
+      return topH >= minRail;
     }
     function syncSwipeBar() {
       const bar = document.getElementById("pageSwipeBar");
+      const pgEl = document.getElementById("swipePgnum");
       const menuIdx = menuIdxFromCur(cur);
       const pf = document.querySelector("#pw" + cur + " .pf");
-      let useRail = false;
+      let useTopRail = false;
       if (pf && menuIdx >= 0 && bookSpread.length > 1) {
-        useRail = layoutLetterboxRails(pf, menuIdx);
+        useTopRail = layoutLetterboxRails(pf, menuIdx);
       }
-      document.documentElement.classList.toggle("letterbox-nav", !!useRail);
+      document.documentElement.classList.toggle("letterbox-nav", !!useTopRail);
+      if (pgEl && menuIdx >= 0) pgEl.textContent = (menuIdx + 1) + " / " + menuPageCount;
       if (!bar) return;
-      bar.style.display = bookSpread.length <= 1 || useRail ? "none" : "";
+      bar.style.display = bookSpread.length <= 1 ? "none" : "";
     }
     function primePageBg(pf, src, onReady) {
       const img = document.createElement("img");
@@ -3127,13 +3202,17 @@
       overlay.querySelectorAll(".price-hotspot, .plus-hit, .plus-hotspot").forEach(h => {
         const x = parseFloat(h.dataset.x), y = parseFloat(h.dataset.y);
         const isPlus = h.classList.contains("plus-hit") || h.classList.contains("plus-hotspot");
-        h.style.left = (x * rect.dw) + "px";
-        h.style.top = (y * rect.dh) + "px";
+        const cropL = rect.cropped ? (rect.crop?.left || 0) : 0;
+        const cropT = rect.cropped ? (rect.crop?.top || 0) : 0;
+        const cropW = rect.cropW || 1;
+        const cropH = rect.cropH || 1;
+        h.style.left = (((x - cropL) / cropW) * rect.dw) + "px";
+        h.style.top = (((y - cropT) / cropH) * rect.dh) + "px";
         if (isPlus) {
           const w = parseFloat(h.dataset.w) || 0.055;
           const hh = parseFloat(h.dataset.h) || 0.032;
-          h.style.width = (w * rect.dw) + "px";
-          h.style.height = (hh * rect.dh) + "px";
+          h.style.width = ((w / cropW) * rect.dw) + "px";
+          h.style.height = ((hh / cropH) * rect.dh) + "px";
         }
         h.style.transform = spotTransform(h.dataset.anchor || (isPlus ? "center" : "right"));
       });
@@ -3837,7 +3916,7 @@
         if (t) sendBadge.textContent = String(t);
       }
       if (!t) {
-        if (guideEl) guideEl.classList.add("show");
+        if (guideEl) guideEl.classList.remove("show");
         if (chipEl) chipEl.classList.remove("show");
         if (summaryEl) summaryEl.textContent = "";
         if (listEl) listEl.innerHTML = "";
@@ -4218,6 +4297,7 @@
       pageCategories = (data.book && data.book.pageCategories) || {};
       pageHotspots = (data.book && data.book.pageHotspots) || {};
       manualSpots = (data.book && data.book.manualSpots) || {};
+      applyBookPageCrop(data.book);
       singlePagePlusOnly = Boolean(data.book && data.book.singlePagePlusOnly) || bookPages.length <= 1;
       plusButtonsAllPages = Boolean(data.book && data.book.plusButtonsAllPages);
       if (!plusButtonsAllPages && data.book && data.book.manualSpots) {
