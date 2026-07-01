@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v38: mockup-exact — dark hud, logo strip, white cats, fill-width menu -->
+  <!-- guest-table-ui-v39: cropped menu pages only — no logo band anywhere -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -424,30 +424,6 @@
     }
     .scene-hud-cart.is-empty .hud-cbadge{display:none;}
     .scene-hud-cart.is-empty .hud-csum{display:none;}
-    #guestBrandStrip{
-      flex-shrink:0;
-      display:none;
-      padding:0;
-      margin:0;
-      line-height:0;
-      width:100%;
-      aspect-ratio:945 / 205;
-      max-height:none;
-      background:#0c0604;
-      border-bottom:none;
-      overflow:hidden;
-    }
-    #guestBrandStrip.show{display:block;}
-    .guest-brand-strip-img{
-      display:block;
-      width:100%;
-      height:100%;
-      object-fit:fill;
-      object-position:center top;
-      pointer-events:none;
-      user-select:none;
-      -webkit-user-select:none;
-    }
     #tableFootBadge{
       flex-shrink:0;
       display:none;
@@ -1613,7 +1589,6 @@
       touch-action:manipulation;
     }
     html.coach-locked #sceneHud,
-    html.coach-locked #guestBrandStrip,
     html.coach-locked #menuCategoryBar,
     html.coach-locked #menuOrderDock,
     html.coach-locked #header,
@@ -1898,9 +1873,6 @@
         <div class="scene-hud-center"><span class="scene-hud-title" id="i18n-sceneHudTitle">MENÜ</span></div>
         <button type="button" class="scene-hud-btn scene-hud-cart is-empty" id="sceneCartBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneCartBtn">🛒 Sepet</span><span class="hud-cbadge" id="sceneCartBadge">0</span><span class="hud-csum" id="sceneCartSum"></span></button>
       </div>
-    </div>
-    <div id="guestBrandStrip" hidden aria-hidden="true">
-      <img id="guestBrandStripImg" class="guest-brand-strip-img" src="" alt="" draggable="false" decoding="async" />
     </div>
     <div id="menuCategoryBar" aria-label="أقسام المينو">
       <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -2403,7 +2375,6 @@
 
     let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "";
     let bookPages = [], bookSpread = [], menuPageCount = 0, pageCategories = {}, pageHotspots = {}, manualSpots = {};
-    let logoStripUrl = "", logoCropRatio = 0;
     let singlePagePlusOnly = false;
     let plusButtonsAllPages = false;
     let bookCacheVer = "";
@@ -2840,55 +2811,6 @@
       view.style.flex = "1";
       view.style.removeProperty("height");
     }
-    function resolveLogoStripUrl(book) {
-      if (book && book.logoStripUrl) {
-        let u = fixImgUrl(book.logoStripUrl);
-        if (bookCacheVer && u.indexOf("?") < 0) u += "?v=" + encodeURIComponent(bookCacheVer);
-        return u;
-      }
-      const ref = (book && book.pages && book.pages[0]) || bookPages[0] || "";
-      if (!ref) return "";
-      const v = bookCacheVer ? (ref.indexOf("?") >= 0 ? "&" : "?") + "v=" + encodeURIComponent(bookCacheVer) : "";
-      if (/\/guest-menu-pages\//i.test(ref)) {
-        return fixImgUrl(ref.replace(/\/guest-menu-pages\/[^?#]+/i, "/guest-menu-pages-logo-strip/menu-logo-strip.jpg")) + v;
-      }
-      if (/\/menu\/pages\//i.test(ref)) {
-        const u1 = fixImgUrl(ref.replace(/\/menu\/pages\/[^?#]+/i, "/menu/menu-logo-strip.jpg"));
-        const u2 = fixImgUrl(ref.replace(/\/menu\/pages\/[^?#]+/i, "/menu/pages-logo-strip/menu-logo-strip.jpg"));
-        return u1 + v;
-      }
-      return "";
-    }
-    function syncBrandStrip() {
-      const el = document.getElementById("guestBrandStrip");
-      const img = document.getElementById("guestBrandStripImg");
-      if (!el) return;
-      const onMenu = coachDone && menuIdxFromCur(cur) >= 0;
-      const show = onMenu && !!logoStripUrl;
-      if (img && logoStripUrl) {
-        if (img.getAttribute("data-src") !== logoStripUrl) {
-          img.onload = function () {
-            if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-              el.style.aspectRatio = img.naturalWidth + " / " + img.naturalHeight;
-            }
-          };
-          img.src = logoStripUrl;
-          img.setAttribute("data-src", logoStripUrl);
-        }
-      } else if (img) {
-        img.removeAttribute("src");
-        img.removeAttribute("data-src");
-      }
-      el.hidden = !show;
-      el.classList.toggle("show", show);
-      el.setAttribute("aria-hidden", show ? "false" : "true");
-      if (!show) return;
-      if (logoCropRatio > 0) {
-        el.style.aspectRatio = ((945 / 1323) / logoCropRatio).toFixed(4);
-      } else {
-        el.style.aspectRatio = "945 / 205";
-      }
-    }
     function syncCategoryBar() {
       const bar = document.getElementById("menuCategoryBar");
       if (!bar) return;
@@ -2905,7 +2827,6 @@
         activeBtn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       }
       syncCategoryDock();
-      syncBrandStrip();
     }
     const SERPME_PRICES = new Set([1250, 1650, 1850]);
     const PAGE_LABELS = [
@@ -3807,7 +3728,6 @@
       }
       goToPage(coachDone && bookSpread.length > 1 ? 1 : 0, true);
       syncSceneHud();
-      syncBrandStrip();
     }
     function dismissCoach() {
       if (coachDone) return;
@@ -3970,7 +3890,6 @@
       syncSwipeBar();
       refreshCoverTitles();
       syncCategoryBar();
-      syncBrandStrip();
       if (!duringFlip) {
         document.querySelectorAll(".pw").forEach((pw, i) => {
           pw.classList.toggle("page-current", i === cur);
@@ -4519,8 +4438,6 @@
       }
       if (plusButtonsAllPages) singlePagePlusOnly = false;
       bookCacheVer = String((data.book && (data.book.updatedAt || data.book.version)) || "").replace(/[:.]/g, "");
-      logoCropRatio = Number((data.book && data.book.logoCropRatio) || 0);
-      logoStripUrl = resolveLogoStripUrl(data.book || {});
       if (data.guestLanguage && window.applyGuestLanguage) window.applyGuestLanguage(data.guestLanguage);
       document.title = shopName + " — " + guestT("table") + " " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
