@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v30: orders overlay top — menu stays full size -->
+  <!-- guest-table-ui-v30: orders clip menu top — scale stays fixed -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -493,11 +493,12 @@
       box-shadow:none;
     }
     #menuStage.orders-overlay #menuOrderDock{
-      max-height:min(46vh,268px);
+      max-height:min(52vh,320px);
       overflow:hidden;
-      background:linear-gradient(180deg,#e4dcc8 0%,#ebe4d3 92%,rgba(235,228,211,.9) 100%);
+      background:linear-gradient(180deg,#e4dcc8 0%,#ebe4d3 92%,rgba(235,228,211,.98) 100%);
       border-bottom:2px solid rgba(180,140,80,.35);
       box-shadow:0 6px 20px rgba(0,0,0,.14);
+      pointer-events:auto;
     }
     #menuOrderDock #guestGuide,
     #menuOrderDock #guestOrderChip,
@@ -514,6 +515,17 @@
       overflow:hidden;
       padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));
       min-height:0;
+    }
+    #menuViewport{
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+    #menuStage.orders-overlay #menuViewport{
+      clip-path:inset(var(--order-dock-h,0px) 0 0 0);
+      -webkit-clip-path:inset(var(--order-dock-h,0px) 0 0 0);
     }
     #menuCategoryBar{
       flex-shrink:0;
@@ -1836,10 +1848,12 @@
         </div>
       </div>
       <div id="menuBookWrap">
+      <div id="menuViewport">
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
       </div>
       <div id="book"></div>
+      </div>
       <div id="pageSwipeBar" aria-live="polite" aria-label="اسحب لقلب الصفحة">
         <div class="swipe-foot-panel">
           <div id="tableFootBadge" aria-live="polite" hidden>
@@ -3555,6 +3569,8 @@
       if (window.__zekiqBindSceneFullscreen) window.__zekiqBindSceneFullscreen();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       bindBookSwipe();
+      initOrderDockObserver();
+      syncOrderDockInset();
       syncSwipeBar();
       buildCategoryBar();
     }
@@ -3781,6 +3797,24 @@
       closePopup();
     };
 
+    function syncOrderDockInset() {
+      const stage = document.getElementById("menuStage");
+      const dock = document.getElementById("menuOrderDock");
+      if (!stage || !dock) return;
+      if (!stage.classList.contains("orders-overlay")) {
+        stage.style.removeProperty("--order-dock-h");
+        return;
+      }
+      const h = Math.ceil(dock.getBoundingClientRect().height);
+      stage.style.setProperty("--order-dock-h", Math.max(0, h) + "px");
+      if (window.__zekiqRelayout) window.__zekiqRelayout();
+    }
+    function initOrderDockObserver() {
+      const dock = document.getElementById("menuOrderDock");
+      if (!dock || dock.__dockRoBound) return;
+      dock.__dockRoBound = true;
+      new ResizeObserver(() => syncOrderDockInset()).observe(dock);
+    }
     function syncOrderListView(listEl) {
       if (!listEl) return;
       requestAnimationFrame(() => {
@@ -3799,7 +3833,7 @@
         if (lineCount > 0) {
           listEl.scrollTop = listEl.scrollHeight;
         }
-        if (window.__zekiqRelayout) window.__zekiqRelayout();
+        syncOrderDockInset();
       });
     }
     function flashOrderLine(itemId) {
@@ -3819,6 +3853,7 @@
         if (listEl) {
           listEl.scrollTop = listEl.scrollHeight;
         }
+        syncOrderDockInset();
       });
     }
     function addToCart(item, opts) {
@@ -3878,12 +3913,14 @@
         if (t) sendBadge.textContent = String(t);
       }
       if (!t) {
+        if (stageEl) stageEl.classList.remove("orders-overlay");
         if (guideEl) guideEl.classList.remove("show");
         if (chipEl) chipEl.classList.remove("show");
         if (summaryEl) summaryEl.textContent = "";
         if (listEl) listEl.innerHTML = "";
         const chip = document.getElementById("guestOrderChip");
         if (chip) chip.classList.remove("orders-folded", "orders-expanded");
+        syncOrderDockInset();
         return;
       }
       if (guideEl) guideEl.classList.remove("show");
@@ -3910,6 +3947,8 @@
         const sceneClear = listEl.querySelector("#sceneClearCart");
         if (sceneClear) sceneClear.onclick = e => { e.stopPropagation(); clearCart(); };
         syncOrderListView(listEl);
+      } else {
+        syncOrderDockInset();
       }
     }
     function openCartConfirm(e) {
@@ -3923,6 +3962,7 @@
       if (chip && chip.classList.contains("orders-folded")) {
         chip.classList.remove("orders-folded");
         chip.classList.add("orders-expanded");
+        syncOrderDockInset();
         return;
       }
       openCart();
