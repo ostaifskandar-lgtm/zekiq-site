@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v23: crop Tonino header band on menu pages -->
+  <!-- guest-table-ui-v24: revert logo crop zoom — contain as before -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -1120,11 +1120,6 @@
       transform:translateZ(0);
     }
     .pf-bg[src=""],.pb-bg[src=""]{opacity:0;}
-    .pf.pf-crop-active .pf-bg.pf-bg-crop{
-      object-fit:none;
-      max-width:none;
-      max-height:none;
-    }
     .pf.book-cover{
       display:flex;align-items:center;justify-content:center;
       padding:clamp(8px,2.5vw,14px);
@@ -2256,8 +2251,6 @@
 
     let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "";
     let bookPages = [], bookSpread = [], menuPageCount = 0, pageCategories = {}, pageHotspots = {}, manualSpots = {};
-    let pageCrop = { top: 0.14, bottom: 0.025, left: 0, right: 0 };
-    let pageCropPages = null;
     let singlePagePlusOnly = false;
     let plusButtonsAllPages = false;
     let bookCacheVer = "";
@@ -2591,46 +2584,6 @@
       "tatlilar": "حلويات", "cay": "شاي", "kahve": "قهوة", "soguk icecek": "مشروبات باردة",
       "icecek": "مشروبات", "nargile": "أرجيلة",
     };
-    function clampCrop(v, lo, hi) {
-      const n = Number(v);
-      if (!Number.isFinite(n)) return lo;
-      return Math.min(hi, Math.max(lo, n));
-    }
-    function pageCropFor(menuIdx) {
-      const per = pageCropPages && (pageCropPages[String(menuIdx)] || pageCropPages[menuIdx]);
-      return {
-        top: clampCrop(per?.top ?? pageCrop.top, 0, 0.4),
-        bottom: clampCrop(per?.bottom ?? pageCrop.bottom, 0, 0.4),
-        left: clampCrop(per?.left ?? pageCrop.left, 0, 0.3),
-        right: clampCrop(per?.right ?? pageCrop.right, 0, 0.3),
-      };
-    }
-    function pfMenuIdx(pf) {
-      const pw = pf && pf.closest(".pw");
-      if (!pw || !pw.id) return menuIdxFromCur(cur);
-      return menuIdxFromCur(Number(String(pw.id).replace(/^pw/, "")));
-    }
-    function applyBookPageCrop(book) {
-      const pc = book && book.pageCrop;
-      if (!pc) return;
-      if (typeof pc.top === "number" || typeof pc.bottom === "number" || typeof pc.left === "number" || typeof pc.right === "number") {
-        pageCrop = {
-          top: Number(pc.top) || 0,
-          bottom: Number(pc.bottom) || 0,
-          left: Number(pc.left) || 0,
-          right: Number(pc.right) || 0,
-        };
-        pageCropPages = pc.pages || null;
-      } else if (pc.default) {
-        pageCrop = {
-          top: Number(pc.default.top) || 0,
-          bottom: Number(pc.default.bottom) || 0,
-          left: Number(pc.default.left) || 0,
-          right: Number(pc.default.right) || 0,
-        };
-        pageCropPages = pc.pages || null;
-      }
-    }
     const CATEGORY_SHORT = {
       "kahvalti": "Kahvaltı",
       "baslangic": "Başlangıç",
@@ -3022,36 +2975,10 @@
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
       const img = pf.querySelector(".pf-bg");
-      const menuIdx = pfMenuIdx(pf);
-      const crop = pf.classList.contains("book-cover") ? { top: 0, bottom: 0, left: 0, right: 0 } : pageCropFor(menuIdx);
-      const cropW = 1 - crop.left - crop.right;
-      const cropH = 1 - crop.top - crop.bottom;
-      const cropped = cropW > 0.55 && cropH > 0.55 && (crop.top + crop.bottom + crop.left + crop.right) > 0.005;
-      pf.classList.toggle("pf-crop-active", cropped);
-      if (cropped) {
-        const scale = Math.max(cw / (nw * cropW), ch / (nh * cropH));
-        const dw = nw * cropW * scale;
-        const dh = nh * cropH * scale;
-        const ox = (cw - dw) / 2;
-        const oy = (ch - dh) / 2;
-        if (img) {
-          img.classList.add("pf-bg-crop");
-          img.style.position = "absolute";
-          img.style.objectFit = "none";
-          img.style.width = (nw * scale) + "px";
-          img.style.height = (nh * scale) + "px";
-          img.style.maxWidth = "none";
-          img.style.maxHeight = "none";
-          img.style.left = (ox - crop.left * nw * scale) + "px";
-          img.style.top = (oy - crop.top * nh * scale) + "px";
-          img.style.transform = "";
-        }
-        return { ox, oy, dw, dh, crop, cropW, cropH, cropped: true, wasteTop: 0, wasteBottom: 0 };
-      }
       if (img) {
-        img.classList.remove("pf-bg-crop");
         img.style.objectFit = "contain";
         img.style.objectPosition = "center";
+        img.style.transform = "";
         img.style.width = "";
         img.style.height = "";
         img.style.left = "";
@@ -3059,8 +2986,9 @@
         img.style.position = "";
         img.style.maxWidth = "";
         img.style.maxHeight = "";
-        img.style.transform = "";
+        img.classList.remove("pf-bg-crop");
       }
+      pf.classList.remove("pf-crop-active");
       const scale = Math.min(cw / nw, ch / nh);
       const dw = nw * scale;
       const dh = nh * scale;
@@ -3068,8 +2996,6 @@
       const oy = (ch - dh) / 2;
       return {
         ox, oy, dw, dh,
-        cropW: 1, cropH: 1, crop: { top: 0, bottom: 0, left: 0, right: 0 },
-        cropped: false,
         wasteTop: Math.max(0, oy),
         wasteBottom: Math.max(0, ch - oy - dh),
       };
@@ -3201,17 +3127,13 @@
       overlay.querySelectorAll(".price-hotspot, .plus-hit, .plus-hotspot").forEach(h => {
         const x = parseFloat(h.dataset.x), y = parseFloat(h.dataset.y);
         const isPlus = h.classList.contains("plus-hit") || h.classList.contains("plus-hotspot");
-        const cropL = rect.crop?.left || 0;
-        const cropT = rect.crop?.top || 0;
-        const cropW = rect.cropW || 1;
-        const cropH = rect.cropH || 1;
-        h.style.left = (((x - cropL) / cropW) * rect.dw) + "px";
-        h.style.top = (((y - cropT) / cropH) * rect.dh) + "px";
+        h.style.left = (x * rect.dw) + "px";
+        h.style.top = (y * rect.dh) + "px";
         if (isPlus) {
           const w = parseFloat(h.dataset.w) || 0.055;
           const hh = parseFloat(h.dataset.h) || 0.032;
-          h.style.width = ((w / cropW) * rect.dw) + "px";
-          h.style.height = ((hh / cropH) * rect.dh) + "px";
+          h.style.width = (w * rect.dw) + "px";
+          h.style.height = (hh * rect.dh) + "px";
         }
         h.style.transform = spotTransform(h.dataset.anchor || (isPlus ? "center" : "right"));
       });
@@ -4296,7 +4218,6 @@
       pageCategories = (data.book && data.book.pageCategories) || {};
       pageHotspots = (data.book && data.book.pageHotspots) || {};
       manualSpots = (data.book && data.book.manualSpots) || {};
-      applyBookPageCrop(data.book);
       singlePagePlusOnly = Boolean(data.book && data.book.singlePagePlusOnly) || bookPages.length <= 1;
       plusButtonsAllPages = Boolean(data.book && data.book.plusButtonsAllPages);
       if (!plusButtonsAllPages && data.book && data.book.manualSpots) {
