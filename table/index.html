@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v34: category bar docked flush above menu image -->
+  <!-- guest-table-ui-v35: Geri/Sepet top bar, fixed category chips, tight menu fit -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -122,7 +122,7 @@
         if(h&&!isFullscreen()) h.classList.remove("hide");
       }
       function onMenuTap(ev){
-        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
+        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#footCartSummary,#menuCategoryBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         fitViewport();
         hideSafariChrome();
         enterImmersiveAuto();
@@ -203,12 +203,12 @@
       });
       document.addEventListener("touchstart",function(e){
         if(window.__zekiqLockPortrait) window.__zekiqLockPortrait();
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#footCartSummary,#menuCategoryBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) onMenuTap(e);
         else fitViewport();
       },{passive:true,capture:true});
       document.addEventListener("click",function(e){
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#footCartSummary,#menuCategoryBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) return;
         fitViewport();
         showChrome();
@@ -331,24 +331,24 @@
     .pg-num{font-size:11px;padding:2px 8px;}
 
     #sceneHud{
-      position:absolute;
-      top:0;left:0;right:0;
+      position:relative;
       flex-shrink:0;
       display:none;
       flex-direction:column;
       gap:0;
-      padding:0 8px 6px;
-      padding-top:max(env(safe-area-inset-top,4px),4px);
-      background:linear-gradient(180deg,rgba(13,5,0,.88) 0%,rgba(13,5,0,.52) 70%,transparent 100%);
-      pointer-events:none;
+      padding:calc(env(safe-area-inset-top,0px) + 6px) 10px 6px;
+      background:linear-gradient(180deg,#e8e0ce 0%,#ebe4d3 100%);
+      border-bottom:1.5px solid rgba(180,140,80,.32);
+      pointer-events:auto;
       z-index:950;
+      box-shadow:0 2px 10px rgba(0,0,0,.06);
     }
     #sceneHud .hud-row{pointer-events:auto;}
     .hud-row{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:8px;
+      gap:10px;
       pointer-events:auto;
     }
     html.immersive #sceneHud,
@@ -364,33 +364,52 @@
       border:none;
       cursor:pointer;
       touch-action:manipulation;
+      font-family:inherit;
     }
-    .scene-hud-list{
-      background:rgba(200,134,10,.18);
-      border:1.5px solid rgba(200,134,10,.5);
-      border-radius:16px;
-      color:#ffe082;
-      font-weight:800;
+    .scene-hud-back{
+      background:rgba(255,252,245,.92);
+      border:1.5px solid rgba(200,134,10,.45);
+      border-radius:18px;
+      color:#4a3208;
+      font-weight:900;
+      font-size:13px;
+      padding:9px 14px;
+      box-shadow:0 2px 8px rgba(0,0,0,.08);
+    }
+    .scene-hud-back:active{transform:scale(.96);}
+    .scene-hud-cart{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      background:linear-gradient(135deg,#b87200,#f0a820);
+      border:none;
+      border-radius:18px;
+      color:#1a0a00;
+      font-weight:900;
+      font-size:13px;
+      padding:9px 14px;
+      box-shadow:0 3px 12px rgba(200,134,10,.38);
+    }
+    .scene-hud-cart:active{transform:scale(.96);}
+    .scene-hud-cart .hud-cbadge{
+      background:#c62828;
+      color:#fff;
+      border-radius:50%;
+      min-width:20px;
+      height:20px;
+      font-size:11px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 5px;
+    }
+    .scene-hud-cart .hud-csum{
       font-size:12px;
-      padding:8px 12px;
-      box-shadow:0 2px 10px rgba(0,0,0,.35);
-    }
-    .scene-hud-center{
-      flex:1;
-      min-width:0;
-      text-align:center;
-      pointer-events:none;
-    }
-    .scene-hud-shop{
-      color:#c8860a;
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.04em;
+      font-weight:900;
       white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
     }
-    .scene-hud-table{display:none!important;}
+    .scene-hud-cart.is-empty .hud-cbadge{display:none;}
+    .scene-hud-cart.is-empty .hud-csum{display:none;}
     #tableFootBadge{
       flex-shrink:0;
       display:none;
@@ -428,53 +447,16 @@
       text-overflow:ellipsis;
       white-space:nowrap;
     }
-    .scene-hud-send{
-      flex-shrink:0;
-      pointer-events:auto;
-      border:none;
-      cursor:pointer;
-      touch-action:manipulation;
-      min-height:36px;
-      padding:8px 14px;
-      border-radius:16px;
-      background:linear-gradient(135deg,#b87200,#f0a820);
-      color:#0d0500;
-      font-size:12px;
-      font-weight:900;
-      box-shadow:0 3px 12px rgba(200,134,10,.45);
-    }
-    .scene-hud-send.is-empty{
-      opacity:.55;
-      box-shadow:none;
-    }
-    .scene-hud-send.is-empty:active{transform:none;}
-    .scene-hud-send .send-badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:20px;
-      height:20px;
-      margin-inline-start:6px;
-      padding:0 6px;
-      border-radius:10px;
-      background:#1a0a00;
-      color:#ffe082;
-      font-size:11px;
-      font-weight:900;
-      line-height:1;
-      vertical-align:middle;
-    }
-    .scene-hud-send .send-badge[hidden]{display:none!important;}
     #menuStage{
       flex:1;
       min-height:0;
       position:relative;
       overflow:hidden;
       width:100%;
-      padding-top:calc(44px + env(safe-area-inset-top,0px));
-      display:block;
+      padding-top:0;
+      display:flex;
+      flex-direction:column;
     }
-    html.coach-locked #menuStage{padding-top:0;}
     #menuOrderDock{
       position:absolute;
       left:0;
@@ -501,44 +483,43 @@
     #menuOrderDock #guestOrderChip,
     #menuOrderDock #guestOrderChip *{pointer-events:auto;}
     #menuBookWrap{
-      position:absolute;
-      left:0;
-      right:0;
-      top:0;
-      bottom:0;
+      position:relative;
+      flex:1;
+      min-height:0;
       z-index:1;
-      display:grid;
-      grid-template-rows:1fr auto;
-      grid-template-columns:1fr;
+      display:flex;
+      flex-direction:column;
       gap:0;
       overflow:hidden;
-      min-height:0;
+      justify-content:flex-end;
     }
     #menuViewport{
-      grid-row:1;
       position:relative;
+      flex:0 0 auto;
       min-height:0;
       overflow:hidden;
+      width:100%;
+      align-self:stretch;
     }
     #menuCategoryBar{
-      position:absolute;
+      position:relative;
       left:0;
       right:0;
-      z-index:30;
-      top:max(0px,calc(var(--menu-img-top, 0px) - var(--cat-bar-h, 40px)));
+      z-index:40;
+      flex-shrink:0;
       display:none;
-      padding:3px 0 2px;
+      padding:5px 0 4px;
       margin:0;
       background:linear-gradient(180deg,#e0d8c6 0%,#ebe4d3 100%);
       border-bottom:1.5px solid rgba(180,140,80,.35);
-      box-shadow:0 2px 8px rgba(0,0,0,.06);
+      box-shadow:0 2px 8px rgba(0,0,0,.05);
     }
     #menuCategoryBar.show{display:block;}
     .menu-cat-scroll{
       display:flex;
       gap:8px;
       overflow-x:auto;
-      padding:0 12px 2px;
+      padding:0 10px 2px;
       scrollbar-width:none;
       -webkit-overflow-scrolling:touch;
       touch-action:pan-x;
@@ -546,26 +527,30 @@
     .menu-cat-scroll::-webkit-scrollbar{display:none;}
     .cat-chip{
       flex-shrink:0;
-      border:1.5px solid rgba(200,134,10,.42);
-      background:rgba(255,252,245,.88);
+      border:1.5px solid rgba(200,134,10,.5);
+      background:linear-gradient(180deg,#fff9ee 0%,#f5ead4 100%);
       color:#4a3208;
       font-size:13px;
       font-weight:900;
-      padding:8px 15px;
-      border-radius:22px;
+      padding:8px 16px;
+      border-radius:24px;
       cursor:pointer;
       white-space:nowrap;
       touch-action:manipulation;
       font-family:inherit;
       line-height:1.2;
-      box-shadow:0 1px 6px rgba(0,0,0,.06);
+      box-shadow:0 2px 8px rgba(0,0,0,.07);
     }
     .cat-chip:active{transform:scale(.96);}
+    .cat-chip.cat-home{
+      background:linear-gradient(180deg,#f0e6d0 0%,#e8dcc4 100%);
+      border-color:rgba(160,110,40,.45);
+    }
     .cat-chip.active{
-      background:linear-gradient(145deg,#ffe082,#e6a817);
+      background:linear-gradient(145deg,#ffe082 0%,#f0b020 55%,#e6a817 100%);
       color:#1a0a00;
       border-color:#c8860a;
-      box-shadow:0 3px 12px rgba(200,134,10,.38);
+      box-shadow:0 4px 14px rgba(200,134,10,.42);
     }
     .cat-chip .cat-chip-ar{
       display:block;
@@ -780,8 +765,44 @@
     html.immersive.fs-active #scene{
       padding-top:0;
     }
+    .foot-cart-summary{
+      flex-shrink:0;
+      display:none;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:1px;
+      min-width:72px;
+      max-width:110px;
+      padding:4px 8px;
+      border-radius:12px;
+      background:rgba(200,134,10,.14);
+      border:1px solid rgba(200,134,10,.35);
+      pointer-events:auto;
+      cursor:pointer;
+      touch-action:manipulation;
+    }
+    .foot-cart-summary.show{display:flex;}
+    .foot-cart-label{
+      font-size:9px;
+      font-weight:800;
+      color:rgba(74,50,8,.7);
+      letter-spacing:.04em;
+    }
+    .foot-cart-total{
+      font-size:13px;
+      font-weight:900;
+      color:#5a3d08;
+      line-height:1.1;
+      white-space:nowrap;
+    }
+    .foot-cart-count{
+      font-size:9px;
+      font-weight:700;
+      color:rgba(74,50,8,.65);
+    }
     #pageSwipeBar{
-      grid-row:2;
+      flex-shrink:0;
       position:relative;
       left:0;right:0;
       z-index:330;
@@ -1549,6 +1570,7 @@
       touch-action:manipulation;
     }
     html.coach-locked #sceneHud,
+    html.coach-locked #menuCategoryBar,
     html.coach-locked #menuOrderDock,
     html.coach-locked #header,
     html.coach-locked #fsHint,
@@ -1828,13 +1850,12 @@
   <div id="scene">
     <div id="sceneHud">
       <div class="hud-row">
-        <button type="button" class="scene-hud-btn scene-hud-list" id="sceneMenuBtn" onclick="return window.__zekiqOpenMenu&&window.__zekiqOpenMenu(event)"><span id="i18n-sceneMenuBtn">📋 القائمة</span></button>
-        <div class="scene-hud-center">
-          <div class="scene-hud-shop" id="sceneHudShop">ZEKiQ</div>
-          <div class="scene-hud-table" id="sceneHudTable">🪑 طاولة —</div>
-        </div>
-        <button type="button" class="scene-hud-send is-empty" id="sceneSendBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneSendBtn">إرسال ✓</span><span class="send-badge" id="sceneSendBadge" hidden>0</span></button>
+        <button type="button" class="scene-hud-btn scene-hud-back" id="sceneBackBtn" onclick="return window.__zekiqGuestBack&&window.__zekiqGuestBack(event)"><span id="i18n-sceneBackBtn">↩ Geri</span></button>
+        <button type="button" class="scene-hud-btn scene-hud-cart is-empty" id="sceneCartBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneCartBtn">Sepet</span><span class="hud-cbadge" id="sceneCartBadge">0</span><span class="hud-csum" id="sceneCartSum"></span></button>
       </div>
+    </div>
+    <div id="menuCategoryBar" aria-label="أقسام المينو">
+      <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
     </div>
     <div id="menuStage">
       <div id="menuOrderDock">
@@ -1854,17 +1875,19 @@
       <div id="menuBookWrap">
       <div id="menuViewport">
       <div id="book"></div>
-      <div id="menuCategoryBar" aria-label="أقسام المينو">
-        <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
-      </div>
       </div>
       <div id="pageSwipeBar" aria-live="polite" aria-label="اسحب لقلب الصفحة">
         <div class="swipe-foot-panel">
           <div id="tableFootBadge" aria-live="polite" hidden>
             <span class="table-foot-section" id="tableFootSection"></span>
-            <span class="table-foot-label" id="tableFootLabel">طاولة</span>
+            <span class="table-foot-label" id="tableFootLabel">Masa No</span>
             <bdi class="table-foot-num" id="tableFootNum" dir="ltr">—</bdi>
           </div>
+          <button type="button" id="footCartSummary" class="foot-cart-summary" hidden onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)">
+            <span class="foot-cart-label" id="i18n-footCartLabel">Sepet</span>
+            <bdi class="foot-cart-total" id="footCartTotal" dir="ltr">0 ₺</bdi>
+            <span class="foot-cart-count" id="footCartCount">0</span>
+          </button>
           <div class="swipe-hint">
             <div class="swipe-hint-block">
               <p class="swipe-hint-text" id="i18n-swipeHint">اسحب لقلب الشاشة</p>
@@ -1978,13 +2001,18 @@
       loadingTitle: "جاري تحميل المينو…",
       loadingSub: "صفحات الكتاب الحقيقي",
       menuList: "📋 القائمة",
+      back: "↩ رجوع",
+      cartTop: "السلة",
+      menuler: "Menüler",
+      menulerAr: "المينو",
+      footCartLabel: "السلة",
       send: "إرسال ✓",
       guide1: '<span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة',
-      guide2: '<span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد',
+      guide2: '<span class="guide-n">2</span> ثم <strong>السلة</strong> للتأكيد',
       coachTitle: "كيف تطلب؟",
       coach1: 'تصفّح <strong>المينو</strong> — اسحب يميناً أو يساراً على الصورة لقلب الصفحة',
       coach2: 'اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام',
-      coach3: 'اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong>',
+      coach3: 'اضغط <strong>السلة</strong> في الأعلى → راجع الطلب → <strong>تأكيد وإرسال</strong>',
       coach4: 'في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال',
       coachOk: "فهمت — ابدأ الطلب ✓",
       coverStartBadge: "الغلاف",
@@ -2024,6 +2052,7 @@
       exitBtn: "إنهاء — إغلاق الصفحة",
       exitDone: "يمكنك إغلاق هذه الصفحة — شكراً لزيارتك",
       table: "طاولة",
+      tableFootNo: "Masa No",
       items: "أصناف",
       orderTotal: "المجموع",
       emptyCart: "السلة فارغة",
@@ -2053,6 +2082,11 @@
       loadingTitle: "Menü yükleniyor…",
       loadingSub: "Dijital menü kitabı",
       menuList: "📋 Menü",
+      back: "↩ Geri",
+      cartTop: "Sepet",
+      menuler: "Menüler",
+      menulerAr: "Menü",
+      footCartLabel: "Sepet",
       send: "Gönder ✓",
       guide1: '<span class="guide-n">1</span> Resimdeki yeşil <strong>+</strong> düğmesine basın',
       guide2: '<span class="guide-n">2</span> Sonra onay için <strong>Gönder</strong>',
@@ -2099,6 +2133,7 @@
       exitBtn: "Bitir — sayfayı kapat",
       exitDone: "Bu sayfayı kapatabilirsiniz — teşekkürler",
       table: "Masa",
+      tableFootNo: "Masa No",
       items: "ürün",
       orderTotal: "Toplam",
       emptyCart: "Sepet boş",
@@ -2128,6 +2163,11 @@
       loadingTitle: "Loading menu…",
       loadingSub: "Digital menu book",
       menuList: "📋 Menu",
+      back: "↩ Back",
+      cartTop: "Cart",
+      menuler: "Menus",
+      menulerAr: "Menu",
+      footCartLabel: "Cart",
       send: "Send ✓",
       guide1: '<span class="guide-n">1</span> Tap the green <strong>+</strong> on the image',
       guide2: '<span class="guide-n">2</span> Then <strong>Send</strong> to confirm',
@@ -2174,6 +2214,7 @@
       exitBtn: "Done — close page",
       exitDone: "You can close this page — thank you",
       table: "Table",
+      tableFootNo: "Table No",
       items: "items",
       orderTotal: "Total",
       emptyCart: "Cart is empty",
@@ -2216,8 +2257,9 @@
     var htmlIds = {
       "i18n-load-title": "loadingTitle",
       "i18n-load-sub": "loadingSub",
-      "i18n-sceneMenuBtn": "menuList",
-      "i18n-sceneSendBtn": "send",
+      "i18n-sceneBackBtn": "back",
+      "i18n-sceneCartBtn": "cartTop",
+      "i18n-footCartLabel": "footCartLabel",
       "i18n-guide1": "guide1",
       "i18n-guide2": "guide2",
       "i18n-coach-title": "coachTitle",
@@ -2659,22 +2701,32 @@
       "nargile": "Nargile",
     };
     function categoryChipLabel(pageIdx) {
+      const pl = PAGE_LABELS[pageIdx];
+      if (pl) return pl.split("·")[0].trim().replace(/\s*\(\d+\)\s*$/, "").trim();
       const cats = pageCategories[String(pageIdx)] || pageCategories[pageIdx] || [];
       const raw = cats[0] || "";
       const key = normCat(raw);
       if (CATEGORY_SHORT[key]) return CATEGORY_SHORT[key];
-      const pl = PAGE_LABELS[pageIdx];
-      if (pl) return pl.split("·")[0].trim().replace(/\s*\(\d+\)\s*$/, "").trim();
       return raw || "—";
     }
+    function activeCategoryPageIdx(menuIdx) {
+      if (menuIdx < 0) return -2;
+      const chips = buildCategoryChips();
+      let active = chips[0]?.pageIdx ?? -1;
+      for (const c of chips) {
+        if (c.pageIdx <= menuIdx) active = c.pageIdx;
+        else break;
+      }
+      return active;
+    }
     function buildCategoryChips() {
-      const chips = [];
-      const seen = new Set();
+      const chips = [{ pageIdx: -1, label: guestT("menuler"), ar: guestT("menulerAr"), isHome: true }];
+      let lastKey = "";
       for (let i = 0; i < menuPageCount; i++) {
         const label = categoryChipLabel(i);
         const key = normCat(label);
-        if (!key || seen.has(key)) continue;
-        seen.add(key);
+        if (key && key === lastKey) continue;
+        lastKey = key;
         const cats = pageCategories[String(i)] || pageCategories[i] || [];
         const ar = catLabelAr(cats[0] || label);
         chips.push({ pageIdx: i, label, ar });
@@ -2690,6 +2742,10 @@
     }
     function jumpToCategoryPage(menuIdx) {
       if (!coachDone) dismissCoach();
+      if (menuIdx < 0) {
+        goToPage(cur > 0 ? 1 : 0, false);
+        return;
+      }
       goToPage(spreadIdxForMenuPage(menuIdx), false);
     }
     function buildCategoryBar() {
@@ -2704,7 +2760,8 @@
       }
       scroll.innerHTML = chips.map(c => {
         const arHtml = c.ar ? '<span class="cat-chip-ar">' + esc(c.ar) + "</span>" : "";
-        return '<button type="button" class="cat-chip" data-page-idx="' + c.pageIdx + '">' +
+        const homeCls = c.isHome ? " cat-home" : "";
+        return '<button type="button" class="cat-chip' + homeCls + '" data-page-idx="' + c.pageIdx + '">' +
           esc(c.label) + arHtml + "</button>";
       }).join("");
       scroll.querySelectorAll(".cat-chip").forEach(btn => {
@@ -2716,22 +2773,25 @@
       bar.classList.toggle("show", coachDone);
       syncCategoryBar();
     }
-    function syncCategoryDock(pf) {
+    function syncCategoryDock() {
+      syncMenuPaneHeight();
+    }
+    function syncMenuPaneHeight() {
       const view = document.getElementById("menuViewport");
-      const bar = document.getElementById("menuCategoryBar");
-      if (!view || !bar) return;
-      const show = bar.classList.contains("show");
-      const onMenu = pf && !pf.classList.contains("book-cover") && menuIdxFromCur(cur) >= 0;
-      if (!show || !onMenu || !pf) {
-        view.style.removeProperty("--menu-img-top");
-        view.style.removeProperty("--cat-bar-h");
+      const wrap = document.getElementById("menuBookWrap");
+      const foot = document.getElementById("pageSwipeBar");
+      const pf = document.querySelector("#pw" + cur + " .pf");
+      if (!view || !wrap) return;
+      const nw = Number(pf?.dataset?.nw), nh = Number(pf?.dataset?.nh);
+      const w = wrap.clientWidth;
+      const footH = foot && getComputedStyle(foot).display !== "none" ? foot.offsetHeight : 0;
+      const maxH = Math.max(0, wrap.clientHeight - footH);
+      if (!nw || !nh || !w || maxH < 48 || pf?.classList.contains("book-cover")) {
+        view.style.removeProperty("height");
         return;
       }
-      const rect = imageOverlayRect(pf);
-      if (!rect) return;
-      const barH = bar.offsetHeight || 40;
-      view.style.setProperty("--menu-img-top", rect.oy + "px");
-      view.style.setProperty("--cat-bar-h", barH + "px");
+      const ideal = Math.round(w * nh / nw);
+      view.style.height = Math.min(ideal, maxH) + "px";
     }
     function syncCategoryBar() {
       const bar = document.getElementById("menuCategoryBar");
@@ -2739,16 +2799,16 @@
       bar.classList.toggle("show", menuPageCount > 1 && coachDone);
       const activeIdx = menuIdxFromCur(cur);
       const onMenu = spreadKind(cur) === "menu";
+      const activeChip = onMenu ? activeCategoryPageIdx(activeIdx) : (spreadKind(cur) === "cover-start" ? -1 : activeIdx);
       bar.querySelectorAll(".cat-chip").forEach(btn => {
         const pi = Number(btn.dataset.pageIdx);
-        btn.classList.toggle("active", onMenu && pi === activeIdx);
+        btn.classList.toggle("active", pi === activeChip);
       });
       const activeBtn = bar.querySelector(".cat-chip.active");
       if (activeBtn) {
         activeBtn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       }
-      const pf = document.querySelector("#pw" + cur + " .pf");
-      syncCategoryDock(pf);
+      syncCategoryDock();
     }
     const SERPME_PRICES = new Set([1250, 1650, 1850]);
     const PAGE_LABELS = [
@@ -3253,6 +3313,7 @@
       });
       syncFootLayout();
       syncSwipeBar();
+      syncMenuPaneHeight();
     }
     window.__zekiqRelayout = function() {
       layoutAllHotspots();
@@ -3903,7 +3964,7 @@
         badge.hidden = false;
         badge.classList.add("show");
         numEl.textContent = String(tableNum);
-        if (labelEl) labelEl.textContent = guestT("table");
+        if (labelEl) labelEl.textContent = guestT("tableFootNo");
         if (secEl) secEl.textContent = section || "";
       } else {
         badge.hidden = true;
@@ -3913,34 +3974,33 @@
     function syncSceneHud() {
       const t = cart.reduce((s, i) => s + i.qty, 0);
       const total = cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0);
-      const shopEl = document.getElementById("sceneHudShop");
-      const tableEl = document.getElementById("sceneHudTable");
-      const sendBtn = document.getElementById("sceneSendBtn");
-      const sendBadge = document.getElementById("sceneSendBadge");
+      const cartBtn = document.getElementById("sceneCartBtn");
+      const cartBadge = document.getElementById("sceneCartBadge");
+      const cartSum = document.getElementById("sceneCartSum");
+      const footCart = document.getElementById("footCartSummary");
+      const footTotal = document.getElementById("footCartTotal");
+      const footCount = document.getElementById("footCartCount");
       const guideEl = document.getElementById("guestGuide");
       const chipEl = document.getElementById("guestOrderChip");
       const stageEl = document.getElementById("menuStage");
       const summaryEl = document.getElementById("sceneOrderSummary");
       const listEl = document.getElementById("sceneOrderList");
-      if (shopEl && shopName) shopEl.textContent = shopName;
       refreshCoverTitles();
-      if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
       syncTableFootBadge();
+      if (cartBtn) cartBtn.classList.toggle("is-empty", !t);
+      if (cartBadge) cartBadge.textContent = String(t);
+      if (cartSum) cartSum.textContent = t > 0 ? money(total) : "";
+      if (footCart) {
+        footCart.hidden = !t;
+        footCart.classList.toggle("show", !!t);
+      }
+      if (footTotal && t) footTotal.textContent = money(total);
+      if (footCount && t) footCount.textContent = t + " " + guestT("items");
       if (!coachDone || document.documentElement.classList.contains("coach-locked")) {
         if (stageEl) stageEl.classList.remove("orders-overlay");
         if (guideEl) guideEl.classList.remove("show");
         if (chipEl) chipEl.classList.remove("show");
-        if (sendBtn) sendBtn.classList.add("is-empty");
-        if (sendBadge) sendBadge.hidden = true;
         return;
-      }
-      if (sendBtn) {
-        sendBtn.hidden = false;
-        sendBtn.classList.toggle("is-empty", !t);
-      }
-      if (sendBadge) {
-        sendBadge.hidden = !t;
-        if (t) sendBadge.textContent = String(t);
       }
       if (!t) {
         if (stageEl) stageEl.classList.remove("orders-overlay");
@@ -3994,6 +4054,21 @@
       openCart();
     }
     window.__zekiqOpenCart = openCartConfirm;
+    window.__zekiqGuestBack = function(e) {
+      if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
+      if (!coachDone) return false;
+      if (document.getElementById("cart-panel")?.classList.contains("open")) {
+        closeCart();
+        return false;
+      }
+      if (document.getElementById("menu-panel")?.classList.contains("open")) {
+        closeMenuList();
+        return false;
+      }
+      if (cur > 1) prevPage();
+      else if (cur === 1) goToPage(0, false);
+      return false;
+    };
     window.__zekiqOpenMenu = function(e) {
       if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
       openMenuList();
@@ -4028,9 +4103,9 @@
     });
 
     document.getElementById("cartBtn").onclick = e => { e.stopPropagation(); openCart(); };
-    const sceneMenuBtn = document.getElementById("sceneMenuBtn");
+    const sceneBackBtn = document.getElementById("sceneBackBtn");
+    const sceneCartBtn = document.getElementById("sceneCartBtn");
     const sceneOrderBtn = document.getElementById("sceneOrderBtn");
-    const sceneSendBtn = document.getElementById("sceneSendBtn");
     function bindTopBtn(el, handler) {
       if (!el || el.__topBound) return;
       el.__topBound = true;
@@ -4046,11 +4121,12 @@
       el.addEventListener("click", run);
       el.addEventListener("touchend", run, { passive: false });
     }
-    bindTopBtn(sceneMenuBtn, () => openMenuList());
+    bindTopBtn(sceneBackBtn, () => window.__zekiqGuestBack());
     bindTopBtn(document.getElementById("menuListBtn"), () => openMenuList());
     bindTopBtn(document.getElementById("cartBtn"), () => openCart());
+    bindTopBtn(sceneCartBtn, () => openCart());
+    bindTopBtn(document.getElementById("footCartSummary"), () => openCart());
     bindTopBtn(sceneOrderBtn, openCartConfirm);
-    bindTopBtn(sceneSendBtn, openCartConfirm);
     bindTopBtn(document.getElementById("prevBtn"), prevPage);
     bindTopBtn(document.getElementById("nextBtn"), nextPage);
     document.getElementById("closeCart").onclick = closeCart;
