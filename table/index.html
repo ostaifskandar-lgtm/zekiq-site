@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v21: orders slot pushes menu — no overlay -->
+  <!-- guest-table-ui-v22: category jump bar + swipe text fix -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -510,6 +510,55 @@
       flex-direction:column;
       overflow:hidden;
     }
+    #menuCategoryBar{
+      flex-shrink:0;
+      display:none;
+      padding:6px 0 5px;
+      background:linear-gradient(180deg,#e0d8c6 0%,#ebe4d3 100%);
+      border-bottom:1.5px solid rgba(180,140,80,.3);
+      z-index:25;
+    }
+    #menuCategoryBar.show{display:block;}
+    .menu-cat-scroll{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      padding:0 12px 2px;
+      scrollbar-width:none;
+      -webkit-overflow-scrolling:touch;
+      touch-action:pan-x;
+    }
+    .menu-cat-scroll::-webkit-scrollbar{display:none;}
+    .cat-chip{
+      flex-shrink:0;
+      border:1.5px solid rgba(200,134,10,.42);
+      background:rgba(255,252,245,.88);
+      color:#4a3208;
+      font-size:13px;
+      font-weight:900;
+      padding:8px 15px;
+      border-radius:22px;
+      cursor:pointer;
+      white-space:nowrap;
+      touch-action:manipulation;
+      font-family:inherit;
+      line-height:1.2;
+      box-shadow:0 1px 6px rgba(0,0,0,.06);
+    }
+    .cat-chip:active{transform:scale(.96);}
+    .cat-chip.active{
+      background:linear-gradient(145deg,#ffe082,#e6a817);
+      color:#1a0a00;
+      border-color:#c8860a;
+      box-shadow:0 3px 12px rgba(200,134,10,.38);
+    }
+    .cat-chip .cat-chip-ar{
+      display:block;
+      font-size:10px;
+      font-weight:700;
+      opacity:.72;
+      margin-top:2px;
+    }
     #guestGuide{
       flex-shrink:0;
       display:none;
@@ -532,11 +581,11 @@
       background:rgba(13,5,0,.62);
       border:1px solid rgba(200,134,10,.35);
       border-radius:14px;
-      padding:6px 10px;
-      color:rgba(255,224,130,.92);
-      font-size:11px;
-      font-weight:700;
-      line-height:1.35;
+      padding:8px 12px;
+      color:rgba(255,224,130,.95);
+      font-size:13px;
+      font-weight:800;
+      line-height:1.4;
       box-shadow:0 2px 10px rgba(0,0,0,.22);
     }
     .guide-step strong{color:#7cff9a;font-weight:900;}
@@ -765,24 +814,26 @@
       width:100%;
     }
     .swipe-hint-text,.swipe-label{
-      font-size:13px;
+      font-size:15px;
       font-weight:900;
       letter-spacing:.03em;
       color:#fff8e1;
       text-align:center;
-      line-height:1.3;
+      line-height:1.35;
       margin:0;
       padding:0 6px;
       pointer-events:none;
       text-shadow:0 1px 8px rgba(0,0,0,.45),0 0 14px rgba(255,224,130,.4);
       animation:swipeLabelFlash 2s ease-in-out infinite;
+      display:block!important;
     }
     .pf-rail-swipe-txt{
-      font-size:13px;
+      font-size:15px;
       font-weight:900;
-      color:#5a3d08;
+      color:#3d2806;
       text-shadow:none;
       animation:swipeLabelFlash 2s ease-in-out infinite;
+      display:block!important;
     }
     .swipe-arrow-track{
       display:flex;
@@ -870,7 +921,14 @@
     html.swipe-learned .swipe-hand,
     html.swipe-learned .swipe-track-slide{animation-duration:2.4s;}
     html.swipe-learned .swipe-hint-text,
-    html.swipe-learned .swipe-label{animation:none;font-size:11px;color:rgba(255,224,130,.85);}
+    html.swipe-learned .swipe-label,
+    html.swipe-learned .pf-rail-swipe-txt{
+      animation:none;
+      font-size:14px;
+      color:#fff8e1;
+      display:block!important;
+    }
+    html.swipe-learned .pf-rail-swipe-txt{color:#3d2806;}
     html.swipe-mastered #pageSwipeBar{
       padding-bottom:calc(4px + env(safe-area-inset-bottom,0px));
       background:linear-gradient(0deg,rgba(30,18,8,.55) 0%,transparent 85%);
@@ -885,7 +943,11 @@
       animation:none;
     }
     html.swipe-mastered .swipe-hint-text,
-    html.swipe-mastered .swipe-label{display:none;}
+    html.swipe-mastered .swipe-label,
+    html.swipe-mastered .pf-rail-swipe-txt{
+      display:block!important;
+      font-size:13px;
+    }
     html.swipe-mastered .swipe-arrow-track{height:22px;width:120px;}
     html.swipe-mastered .swipe-hint-mid{flex-direction:row;gap:8px;}
     #book{
@@ -996,15 +1058,15 @@
       gap:5px;width:100%;
     }
     .pf-rail-order{
-      font-size:10px;font-weight:800;color:rgba(90,120,70,.9);
+      font-size:13px;font-weight:900;color:#2d5a28;
       letter-spacing:.02em;
-      margin-top:2px;
+      margin-top:4px;
+      line-height:1.35;
     }
     html.letterbox-nav #pageSwipeBar{display:none!important;}
     html.swipe-learned .pf-rail-swipe .swipe-track-slide{animation-duration:2.4s;}
-    html.swipe-learned .pf-rail-swipe-txt{animation:none;font-size:11px;}
-    html.swipe-mastered .pf-rail-swipe-txt{display:none;}
-    html.swipe-mastered .pf-rail-swipe .swipe-arrow-track{height:22px;}
+    html.swipe-learned .pf-rail-swipe-txt{font-size:14px;}
+    html.swipe-mastered .pf-rail-swipe .swipe-arrow-track{height:28px;}
     html.swipe-mastered .pf-rail-bottom{padding:4px 12px;}
     .pb{
       transform:rotateY(180deg);
@@ -1737,11 +1799,14 @@
         </div>
       </div>
       <div id="menuBookWrap">
+      <div id="menuCategoryBar" aria-label="أقسام المينو">
+        <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
+      </div>
       <div id="book"></div>
       <div id="pageSwipeBar" aria-live="polite" aria-label="اسحب لقلب الصفحة">
         <div class="swipe-hint">
           <div class="swipe-hint-block">
-            <p class="swipe-hint-text" id="i18n-swipeHint">اسحب لقلب الصفحة</p>
+            <p class="swipe-hint-text" id="i18n-swipeHint">اسحب لقلب الشاشة</p>
             <div class="swipe-arrow-track" aria-hidden="true">
               <div class="swipe-track-slide">
                 <span class="swipe-track-chev lit left">‹</span>
@@ -1878,7 +1943,7 @@
       prev: "◀ السابق",
       next: "التالي ▶",
       orientLock: "أبقِ الهاتف عمودياً لاستخدام المينو",
-      swipeHint: "اسحب لقلب الصفحة",
+      swipeHint: "اسحب لقلب الشاشة",
       railOrderHint: "اضغط + الأخضر على الصورة للطلب",
       fsHint: "👆 اضغط على المينو لملء الشاشة",
       fsHintIos: "↑ اسحب للأعلى قليلاً لإخفاء شريط Safari وملء الشاشة",
@@ -2519,6 +2584,95 @@
       "tatlilar": "حلويات", "cay": "شاي", "kahve": "قهوة", "soguk icecek": "مشروبات باردة",
       "icecek": "مشروبات", "nargile": "أرجيلة",
     };
+    const CATEGORY_SHORT = {
+      "kahvalti": "Kahvaltı",
+      "baslangic": "Başlangıç",
+      "lavas tost": "Tost",
+      "makarnalar": "Makarna",
+      "salatalar": "Salata",
+      "tavuk": "Tavuk",
+      "pizza": "Pizza",
+      "kofte & burger": "Köfte",
+      "tatlilar": "Tatlı",
+      "cay": "Çay",
+      "kahve": "Kahve",
+      "soguk icecek": "İçecek",
+      "icecek": "İçecek",
+      "nargile": "Nargile",
+    };
+    function categoryChipLabel(pageIdx) {
+      const cats = pageCategories[String(pageIdx)] || pageCategories[pageIdx] || [];
+      const raw = cats[0] || "";
+      const key = normCat(raw);
+      if (CATEGORY_SHORT[key]) return CATEGORY_SHORT[key];
+      const pl = PAGE_LABELS[pageIdx];
+      if (pl) return pl.split("·")[0].trim().replace(/\s*\(\d+\)\s*$/, "").trim();
+      return raw || "—";
+    }
+    function buildCategoryChips() {
+      const chips = [];
+      const seen = new Set();
+      for (let i = 0; i < menuPageCount; i++) {
+        const label = categoryChipLabel(i);
+        const key = normCat(label);
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+        const cats = pageCategories[String(i)] || pageCategories[i] || [];
+        const ar = catLabelAr(cats[0] || label);
+        chips.push({ pageIdx: i, label, ar });
+      }
+      return chips;
+    }
+    function spreadIdxForMenuPage(menuIdx) {
+      for (let s = 0; s < bookSpread.length; s++) {
+        const sp = bookSpread[s];
+        if (sp && sp.kind === "menu" && sp.menuIdx === menuIdx) return s;
+      }
+      return menuIdx + 1;
+    }
+    function jumpToCategoryPage(menuIdx) {
+      if (!coachDone) dismissCoach();
+      goToPage(spreadIdxForMenuPage(menuIdx), false);
+    }
+    function buildCategoryBar() {
+      const bar = document.getElementById("menuCategoryBar");
+      const scroll = document.getElementById("menuCategoryScroll");
+      if (!bar || !scroll) return;
+      const chips = buildCategoryChips();
+      if (!chips.length || menuPageCount <= 1) {
+        bar.classList.remove("show");
+        scroll.innerHTML = "";
+        return;
+      }
+      scroll.innerHTML = chips.map(c => {
+        const arHtml = c.ar ? '<span class="cat-chip-ar">' + esc(c.ar) + "</span>" : "";
+        return '<button type="button" class="cat-chip" data-page-idx="' + c.pageIdx + '">' +
+          esc(c.label) + arHtml + "</button>";
+      }).join("");
+      scroll.querySelectorAll(".cat-chip").forEach(btn => {
+        btn.onclick = e => {
+          e.stopPropagation();
+          jumpToCategoryPage(Number(btn.dataset.pageIdx));
+        };
+      });
+      bar.classList.toggle("show", coachDone);
+      syncCategoryBar();
+    }
+    function syncCategoryBar() {
+      const bar = document.getElementById("menuCategoryBar");
+      if (!bar) return;
+      bar.classList.toggle("show", menuPageCount > 1 && coachDone);
+      const activeIdx = menuIdxFromCur(cur);
+      const onMenu = spreadKind(cur) === "menu";
+      bar.querySelectorAll(".cat-chip").forEach(btn => {
+        const pi = Number(btn.dataset.pageIdx);
+        btn.classList.toggle("active", onMenu && pi === activeIdx);
+      });
+      const activeBtn = bar.querySelector(".cat-chip.active");
+      if (activeBtn) {
+        activeBtn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      }
+    }
     const SERPME_PRICES = new Set([1250, 1650, 1850]);
     const PAGE_LABELS = [
       "Serpme Kahvaltı · إفطار مشترك",
@@ -3355,6 +3509,7 @@
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       bindBookSwipe();
       syncSwipeBar();
+      buildCategoryBar();
     }
 
     function initCoverGate() {
@@ -3385,6 +3540,7 @@
       if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       if (window.__zekiqLockPortrait) window.__zekiqLockPortrait();
+      buildCategoryBar();
     }
 
     function spreadImgSrc(spread) {
@@ -3533,6 +3689,7 @@
       if (nextBtn) nextBtn.disabled = cur >= bookSpread.length - 1;
       syncSwipeBar();
       refreshCoverTitles();
+      syncCategoryBar();
       if (!duringFlip) {
         document.querySelectorAll(".pw").forEach((pw, i) => {
           pw.classList.toggle("page-current", i === cur);
