@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v14: letterbox rails + smart menu fill -->
+  <!-- guest-table-ui-v15: letterbox rails only — no image zoom -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -2682,66 +2682,24 @@
       const cats = pageCategories[String(menuIdx)] || pageCategories[menuIdx] || [];
       return Array.isArray(cats) ? cats.filter(Boolean) : [];
     }
-    function applyMenuImageFit(pf) {
-      const img = pf.querySelector(".pf-bg");
-      if (!img) return;
-      const nw = Number(pf.dataset.nw), nh = Number(pf.dataset.nh);
-      if (!nw || !nh) return;
-      const cw = pf.clientWidth, ch = pf.clientHeight;
-      if (!cw || !ch) return;
-      const containScale = Math.min(cw / nw, ch / nh);
-      const wasteY = ch - nh * containScale;
-      const imgAspect = nw / nh;
-      const boxAspect = cw / ch;
-      if (wasteY > Math.max(36, ch * 0.09) && imgAspect > boxAspect * 0.88) {
-        img.style.objectFit = "cover";
-        img.style.objectPosition = "center top";
-        pf.dataset.fitMode = "cover-top";
-      } else if (wasteY > Math.max(52, ch * 0.14)) {
-        const boost = Math.min(1.14, Math.max(cw / nw, ch / nh) / containScale);
-        img.style.objectFit = "contain";
-        img.style.objectPosition = "center center";
-        img.style.transform = "scale(" + boost.toFixed(4) + ")";
-        pf.dataset.fitMode = "boost";
-        pf.dataset.fitBoost = String(boost);
-      } else {
-        img.style.objectFit = "contain";
-        img.style.objectPosition = "center center";
-        img.style.transform = "";
-        pf.dataset.fitMode = "contain";
-        pf.dataset.fitBoost = "";
-      }
-    }
     function imageOverlayRect(pf) {
       const nw = Number(pf.dataset.nw), nh = Number(pf.dataset.nh);
       if (!nw || !nh) return null;
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
-      applyMenuImageFit(pf);
-      const mode = pf.dataset.fitMode || "contain";
-      let scale, dw, dh, ox, oy;
-      if (mode === "cover-top") {
-        scale = Math.max(cw / nw, ch / nh);
-        dw = nw * scale;
-        dh = nh * scale;
-        ox = (cw - dw) / 2;
-        oy = 0;
-      } else if (mode === "boost") {
-        const boost = Number(pf.dataset.fitBoost) || 1;
-        scale = Math.min(cw / nw, ch / nh) * boost;
-        dw = nw * scale;
-        dh = nh * scale;
-        ox = (cw - dw) / 2;
-        oy = (ch - dh) / 2;
-      } else {
-        scale = Math.min(cw / nw, ch / nh);
-        dw = nw * scale;
-        dh = nh * scale;
-        ox = (cw - dw) / 2;
-        oy = (ch - dh) / 2;
+      const img = pf.querySelector(".pf-bg");
+      if (img) {
+        img.style.objectFit = "contain";
+        img.style.objectPosition = "center";
+        img.style.transform = "";
       }
+      const scale = Math.min(cw / nw, ch / nh);
+      const dw = nw * scale;
+      const dh = nh * scale;
+      const ox = (cw - dw) / 2;
+      const oy = (ch - dh) / 2;
       return {
-        ox, oy, dw, dh, mode,
+        ox, oy, dw, dh,
         wasteTop: Math.max(0, oy),
         wasteBottom: Math.max(0, ch - oy - dh),
       };
@@ -2822,7 +2780,6 @@
       img.onload = () => {
         pf.dataset.nw = String(img.naturalWidth);
         pf.dataset.nh = String(img.naturalHeight);
-        applyMenuImageFit(pf);
         if (onReady) onReady();
       };
       img.onerror = () => { if (onReady) onReady(); };
