@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v37: fixed logo strip from cropped menu top (not SVG) -->
+  <!-- guest-table-ui-v38: mockup-exact — dark hud, logo strip, white cats, fill-width menu -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -336,12 +336,12 @@
       display:none;
       flex-direction:column;
       gap:0;
-      padding:calc(env(safe-area-inset-top,0px) + 6px) 10px 6px;
-      background:linear-gradient(180deg,#e8e0ce 0%,#ebe4d3 100%);
-      border-bottom:1.5px solid rgba(180,140,80,.32);
+      padding:calc(env(safe-area-inset-top,0px) + 8px) 10px 8px;
+      background:linear-gradient(180deg,#6b4a12 0%,#4a3208 48%,#3d2806 100%);
+      border-bottom:1px solid rgba(255,210,120,.18);
       pointer-events:auto;
       z-index:950;
-      box-shadow:0 2px 10px rgba(0,0,0,.06);
+      box-shadow:0 3px 14px rgba(0,0,0,.28);
     }
     #sceneHud .hud-row{pointer-events:auto;}
     .hud-row{
@@ -367,14 +367,14 @@
       font-family:inherit;
     }
     .scene-hud-back{
-      background:rgba(255,252,245,.92);
-      border:1.5px solid rgba(200,134,10,.45);
-      border-radius:18px;
-      color:#4a3208;
+      background:rgba(255,255,255,.14);
+      border:1.5px solid rgba(255,220,150,.38);
+      border-radius:20px;
+      color:#ffe9b0;
       font-weight:900;
       font-size:13px;
       padding:9px 14px;
-      box-shadow:0 2px 8px rgba(0,0,0,.08);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
     }
     .scene-hud-back:active{transform:scale(.96);}
     .scene-hud-center{
@@ -384,24 +384,25 @@
       pointer-events:none;
     }
     .scene-hud-title{
-      font-size:11px;
+      font-size:12px;
       font-weight:900;
-      letter-spacing:.14em;
-      color:#6b4a12;
+      letter-spacing:.18em;
+      color:#fff;
       text-transform:uppercase;
+      text-shadow:0 1px 3px rgba(0,0,0,.35);
     }
     .scene-hud-cart{
       display:flex;
       align-items:center;
-      gap:6px;
-      background:linear-gradient(135deg,#b87200,#f0a820);
-      border:none;
-      border-radius:18px;
-      color:#1a0a00;
+      gap:5px;
+      background:linear-gradient(135deg,#e6a817 0%,#f5c030 55%,#e6a817 100%);
+      border:1px solid rgba(255,240,180,.45);
+      border-radius:20px;
+      color:#2a1400;
       font-weight:900;
       font-size:13px;
       padding:9px 14px;
-      box-shadow:0 3px 12px rgba(200,134,10,.38);
+      box-shadow:0 3px 12px rgba(0,0,0,.25);
     }
     .scene-hud-cart:active{transform:scale(.96);}
     .scene-hud-cart .hud-cbadge{
@@ -429,17 +430,19 @@
       padding:0;
       margin:0;
       line-height:0;
-      background:#120800;
-      border-bottom:1px solid rgba(200,134,10,.22);
+      width:100%;
+      aspect-ratio:945 / 205;
+      max-height:none;
+      background:#0c0604;
+      border-bottom:none;
       overflow:hidden;
     }
     #guestBrandStrip.show{display:block;}
     .guest-brand-strip-img{
       display:block;
       width:100%;
-      height:auto;
-      max-height:18vh;
-      object-fit:cover;
+      height:100%;
+      object-fit:fill;
       object-position:center top;
       pointer-events:none;
       user-select:none;
@@ -451,15 +454,15 @@
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap:0;
-      min-width:58px;
-      margin-inline-start:auto;
+      gap:1px;
+      min-width:62px;
       order:3;
-      padding:5px 10px 4px;
-      border-radius:14px;
-      background:linear-gradient(180deg,#fff9ee 0%,#f5ead4 100%);
-      border:1.5px solid rgba(200,134,10,.42);
-      box-shadow:0 2px 8px rgba(0,0,0,.08);
+      margin-inline-start:auto;
+      padding:6px 12px 5px;
+      border-radius:12px;
+      background:linear-gradient(180deg,#f7f2e6 0%,#ebe4d3 100%);
+      border:1.5px solid #c8b890;
+      box-shadow:0 2px 8px rgba(0,0,0,.1);
       pointer-events:none;
     }
     #tableFootBadge.show{display:flex;}
@@ -471,9 +474,9 @@
       text-transform:uppercase;
     }
     .table-foot-num{
-      font-size:26px;
+      font-size:28px;
       font-weight:900;
-      color:#3d2806;
+      color:#1a1008;
       line-height:1;
       letter-spacing:.02em;
     }
@@ -547,11 +550,11 @@
       z-index:40;
       flex-shrink:0;
       display:none;
-      padding:6px 0 5px;
+      padding:7px 0 6px;
       margin:0;
-      background:linear-gradient(180deg,#e8e0ce 0%,#ebe4d3 100%);
-      border-bottom:1.5px solid rgba(180,140,80,.38);
-      box-shadow:0 2px 6px rgba(0,0,0,.05);
+      background:#fff;
+      border-bottom:1px solid rgba(0,0,0,.08);
+      box-shadow:0 2px 8px rgba(0,0,0,.06);
     }
     #menuCategoryBar.show{display:block;}
     .menu-cat-scroll{
@@ -566,29 +569,27 @@
     .menu-cat-scroll::-webkit-scrollbar{display:none;}
     .cat-chip{
       flex-shrink:0;
-      border:1.5px solid rgba(160,130,80,.5);
-      background:linear-gradient(180deg,#fff 0%,#faf6ee 100%);
+      border:1.5px solid #d4cbb8;
+      background:#fff;
       color:#3d2806;
       font-size:13px;
       font-weight:900;
-      padding:7px 15px 6px;
-      border-radius:18px;
+      padding:7px 14px 6px;
+      border-radius:20px;
       cursor:pointer;
       white-space:nowrap;
       touch-action:manipulation;
       font-family:inherit;
       line-height:1.15;
-      box-shadow:0 2px 7px rgba(0,0,0,.07);
+      box-shadow:0 1px 4px rgba(0,0,0,.06);
     }
     .cat-chip:active{transform:scale(.96);}
-    .cat-chip.cat-home{
-      background:linear-gradient(180deg,#f7f0e4 0%,#efe6d6 100%);
-    }
+    .cat-chip.cat-home{background:#faf8f4;}
     .cat-chip.active{
-      background:linear-gradient(180deg,#ffe566 0%,#f5b820 52%,#e6a817 100%);
+      background:linear-gradient(180deg,#ffe566 0%,#f5c030 50%,#e6a817 100%);
       color:#1a0a00;
       border-color:#c8860a;
-      box-shadow:0 4px 14px rgba(200,134,10,.45);
+      box-shadow:0 3px 12px rgba(200,134,10,.4);
     }
     .cat-chip .cat-chip-ar{
       display:block;
@@ -771,7 +772,7 @@
       width:var(--app-w,100vw);height:var(--app-h,100dvh);z-index:1;
       display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
       overflow:hidden;
-      background:#ebe4d3;
+      background:#0c0604;
       perspective:2400px;
       padding:0;
       cursor:pointer;
@@ -858,9 +859,9 @@
       user-select:none;
       -webkit-user-select:none;
       pointer-events:none;
-      background:#ebe4d3;
-      border-top:none;
-      box-shadow:0 -1px 0 rgba(180,150,100,.22);
+      background:linear-gradient(180deg,#ece8de 0%,#e4dfd2 100%);
+      border-top:1px solid rgba(0,0,0,.09);
+      box-shadow:0 -2px 10px rgba(0,0,0,.06);
     }
     .swipe-foot-panel{
       pointer-events:auto;
@@ -926,6 +927,7 @@
       pointer-events:none;
       text-shadow:none;
     }
+    .swipe-page-num{display:none!important;}
     .swipe-hint-text,.swipe-label{
       font-size:11px;
       font-weight:900;
@@ -1892,9 +1894,9 @@
   <div id="scene">
     <div id="sceneHud">
       <div class="hud-row">
-        <button type="button" class="scene-hud-btn scene-hud-back" id="sceneBackBtn" onclick="return window.__zekiqGuestBack&&window.__zekiqGuestBack(event)"><span id="i18n-sceneBackBtn">↩ Geri</span></button>
+        <button type="button" class="scene-hud-btn scene-hud-back" id="sceneBackBtn" onclick="return window.__zekiqGuestBack&&window.__zekiqGuestBack(event)"><span id="i18n-sceneBackBtn">‹ Geri</span></button>
         <div class="scene-hud-center"><span class="scene-hud-title" id="i18n-sceneHudTitle">MENÜ</span></div>
-        <button type="button" class="scene-hud-btn scene-hud-cart is-empty" id="sceneCartBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneCartBtn">Sepet</span><span class="hud-cbadge" id="sceneCartBadge">0</span><span class="hud-csum" id="sceneCartSum"></span></button>
+        <button type="button" class="scene-hud-btn scene-hud-cart is-empty" id="sceneCartBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneCartBtn">🛒 Sepet</span><span class="hud-cbadge" id="sceneCartBadge">0</span><span class="hud-csum" id="sceneCartSum"></span></button>
       </div>
     </div>
     <div id="guestBrandStrip" hidden aria-hidden="true">
@@ -1924,16 +1926,6 @@
       </div>
       <div id="pageSwipeBar" aria-live="polite" aria-label="اسحب لقلب الصفحة">
         <div class="swipe-foot-panel">
-          <div id="tableFootBadge" aria-live="polite" hidden>
-            <span class="table-foot-section" id="tableFootSection"></span>
-            <span class="table-foot-label" id="tableFootLabel">Masa No</span>
-            <bdi class="table-foot-num" id="tableFootNum" dir="ltr">—</bdi>
-          </div>
-          <button type="button" id="footCartSummary" class="foot-cart-summary" hidden onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)">
-            <span class="foot-cart-label" id="i18n-footCartLabel">Sepet</span>
-            <bdi class="foot-cart-total" id="footCartTotal" dir="ltr">0 ₺</bdi>
-            <span class="foot-cart-count" id="footCartCount">0</span>
-          </button>
           <div class="swipe-hint">
             <div class="swipe-hint-block">
               <p class="swipe-hint-text" id="i18n-swipeHint">اسحب لقلب الشاشة</p>
@@ -1948,6 +1940,16 @@
               <p class="swipe-order-hint" id="i18n-railOrderHint">اضغط + الأخضر على الصورة للطلب</p>
               <bdi class="swipe-page-num" id="swipePgnum" dir="ltr">1 / 1</bdi>
             </div>
+          </div>
+          <button type="button" id="footCartSummary" class="foot-cart-summary" hidden onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)">
+            <span class="foot-cart-label" id="i18n-footCartLabel">Sepet</span>
+            <bdi class="foot-cart-total" id="footCartTotal" dir="ltr">0 ₺</bdi>
+            <span class="foot-cart-count" id="footCartCount">0</span>
+          </button>
+          <div id="tableFootBadge" aria-live="polite" hidden>
+            <span class="table-foot-section" id="tableFootSection"></span>
+            <span class="table-foot-label" id="tableFootLabel">Masa No</span>
+            <bdi class="table-foot-num" id="tableFootNum" dir="ltr">—</bdi>
           </div>
         </div>
       </div>
@@ -2047,8 +2049,8 @@
       loadingTitle: "جاري تحميل المينو…",
       loadingSub: "صفحات الكتاب الحقيقي",
       menuList: "📋 القائمة",
-      back: "↩ رجوع",
-      cartTop: "السلة",
+      back: "‹ رجوع",
+      cartTop: "🛒 السلة",
       hudTitle: "القائمة",
       menuler: "Menüler",
       menulerAr: "المينو",
@@ -2129,8 +2131,8 @@
       loadingTitle: "Menü yükleniyor…",
       loadingSub: "Dijital menü kitabı",
       menuList: "📋 Menü",
-      back: "↩ Geri",
-      cartTop: "Sepet",
+      back: "‹ Geri",
+      cartTop: "🛒 Sepet",
       hudTitle: "MENÜ",
       menuler: "Menüler",
       menulerAr: "Menü",
@@ -2211,8 +2213,8 @@
       loadingTitle: "Loading menu…",
       loadingSub: "Digital menu book",
       menuList: "📋 Menu",
-      back: "↩ Back",
-      cartTop: "Cart",
+      back: "‹ Back",
+      cartTop: "🛒 Cart",
       hudTitle: "MENU",
       menuler: "Menus",
       menulerAr: "Menu",
@@ -2834,22 +2836,9 @@
     }
     function syncMenuPaneHeight() {
       const view = document.getElementById("menuViewport");
-      const wrap = document.getElementById("menuBookWrap");
-      const foot = document.getElementById("pageSwipeBar");
-      const pf = document.querySelector("#pw" + cur + " .pf");
-      if (!view || !wrap) return;
+      if (!view) return;
       view.style.flex = "1";
       view.style.removeProperty("height");
-      const nw = Number(pf?.dataset?.nw), nh = Number(pf?.dataset?.nh);
-      const w = wrap.clientWidth;
-      const footH = foot && getComputedStyle(foot).display !== "none" ? foot.offsetHeight : 0;
-      const maxH = Math.max(0, wrap.clientHeight - footH);
-      if (!nw || !nh || !w || maxH < 48 || pf?.classList.contains("book-cover")) return;
-      const ideal = Math.round(w * nh / nw);
-      if (ideal > 0 && ideal < maxH - 4) {
-        view.style.height = ideal + "px";
-        view.style.flex = "0 0 auto";
-      }
     }
     function resolveLogoStripUrl(book) {
       if (book && book.logoStripUrl) {
@@ -2878,6 +2867,11 @@
       const show = onMenu && !!logoStripUrl;
       if (img && logoStripUrl) {
         if (img.getAttribute("data-src") !== logoStripUrl) {
+          img.onload = function () {
+            if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+              el.style.aspectRatio = img.naturalWidth + " / " + img.naturalHeight;
+            }
+          };
           img.src = logoStripUrl;
           img.setAttribute("data-src", logoStripUrl);
         }
@@ -2888,6 +2882,12 @@
       el.hidden = !show;
       el.classList.toggle("show", show);
       el.setAttribute("aria-hidden", show ? "false" : "true");
+      if (!show) return;
+      if (logoCropRatio > 0) {
+        el.style.aspectRatio = ((945 / 1323) / logoCropRatio).toFixed(4);
+      } else {
+        el.style.aspectRatio = "945 / 205";
+      }
     }
     function syncCategoryBar() {
       const bar = document.getElementById("menuCategoryBar");
@@ -3210,11 +3210,20 @@
       if (!cw || !ch) return null;
       const img = pf.querySelector(".pf-bg");
       const isCover = pf.classList.contains("book-cover");
-      const scale = Math.min(cw / nw, ch / nh);
-      const dw = nw * scale;
-      const dh = nh * scale;
-      const ox = (cw - dw) / 2;
-      const oy = isCover ? (ch - dh) / 2 : 0;
+      let scale, dw, dh, ox, oy;
+      if (isCover) {
+        scale = Math.min(cw / nw, ch / nh);
+        dw = nw * scale;
+        dh = nh * scale;
+        ox = (cw - dw) / 2;
+        oy = (ch - dh) / 2;
+      } else {
+        scale = cw / nw;
+        dw = cw;
+        dh = nh * scale;
+        ox = 0;
+        oy = 0;
+      }
       if (img) {
         img.style.clipPath = "";
         img.style.maxWidth = "";
