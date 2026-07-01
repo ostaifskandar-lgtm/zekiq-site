@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v32: menu flush above fixed white foot bar -->
+  <!-- guest-table-ui-v33: menu pinned flush to foot bar, no gap -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -272,9 +272,6 @@
     html.ios-inbrowser #cart-panel.open{
       right:0!important;
     }
-    html.ios-inbrowser #pageSwipeBar{
-      padding-bottom:max(env(safe-area-inset-bottom,0px),8px);
-    }
 
     #loadScreen{
       position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;
@@ -510,13 +507,15 @@
       top:0;
       bottom:0;
       z-index:1;
-      display:flex;
-      flex-direction:column;
+      display:grid;
+      grid-template-rows:1fr auto;
+      grid-template-columns:1fr;
+      gap:0;
       overflow:hidden;
       min-height:0;
     }
     #menuViewport{
-      flex:1;
+      grid-row:1;
       min-height:0;
       display:flex;
       flex-direction:column;
@@ -778,8 +777,8 @@
       padding-top:0;
     }
     #pageSwipeBar{
+      grid-row:2;
       position:relative;
-      flex:0 0 auto;
       left:0;right:0;
       z-index:330;
       display:flex;
@@ -787,14 +786,16 @@
       justify-content:center;
       padding:0;
       width:100%;
-      min-height:calc(66px + env(safe-area-inset-bottom,0px));
-      max-height:calc(78px + env(safe-area-inset-bottom,0px));
+      height:auto;
+      min-height:0;
+      max-height:none;
       touch-action:none;
       user-select:none;
       -webkit-user-select:none;
       pointer-events:none;
       background:#ebe4d3;
-      border-top:1px solid rgba(180,150,100,.28);
+      border-top:none;
+      box-shadow:0 -1px 0 rgba(180,150,100,.22);
     }
     .swipe-foot-panel{
       pointer-events:auto;
@@ -978,7 +979,6 @@
     }
     html.swipe-learned .pf-rail-swipe-txt{color:#4a3208;}
     html.swipe-mastered #pageSwipeBar{
-      max-height:calc(62px + env(safe-area-inset-bottom,0px));
       background:#ebe4d3;
     }
     html.swipe-mastered .swipe-hint{
@@ -3026,24 +3026,35 @@
       if (!cw || !ch) return null;
       const img = pf.querySelector(".pf-bg");
       const isCover = pf.classList.contains("book-cover");
-      if (img) {
-        img.style.objectFit = "contain";
-        img.style.objectPosition = isCover ? "center" : "center bottom";
-        img.style.transform = "";
-        img.style.width = "";
-        img.style.height = "";
-        img.style.left = "";
-        img.style.top = "";
-        img.style.position = "";
-        img.style.maxWidth = "";
-        img.style.maxHeight = "";
-        img.style.clipPath = "";
-      }
       const scale = Math.min(cw / nw, ch / nh);
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
       const oy = isCover ? (ch - dh) / 2 : (ch - dh);
+      if (img) {
+        img.style.clipPath = "";
+        img.style.maxWidth = "";
+        img.style.maxHeight = "";
+        if (isCover) {
+          img.style.position = "";
+          img.style.left = "";
+          img.style.top = "";
+          img.style.width = "";
+          img.style.height = "";
+          img.style.objectFit = "contain";
+          img.style.objectPosition = "center";
+          img.style.transform = "translateZ(0)";
+        } else {
+          img.style.position = "absolute";
+          img.style.left = ox + "px";
+          img.style.top = oy + "px";
+          img.style.width = dw + "px";
+          img.style.height = dh + "px";
+          img.style.objectFit = "fill";
+          img.style.objectPosition = "center";
+          img.style.transform = "translateZ(0)";
+        }
+      }
       return {
         ox, oy, dw, dh,
         wasteTop: Math.max(0, oy),
@@ -3112,6 +3123,13 @@
       }
       return topH >= minRail;
     }
+    function syncFootLayout() {
+      const wrap = document.getElementById("menuBookWrap");
+      const bar = document.getElementById("pageSwipeBar");
+      if (!wrap || !bar) return;
+      const hidden = bar.style.display === "none" || getComputedStyle(bar).display === "none";
+      wrap.style.setProperty("--foot-h", hidden ? "0px" : bar.offsetHeight + "px");
+    }
     function syncSwipeBar() {
       const bar = document.getElementById("pageSwipeBar");
       const pgEl = document.getElementById("swipePgnum");
@@ -3125,6 +3143,7 @@
       if (pgEl && menuIdx >= 0) pgEl.textContent = (menuIdx + 1) + " / " + menuPageCount;
       if (!bar) return;
       bar.style.display = bookSpread.length <= 1 ? "none" : "";
+      syncFootLayout();
     }
     function primePageBg(pf, src, onReady) {
       pf.querySelectorAll(".pf-img-clip").forEach(el => el.remove());
@@ -3198,6 +3217,7 @@
       document.querySelectorAll(".pf").forEach(pf => {
         layoutPfHotspots(pf);
       });
+      syncFootLayout();
       syncSwipeBar();
     }
     window.__zekiqRelayout = function() {
