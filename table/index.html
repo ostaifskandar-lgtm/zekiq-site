@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v19: menu lower + table badge bottom-left -->
+  <!-- guest-table-ui-v20: bold swipe arrows + cart-heavy menu push -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -488,6 +488,10 @@
       overflow:hidden;
       width:100%;
       padding-top:14px;
+      transition:padding-top .32s ease;
+    }
+    html.cart-heavy #menuStage{
+      padding-top:62px;
     }
     #menuOrderDock{
       position:absolute;
@@ -744,66 +748,91 @@
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:6px;
+      gap:8px;
       width:100%;
     }
-    .swipe-hint-text,.swipe-label,.pf-rail-swipe-txt{
-      font-size:12px;
+    .swipe-hint-text,.swipe-label{
+      font-size:13px;
       font-weight:900;
-      letter-spacing:.02em;
-      color:#ffe082;
+      letter-spacing:.03em;
+      color:#fff8e1;
       text-align:center;
-      line-height:1.35;
+      line-height:1.3;
       margin:0;
-      padding:0 4px;
+      padding:0 6px;
       pointer-events:none;
-      text-shadow:0 0 12px rgba(255,224,130,.35);
-      animation:swipeLabelFlash 2.2s ease-in-out infinite;
+      text-shadow:0 1px 8px rgba(0,0,0,.45),0 0 14px rgba(255,224,130,.4);
+      animation:swipeLabelFlash 2s ease-in-out infinite;
     }
-    .pf-rail-swipe-txt{color:#7a5510;text-shadow:none;}
+    .pf-rail-swipe-txt{
+      font-size:13px;
+      font-weight:900;
+      color:#5a3d08;
+      text-shadow:none;
+      animation:swipeLabelFlash 2s ease-in-out infinite;
+    }
     .swipe-arrow-track{
       display:flex;
       align-items:center;
       justify-content:center;
-      width:min(100%,220px);
-      height:30px;
+      width:min(100%,280px);
+      height:40px;
       overflow:hidden;
       position:relative;
-      border-radius:16px;
-      background:rgba(200,134,10,.1);
-      border:1px solid rgba(200,134,10,.22);
+      border-radius:20px;
+      background:linear-gradient(90deg,rgba(255,152,0,.22) 0%,rgba(13,5,0,.35) 48%,rgba(38,198,218,.22) 100%);
+      border:2px solid rgba(255,224,130,.55);
+      box-shadow:inset 0 0 12px rgba(255,193,7,.15),0 0 16px rgba(255,152,0,.12);
+    }
+    .pf-rail-bottom .swipe-arrow-track{
+      background:linear-gradient(90deg,rgba(255,152,0,.28) 0%,rgba(235,228,211,.5) 48%,rgba(38,198,218,.28) 100%);
+      border-color:rgba(200,134,10,.45);
+      box-shadow:inset 0 0 10px rgba(255,193,7,.2);
     }
     .swipe-track-slide{
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:2px;
-      animation:swipeTrackMove 1.7s ease-in-out infinite;
+      gap:4px;
+      animation:swipeTrackMove 1.5s ease-in-out infinite;
       will-change:transform;
     }
     .swipe-track-chev{
-      font-size:20px;
+      font-size:28px;
       font-weight:900;
       line-height:1;
-      color:rgba(255,224,130,.45);
-      text-shadow:0 0 8px rgba(230,168,23,.2);
+      color:rgba(255,255,255,.35);
     }
-    .swipe-track-chev.lit{
-      color:#fff4c2;
-      text-shadow:0 0 14px rgba(255,224,130,.95),0 0 24px rgba(230,168,23,.55);
-      animation:swipeChevFlash 1.7s ease-in-out infinite;
+    .swipe-track-chev.lit.left{
+      color:#ffb300;
+      text-shadow:0 0 10px rgba(255,179,0,.85),0 0 20px rgba(255,152,0,.55);
+      animation:swipeChevFlashL 1.5s ease-in-out infinite;
     }
-    .swipe-track-chev.lit.delay-1{animation-delay:.2s;}
-    .swipe-track-chev.lit.delay-2{animation-delay:.4s;}
-    .swipe-track-chev.lit.delay-3{animation-delay:.6s;}
-    .swipe-track-chev.lit.delay-4{animation-delay:.8s;}
+    .swipe-track-chev.lit.right{
+      color:#26c6da;
+      text-shadow:0 0 10px rgba(38,198,218,.9),0 0 20px rgba(0,188,212,.5);
+      animation:swipeChevFlashR 1.5s ease-in-out infinite;
+    }
+    .swipe-track-chev.lit.left.delay-1{animation-delay:.18s;}
+    .swipe-track-chev.lit.right.delay-2{animation-delay:.36s;}
+    .swipe-track-chev.lit.right.delay-3{animation-delay:.54s;}
+    .swipe-track-dot{
+      font-size:14px;
+      font-weight:900;
+      color:rgba(255,224,130,.55);
+      padding:0 2px;
+    }
     @keyframes swipeTrackMove{
-      0%,100%{transform:translateX(-14px);}
-      50%{transform:translateX(14px);}
+      0%,100%{transform:translateX(-22px);}
+      50%{transform:translateX(22px);}
     }
-    @keyframes swipeChevFlash{
-      0%,100%{opacity:.55;transform:scale(.92);}
-      50%{opacity:1;transform:scale(1.12);}
+    @keyframes swipeChevFlashL{
+      0%,100%{opacity:.7;transform:scale(.94);}
+      50%{opacity:1;transform:scale(1.18);color:#ffd54f;}
+    }
+    @keyframes swipeChevFlashR{
+      0%,100%{opacity:.7;transform:scale(.94);}
+      50%{opacity:1;transform:scale(1.18);color:#4dd0e1;}
     }
     @keyframes swipeLabelFlash{
       0%,100%{opacity:.78;}
@@ -1698,14 +1727,14 @@
       <div id="pageSwipeBar" aria-live="polite" aria-label="اسحب لقلب الصفحة">
         <div class="swipe-hint">
           <div class="swipe-hint-block">
-            <p class="swipe-hint-text" id="i18n-swipeHint">اسحب الشاشة يميناً أو يساراً لقلب الصفحة</p>
+            <p class="swipe-hint-text" id="i18n-swipeHint">اسحب لقلب الصفحة</p>
             <div class="swipe-arrow-track" aria-hidden="true">
               <div class="swipe-track-slide">
-                <span class="swipe-track-chev lit">‹</span>
-                <span class="swipe-track-chev lit delay-1">‹</span>
-                <span class="swipe-track-chev">·</span>
-                <span class="swipe-track-chev lit delay-2">›</span>
-                <span class="swipe-track-chev lit delay-3">›</span>
+                <span class="swipe-track-chev lit left">‹</span>
+                <span class="swipe-track-chev lit left delay-1">‹</span>
+                <span class="swipe-track-dot">•</span>
+                <span class="swipe-track-chev lit right delay-2">›</span>
+                <span class="swipe-track-chev lit right delay-3">›</span>
               </div>
             </div>
             <bdi class="swipe-page-num" id="swipePgnum" dir="ltr">1 / 1</bdi>
@@ -1834,7 +1863,7 @@
       prev: "◀ السابق",
       next: "التالي ▶",
       orientLock: "أبقِ الهاتف عمودياً لاستخدام المينو",
-      swipeHint: "اسحب الشاشة يميناً أو يساراً لقلب الصفحة",
+      swipeHint: "اسحب لقلب الصفحة",
       railOrderHint: "اضغط + الأخضر على الصورة للطلب",
       fsHint: "👆 اضغط على المينو لملء الشاشة",
       fsHintIos: "↑ اسحب للأعلى قليلاً لإخفاء شريط Safari وملء الشاشة",
@@ -1909,7 +1938,7 @@
       prev: "◀ Önceki",
       next: "Sonraki ▶",
       orientLock: "Telefonu dikey tutun",
-      swipeHint: "Sayfayı çevirmek için ekranı sağa/sola kaydırın",
+      swipeHint: "Sayfayı çevirmek için kaydırın",
       railOrderHint: "Sipariş için resimdeki yeşil + düğmesine basın",
       fsHint: "👆 Tam ekran için menüye dokunun",
       fsHintIos: "↑ Safari çubuğunu gizlemek için yukarı kaydırın",
@@ -1984,7 +2013,7 @@
       prev: "◀ Prev",
       next: "Next ▶",
       orientLock: "Keep your phone upright to browse the menu",
-      swipeHint: "Swipe the screen left or right to turn the page",
+      swipeHint: "Swipe to turn the page",
       railOrderHint: "Tap the green + on the image to order",
       fsHint: "👆 Tap the menu for full screen",
       fsHintIos: "↑ Swipe up slightly to hide Safari bar and fill the screen",
@@ -2796,11 +2825,11 @@
     function swipeArrowTrackHtml() {
       return '<div class="swipe-arrow-track" aria-hidden="true">' +
         '<div class="swipe-track-slide">' +
-        '<span class="swipe-track-chev lit">‹</span>' +
-        '<span class="swipe-track-chev lit delay-1">‹</span>' +
-        '<span class="swipe-track-chev">·</span>' +
-        '<span class="swipe-track-chev lit delay-2">›</span>' +
-        '<span class="swipe-track-chev lit delay-3">›</span>' +
+        '<span class="swipe-track-chev lit left">‹</span>' +
+        '<span class="swipe-track-chev lit left delay-1">‹</span>' +
+        '<span class="swipe-track-dot">•</span>' +
+        '<span class="swipe-track-chev lit right delay-2">›</span>' +
+        '<span class="swipe-track-chev lit right delay-3">›</span>' +
         "</div></div>";
     }
     function swipeHintBlockHtml(pageNumText) {
@@ -3542,6 +3571,7 @@
         const overflows = listEl.scrollHeight > listEl.clientHeight + 2;
         listEl.classList.toggle("has-overflow", overflows || lineCount > 4);
         if (chip) chip.classList.toggle("order-dock-lift", lineCount > 4);
+        document.documentElement.classList.toggle("cart-heavy", lineCount > 5);
         if (lineCount > 0) {
           listEl.scrollTop = listEl.scrollHeight;
         }
@@ -3620,6 +3650,7 @@
         if (chipEl) chipEl.classList.remove("show");
         if (summaryEl) summaryEl.textContent = "";
         if (listEl) listEl.innerHTML = "";
+        document.documentElement.classList.remove("cart-heavy");
         return;
       }
       if (guideEl) guideEl.classList.remove("show");
