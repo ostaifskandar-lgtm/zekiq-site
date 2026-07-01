@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v18: taller order list + auto lift scroll -->
+  <!-- guest-table-ui-v19: menu lower + table badge bottom-left -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -393,18 +393,54 @@
       overflow:hidden;
       text-overflow:ellipsis;
     }
-    .scene-hud-table{
-      margin-top:2px;
-      display:inline-block;
-      background:rgba(13,5,0,.82);
-      border:1px solid rgba(200,134,10,.5);
-      padding:5px 12px;
-      border-radius:14px;
-      color:#ffe082;
-      font-size:12px;
+    .scene-hud-table{display:none!important;}
+    #tableFootBadge{
+      position:absolute;
+      left:12px;
+      bottom:calc(12px + env(safe-area-inset-bottom,0px));
+      z-index:335;
+      display:none;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:1px;
+      min-width:72px;
+      padding:8px 16px 10px;
+      border-radius:18px;
+      background:linear-gradient(145deg,rgba(13,5,0,.94),rgba(42,24,8,.9));
+      border:2px solid rgba(230,168,23,.7);
+      box-shadow:0 6px 22px rgba(0,0,0,.45),0 0 20px rgba(200,134,10,.22);
+      pointer-events:none;
+    }
+    #tableFootBadge.show{display:flex;}
+    html:not(.single-page) #tableFootBadge{
+      bottom:calc(64px + env(safe-area-inset-bottom,0px));
+    }
+    html.letterbox-nav #tableFootBadge{
+      bottom:calc(58px + env(safe-area-inset-bottom,0px));
+    }
+    .table-foot-label{
+      font-size:10px;
       font-weight:800;
+      color:rgba(255,224,130,.8);
+      letter-spacing:.08em;
+    }
+    .table-foot-num{
+      font-size:30px;
+      font-weight:900;
+      color:#fff4c2;
+      line-height:1;
+      letter-spacing:.02em;
+      text-shadow:0 0 14px rgba(255,224,130,.4);
+    }
+    .table-foot-section{
+      font-size:9px;
+      font-weight:700;
+      color:rgba(200,134,10,.75);
+      max-width:88px;
+      overflow:hidden;
+      text-overflow:ellipsis;
       white-space:nowrap;
-      box-shadow:0 2px 10px rgba(0,0,0,.3);
     }
     .scene-hud-send{
       flex-shrink:0;
@@ -451,6 +487,7 @@
       flex-direction:column;
       overflow:hidden;
       width:100%;
+      padding-top:14px;
     }
     #menuOrderDock{
       position:absolute;
@@ -1675,6 +1712,11 @@
           </div>
         </div>
       </div>
+    </div>
+    <div id="tableFootBadge" aria-live="polite" hidden>
+      <span class="table-foot-section" id="tableFootSection"></span>
+      <span class="table-foot-label" id="tableFootLabel">طاولة</span>
+      <bdi class="table-foot-num" id="tableFootNum" dir="ltr">—</bdi>
     </div>
     <div id="nav" hidden aria-hidden="true">
       <button type="button" class="nav-arrow" id="prevBtn" tabindex="-1"><span class="nav-label" id="i18n-prev">◀ السابق</span></button>
@@ -3526,6 +3568,23 @@
       if (opts && opts.flash) flashOrderLine(item.id);
       if (navigator.vibrate) navigator.vibrate(12);
     }
+    function syncTableFootBadge() {
+      const badge = document.getElementById("tableFootBadge");
+      const labelEl = document.getElementById("tableFootLabel");
+      const numEl = document.getElementById("tableFootNum");
+      const secEl = document.getElementById("tableFootSection");
+      if (!badge || !numEl) return;
+      if (section && tableNum) {
+        badge.hidden = false;
+        badge.classList.add("show");
+        numEl.textContent = String(tableNum);
+        if (labelEl) labelEl.textContent = guestT("table");
+        if (secEl) secEl.textContent = section || "";
+      } else {
+        badge.hidden = true;
+        badge.classList.remove("show");
+      }
+    }
     function syncSceneHud() {
       const t = cart.reduce((s, i) => s + i.qty, 0);
       const total = cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0);
@@ -3540,6 +3599,7 @@
       if (shopEl && shopName) shopEl.textContent = shopName;
       refreshCoverTitles();
       if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
+      syncTableFootBadge();
       if (!coachDone || document.documentElement.classList.contains("coach-locked")) {
         if (guideEl) guideEl.classList.remove("show");
         if (chipEl) chipEl.classList.remove("show");
