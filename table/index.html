@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v26: clip-path logo mask — zero zoom -->
+  <!-- guest-table-ui-v27: crop frame same scale — no zoom -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -1129,6 +1129,20 @@
       touch-action:none;
       -webkit-backface-visibility:hidden;backface-visibility:hidden;
       transform:translateZ(0);
+    }
+    .pf-img-clip{
+      position:absolute;
+      overflow:hidden;
+      z-index:1;
+      pointer-events:none;
+    }
+    .pf-img-clip .pf-bg{
+      inset:auto;
+      width:auto;
+      height:auto;
+      max-width:none;
+      max-height:none;
+      object-fit:none;
     }
     .pf-bg[src=""],.pb-bg[src=""]{opacity:0;}
     .pf.book-cover{
@@ -3014,48 +3028,77 @@
       const cats = pageCategories[String(menuIdx)] || pageCategories[menuIdx] || [];
       return Array.isArray(cats) ? cats.filter(Boolean) : [];
     }
-    function pageCropClipCss(crop) {
-      if (!crop || (crop.top + crop.bottom + crop.left + crop.right) <= 0.005) return "";
-      const t = (crop.top * 100).toFixed(2);
-      const r = (crop.right * 100).toFixed(2);
-      const b = (crop.bottom * 100).toFixed(2);
-      const l = (crop.left * 100).toFixed(2);
-      return "inset(" + t + "% " + r + "% " + b + "% " + l + "%)";
-    }
     function imageOverlayRect(pf) {
       const nw = Number(pf.dataset.nw), nh = Number(pf.dataset.nh);
       if (!nw || !nh) return null;
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
       const img = pf.querySelector(".pf-bg");
+      const clipEl = pf.querySelector(".pf-img-clip");
       const menuIdx = pfMenuIdx(pf);
       const isCover = pf.classList.contains("book-cover");
       const crop = isCover ? { top: 0, bottom: 0, left: 0, right: 0 } : pageCropFor(menuIdx);
-      const clip = pageCropClipCss(crop);
-      if (img) {
+      const cropW = 1 - crop.left - crop.right;
+      const cropH = 1 - crop.top - crop.bottom;
+      const hasCrop = !isCover && cropW > 0.5 && cropH > 0.5 &&
+        (crop.top + crop.bottom + crop.left + crop.right) > 0.005;
+      const scale = Math.min(cw / nw, ch / nh);
+      const fullDw = nw * scale;
+      const fullDh = nh * scale;
+      const fullOx = (cw - fullDw) / 2;
+      const fullOy = (ch - fullDh) / 2;
+      pf.classList.toggle("pf-crop-active", hasCrop);
+      if (clipEl && img) {
+        if (hasCrop) {
+          const ox = fullOx + crop.left * fullDw;
+          const oy = fullOy + crop.top * fullDh;
+          const dw = fullDw * cropW;
+          const dh = fullDh * cropH;
+          clipEl.style.display = "block";
+          clipEl.style.left = ox + "px";
+          clipEl.style.top = oy + "px";
+          clipEl.style.width = dw + "px";
+          clipEl.style.height = dh + "px";
+          img.style.position = "absolute";
+          img.style.width = fullDw + "px";
+          img.style.height = fullDh + "px";
+          img.style.left = (-crop.left * fullDw) + "px";
+          img.style.top = (-crop.top * fullDh) + "px";
+          img.style.objectFit = "none";
+          img.style.clipPath = "";
+          return {
+            ox, oy, dw, dh, crop, cropW, cropH, hasCrop: true,
+            wasteTop: Math.max(0, oy),
+            wasteBottom: Math.max(0, ch - oy - dh),
+          };
+        }
+        clipEl.style.display = "block";
+        clipEl.style.left = fullOx + "px";
+        clipEl.style.top = fullOy + "px";
+        clipEl.style.width = fullDw + "px";
+        clipEl.style.height = fullDh + "px";
+        img.style.position = "absolute";
+        img.style.width = fullDw + "px";
+        img.style.height = fullDh + "px";
+        img.style.left = "0";
+        img.style.top = "0";
+        img.style.objectFit = "none";
+        img.style.clipPath = "";
+      } else if (img) {
         img.style.objectFit = "contain";
         img.style.objectPosition = "center";
-        img.style.transform = "";
         img.style.width = "";
         img.style.height = "";
         img.style.left = "";
         img.style.top = "";
         img.style.position = "";
-        img.style.maxWidth = "";
-        img.style.maxHeight = "";
-        img.style.clipPath = clip;
-        img.classList.remove("pf-bg-crop");
+        img.style.clipPath = "";
       }
-      pf.classList.toggle("pf-crop-active", !!clip);
-      const scale = Math.min(cw / nw, ch / nh);
-      const dw = nw * scale;
-      const dh = nh * scale;
-      const ox = (cw - dw) / 2;
-      const oy = (ch - dh) / 2;
       return {
-        ox, oy, dw, dh, crop, clip,
-        wasteTop: Math.max(0, oy),
-        wasteBottom: Math.max(0, ch - oy - dh),
+        ox: fullOx, oy: fullOy, dw: fullDw, dh: fullDh,
+        crop, cropW: 1, cropH: 1, hasCrop: false,
+        wasteTop: Math.max(0, fullOy),
+        wasteBottom: Math.max(0, ch - fullOy - fullDh),
       };
     }
     function swipeArrowTrackHtml() {
@@ -3136,16 +3179,26 @@
       bar.style.display = bookSpread.length <= 1 ? "none" : "";
     }
     function primePageBg(pf, src, onReady) {
-      const img = document.createElement("img");
-      img.className = "pf-bg";
-      img.alt = "";
-      img.draggable = false;
-      img.decoding = "async";
-      img.setAttribute("aria-hidden", "true");
-      pf.insertBefore(img, pf.firstChild);
+      let clipEl = pf.querySelector(".pf-img-clip");
+      if (!clipEl) {
+        clipEl = document.createElement("div");
+        clipEl.className = "pf-img-clip";
+        pf.insertBefore(clipEl, pf.firstChild);
+      }
+      let img = clipEl.querySelector(".pf-bg");
+      if (!img) {
+        img = document.createElement("img");
+        img.className = "pf-bg";
+        img.alt = "";
+        img.draggable = false;
+        img.decoding = "async";
+        img.setAttribute("aria-hidden", "true");
+        clipEl.appendChild(img);
+      }
       img.onload = () => {
         pf.dataset.nw = String(img.naturalWidth);
         pf.dataset.nh = String(img.naturalHeight);
+        layoutPfHotspots(pf);
         if (onReady) onReady();
       };
       img.onerror = () => { if (onReady) onReady(); };
@@ -3180,21 +3233,20 @@
       overlay.querySelectorAll(".price-hotspot, .plus-hit, .plus-hotspot").forEach(h => {
         const x = parseFloat(h.dataset.x), y = parseFloat(h.dataset.y);
         const isPlus = h.classList.contains("plus-hit") || h.classList.contains("plus-hotspot");
-        h.style.left = (x * rect.dw) + "px";
-        h.style.top = (y * rect.dh) + "px";
+        const cropL = rect.hasCrop ? (rect.crop?.left || 0) : 0;
+        const cropT = rect.hasCrop ? (rect.crop?.top || 0) : 0;
+        const cropW = rect.cropW || 1;
+        const cropH = rect.cropH || 1;
+        h.style.left = (rect.hasCrop ? ((x - cropL) / cropW) * rect.dw : x * rect.dw) + "px";
+        h.style.top = (rect.hasCrop ? ((y - cropT) / cropH) * rect.dh : y * rect.dh) + "px";
         if (isPlus) {
           const w = parseFloat(h.dataset.w) || 0.055;
           const hh = parseFloat(h.dataset.h) || 0.032;
-          h.style.width = (w * rect.dw) + "px";
-          h.style.height = (hh * rect.dh) + "px";
+          h.style.width = (rect.hasCrop ? (w / cropW) * rect.dw : w * rect.dw) + "px";
+          h.style.height = (rect.hasCrop ? (hh / cropH) * rect.dh : hh * rect.dh) + "px";
         }
-        const crop = rect.crop;
-        const inCropBand = crop && (
-          y < (crop.top || 0) || y > (1 - (crop.bottom || 0)) ||
-          x < (crop.left || 0) || x > (1 - (crop.right || 0))
-        );
-        h.style.visibility = inCropBand ? "hidden" : "";
-        h.style.pointerEvents = inCropBand ? "none" : "";
+        h.style.visibility = "";
+        h.style.pointerEvents = "";
         h.style.transform = spotTransform(h.dataset.anchor || (isPlus ? "center" : "right"));
       });
       const menuIdx = (() => {
