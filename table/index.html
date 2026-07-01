@@ -2864,7 +2864,9 @@
         return fixImgUrl(ref.replace(/\/guest-menu-pages\/[^?#]+/i, "/guest-menu-pages-logo-strip/menu-logo-strip.jpg")) + v;
       }
       if (/\/menu\/pages\//i.test(ref)) {
-        return fixImgUrl(ref.replace(/\/menu\/pages\/[^?#]+/i, "/menu/menu-logo-strip.jpg")) + v;
+        const u1 = fixImgUrl(ref.replace(/\/menu\/pages\/[^?#]+/i, "/menu/menu-logo-strip.jpg"));
+        const u2 = fixImgUrl(ref.replace(/\/menu\/pages\/[^?#]+/i, "/menu/pages-logo-strip/menu-logo-strip.jpg"));
+        return u1 + v;
       }
       return "";
     }
