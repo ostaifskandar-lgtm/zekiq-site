@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v15: letterbox rails only — no image zoom -->
+  <!-- guest-table-ui-v16: swipe text + animated arrow row -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -642,9 +642,10 @@
     .swipe-hint{
       pointer-events:auto;
       display:flex;
+      flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap:10px;
+      gap:0;
       width:min(96%,340px);
       padding:10px 14px 11px;
       border-radius:22px;
@@ -663,59 +664,74 @@
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:3px;
+      gap:2px;
       min-width:0;
-      flex:1;
+      width:100%;
     }
-    .swipe-hand{
-      display:block;
-      font-size:18px;
-      line-height:1;
-      animation:swipeHandSlide 1.8s ease-in-out infinite;
-      filter:drop-shadow(0 0 6px rgba(255,224,130,.6));
+    .swipe-hint-block{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      width:100%;
     }
-    @keyframes swipeHandSlide{
-      0%,100%{transform:translateX(-8px);opacity:.55;}
-      50%{transform:translateX(8px);opacity:1;}
-    }
-    .swipe-arrow{
-      font-size:28px;
-      line-height:1;
-      font-weight:900;
-      color:rgba(255,224,130,.35);
-      text-shadow:0 0 8px rgba(230,168,23,.15);
-      transition:opacity .2s ease,transform .2s ease,text-shadow .2s ease,color .2s ease;
-      animation:swipeArrowPulse 2.2s ease-in-out infinite;
-      pointer-events:none;
-      flex-shrink:0;
-    }
-    .swipe-arrow-prev{animation-delay:0s;}
-    .swipe-arrow-next{animation-delay:1.1s;}
-    @keyframes swipeArrowPulse{
-      0%,100%{opacity:.28;transform:scale(.88);text-shadow:0 0 6px rgba(230,168,23,.1);color:rgba(255,224,130,.3);}
-      45%,55%{opacity:1;transform:scale(1.18);text-shadow:0 0 16px rgba(255,224,130,1),0 0 30px rgba(230,168,23,.65);color:#fff8d8;}
-    }
-    #pageSwipeBar.swipe-left-hint .swipe-arrow-next,
-    #pageSwipeBar.swiping.swipe-left-hint .swipe-arrow-next{
-      opacity:1;transform:scale(1.2);animation:none;
-      text-shadow:0 0 20px rgba(255,224,130,1),0 0 36px rgba(230,168,23,.75);color:#fff4c2;
-    }
-    #pageSwipeBar.swipe-right-hint .swipe-arrow-prev,
-    #pageSwipeBar.swiping.swipe-right-hint .swipe-arrow-prev{
-      opacity:1;transform:scale(1.2);animation:none;
-      text-shadow:0 0 20px rgba(255,224,130,1),0 0 36px rgba(230,168,23,.75);color:#fff4c2;
-    }
-    .swipe-label{
+    .swipe-hint-text,.swipe-label,.pf-rail-swipe-txt{
       font-size:12px;
       font-weight:900;
       letter-spacing:.02em;
       color:#ffe082;
       text-align:center;
-      line-height:1.25;
-      white-space:nowrap;
+      line-height:1.35;
+      margin:0;
+      padding:0 4px;
       pointer-events:none;
       text-shadow:0 0 12px rgba(255,224,130,.35);
       animation:swipeLabelFlash 2.2s ease-in-out infinite;
+    }
+    .pf-rail-swipe-txt{color:#7a5510;text-shadow:none;}
+    .swipe-arrow-track{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:min(100%,220px);
+      height:30px;
+      overflow:hidden;
+      position:relative;
+      border-radius:16px;
+      background:rgba(200,134,10,.1);
+      border:1px solid rgba(200,134,10,.22);
+    }
+    .swipe-track-slide{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:2px;
+      animation:swipeTrackMove 1.7s ease-in-out infinite;
+      will-change:transform;
+    }
+    .swipe-track-chev{
+      font-size:20px;
+      font-weight:900;
+      line-height:1;
+      color:rgba(255,224,130,.45);
+      text-shadow:0 0 8px rgba(230,168,23,.2);
+    }
+    .swipe-track-chev.lit{
+      color:#fff4c2;
+      text-shadow:0 0 14px rgba(255,224,130,.95),0 0 24px rgba(230,168,23,.55);
+      animation:swipeChevFlash 1.7s ease-in-out infinite;
+    }
+    .swipe-track-chev.lit.delay-1{animation-delay:.2s;}
+    .swipe-track-chev.lit.delay-2{animation-delay:.4s;}
+    .swipe-track-chev.lit.delay-3{animation-delay:.6s;}
+    .swipe-track-chev.lit.delay-4{animation-delay:.8s;}
+    @keyframes swipeTrackMove{
+      0%,100%{transform:translateX(-14px);}
+      50%{transform:translateX(14px);}
+    }
+    @keyframes swipeChevFlash{
+      0%,100%{opacity:.55;transform:scale(.92);}
+      50%{opacity:1;transform:scale(1.12);}
     }
     @keyframes swipeLabelFlash{
       0%,100%{opacity:.78;}
@@ -738,12 +754,9 @@
       box-shadow:0 4px 14px rgba(0,0,0,.35);
     }
     html.swipe-learned .swipe-hand,
-    html.swipe-learned .swipe-arrow{animation:none;opacity:.45;}
-    html.swipe-learned .swipe-label{
-      animation:none;
-      font-size:11px;
-      color:rgba(255,224,130,.85);
-    }
+    html.swipe-learned .swipe-track-slide{animation-duration:2.4s;}
+    html.swipe-learned .swipe-hint-text,
+    html.swipe-learned .swipe-label{animation:none;font-size:11px;color:rgba(255,224,130,.85);}
     html.swipe-mastered #pageSwipeBar{
       padding-bottom:calc(4px + env(safe-area-inset-bottom,0px));
       background:linear-gradient(0deg,rgba(30,18,8,.55) 0%,transparent 85%);
@@ -752,14 +765,15 @@
       width:auto;
       min-width:120px;
       padding:5px 14px;
-      gap:8px;
+      gap:4px;
       background:rgba(13,5,0,.55);
       border-color:rgba(200,134,10,.22);
+      animation:none;
     }
-    html.swipe-mastered .swipe-hand,
-    html.swipe-mastered .swipe-arrow{display:none;}
+    html.swipe-mastered .swipe-hint-text,
+    html.swipe-mastered .swipe-label{display:none;}
+    html.swipe-mastered .swipe-arrow-track{height:22px;width:120px;}
     html.swipe-mastered .swipe-hint-mid{flex-direction:row;gap:8px;}
-    html.swipe-mastered .swipe-label{font-size:10px;color:rgba(255,224,130,.7);}
     #book{
       position:relative;flex:1;min-height:0;width:100%;max-width:100vw;
       transform-style:preserve-3d;transform:translateZ(0);
@@ -864,29 +878,19 @@
     }
     .pf-rail-bottom:active{cursor:grabbing;}
     .pf-rail-swipe{
-      display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
-    }
-    .pf-rail-arrow{
-      font-size:26px;font-weight:900;line-height:1;color:#c8860a;
-      animation:swipeArrowPulse 2.2s ease-in-out infinite;
-      text-shadow:0 0 10px rgba(230,168,23,.35);
-    }
-    .pf-rail-arrow:first-child{animation-delay:0s;}
-    .pf-rail-arrow:last-child{animation-delay:1.1s;}
-    .pf-rail-swipe-txt{
-      font-size:12px;font-weight:900;color:#7a5510;line-height:1.25;
-      animation:swipeLabelFlash 2.2s ease-in-out infinite;
-      max-width:min(72vw,240px);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:5px;width:100%;
     }
     .pf-rail-order{
       font-size:10px;font-weight:800;color:rgba(90,120,70,.9);
       letter-spacing:.02em;
+      margin-top:2px;
     }
     html.letterbox-nav #pageSwipeBar{display:none!important;}
-    html.swipe-learned .pf-rail-arrow{animation:none;opacity:.5;}
+    html.swipe-learned .pf-rail-swipe .swipe-track-slide{animation-duration:2.4s;}
     html.swipe-learned .pf-rail-swipe-txt{animation:none;font-size:11px;}
     html.swipe-mastered .pf-rail-swipe-txt{display:none;}
-    html.swipe-mastered .pf-rail-arrow{display:none;}
+    html.swipe-mastered .pf-rail-swipe .swipe-arrow-track{height:22px;}
     html.swipe-mastered .pf-rail-bottom{padding:4px 12px;}
     .pb{
       transform:rotateY(180deg);
@@ -1619,13 +1623,19 @@
       <div id="book"></div>
       <div id="pageSwipeBar" aria-live="polite" aria-label="اسحب لقلب الصفحة">
         <div class="swipe-hint">
-          <span class="swipe-arrow swipe-arrow-prev" aria-hidden="true">‹</span>
-          <div class="swipe-hint-mid">
-            <span class="swipe-hand" aria-hidden="true">↔</span>
-            <span class="swipe-label" id="i18n-swipeHint">اسحب يميناً أو يساراً لقلب الشاشة</span>
+          <div class="swipe-hint-block">
+            <p class="swipe-hint-text" id="i18n-swipeHint">اسحب الشاشة يميناً أو يساراً لقلب الصفحة</p>
+            <div class="swipe-arrow-track" aria-hidden="true">
+              <div class="swipe-track-slide">
+                <span class="swipe-track-chev lit">‹</span>
+                <span class="swipe-track-chev lit delay-1">‹</span>
+                <span class="swipe-track-chev">·</span>
+                <span class="swipe-track-chev lit delay-2">›</span>
+                <span class="swipe-track-chev lit delay-3">›</span>
+              </div>
+            </div>
             <bdi class="swipe-page-num" id="swipePgnum" dir="ltr">1 / 1</bdi>
           </div>
-          <span class="swipe-arrow swipe-arrow-next" aria-hidden="true">›</span>
         </div>
       </div>
     </div>
@@ -1745,7 +1755,7 @@
       prev: "◀ السابق",
       next: "التالي ▶",
       orientLock: "أبقِ الهاتف عمودياً لاستخدام المينو",
-      swipeHint: "اسحب يميناً أو يساراً لقلب الشاشة",
+      swipeHint: "اسحب الشاشة يميناً أو يساراً لقلب الصفحة",
       railOrderHint: "اضغط + الأخضر على الصورة للطلب",
       fsHint: "👆 اضغط على المينو لملء الشاشة",
       fsHintIos: "↑ اسحب للأعلى قليلاً لإخفاء شريط Safari وملء الشاشة",
@@ -1820,7 +1830,7 @@
       prev: "◀ Önceki",
       next: "Sonraki ▶",
       orientLock: "Telefonu dikey tutun",
-      swipeHint: "Sayfayı çevirmek için sağa/sola kaydırın",
+      swipeHint: "Sayfayı çevirmek için ekranı sağa/sola kaydırın",
       railOrderHint: "Sipariş için resimdeki yeşil + düğmesine basın",
       fsHint: "👆 Tam ekran için menüye dokunun",
       fsHintIos: "↑ Safari çubuğunu gizlemek için yukarı kaydırın",
@@ -1895,7 +1905,7 @@
       prev: "◀ Prev",
       next: "Next ▶",
       orientLock: "Keep your phone upright to browse the menu",
-      swipeHint: "Swipe left or right to turn the page",
+      swipeHint: "Swipe the screen left or right to turn the page",
       railOrderHint: "Tap the green + on the image to order",
       fsHint: "👆 Tap the menu for full screen",
       fsHintIos: "↑ Swipe up slightly to hide Safari bar and fill the screen",
@@ -2704,6 +2714,26 @@
         wasteBottom: Math.max(0, ch - oy - dh),
       };
     }
+    function swipeArrowTrackHtml() {
+      return '<div class="swipe-arrow-track" aria-hidden="true">' +
+        '<div class="swipe-track-slide">' +
+        '<span class="swipe-track-chev lit">‹</span>' +
+        '<span class="swipe-track-chev lit delay-1">‹</span>' +
+        '<span class="swipe-track-chev">·</span>' +
+        '<span class="swipe-track-chev lit delay-2">›</span>' +
+        '<span class="swipe-track-chev lit delay-3">›</span>' +
+        "</div></div>";
+    }
+    function swipeHintBlockHtml(pageNumText) {
+      let html =
+        '<div class="swipe-hint-block">' +
+        '<p class="swipe-hint-text pf-rail-swipe-txt">' + esc(guestT("swipeHint")) + "</p>" +
+        swipeArrowTrackHtml();
+      if (pageNumText) {
+        html += '<bdi class="swipe-page-num" dir="ltr">' + esc(pageNumText) + "</bdi>";
+      }
+      return html + "</div>";
+    }
     function layoutLetterboxRails(pf, menuIdx) {
       if (!pf || pf.classList.contains("book-cover") || menuIdx < 0) {
         pf?.querySelectorAll(".pf-rail-top,.pf-rail-bottom").forEach(el => { el.style.display = "none"; });
@@ -2745,12 +2775,9 @@
         topRail.innerHTML = "";
       }
       if (botH) {
+        const pageNum = (menuIdx + 1) + " / " + menuPageCount;
         botRail.innerHTML =
-          '<div class="pf-rail-swipe">' +
-          '<span class="pf-rail-arrow" aria-hidden="true">‹</span>' +
-          '<span class="pf-rail-swipe-txt">' + esc(guestT("swipeHint")) + "</span>" +
-          '<span class="pf-rail-arrow" aria-hidden="true">›</span>' +
-          "</div>" +
+          '<div class="pf-rail-swipe">' + swipeHintBlockHtml(pageNum) + "</div>" +
           '<div class="pf-rail-order">' + esc(guestT("railOrderHint")) + "</div>";
       } else {
         botRail.innerHTML = "";
