@@ -3855,7 +3855,6 @@
       const guideEl = document.getElementById("guestGuide");
       const chipEl = document.getElementById("guestOrderChip");
       const stageEl = document.getElementById("menuStage");
-      if (stageEl) stageEl.classList.toggle("orders-overlay", t > 0);
       const summaryEl = document.getElementById("sceneOrderSummary");
       const listEl = document.getElementById("sceneOrderList");
       if (shopEl && shopName) shopEl.textContent = shopName;
@@ -3863,6 +3862,7 @@
       if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
       syncTableFootBadge();
       if (!coachDone || document.documentElement.classList.contains("coach-locked")) {
+        if (stageEl) stageEl.classList.remove("orders-overlay");
         if (guideEl) guideEl.classList.remove("show");
         if (chipEl) chipEl.classList.remove("show");
         if (sendBtn) sendBtn.classList.add("is-empty");
@@ -3888,6 +3888,7 @@
       }
       if (guideEl) guideEl.classList.remove("show");
       if (chipEl) chipEl.classList.add("show");
+      if (stageEl) stageEl.classList.add("orders-overlay");
       if (summaryEl) summaryEl.textContent = "🛒 " + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
       if (listEl) {
         listEl.innerHTML = cart.map(l => `
