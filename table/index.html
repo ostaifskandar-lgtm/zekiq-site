@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v35b: fix menu viewport collapse (white screen) -->
+  <!-- guest-table-ui-v36: mockup layout — brand strip, top-align menu, MASA footer -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -377,6 +377,19 @@
       box-shadow:0 2px 8px rgba(0,0,0,.08);
     }
     .scene-hud-back:active{transform:scale(.96);}
+    .scene-hud-center{
+      flex:1;
+      min-width:0;
+      text-align:center;
+      pointer-events:none;
+    }
+    .scene-hud-title{
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.14em;
+      color:#6b4a12;
+      text-transform:uppercase;
+    }
     .scene-hud-cart{
       display:flex;
       align-items:center;
@@ -410,6 +423,26 @@
     }
     .scene-hud-cart.is-empty .hud-cbadge{display:none;}
     .scene-hud-cart.is-empty .hud-csum{display:none;}
+    #guestBrandStrip{
+      flex-shrink:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:8px 16px;
+      background:linear-gradient(180deg,#120800 0%,#1a0c00 55%,#120800 100%);
+      border-bottom:1px solid rgba(200,134,10,.22);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    #guestBrandStrip.show{display:flex;}
+    .guest-brand-logo{
+      height:34px;
+      width:auto;
+      max-width:min(220px,72vw);
+      object-fit:contain;
+      pointer-events:none;
+      user-select:none;
+      -webkit-user-select:none;
+    }
     #tableFootBadge{
       flex-shrink:0;
       display:none;
@@ -417,24 +450,28 @@
       align-items:center;
       justify-content:center;
       gap:0;
-      min-width:52px;
-      padding:2px 8px 2px 4px;
-      border-radius:12px;
-      background:rgba(200,134,10,.1);
-      border:1px solid rgba(200,134,10,.28);
+      min-width:58px;
+      margin-inline-start:auto;
+      order:3;
+      padding:5px 10px 4px;
+      border-radius:14px;
+      background:linear-gradient(180deg,#fff9ee 0%,#f5ead4 100%);
+      border:1.5px solid rgba(200,134,10,.42);
+      box-shadow:0 2px 8px rgba(0,0,0,.08);
       pointer-events:none;
     }
     #tableFootBadge.show{display:flex;}
     .table-foot-label{
       font-size:9px;
-      font-weight:800;
-      color:rgba(107,74,18,.75);
-      letter-spacing:.06em;
+      font-weight:900;
+      color:rgba(74,50,8,.72);
+      letter-spacing:.1em;
+      text-transform:uppercase;
     }
     .table-foot-num{
-      font-size:22px;
+      font-size:26px;
       font-weight:900;
-      color:#5a3d08;
+      color:#3d2806;
       line-height:1;
       letter-spacing:.02em;
     }
@@ -491,7 +528,6 @@
       flex-direction:column;
       gap:0;
       overflow:hidden;
-      justify-content:flex-end;
     }
     #menuViewport{
       position:relative;
@@ -500,6 +536,7 @@
       overflow:hidden;
       width:100%;
       align-self:stretch;
+      background:#120800;
     }
     #menuCategoryBar{
       position:relative;
@@ -508,11 +545,11 @@
       z-index:40;
       flex-shrink:0;
       display:none;
-      padding:5px 0 4px;
+      padding:6px 0 5px;
       margin:0;
-      background:linear-gradient(180deg,#e0d8c6 0%,#ebe4d3 100%);
-      border-bottom:1.5px solid rgba(180,140,80,.35);
-      box-shadow:0 2px 8px rgba(0,0,0,.05);
+      background:linear-gradient(180deg,#e8e0ce 0%,#ebe4d3 100%);
+      border-bottom:1.5px solid rgba(180,140,80,.38);
+      box-shadow:0 2px 6px rgba(0,0,0,.05);
     }
     #menuCategoryBar.show{display:block;}
     .menu-cat-scroll{
@@ -527,37 +564,37 @@
     .menu-cat-scroll::-webkit-scrollbar{display:none;}
     .cat-chip{
       flex-shrink:0;
-      border:1.5px solid rgba(200,134,10,.5);
-      background:linear-gradient(180deg,#fff9ee 0%,#f5ead4 100%);
-      color:#4a3208;
+      border:1.5px solid rgba(160,130,80,.5);
+      background:linear-gradient(180deg,#fff 0%,#faf6ee 100%);
+      color:#3d2806;
       font-size:13px;
       font-weight:900;
-      padding:8px 16px;
-      border-radius:24px;
+      padding:7px 15px 6px;
+      border-radius:18px;
       cursor:pointer;
       white-space:nowrap;
       touch-action:manipulation;
       font-family:inherit;
-      line-height:1.2;
-      box-shadow:0 2px 8px rgba(0,0,0,.07);
+      line-height:1.15;
+      box-shadow:0 2px 7px rgba(0,0,0,.07);
     }
     .cat-chip:active{transform:scale(.96);}
     .cat-chip.cat-home{
-      background:linear-gradient(180deg,#f0e6d0 0%,#e8dcc4 100%);
-      border-color:rgba(160,110,40,.45);
+      background:linear-gradient(180deg,#f7f0e4 0%,#efe6d6 100%);
     }
     .cat-chip.active{
-      background:linear-gradient(145deg,#ffe082 0%,#f0b020 55%,#e6a817 100%);
+      background:linear-gradient(180deg,#ffe566 0%,#f5b820 52%,#e6a817 100%);
       color:#1a0a00;
       border-color:#c8860a;
-      box-shadow:0 4px 14px rgba(200,134,10,.42);
+      box-shadow:0 4px 14px rgba(200,134,10,.45);
     }
     .cat-chip .cat-chip-ar{
       display:block;
-      font-size:10px;
+      font-size:9px;
       font-weight:700;
-      opacity:.72;
+      opacity:.62;
       margin-top:2px;
+      letter-spacing:.02em;
     }
     #guestGuide{
       flex-shrink:0;
@@ -772,6 +809,7 @@
       align-items:center;
       justify-content:center;
       gap:1px;
+      order:2;
       min-width:72px;
       max-width:110px;
       padding:4px 8px;
@@ -826,10 +864,10 @@
       pointer-events:auto;
       display:flex;
       align-items:center;
-      gap:6px;
+      gap:8px;
       width:100%;
       max-width:100%;
-      padding:5px 10px calc(5px + env(safe-area-inset-bottom,0px));
+      padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));
       min-height:0;
       overflow:hidden;
       cursor:grab;
@@ -841,6 +879,7 @@
       display:flex;
       flex:1;
       min-width:0;
+      order:1;
       flex-direction:column;
       align-items:center;
       justify-content:center;
@@ -1030,7 +1069,7 @@
       touch-action:none;
       perspective:2200px;
       perspective-origin:50% 50%;
-      background:#ebe4d3;
+      background:#120800;
       margin:0;
     }
     #bookPad{
@@ -1570,6 +1609,7 @@
       touch-action:manipulation;
     }
     html.coach-locked #sceneHud,
+    html.coach-locked #guestBrandStrip,
     html.coach-locked #menuCategoryBar,
     html.coach-locked #menuOrderDock,
     html.coach-locked #header,
@@ -1851,8 +1891,12 @@
     <div id="sceneHud">
       <div class="hud-row">
         <button type="button" class="scene-hud-btn scene-hud-back" id="sceneBackBtn" onclick="return window.__zekiqGuestBack&&window.__zekiqGuestBack(event)"><span id="i18n-sceneBackBtn">↩ Geri</span></button>
+        <div class="scene-hud-center"><span class="scene-hud-title" id="i18n-sceneHudTitle">MENÜ</span></div>
         <button type="button" class="scene-hud-btn scene-hud-cart is-empty" id="sceneCartBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneCartBtn">Sepet</span><span class="hud-cbadge" id="sceneCartBadge">0</span><span class="hud-csum" id="sceneCartSum"></span></button>
       </div>
+    </div>
+    <div id="guestBrandStrip" hidden aria-hidden="true">
+      <img class="guest-brand-logo" src="assets/tonino-logo.svg" alt="" draggable="false" />
     </div>
     <div id="menuCategoryBar" aria-label="أقسام المينو">
       <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -2003,6 +2047,7 @@
       menuList: "📋 القائمة",
       back: "↩ رجوع",
       cartTop: "السلة",
+      hudTitle: "القائمة",
       menuler: "Menüler",
       menulerAr: "المينو",
       footCartLabel: "السلة",
@@ -2052,7 +2097,7 @@
       exitBtn: "إنهاء — إغلاق الصفحة",
       exitDone: "يمكنك إغلاق هذه الصفحة — شكراً لزيارتك",
       table: "طاولة",
-      tableFootNo: "Masa No",
+      tableFootNo: "MASA",
       items: "أصناف",
       orderTotal: "المجموع",
       emptyCart: "السلة فارغة",
@@ -2084,6 +2129,7 @@
       menuList: "📋 Menü",
       back: "↩ Geri",
       cartTop: "Sepet",
+      hudTitle: "MENÜ",
       menuler: "Menüler",
       menulerAr: "Menü",
       footCartLabel: "Sepet",
@@ -2133,7 +2179,7 @@
       exitBtn: "Bitir — sayfayı kapat",
       exitDone: "Bu sayfayı kapatabilirsiniz — teşekkürler",
       table: "Masa",
-      tableFootNo: "Masa No",
+      tableFootNo: "MASA",
       items: "ürün",
       orderTotal: "Toplam",
       emptyCart: "Sepet boş",
@@ -2165,6 +2211,7 @@
       menuList: "📋 Menu",
       back: "↩ Back",
       cartTop: "Cart",
+      hudTitle: "MENU",
       menuler: "Menus",
       menulerAr: "Menu",
       footCartLabel: "Cart",
@@ -2259,6 +2306,7 @@
       "i18n-load-sub": "loadingSub",
       "i18n-sceneBackBtn": "back",
       "i18n-sceneCartBtn": "cartTop",
+      "i18n-sceneHudTitle": "hudTitle",
       "i18n-footCartLabel": "footCartLabel",
       "i18n-guide1": "guide1",
       "i18n-guide2": "guide2",
@@ -2700,6 +2748,13 @@
       "icecek": "İçecek",
       "nargile": "Nargile",
     };
+    function categoryChipSub(pageIdx, label, isHome) {
+      if (isHome) return guestT("menulerAr");
+      const pl = PAGE_LABELS[pageIdx];
+      if (pl && pl.indexOf("·") >= 0) return pl.split("·")[1].trim();
+      const cats = pageCategories[String(pageIdx)] || pageCategories[pageIdx] || [];
+      return catLabelAr(cats[0] || label);
+    }
     function categoryChipLabel(pageIdx) {
       const pl = PAGE_LABELS[pageIdx];
       if (pl) return pl.split("·")[0].trim().replace(/\s*\(\d+\)\s*$/, "").trim();
@@ -2727,9 +2782,7 @@
         const key = normCat(label);
         if (key && key === lastKey) continue;
         lastKey = key;
-        const cats = pageCategories[String(i)] || pageCategories[i] || [];
-        const ar = catLabelAr(cats[0] || label);
-        chips.push({ pageIdx: i, label, ar });
+        chips.push({ pageIdx: i, label, ar: categoryChipSub(i, label, false) });
       }
       return chips;
     }
@@ -2795,6 +2848,14 @@
         view.style.flex = "0 0 auto";
       }
     }
+    function syncBrandStrip() {
+      const el = document.getElementById("guestBrandStrip");
+      if (!el) return;
+      const onMenu = coachDone && menuIdxFromCur(cur) >= 0;
+      el.hidden = !onMenu;
+      el.classList.toggle("show", onMenu);
+      el.setAttribute("aria-hidden", onMenu ? "false" : "true");
+    }
     function syncCategoryBar() {
       const bar = document.getElementById("menuCategoryBar");
       if (!bar) return;
@@ -2811,6 +2872,7 @@
         activeBtn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       }
       syncCategoryDock();
+      syncBrandStrip();
     }
     const SERPME_PRICES = new Set([1250, 1650, 1850]);
     const PAGE_LABELS = [
@@ -3119,7 +3181,7 @@
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
-      const oy = isCover ? (ch - dh) / 2 : (ch - dh);
+      const oy = isCover ? (ch - dh) / 2 : 0;
       if (img) {
         img.style.clipPath = "";
         img.style.maxWidth = "";
@@ -3147,7 +3209,7 @@
       return {
         ox, oy, dw, dh,
         wasteTop: Math.max(0, oy),
-        wasteBottom: isCover ? Math.max(0, ch - oy - dh) : 0,
+        wasteBottom: Math.max(0, ch - oy - dh),
       };
     }
     function swipeArrowTrackHtml() {
@@ -3701,15 +3763,16 @@
         coachDone = false;
         document.documentElement.classList.add("coach-locked");
       }
-      goToPage(0, true);
+      goToPage(coachDone && bookSpread.length > 1 ? 1 : 0, true);
       syncSceneHud();
+      syncBrandStrip();
     }
     function dismissCoach() {
       if (coachDone) return;
       coachDone = true;
       try { sessionStorage.setItem(coachDoneKey(), "1"); } catch (e) {}
       document.documentElement.classList.remove("coach-locked");
-      goToPage(cur, true);
+      goToPage(bookSpread.length > 1 ? 1 : cur, true);
       syncSceneHud();
       if (window.__zekiqHideSafariChrome) window.__zekiqHideSafariChrome();
       if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
@@ -3865,6 +3928,7 @@
       syncSwipeBar();
       refreshCoverTitles();
       syncCategoryBar();
+      syncBrandStrip();
       if (!duringFlip) {
         document.querySelectorAll(".pw").forEach((pw, i) => {
           pw.classList.toggle("page-current", i === cur);
