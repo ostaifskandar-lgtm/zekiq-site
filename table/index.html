@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v36: mockup layout — brand strip, top-align menu, MASA footer -->
+  <!-- guest-table-ui-v37: fixed logo strip from cropped menu top (not SVG) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -426,19 +426,21 @@
     #guestBrandStrip{
       flex-shrink:0;
       display:none;
-      align-items:center;
-      justify-content:center;
-      padding:8px 16px;
-      background:linear-gradient(180deg,#120800 0%,#1a0c00 55%,#120800 100%);
+      padding:0;
+      margin:0;
+      line-height:0;
+      background:#120800;
       border-bottom:1px solid rgba(200,134,10,.22);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+      overflow:hidden;
     }
-    #guestBrandStrip.show{display:flex;}
-    .guest-brand-logo{
-      height:34px;
-      width:auto;
-      max-width:min(220px,72vw);
-      object-fit:contain;
+    #guestBrandStrip.show{display:block;}
+    .guest-brand-strip-img{
+      display:block;
+      width:100%;
+      height:auto;
+      max-height:18vh;
+      object-fit:cover;
+      object-position:center top;
       pointer-events:none;
       user-select:none;
       -webkit-user-select:none;
@@ -1896,7 +1898,7 @@
       </div>
     </div>
     <div id="guestBrandStrip" hidden aria-hidden="true">
-      <img class="guest-brand-logo" src="assets/tonino-logo.svg" alt="" draggable="false" />
+      <img id="guestBrandStripImg" class="guest-brand-strip-img" src="" alt="" draggable="false" decoding="async" />
     </div>
     <div id="menuCategoryBar" aria-label="أقسام المينو">
       <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -2399,6 +2401,7 @@
 
     let menu = [], cart = [], shopName = "", section = "", tableNum = 0, apiBase = "";
     let bookPages = [], bookSpread = [], menuPageCount = 0, pageCategories = {}, pageHotspots = {}, manualSpots = {};
+    let logoStripUrl = "", logoCropRatio = 0;
     let singlePagePlusOnly = false;
     let plusButtonsAllPages = false;
     let bookCacheVer = "";
@@ -2848,13 +2851,41 @@
         view.style.flex = "0 0 auto";
       }
     }
+    function resolveLogoStripUrl(book) {
+      if (book && book.logoStripUrl) {
+        let u = fixImgUrl(book.logoStripUrl);
+        if (bookCacheVer && u.indexOf("?") < 0) u += "?v=" + encodeURIComponent(bookCacheVer);
+        return u;
+      }
+      const ref = (book && book.pages && book.pages[0]) || bookPages[0] || "";
+      if (!ref) return "";
+      const v = bookCacheVer ? (ref.indexOf("?") >= 0 ? "&" : "?") + "v=" + encodeURIComponent(bookCacheVer) : "";
+      if (/\/guest-menu-pages\//i.test(ref)) {
+        return fixImgUrl(ref.replace(/\/guest-menu-pages\/[^?#]+/i, "/guest-menu-pages-logo-strip/menu-logo-strip.jpg")) + v;
+      }
+      if (/\/menu\/pages\//i.test(ref)) {
+        return fixImgUrl(ref.replace(/\/menu\/pages\/[^?#]+/i, "/menu/menu-logo-strip.jpg")) + v;
+      }
+      return "";
+    }
     function syncBrandStrip() {
       const el = document.getElementById("guestBrandStrip");
+      const img = document.getElementById("guestBrandStripImg");
       if (!el) return;
       const onMenu = coachDone && menuIdxFromCur(cur) >= 0;
-      el.hidden = !onMenu;
-      el.classList.toggle("show", onMenu);
-      el.setAttribute("aria-hidden", onMenu ? "false" : "true");
+      const show = onMenu && !!logoStripUrl;
+      if (img && logoStripUrl) {
+        if (img.getAttribute("data-src") !== logoStripUrl) {
+          img.src = logoStripUrl;
+          img.setAttribute("data-src", logoStripUrl);
+        }
+      } else if (img) {
+        img.removeAttribute("src");
+        img.removeAttribute("data-src");
+      }
+      el.hidden = !show;
+      el.classList.toggle("show", show);
+      el.setAttribute("aria-hidden", show ? "false" : "true");
     }
     function syncCategoryBar() {
       const bar = document.getElementById("menuCategoryBar");
@@ -4477,6 +4508,8 @@
       }
       if (plusButtonsAllPages) singlePagePlusOnly = false;
       bookCacheVer = String((data.book && (data.book.updatedAt || data.book.version)) || "").replace(/[:.]/g, "");
+      logoCropRatio = Number((data.book && data.book.logoCropRatio) || 0);
+      logoStripUrl = resolveLogoStripUrl(data.book || {});
       if (data.guestLanguage && window.applyGuestLanguage) window.applyGuestLanguage(data.guestLanguage);
       document.title = shopName + " — " + guestT("table") + " " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
