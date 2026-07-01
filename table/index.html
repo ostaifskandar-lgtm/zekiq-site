@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v17: order line flash instead of add toast -->
+  <!-- guest-table-ui-v18: taller order list + auto lift scroll -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -505,7 +505,11 @@
       pointer-events:auto;
       position:relative;
       z-index:1;
-      max-height:min(38vh,226px);
+      max-height:min(44vh,268px);
+      transition:transform .28s ease;
+    }
+    #guestOrderChip.order-dock-lift{
+      transform:translateY(-8px);
     }
     html.immersive #guestOrderChip.show,
     html.immersive.chrome-hidden #guestOrderChip.show,
@@ -536,13 +540,33 @@
       pointer-events:none;
     }
     .order-chip-list{
-      max-height:min(20vh,144px);
+      --order-line-h:34px;
+      max-height:calc(var(--order-line-h) * 5 + 10px);
+      max-height:min(28vh,calc(var(--order-line-h) * 5 + 10px));
       overflow-y:auto;
       overflow-x:hidden;
       -webkit-overflow-scrolling:touch;
       overscroll-behavior:contain;
       touch-action:pan-y;
       padding:4px 12px 8px;
+      transition:max-height .3s ease;
+      scroll-behavior:smooth;
+    }
+    .order-chip-list.has-overflow{
+      max-height:min(36vh,calc(var(--order-line-h) * 7 + 10px));
+    }
+    .order-chip-list.has-overflow::before{
+      content:"";
+      display:block;
+      position:sticky;
+      top:0;
+      left:0;
+      right:0;
+      height:12px;
+      margin:0 -12px 4px;
+      background:linear-gradient(180deg,rgba(13,5,0,.96) 0%,rgba(13,5,0,.55) 55%,transparent 100%);
+      pointer-events:none;
+      z-index:2;
     }
     .order-chip-line{
       display:flex;
@@ -3467,6 +3491,20 @@
       closePopup();
     };
 
+    function syncOrderListView(listEl) {
+      if (!listEl) return;
+      requestAnimationFrame(() => {
+        const lines = listEl.querySelectorAll(".order-chip-line");
+        const chip = document.getElementById("guestOrderChip");
+        const lineCount = lines.length;
+        const overflows = listEl.scrollHeight > listEl.clientHeight + 2;
+        listEl.classList.toggle("has-overflow", overflows || lineCount > 4);
+        if (chip) chip.classList.toggle("order-dock-lift", lineCount > 4);
+        if (lineCount > 0) {
+          listEl.scrollTop = listEl.scrollHeight;
+        }
+      });
+    }
     function flashOrderLine(itemId) {
       requestAnimationFrame(() => {
         const row = document.querySelector('#sceneOrderList .order-chip-line[data-item-id="' + itemId + '"]');
@@ -3475,6 +3513,10 @@
         void row.offsetWidth;
         row.classList.add("flash-added");
         setTimeout(() => row.classList.remove("flash-added"), 1200);
+        const listEl = document.getElementById("sceneOrderList");
+        if (listEl) {
+          listEl.scrollTop = listEl.scrollHeight;
+        }
       });
     }
     function addToCart(item, opts) {
@@ -3542,6 +3584,7 @@
         });
         const sceneClear = listEl.querySelector("#sceneClearCart");
         if (sceneClear) sceneClear.onclick = e => { e.stopPropagation(); clearCart(); };
+        syncOrderListView(listEl);
       }
     }
     function openCartConfirm(e) {
