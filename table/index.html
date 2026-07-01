@@ -16,7 +16,7 @@
   <meta http-equiv="Expires" content="0" />
   <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v35: Geri/Sepet top bar, fixed category chips, tight menu fit -->
+  <!-- guest-table-ui-v35b: fix menu viewport collapse (white screen) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -495,7 +495,7 @@
     }
     #menuViewport{
       position:relative;
-      flex:0 0 auto;
+      flex:1;
       min-height:0;
       overflow:hidden;
       width:100%;
@@ -2782,16 +2782,18 @@
       const foot = document.getElementById("pageSwipeBar");
       const pf = document.querySelector("#pw" + cur + " .pf");
       if (!view || !wrap) return;
+      view.style.flex = "1";
+      view.style.removeProperty("height");
       const nw = Number(pf?.dataset?.nw), nh = Number(pf?.dataset?.nh);
       const w = wrap.clientWidth;
       const footH = foot && getComputedStyle(foot).display !== "none" ? foot.offsetHeight : 0;
       const maxH = Math.max(0, wrap.clientHeight - footH);
-      if (!nw || !nh || !w || maxH < 48 || pf?.classList.contains("book-cover")) {
-        view.style.removeProperty("height");
-        return;
-      }
+      if (!nw || !nh || !w || maxH < 48 || pf?.classList.contains("book-cover")) return;
       const ideal = Math.round(w * nh / nw);
-      view.style.height = Math.min(ideal, maxH) + "px";
+      if (ideal > 0 && ideal < maxH - 4) {
+        view.style.height = ideal + "px";
+        view.style.flex = "0 0 auto";
+      }
     }
     function syncCategoryBar() {
       const bar = document.getElementById("menuCategoryBar");
