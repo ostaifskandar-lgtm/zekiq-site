@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v81: remove center finger nudge -->
+  <!-- guest-table-ui-v82: iOS Safari viewport fit + compact chrome -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -41,16 +41,23 @@
         var h=vv?vv.height:window.innerHeight;
         var top=vv?vv.offsetTop:0;
         var left=vv?vv.offsetLeft:0;
-        if(isIosInBrowser()){
+        if(isIosInBrowser()&&vv){
+          h=Math.round(vv.height);
+          w=Math.round(vv.width);
+          top=Math.round(vv.offsetTop);
+          left=Math.round(vv.offsetLeft);
+          var chrome=Math.max(0,Math.round(window.outerHeight-vv.height-vv.offsetTop));
+          root.style.setProperty("--chrome-h",chrome+"px");
+        } else if(isIosInBrowser()){
           var ih=window.innerHeight||h;
           h=Math.min(h,ih);
-          var chrome=Math.max(0,Math.round((window.outerHeight||ih)-ih));
-          root.style.setProperty("--chrome-h",chrome+"px");
+          root.style.setProperty("--chrome-h",Math.max(0,Math.round((window.outerHeight||ih)-ih))+"px");
         }
         root.style.setProperty("--app-h",Math.round(h)+"px");
         root.style.setProperty("--app-w",Math.round(w)+"px");
         root.style.setProperty("--vv-top",Math.round(top)+"px");
         root.style.setProperty("--vv-left",Math.round(left)+"px");
+        if(typeof updateIosCompactTip==="function") updateIosCompactTip();
         scheduleRelayout();
       }
       function hideSafariChrome(){
@@ -177,6 +184,19 @@
         burstHideSafariChrome();
         fitViewport();
       }
+      function applyIosCompactTip(){
+        var tip=document.getElementById("iosCompactTip");
+        if(!tip) return;
+        var tfn=window.__zekiqGuestT;
+        var txt=typeof tfn==="function"?tfn("iosCompactTip"):"";
+        if(txt) tip.textContent=txt;
+      }
+      function updateIosCompactTip(){
+        applyIosCompactTip();
+        var tip=document.getElementById("iosCompactTip");
+        if(!tip) return;
+        tip.classList.toggle("show",!!isIosInBrowser());
+      }
       function bindIosInstallSheet(){
         var sheet=document.getElementById("iosInstallSheet");
         if(!sheet||sheet.__bound) return;
@@ -187,6 +207,11 @@
         if(cont) cont.addEventListener("click",function(){hideIosInstallSheet(true);});
         if(later) later.addEventListener("click",function(){hideIosInstallSheet(true);});
         if(dismiss) dismiss.addEventListener("click",function(){hideIosInstallSheet(true);});
+        var tip=document.getElementById("iosCompactTip");
+        if(tip&&!tip.__bound){
+          tip.__bound=true;
+          tip.addEventListener("click",function(){showIosInstallSheet(true);});
+        }
       }
       function isCoachLocked(){
         return root.classList.contains("coach-locked");
@@ -273,6 +298,7 @@
         updateOrientLock();
         if(isIosInBrowser()){
           burstHideSafariChrome();
+          updateIosCompactTip();
           setTimeout(function(){showIosInstallSheet(false);},420);
         }
       });
@@ -304,6 +330,7 @@
       window.__zekiqHideSafariChrome=hideSafariChrome;
       window.__zekiqBurstHideSafariChrome=burstHideSafariChrome;
       window.__zekiqIsIosInBrowser=isIosInBrowser;
+      window.__zekiqUpdateIosCompactTip=updateIosCompactTip;
       window.__zekiqShowIosInstall=showIosInstallSheet;
       window.__zekiqHideIosInstall=hideIosInstallSheet;
       window.__zekiqRefreshIosInstallCopy=applyIosInstallCopy;
@@ -317,9 +344,37 @@
       --guest-top:0px;--guest-guide:0px;--guest-nav:52px;
     }
     @supports not (height:100dvh){:root{--app-h:100vh;}}
-    html.ios-inbrowser{--app-h:100svh;}
+    html.ios-inbrowser{--app-h:100svh;--ios-tip-h:34px;}
     @supports not (height:100svh){html.ios-inbrowser{--app-h:-webkit-fill-available;}}
-    html.ios-standalone{--app-h:100dvh;}
+    html.ios-standalone{--app-h:100dvh;--ios-tip-h:0px;}
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders.guest-hint-only{display:none!important;}
+    html.ios-inbrowser #sceneHud .hud-row{min-height:34px;}
+    html.ios-inbrowser #sceneHud{padding-top:max(2px,env(safe-area-inset-top,0px));padding-bottom:2px;}
+    html.ios-inbrowser #menuStage{padding-top:calc(38px + env(safe-area-inset-top,0px))!important;}
+    html.ios-inbrowser #menuBookWrap{padding-bottom:var(--ios-tip-h,34px);}
+    html.ios-inbrowser #pageSwipeBar .swipe-order-hint{display:none!important;}
+    html.ios-inbrowser .swipe-foot-panel{padding:2px 8px;min-height:0;}
+    html.ios-inbrowser .swipe-arrow-track{height:16px;width:108px;}
+    html.ios-inbrowser .swipe-hint-text{font-size:9px;line-height:1.15;}
+    html.ios-inbrowser .swipe-page-num{font-size:8px;}
+    #iosCompactTip{
+      display:none;
+      position:fixed;
+      left:var(--vv-left,0px);
+      width:var(--app-w,100vw);
+      top:calc(var(--vv-top,0px) + var(--app-h,100dvh) - var(--ios-tip-h,34px));
+      z-index:970;
+      padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));
+      background:linear-gradient(180deg,rgba(13,5,0,.94),rgba(26,16,8,.98));
+      border-top:1.5px solid rgba(200,134,10,.55);
+      color:#ffe082;
+      font-size:11px;font-weight:900;line-height:1.35;text-align:center;
+      cursor:pointer;touch-action:manipulation;
+      box-shadow:0 -4px 18px rgba(0,0,0,.35);
+    }
+    #iosCompactTip.show{display:block;}
+    #iosCompactTip:active{filter:brightness(1.08);}
+    html.ios-standalone #iosCompactTip{display:none!important;}
     html.coach-locked #menuStage{padding-top:0!important;}
     html,body{
       position:fixed;inset:0;
@@ -2514,6 +2569,8 @@
     </div>
   </div>
 
+  <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
+
   <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p></div></div>
 
   <div id="okScreen">
@@ -2750,6 +2807,7 @@
       iosInstallLater: "متابعة في Safari (شاشة أصغر)",
       iosInstallDismiss: "لا تُظهر مرة أخرى",
       iosInstallCoverBtn: "📲 ملء الشاشة — تثبيت على iPhone",
+      iosCompactTip: "□↑ مشاركة → إضافة إلى الشاشة الرئيسية (ملء الشاشة)",
       menuTitle: "📋 قائمة الأطباق",
       menuSub: "ابحث واطلب من أي صفحة",
       menuSearch: "ابحث… Türk kahve, menemen, pasta…",
@@ -2847,6 +2905,7 @@
       iosInstallLater: "Safari'de devam et (daha küçük ekran)",
       iosInstallDismiss: "Bir daha gösterme",
       iosInstallCoverBtn: "📲 Tam ekran — iPhone'a ekle",
+      iosCompactTip: "□↑ Paylaş → Ana Ekrana Ekle (tam ekran — Android gibi)",
       menuTitle: "📋 Yemek listesi",
       menuSub: "Ara ve her sayfadan sipariş ver",
       menuSearch: "Ara… Türk kahve, menemen, pasta…",
@@ -2944,6 +3003,7 @@
       iosInstallLater: "Continue in Safari (smaller view)",
       iosInstallDismiss: "Don't show again",
       iosInstallCoverBtn: "📲 Full screen — Add to iPhone",
+      iosCompactTip: "□↑ Share → Add to Home Screen (full screen like Android)",
       menuTitle: "📋 Dish list",
       menuSub: "Search and order from any page",
       menuSearch: "Search… coffee, pasta…",
@@ -3615,6 +3675,7 @@
       if (typeof syncSceneHud === "function") syncSceneHud();
       if (document.getElementById("cart-panel")?.classList.contains("open") && typeof renderCart === "function") renderCart();
       if (window.__zekiqRefreshIosInstallCopy) window.__zekiqRefreshIosInstallCopy();
+      if (window.__zekiqUpdateIosCompactTip) window.__zekiqUpdateIosCompactTip();
     };
 
     function esc(s) {
@@ -5153,11 +5214,14 @@
     }
     function syncGuestPlusNudge() {
       const ordersWrap = document.getElementById("menuTopOrders");
+      const iosBrowser = window.__zekiqIsIosInBrowser && window.__zekiqIsIosInBrowser();
       const onMenu = coachDone && !navLocked() && cart.length === 0 && spreadKind(cur) === "menu";
       if (ordersWrap) {
-        ordersWrap.classList.toggle("guest-hint-only", !!onMenu);
-        if (onMenu) ordersWrap.classList.add("show");
+        const showHint = onMenu && !iosBrowser;
+        ordersWrap.classList.toggle("guest-hint-only", showHint);
+        if (onMenu && !iosBrowser) ordersWrap.classList.add("show");
         else if (!cart.length) ordersWrap.classList.remove("show", "guest-hint-only");
+        else if (onMenu && iosBrowser) ordersWrap.classList.remove("show", "guest-hint-only");
       }
     }
     function syncSceneHud() {
