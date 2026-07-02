@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v84: iOS A2HS tip once (localStorage) -->
+  <!-- guest-table-ui-v86: iOS tip closes → enter menu automatically -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -32,7 +32,17 @@
       function isIosInBrowser(){
         return isIosDevice()&&!isStandalone();
       }
+      function isIosSafari(){
+        if(!isIosInBrowser()) return false;
+        var ua=navigator.userAgent||"";
+        if(/CriOS|FxiOS|EdgiOS|OPiOS|mercury|Instagram|FBAN|FBAV|Line\/|MicroMessenger|Twitter|LinkedIn|GSA\/|DuckDuckGo|SamsungBrowser|WhatsApp/i.test(ua)) return false;
+        return /Safari/i.test(ua)&&/Version\//.test(ua);
+      }
+      function isIosInAppBrowser(){
+        return isIosInBrowser()&&!isIosSafari();
+      }
       if(isIosInBrowser()) root.classList.add("ios-inbrowser");
+      if(isIosInAppBrowser()) root.classList.add("ios-inapp");
       if(isStandalone()) root.classList.add("ios-standalone");
       function fitViewport(){
         var vv=window.visualViewport;
@@ -150,19 +160,29 @@
       function applyIosInstallCopy(){
         var tfn=window.__zekiqGuestT;
         if(typeof tfn!=="function") return;
+        var inApp=isIosInAppBrowser();
+        var titleKey=inApp?"iosInAppTitle":"iosInstallTitle";
+        var simpleKey=inApp?"iosInAppSimple":"iosInstallSimple";
+        var noteKey=inApp?"iosInAppNote":"iosInstallNote";
+        var contKey=inApp?"iosInAppContinue":"iosInstallContinue";
+        var laterKey=inApp?"iosInAppLater":"iosInstallLater";
         var map={
-          "i18n-iosInstallTitle":"iosInstallTitle",
-          "i18n-iosInstallSimple":"iosInstallSimple",
-          "i18n-iosInstallNote":"iosInstallNote",
-          "i18n-iosInstallContinue":"iosInstallContinue",
-          "i18n-iosInstallDismiss":"iosInstallDismiss",
-          "i18n-iosInstallLater":"iosInstallLater"
+          "i18n-iosInstallTitle":titleKey,
+          "i18n-iosInstallSimple":simpleKey,
+          "i18n-iosInstallNote":noteKey,
+          "i18n-iosInstallContinue":contKey,
+          "i18n-iosInstallLater":laterKey
         };
         Object.keys(map).forEach(function(id){
           var el=document.getElementById(id);
           if(!el) return;
           el.textContent=tfn(map[id]);
         });
+        var sheet=document.getElementById("iosInstallSheet");
+        if(sheet){
+          sheet.classList.toggle("ios-mode-inapp",!!inApp);
+          sheet.classList.toggle("ios-mode-safari",!inApp);
+        }
       }
       function showIosInstallSheet(force){
         if(!isIosInBrowser()) return;
@@ -181,6 +201,7 @@
         burstHideSafariChrome();
         fitViewport();
         updateIosCompactTip();
+        if(typeof window.__zekiqDismissCoach==="function") window.__zekiqDismissCoach();
       }
       function applyIosCompactTip(){
         var tip=document.getElementById("iosCompactTip");
@@ -295,7 +316,6 @@
         if(isIosInBrowser()){
           burstHideSafariChrome();
           updateIosCompactTip();
-          setTimeout(function(){showIosInstallSheet(false);},420);
         }
       });
       document.addEventListener("touchstart",function(e){
@@ -325,7 +345,8 @@
       window.__zekiqMaybeShowFsHint=maybeShowFsHint;
       window.__zekiqHideSafariChrome=hideSafariChrome;
       window.__zekiqBurstHideSafariChrome=burstHideSafariChrome;
-      window.__zekiqIsIosInBrowser=isIosInBrowser;
+      window.__zekiqIsIosSafari=isIosSafari;
+      window.__zekiqIsIosInAppBrowser=isIosInAppBrowser;
       window.__zekiqUpdateIosCompactTip=updateIosCompactTip;
       window.__zekiqShowIosInstall=showIosInstallSheet;
       window.__zekiqHideIosInstall=hideIosInstallSheet;
@@ -2551,8 +2572,8 @@
       <p class="ios-install-simple-txt" id="i18n-iosInstallSimple">اضغط □↑ ثم «Add to Home Screen / أضف إلى الشاشة الرئيسية»</p>
       <p class="ios-install-note" id="i18n-iosInstallNote">مرة واحدة فقط — ثم افتح المينو من الأيقونة بشاشة كاملة.</p>
       <div class="ios-install-actions">
-        <button type="button" class="ios-install-primary" id="iosInstallContinue">فهمت ✓</button>
-        <button type="button" class="ios-install-secondary" id="iosInstallLater">متابعة في Safari</button>
+        <button type="button" class="ios-install-primary" id="iosInstallContinue">Tamam — menüye geç</button>
+        <button type="button" class="ios-install-secondary" id="iosInstallLater">Atla — menüye geç</button>
       </div>
     </div>
   </div>
@@ -2786,11 +2807,15 @@
       fsHintIos: "↑ اسحب للأعلى قليلاً لإخفاء شريط Safari وملء الشاشة",
       coverIosTip: "📱 iPhone: اسحب للأعلى لإخفاء شريط Safari — أو «مشاركة → إضافة إلى الشاشة الرئيسية» لملء الشاشة دائماً",
       iosInstallTitle: "لتجربة أفضل على iPhone",
-      iosInstallSimple: "اضغط □↑ ثم «Add to Home Screen / أضف إلى الشاشة الرئيسية»",
-      iosInstallNote: "مرة واحدة فقط — ثم افتح المينو من الأيقونة بشاشة كاملة.",
-      iosInstallContinue: "فهمت ✓",
-      iosInstallLater: "متابعة في Safari",
-      iosInstallDismiss: "إغلاق",
+      iosInstallSimple: "لا يوجد تنزيل تلقائي. من Safari: □↑ مشاركة → «Add to Home Screen / أضف إلى الشاشة الرئيسية»",
+      iosInstallNote: "ليس زر تنزيل — خطوتان يدويتان. بعدها افتح من الأيقونة بشاشة كاملة.",
+      iosInstallContinue: "حسناً — افتح المينو",
+      iosInstallLater: "تخطّي — افتح المينو",
+      iosInAppTitle: "افتح في Safari أولاً",
+      iosInAppSimple: "من WhatsApp أو تطبيق آخر لا يعمل «إضافة للشاشة». اضغط ⋯ ثم «فتح في Safari».",
+      iosInAppNote: "بعد Safari: □↑ → Add to Home Screen. أو تابع الطلب من Safari مباشرة.",
+      iosInAppContinue: "فهمت",
+      iosInAppLater: "إغلاق",
       iosInstallCoverBtn: "📲 ملء الشاشة — تثبيت على iPhone",
       iosCompactTip: "□↑ مشاركة → إضافة إلى الشاشة الرئيسية (ملء الشاشة)",
       menuTitle: "📋 قائمة الأطباق",
@@ -2881,11 +2906,15 @@
       fsHintIos: "↑ Safari çubuğunu gizlemek için yukarı kaydırın",
       coverIosTip: "📱 iPhone: Safari çubuğunu gizlemek için yukarı kaydırın — veya tam ekran için «Paylaş → Ana Ekrana Ekle»",
       iosInstallTitle: "iPhone'da daha iyi deneyim",
-      iosInstallSimple: "□↑ Paylaş'a basın → «Ana Ekrana Ekle / Add to Home Screen»",
-      iosInstallNote: "Sadece bir kez — sonra simgeden tam ekran açın.",
-      iosInstallContinue: "Anladım ✓",
-      iosInstallLater: "Safari'de devam et",
-      iosInstallDismiss: "Kapat",
+      iosInstallSimple: "Otomatik indirme YOK. Safari'de altta □↑ Paylaş → «Ana Ekrana Ekle»",
+      iosInstallNote: "Bu bir indirme değil — 2 manuel adım. Sonra simgeden tam ekran açın.",
+      iosInstallContinue: "Tamam — menüye geç",
+      iosInstallLater: "Atla — menüye geç",
+      iosInAppTitle: "Önce Safari'de açın",
+      iosInAppSimple: "WhatsApp vb. içinden Ana Ekrana Ekle çalışmaz. ⋯ → «Safari'de Aç» seçin.",
+      iosInAppNote: "Safari'den: □↑ Paylaş → Ana Ekrana Ekle. Veya Safari'de sipariş verin.",
+      iosInAppContinue: "Anladım",
+      iosInAppLater: "Kapat",
       iosInstallCoverBtn: "📲 Tam ekran — iPhone'a ekle",
       iosCompactTip: "□↑ Paylaş → Ana Ekrana Ekle (tam ekran — Android gibi)",
       menuTitle: "📋 Yemek listesi",
@@ -2976,11 +3005,15 @@
       fsHintIos: "↑ Swipe up slightly to hide Safari bar and fill the screen",
       coverIosTip: "📱 iPhone: swipe up to hide Safari bar — or Share → Add to Home Screen for always-fullscreen",
       iosInstallTitle: "Better experience on iPhone",
-      iosInstallSimple: "Tap □↑ Share → «Add to Home Screen»",
-      iosInstallNote: "Once only — then open from the icon for full screen.",
-      iosInstallContinue: "Got it ✓",
-      iosInstallLater: "Continue in Safari",
-      iosInstallDismiss: "Close",
+      iosInstallSimple: "No auto download. In Safari: □↑ Share → «Add to Home Screen»",
+      iosInstallNote: "Not a download button — two manual steps. Then open from the home icon.",
+      iosInstallContinue: "OK — open menu",
+      iosInstallLater: "Skip — open menu",
+      iosInAppTitle: "Open in Safari first",
+      iosInAppSimple: "Add to Home Screen does not work inside WhatsApp. Tap ⋯ → «Open in Safari».",
+      iosInAppNote: "Then in Safari: □↑ Share → Add to Home Screen. Or order in Safari.",
+      iosInAppContinue: "Got it",
+      iosInAppLater: "Close",
       iosInstallCoverBtn: "📲 Full screen — Add to iPhone",
       iosCompactTip: "□↑ Share → Add to Home Screen (full screen like Android)",
       menuTitle: "📋 Dish list",
@@ -4884,6 +4917,9 @@
       initCoverGate();
       if (window.__zekiqBindSceneFullscreen) window.__zekiqBindSceneFullscreen();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
+      if (window.__zekiqShowIosInstall) {
+        setTimeout(function () { window.__zekiqShowIosInstall(false); }, 280);
+      }
       bindBookSwipe();
       syncSwipeBar();
       buildCategoryBar();
@@ -4916,6 +4952,7 @@
       if (window.__zekiqLockPortrait) window.__zekiqLockPortrait();
       buildCategoryBar();
     }
+    window.__zekiqDismissCoach = dismissCoach;
 
     function spreadImgSrc(spread) {
       if (!spread || spread.kind !== "menu") return "";
