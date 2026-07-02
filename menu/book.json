@@ -830,17 +830,6 @@
           "anchor": "center"
         },
         {
-          "menuItemId": 1880,
-          "name": "Doğum Günü Tabağı",
-          "price": 100,
-          "x": 0.9253825427219499,
-          "y": 0.9084,
-          "w": 0.0508,
-          "h": 0.0287,
-          "kind": "plus",
-          "anchor": "center"
-        },
-        {
           "menuItemId": 1869,
           "name": "Fırın Sütlaç",
           "price": 190,
