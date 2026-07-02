@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v86: iOS tip closes → enter menu automatically -->
+  <!-- guest-table-ui-v87: iOS tip opens menu first, non-blocking bottom card -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -184,16 +184,37 @@
           sheet.classList.toggle("ios-mode-safari",!inApp);
         }
       }
+      function enterMenuSafe(){
+        function go(){
+          try{
+            if(typeof window.__zekiqDismissCoach==="function"){
+              window.__zekiqDismissCoach();
+              return true;
+            }
+          }catch(e){}
+          return false;
+        }
+        if(go()) return;
+        root.classList.remove("coach-locked");
+        try{root.dispatchEvent(new CustomEvent("zekiq-force-menu"));}catch(e2){}
+        var tries=0;
+        var iv=setInterval(function(){
+          if(go()||++tries>=24) clearInterval(iv);
+        },50);
+      }
       function showIosInstallSheet(force){
         if(!isIosInBrowser()) return;
         if(!force&&!shouldShowIosInstall()) return;
+        enterMenuSafe();
         applyIosInstallCopy();
         var sheet=document.getElementById("iosInstallSheet");
         if(sheet) sheet.classList.add("show");
         root.classList.add("ios-install-open");
         fitViewport();
+        setTimeout(enterMenuSafe,80);
       }
       function hideIosInstallSheet(persist){
+        enterMenuSafe();
         var sheet=document.getElementById("iosInstallSheet");
         if(sheet) sheet.classList.remove("show");
         root.classList.remove("ios-install-open");
@@ -201,7 +222,8 @@
         burstHideSafariChrome();
         fitViewport();
         updateIosCompactTip();
-        if(typeof window.__zekiqDismissCoach==="function") window.__zekiqDismissCoach();
+        setTimeout(enterMenuSafe,60);
+        setTimeout(enterMenuSafe,220);
       }
       function applyIosCompactTip(){
         var tip=document.getElementById("iosCompactTip");
@@ -2423,21 +2445,22 @@
     #iosInstallSheet{
       position:fixed;inset:0;z-index:98000;
       display:flex;align-items:flex-end;justify-content:center;
-      background:rgba(0,0,0,.72);
+      background:transparent;
       opacity:0;pointer-events:none;
       transition:opacity .32s ease;
       padding:0;
     }
-    #iosInstallSheet.show{opacity:1;pointer-events:auto;}
+    #iosInstallSheet.show{opacity:1;pointer-events:none;}
     .ios-install-card{
       width:100%;max-width:440px;
       max-height:min(94%,calc(var(--app-h,100dvh) - 12px));
       overflow:auto;-webkit-overflow-scrolling:touch;
+      pointer-events:auto;
       background:linear-gradient(168deg,#1a1008 0%,#0d0500 100%);
       border-radius:22px 22px 0 0;
       border:1.5px solid rgba(200,134,10,.45);
       border-bottom:none;
-      box-shadow:0 -12px 48px rgba(0,0,0,.55);
+      box-shadow:0 -12px 48px rgba(0,0,0,.72);
       padding:18px 18px calc(16px + env(safe-area-inset-bottom,0px));
       transform:translateY(105%);
       transition:transform .38s cubic-bezier(.22,1,.36,1);
@@ -4934,11 +4957,14 @@
       syncSceneHud();
     }
     function dismissCoach() {
-      if (coachDone) return;
+      if (coachDone) {
+        if (cur < 1 && bookSpread.length > 1) goToPage(1, true);
+        return;
+      }
       coachDone = true;
       try { sessionStorage.setItem(coachDoneKey(), "1"); } catch (e) {}
       document.documentElement.classList.remove("coach-locked");
-      goToPage(1, false);
+      goToPage(1, true);
       syncSceneHud();
       if (window.__zekiqEngage) window.__zekiqEngage(true);
       else {
@@ -4951,8 +4977,21 @@
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       if (window.__zekiqLockPortrait) window.__zekiqLockPortrait();
       buildCategoryBar();
+      requestAnimationFrame(function () {
+        syncSceneHud();
+        if (typeof layoutAllHotspots === "function") layoutAllHotspots();
+        if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
+      });
     }
     window.__zekiqDismissCoach = dismissCoach;
+    document.documentElement.addEventListener("zekiq-force-menu", function () {
+      coachDone = true;
+      document.documentElement.classList.remove("coach-locked");
+      if (bookSpread.length > 1) goToPage(1, true);
+      syncSceneHud();
+      buildCategoryBar();
+      if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
+    });
 
     function spreadImgSrc(spread) {
       if (!spread || spread.kind !== "menu") return "";
