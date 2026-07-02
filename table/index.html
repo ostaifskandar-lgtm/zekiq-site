@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v89: iPhone → menu مباشرة، بدون ترحيب ولا نوافذ -->
+  <!-- guest-table-ui-v90: iPhone = تخطيط فوق شريط Safari، بدون شعار؛ Android = ملء الشاشة -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -41,7 +41,7 @@
       function isIosInAppBrowser(){
         return isIosInBrowser()&&!isIosSafari();
       }
-      if(isIosInBrowser()) root.classList.add("ios-inbrowser","ios-direct-menu");
+        if(isIosInBrowser()) root.classList.add("ios-inbrowser","ios-direct-menu","ios-safe-layout");
       if(isIosInAppBrowser()) root.classList.add("ios-inapp");
       if(isStandalone()) root.classList.add("ios-standalone","ios-direct-menu");
       function fitViewport(){
@@ -71,7 +71,7 @@
         scheduleRelayout();
       }
       function hideSafariChrome(){
-        if(!isIosInBrowser()) return;
+        if(isIosInBrowser()) return;
         clearTimeout(safariHideTimer);
         safariHideTimer=setTimeout(function(){
           try{
@@ -83,7 +83,7 @@
         },16);
       }
       function burstHideSafariChrome(){
-        if(!isIosInBrowser()) return;
+        if(isIosInBrowser()){fitViewport();return;}
         hideSafariChrome();
         setTimeout(hideSafariChrome,180);
         setTimeout(hideSafariChrome,520);
@@ -124,12 +124,11 @@
       }
       function enterImmersiveAuto(){
         fitViewport();
-        root.classList.add("chrome-hidden");
+        if(!isIosInBrowser()) root.classList.add("chrome-hidden");
         hideFsHint();
-        hideSafariChrome();
+        if(!isIosInBrowser()) hideSafariChrome();
         burstRelayout();
         setTimeout(fitViewport, 120);
-        setTimeout(hideSafariChrome, 280);
       }
       function engage(withFullscreen){
         fitViewport();
@@ -138,7 +137,6 @@
         if(isCoachLocked()) return;
         if(withFullscreen&&!isIosInBrowser()) tryFullscreen();
         else enterImmersiveAuto();
-        if(isIosInBrowser()) burstHideSafariChrome();
       }
       function hideFsHint(){
         var h=document.getElementById("fsHint");
@@ -237,8 +235,8 @@
         if(isCoachLocked()) return;
         if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,.cover-start-btn,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         fitViewport();
-        hideSafariChrome();
-        enterImmersiveAuto();
+        if(!isIosInBrowser()) hideSafariChrome();
+        if(!isIosInBrowser()) enterImmersiveAuto();
         if(!isIosInBrowser()) tryFullscreen().then(function(){burstRelayout();}).catch(function(){});
         hideFsHint();
       }
@@ -358,28 +356,40 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
     :root{
-      --app-h:100dvh;--app-w:100vw;--vv-top:0px;--vv-left:0px;--chrome-h:0px;
+      --app-h:100dvh;--app-w:100vw;--vv-top:0px;--vv-left:0px;--chrome-h:0px;--ios-safe-bottom:0px;
       --guest-top:0px;--guest-guide:0px;--guest-nav:52px;
     }
     @supports not (height:100dvh){:root{--app-h:-webkit-fill-available;}}
-    html.ios-inbrowser{--app-h:100dvh;--ios-tip-h:34px;}
-    html.ios-standalone{--app-h:100dvh;--ios-tip-h:0px;}
+    html.ios-inbrowser{--app-h:100dvh;}
+    html.ios-inbrowser:not(.ios-standalone){
+      --ios-safe-bottom:max(var(--chrome-h,0px),env(safe-area-inset-bottom,0px),34px);
+    }
+    html.ios-standalone{--app-h:100dvh;--ios-safe-bottom:env(safe-area-inset-bottom,0px);}
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders.guest-hint-only{display:none!important;}
-    html.ios-inbrowser #sceneHud .hud-row{min-height:34px;}
-    html.ios-inbrowser #sceneHud{padding-top:max(2px,env(safe-area-inset-top,0px));padding-bottom:2px;}
-    html.ios-inbrowser #menuStage{padding-top:calc(38px + env(safe-area-inset-top,0px))!important;}
-    html.ios-inbrowser #menuBookWrap{padding-bottom:var(--ios-tip-h,34px);}
-    html.ios-inbrowser #pageSwipeBar .swipe-order-hint{display:none!important;}
-    html.ios-inbrowser .swipe-foot-panel{padding:2px 8px;min-height:0;}
-    html.ios-inbrowser .swipe-arrow-track{height:16px;width:108px;}
-    html.ios-inbrowser .swipe-hint-text{font-size:9px;line-height:1.15;}
-    html.ios-inbrowser .swipe-page-num{font-size:8px;}
+    html.ios-inbrowser:not(.ios-standalone) #sceneHud{display:flex!important;}
+    html.ios-inbrowser:not(.ios-standalone) #sceneHud .hud-row{min-height:32px;}
+    html.ios-inbrowser:not(.ios-standalone) #sceneHud{padding-top:max(2px,env(safe-area-inset-top,0px));padding-bottom:2px;}
+    html.ios-inbrowser:not(.ios-standalone) #menuStage{padding-top:calc(40px + env(safe-area-inset-top,0px))!important;}
+    html.ios-inbrowser:not(.ios-standalone) #menuBookWrap{padding-bottom:var(--ios-safe-bottom,34px);}
+    html.ios-inbrowser:not(.ios-standalone) .swipe-foot-panel{
+      padding:4px 10px calc(6px + var(--ios-safe-bottom,34px));
+    }
+    html.ios-inbrowser:not(.ios-standalone) .pf-brand-strip,
+    html.ios-inbrowser:not(.ios-standalone) .cover-banner-img,
+    html.ios-inbrowser:not(.ios-standalone) .cover-brand-banner{display:none!important;}
+    html.ios-inbrowser:not(.ios-standalone) .scene-hud-ios{display:none!important;}
+    html.ios-inbrowser:not(.ios-standalone) #pageSwipeBar .swipe-order-hint{display:none!important;}
+    html.ios-inbrowser:not(.ios-standalone) .swipe-foot-panel{min-height:calc(44px + var(--ios-safe-bottom,34px));}
+    html.ios-inbrowser:not(.ios-standalone) .swipe-arrow-track{height:18px;width:108px;}
+    html.ios-inbrowser:not(.ios-standalone) .swipe-hint-text{font-size:10px;line-height:1.2;}
+    html.ios-inbrowser:not(.ios-standalone) .swipe-page-num{font-size:9px;}
+    html.ios-inbrowser:not(.ios-standalone) #tableFootBadge.show{display:flex;}
     #iosCompactTip{
       display:none;
       position:fixed;
       left:var(--vv-left,0px);
       width:var(--app-w,100vw);
-      top:calc(var(--vv-top,0px) + var(--app-h,100dvh) - var(--ios-tip-h,34px));
+      top:calc(var(--vv-top,0px) + var(--app-h,100dvh) - var(--ios-safe-bottom,34px));
       z-index:970;
       padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));
       background:linear-gradient(180deg,rgba(13,5,0,.94),rgba(26,16,8,.98));
@@ -2584,7 +2594,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v89</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v90</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3782,6 +3792,8 @@
       lastCategoryDockKey = "";
     }
     function logoStripHeight(rect) {
+      if (document.documentElement.classList.contains("ios-inbrowser") &&
+          !document.documentElement.classList.contains("ios-standalone")) return 0;
       return Math.max(28, Math.round(rect.dw * 205 / 945));
     }
     function refreshPageBrandBanners(cacheVer) {
@@ -3821,6 +3833,11 @@
     }
     function layoutPfBrandStrip(pf, rect) {
       const strip = pf?.querySelector(".pf-brand-strip");
+      if (document.documentElement.classList.contains("ios-inbrowser") &&
+          !document.documentElement.classList.contains("ios-standalone")) {
+        if (strip) strip.style.display = "none";
+        return;
+      }
       if (!strip || !rect || pf.classList.contains("book-cover")) {
         if (strip) strip.style.display = "none";
         return;
@@ -4958,8 +4975,8 @@
         if (window.__zekiqTryFullscreen) window.__zekiqTryFullscreen();
         if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
       }
-      if (window.__zekiqBurstHideSafariChrome) window.__zekiqBurstHideSafariChrome();
-      else if (window.__zekiqHideSafariChrome) window.__zekiqHideSafariChrome();
+      if (window.__zekiqBurstHideSafariChrome && !document.documentElement.classList.contains("ios-inbrowser")) window.__zekiqBurstHideSafariChrome();
+      else if (window.__zekiqHideSafariChrome && !document.documentElement.classList.contains("ios-inbrowser")) window.__zekiqHideSafariChrome();
       if (window.__zekiqMaybeShowFsHint) window.__zekiqMaybeShowFsHint();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       if (window.__zekiqLockPortrait) window.__zekiqLockPortrait();
