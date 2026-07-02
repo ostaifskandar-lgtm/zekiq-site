@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v82: iOS Safari viewport fit + compact chrome -->
+  <!-- guest-table-ui-v84: iOS A2HS tip once (localStorage) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -142,20 +142,17 @@
         var span=document.getElementById("i18n-fsHint");
         if(h&&!isFullscreen()) h.classList.remove("hide");
       }
-      function iosInstallKey(){return "zekiq_ios_install_v1";}
+      function iosInstallKey(){return "zekiq_ios_a2hs_tip_v2";}
       function shouldShowIosInstall(){
         if(!isIosInBrowser()) return false;
-        try{return sessionStorage.getItem(iosInstallKey())!=="1";}catch(e){return true;}
+        try{return localStorage.getItem(iosInstallKey())!=="1";}catch(e){return true;}
       }
       function applyIosInstallCopy(){
         var tfn=window.__zekiqGuestT;
         if(typeof tfn!=="function") return;
         var map={
           "i18n-iosInstallTitle":"iosInstallTitle",
-          "i18n-iosInstallLead":"iosInstallLead",
-          "i18n-iosInstallStep1":"iosInstallStep1",
-          "i18n-iosInstallStep2":"iosInstallStep2",
-          "i18n-iosInstallStep3":"iosInstallStep3",
+          "i18n-iosInstallSimple":"iosInstallSimple",
           "i18n-iosInstallNote":"iosInstallNote",
           "i18n-iosInstallContinue":"iosInstallContinue",
           "i18n-iosInstallDismiss":"iosInstallDismiss",
@@ -180,9 +177,10 @@
         var sheet=document.getElementById("iosInstallSheet");
         if(sheet) sheet.classList.remove("show");
         root.classList.remove("ios-install-open");
-        if(persist){try{sessionStorage.setItem(iosInstallKey(),"1");}catch(e){}}
+        if(persist){try{localStorage.setItem(iosInstallKey(),"1");}catch(e){}}
         burstHideSafariChrome();
         fitViewport();
+        updateIosCompactTip();
       }
       function applyIosCompactTip(){
         var tip=document.getElementById("iosCompactTip");
@@ -192,10 +190,8 @@
         if(txt) tip.textContent=txt;
       }
       function updateIosCompactTip(){
-        applyIosCompactTip();
         var tip=document.getElementById("iosCompactTip");
-        if(!tip) return;
-        tip.classList.toggle("show",!!isIosInBrowser());
+        if(tip) tip.classList.remove("show");
       }
       function bindIosInstallSheet(){
         var sheet=document.getElementById("iosInstallSheet");
@@ -343,9 +339,8 @@
       --app-h:100dvh;--app-w:100vw;--vv-top:0px;--vv-left:0px;--chrome-h:0px;
       --guest-top:0px;--guest-guide:0px;--guest-nav:52px;
     }
-    @supports not (height:100dvh){:root{--app-h:100vh;}}
-    html.ios-inbrowser{--app-h:100svh;--ios-tip-h:34px;}
-    @supports not (height:100svh){html.ios-inbrowser{--app-h:-webkit-fill-available;}}
+    @supports not (height:100dvh){:root{--app-h:-webkit-fill-available;}}
+    html.ios-inbrowser{--app-h:100dvh;--ios-tip-h:34px;}
     html.ios-standalone{--app-h:100dvh;--ios-tip-h:0px;}
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders.guest-hint-only{display:none!important;}
     html.ios-inbrowser #sceneHud .hud-row{min-height:34px;}
@@ -376,9 +371,11 @@
     #iosCompactTip:active{filter:brightness(1.08);}
     html.ios-standalone #iosCompactTip{display:none!important;}
     html.coach-locked #menuStage{padding-top:0!important;}
+    html{height:100dvh;overflow:hidden;}
+    body{height:100dvh;overflow:hidden;}
     html,body{
       position:fixed;inset:0;
-      width:var(--app-w,100vw);height:var(--app-h);min-height:var(--app-h);max-height:var(--app-h);
+      width:var(--app-w,100vw);height:100dvh;min-height:100dvh;max-height:var(--app-h,100dvh);
       overflow:hidden;overscroll-behavior:none;
       background:#1e1208;font-family:"Segoe UI",system-ui,Arial,sans-serif;touch-action:manipulation;color:#fff;
       -webkit-text-size-adjust:100%;
@@ -2486,10 +2483,15 @@
       background:linear-gradient(135deg,#e6a817,#b87200);color:#1a0a00;
       font-size:12px;font-weight:900;
     }
+    .ios-install-simple-txt{
+      margin:0 0 12px;font-size:15px;line-height:1.55;
+      color:#ffe082;font-weight:900;text-align:center;
+    }
     .ios-install-note{
       margin:0 0 14px;font-size:11px;line-height:1.5;
       color:rgba(200,134,10,.72);text-align:center;
     }
+    .ios-install-simple .ios-install-note{margin-bottom:16px;font-size:12px;}
     .ios-install-actions{display:flex;flex-direction:column;gap:8px;}
     .ios-install-primary{
       width:100%;border:none;border-radius:14px;padding:14px;
@@ -2543,28 +2545,14 @@
   </div>
 
   <div id="iosInstallSheet" aria-hidden="true" role="dialog" aria-labelledby="i18n-iosInstallTitle">
-    <div class="ios-install-card">
-      <div class="ios-install-badge">📲 iPhone · ZEKiQ</div>
-      <h2 class="ios-install-title" id="i18n-iosInstallTitle">ملء الشاشة مثل Android</h2>
-      <p class="ios-install-lead" id="i18n-iosInstallLead">Safari لا يسمح بملء الشاشة تلقائياً — ثبّت المينو على الشاشة الرئيسية مرة واحدة.</p>
-      <div class="ios-install-mock" aria-hidden="true">
-        <div class="ios-mock-bar">Safari</div>
-        <div class="ios-mock-screen">ZEKiQ Menu</div>
-        <div class="ios-mock-share">
-          <span class="ios-mock-share-ico">□↑</span>
-          <span class="ios-mock-share-txt">Share · مشاركة</span>
-        </div>
-      </div>
-      <div class="ios-install-steps">
-        <div class="ios-install-step"><span class="ios-install-step-num">1</span><span id="i18n-iosInstallStep1">اضغط زر المشاركة □↑ أسفل Safari</span></div>
-        <div class="ios-install-step"><span class="ios-install-step-num">2</span><span id="i18n-iosInstallStep2">اختر «Add to Home Screen / إضافة إلى الشاشة الرئيسية»</span></div>
-        <div class="ios-install-step"><span class="ios-install-step-num">3</span><span id="i18n-iosInstallStep3">افتح المينو من الأيقونة — ملء كامل بدون شريط Safari</span></div>
-      </div>
-      <p class="ios-install-note" id="i18n-iosInstallNote">يُحفظ رابط طاولتك تلقائياً عند التثبيت من QR.</p>
+    <div class="ios-install-card ios-install-simple">
+      <div class="ios-install-badge">📲 iPhone</div>
+      <h2 class="ios-install-title" id="i18n-iosInstallTitle">لتجربة أفضل على iPhone</h2>
+      <p class="ios-install-simple-txt" id="i18n-iosInstallSimple">اضغط □↑ ثم «Add to Home Screen / أضف إلى الشاشة الرئيسية»</p>
+      <p class="ios-install-note" id="i18n-iosInstallNote">مرة واحدة فقط — ثم افتح المينو من الأيقونة بشاشة كاملة.</p>
       <div class="ios-install-actions">
-        <button type="button" class="ios-install-primary" id="iosInstallContinue">فهمت — سأثبت الآن</button>
-        <button type="button" class="ios-install-secondary" id="iosInstallLater">متابعة في Safari (شاشة أصغر)</button>
-        <button type="button" class="ios-install-ghost" id="iosInstallDismiss">لا تُظهر مرة أخرى</button>
+        <button type="button" class="ios-install-primary" id="iosInstallContinue">فهمت ✓</button>
+        <button type="button" class="ios-install-secondary" id="iosInstallLater">متابعة في Safari</button>
       </div>
     </div>
   </div>
@@ -2797,15 +2785,12 @@
       fsHint: "👆 اضغط على المينو لملء الشاشة",
       fsHintIos: "↑ اسحب للأعلى قليلاً لإخفاء شريط Safari وملء الشاشة",
       coverIosTip: "📱 iPhone: اسحب للأعلى لإخفاء شريط Safari — أو «مشاركة → إضافة إلى الشاشة الرئيسية» لملء الشاشة دائماً",
-      iosInstallTitle: "ملء الشاشة مثل Android",
-      iosInstallLead: "Safari لا يسمح للمواقع بملء الشاشة تلقائياً — ثبّت المينو على الشاشة الرئيسية مرة واحدة فقط.",
-      iosInstallStep1: "اضغط زر المشاركة □↑ أسفل Safari",
-      iosInstallStep2: "اختر «Add to Home Screen / إضافة إلى الشاشة الرئيسية»",
-      iosInstallStep3: "افتح المينو من الأيقونة — ملء كامل بدون شريط Safari",
-      iosInstallNote: "يُحفظ رابط طاولتك تلقائياً عند التثبيت من QR.",
-      iosInstallContinue: "فهمت — سأثبت الآن",
-      iosInstallLater: "متابعة في Safari (شاشة أصغر)",
-      iosInstallDismiss: "لا تُظهر مرة أخرى",
+      iosInstallTitle: "لتجربة أفضل على iPhone",
+      iosInstallSimple: "اضغط □↑ ثم «Add to Home Screen / أضف إلى الشاشة الرئيسية»",
+      iosInstallNote: "مرة واحدة فقط — ثم افتح المينو من الأيقونة بشاشة كاملة.",
+      iosInstallContinue: "فهمت ✓",
+      iosInstallLater: "متابعة في Safari",
+      iosInstallDismiss: "إغلاق",
       iosInstallCoverBtn: "📲 ملء الشاشة — تثبيت على iPhone",
       iosCompactTip: "□↑ مشاركة → إضافة إلى الشاشة الرئيسية (ملء الشاشة)",
       menuTitle: "📋 قائمة الأطباق",
@@ -2895,15 +2880,12 @@
       fsHint: "👆 Tam ekran için menüye dokunun",
       fsHintIos: "↑ Safari çubuğunu gizlemek için yukarı kaydırın",
       coverIosTip: "📱 iPhone: Safari çubuğunu gizlemek için yukarı kaydırın — veya tam ekran için «Paylaş → Ana Ekrana Ekle»",
-      iosInstallTitle: "Android gibi tam ekran",
-      iosInstallLead: "Safari otomatik tam ekrana izin vermez — menüyü Ana Ekrana bir kez ekleyin.",
-      iosInstallStep1: "Safari altındaki Paylaş □↑ düğmesine dokunun",
-      iosInstallStep2: "«Ana Ekrana Ekle / Add to Home Screen» seçin",
-      iosInstallStep3: "Menüyü simgeden açın — Safari çubuğu olmadan tam ekran",
-      iosInstallNote: "QR ile açtığınızda masa bağlantınız otomatik kaydedilir.",
-      iosInstallContinue: "Anladım — şimdi ekleyeceğim",
-      iosInstallLater: "Safari'de devam et (daha küçük ekran)",
-      iosInstallDismiss: "Bir daha gösterme",
+      iosInstallTitle: "iPhone'da daha iyi deneyim",
+      iosInstallSimple: "□↑ Paylaş'a basın → «Ana Ekrana Ekle / Add to Home Screen»",
+      iosInstallNote: "Sadece bir kez — sonra simgeden tam ekran açın.",
+      iosInstallContinue: "Anladım ✓",
+      iosInstallLater: "Safari'de devam et",
+      iosInstallDismiss: "Kapat",
       iosInstallCoverBtn: "📲 Tam ekran — iPhone'a ekle",
       iosCompactTip: "□↑ Paylaş → Ana Ekrana Ekle (tam ekran — Android gibi)",
       menuTitle: "📋 Yemek listesi",
@@ -2993,15 +2975,12 @@
       fsHint: "👆 Tap the menu for full screen",
       fsHintIos: "↑ Swipe up slightly to hide Safari bar and fill the screen",
       coverIosTip: "📱 iPhone: swipe up to hide Safari bar — or Share → Add to Home Screen for always-fullscreen",
-      iosInstallTitle: "Full screen like Android",
-      iosInstallLead: "Safari blocks automatic fullscreen — add the menu to your Home Screen once.",
-      iosInstallStep1: "Tap Share □↑ at the bottom of Safari",
-      iosInstallStep2: "Choose «Add to Home Screen»",
-      iosInstallStep3: "Open the menu from the icon — full screen, no Safari bar",
-      iosInstallNote: "Your table link is saved automatically when you install from QR.",
-      iosInstallContinue: "Got it — I'll install now",
-      iosInstallLater: "Continue in Safari (smaller view)",
-      iosInstallDismiss: "Don't show again",
+      iosInstallTitle: "Better experience on iPhone",
+      iosInstallSimple: "Tap □↑ Share → «Add to Home Screen»",
+      iosInstallNote: "Once only — then open from the icon for full screen.",
+      iosInstallContinue: "Got it ✓",
+      iosInstallLater: "Continue in Safari",
+      iosInstallDismiss: "Close",
       iosInstallCoverBtn: "📲 Full screen — Add to iPhone",
       iosCompactTip: "□↑ Share → Add to Home Screen (full screen like Android)",
       menuTitle: "📋 Dish list",
