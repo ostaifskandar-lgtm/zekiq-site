@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v80: finger hint centered on menu page image -->
+  <!-- guest-table-ui-v81: remove center finger nudge -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -601,49 +601,8 @@
       text-align:center;
     }
     .guest-empty-hint-txt strong{color:#2e7d32;font-weight:900;}
-    @keyframes guestFingerTap{
-      0%,100%{transform:translateY(0) scale(1);}
-      45%{transform:translateY(6px) scale(.94);}
-      55%{transform:translateY(6px) scale(.94);}
-    }
-    #guestPlusNudge{
-      position:absolute;
-      left:50%;
-      top:50%;
-      transform:translate(-50%,-50%);
-      z-index:880;
-      display:none;
-      flex-direction:column;
-      align-items:center;
-      gap:6px;
-      pointer-events:none;
-      max-width:min(78%,260px);
-      visibility:hidden;
-    }
-    #guestPlusNudge.show{display:flex;visibility:visible;}
-    #guestPlusNudge .guest-nudge-finger{
-      font-size:clamp(36px,10vw,48px);
-      line-height:1;
-      animation:guestFingerTap 1.15s ease-in-out infinite;
-      filter:drop-shadow(0 4px 10px rgba(0,0,0,.28));
-    }
-    #guestPlusNudge .guest-nudge-bubble{
-      padding:8px 14px;
-      border-radius:14px;
-      background:rgba(13,5,0,.82);
-      border:1px solid rgba(200,134,10,.45);
-      color:#ffe082;
-      font-size:clamp(12px,3.4vw,14px);
-      font-weight:900;
-      line-height:1.35;
-      text-align:center;
-      box-shadow:0 6px 20px rgba(0,0,0,.28);
-    }
-    #guestPlusNudge .guest-nudge-bubble strong{color:#7cff9a;font-weight:900;}
     html.coach-locked .guest-empty-hint,
-    html.coach-locked #guestPlusNudge{display:none!important;}
-    html.orders-active .guest-empty-hint,
-    html.orders-active #guestPlusNudge{display:none!important;}
+    html.orders-active .guest-empty-hint{display:none!important;}
     #menuTopOrders.show{
       display:block;
       pointer-events:auto;
@@ -2622,10 +2581,6 @@
       </div>
       </div>
       <div id="book"></div>
-      <div id="guestPlusNudge" aria-hidden="true">
-        <span class="guest-nudge-finger">👆</span>
-        <div class="guest-nudge-bubble" id="i18n-tapPlusNudge"></div>
-      </div>
       </div>
       <div id="pageSwipeBar" aria-live="polite" aria-label="اسحب لقلب الصفحة">
         <div class="swipe-foot-panel">
@@ -4514,7 +4469,6 @@
       syncSwipeBar();
       syncCategoryDock(document.querySelector("#pw" + cur + " .pf"));
       syncOrdersListHeight();
-      layoutGuestPlusNudge();
     }
     let hotspotLayoutTimer = 0;
     function scheduleHotspotRelayout() {
@@ -5197,44 +5151,14 @@
         badge.classList.remove("show");
       }
     }
-    function layoutGuestPlusNudge() {
-      const nudge = document.getElementById("guestPlusNudge");
-      const vp = document.getElementById("menuViewport");
-      if (!nudge || !vp) return;
-      if (!nudge.classList.contains("show") || spreadKind(cur) !== "menu") {
-        nudge.style.visibility = "hidden";
-        return;
-      }
-      const pf = document.querySelector("#pw" + cur + " .pf");
-      if (!pf || pf.classList.contains("book-cover")) {
-        nudge.style.visibility = "hidden";
-        return;
-      }
-      const rect = imageOverlayRect(pf, { measureOnly: true });
-      if (!rect) {
-        nudge.style.visibility = "hidden";
-        return;
-      }
-      const pfBox = pf.getBoundingClientRect();
-      const vpBox = vp.getBoundingClientRect();
-      const cx = pfBox.left - vpBox.left + rect.ox + rect.dw / 2;
-      const cy = pfBox.top - vpBox.top + rect.oy + rect.dh * 0.52;
-      nudge.style.left = Math.round(cx) + "px";
-      nudge.style.top = Math.round(cy) + "px";
-      nudge.style.transform = "translate(-50%, -50%)";
-      nudge.style.visibility = "visible";
-    }
     function syncGuestPlusNudge() {
-      const nudge = document.getElementById("guestPlusNudge");
       const ordersWrap = document.getElementById("menuTopOrders");
       const onMenu = coachDone && !navLocked() && cart.length === 0 && spreadKind(cur) === "menu";
-      if (nudge) nudge.classList.toggle("show", !!onMenu);
       if (ordersWrap) {
         ordersWrap.classList.toggle("guest-hint-only", !!onMenu);
         if (onMenu) ordersWrap.classList.add("show");
         else if (!cart.length) ordersWrap.classList.remove("show", "guest-hint-only");
       }
-      layoutGuestPlusNudge();
     }
     function syncSceneHud() {
       const t = cart.reduce((s, i) => s + i.qty, 0);
@@ -5258,7 +5182,6 @@
       if (!coachDone || document.documentElement.classList.contains("coach-locked")) {
         if (stageEl) stageEl.classList.remove("orders-overlay");
         if (ordersWrap) ordersWrap.classList.remove("show", "guest-hint-only");
-        document.getElementById("guestPlusNudge")?.classList.remove("show");
         if (guideEl) guideEl.classList.remove("show");
         if (chipEl) chipEl.classList.remove("show");
         if (sendBtn) sendBtn.classList.add("is-empty");
@@ -5289,8 +5212,6 @@
         return;
       }
       if (ordersWrap) ordersWrap.classList.remove("guest-hint-only");
-      const nudge = document.getElementById("guestPlusNudge");
-      if (nudge) nudge.classList.remove("show");
       if (guideEl) guideEl.classList.remove("show");
       if (ordersWrap) ordersWrap.classList.add("show");
       if (chipEl) chipEl.classList.add("show");
