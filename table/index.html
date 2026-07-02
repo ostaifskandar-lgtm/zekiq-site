@@ -14,9 +14,11 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ZEKiQ%20Menu%22%2C%22short_name%22%3A%22ZEKiQ%22%2C%22display%22%3A%22fullscreen%22%2C%22start_url%22%3A%22.%22%2C%22background_color%22%3A%22%230d0500%22%2C%22theme_color%22%3A%22%230d0500%22%7D" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v33: menu pinned flush to foot bar, no gap -->
+  <!-- guest-table-ui-v80: finger hint centered on menu page image -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -39,6 +41,12 @@
         var h=vv?vv.height:window.innerHeight;
         var top=vv?vv.offsetTop:0;
         var left=vv?vv.offsetLeft:0;
+        if(isIosInBrowser()){
+          var ih=window.innerHeight||h;
+          h=Math.min(h,ih);
+          var chrome=Math.max(0,Math.round((window.outerHeight||ih)-ih));
+          root.style.setProperty("--chrome-h",chrome+"px");
+        }
         root.style.setProperty("--app-h",Math.round(h)+"px");
         root.style.setProperty("--app-w",Math.round(w)+"px");
         root.style.setProperty("--vv-top",Math.round(top)+"px");
@@ -53,8 +61,16 @@
             window.scrollTo(0,1);
             setTimeout(function(){window.scrollTo(0,0);fitViewport();},40);
             setTimeout(function(){window.scrollTo(0,1);fitViewport();},120);
+            setTimeout(function(){window.scrollTo(0,0);fitViewport();},280);
           }catch(e){}
         },16);
+      }
+      function burstHideSafariChrome(){
+        if(!isIosInBrowser()) return;
+        hideSafariChrome();
+        setTimeout(hideSafariChrome,180);
+        setTimeout(hideSafariChrome,520);
+        setTimeout(hideSafariChrome,1100);
       }
       function scheduleRelayout(){
         clearTimeout(relayoutTimer);
@@ -102,8 +118,10 @@
         fitViewport();
         lockPortrait();
         updateOrientLock();
-        if(withFullscreen) tryFullscreen();
+        if(isCoachLocked()) return;
+        if(withFullscreen&&!isIosInBrowser()) tryFullscreen();
         else enterImmersiveAuto();
+        if(isIosInBrowser()) burstHideSafariChrome();
       }
       function hideFsHint(){
         var h=document.getElementById("fsHint");
@@ -112,17 +130,70 @@
       }
       function maybeShowFsHint(){
         try{if(sessionStorage.getItem("zekiq_fs_hint")==="1")return;}catch(e){}
+        if(isIosInBrowser()) return;
         var h=document.getElementById("fsHint");
         var span=document.getElementById("i18n-fsHint");
-        if(span&&isIosInBrowser()){
-          var tfn=window.__zekiqGuestT;
-          var iosMsg=typeof tfn==="function"?tfn("fsHintIos"):"";
-          if(iosMsg) span.textContent=iosMsg;
-        }
         if(h&&!isFullscreen()) h.classList.remove("hide");
       }
+      function iosInstallKey(){return "zekiq_ios_install_v1";}
+      function shouldShowIosInstall(){
+        if(!isIosInBrowser()) return false;
+        try{return sessionStorage.getItem(iosInstallKey())!=="1";}catch(e){return true;}
+      }
+      function applyIosInstallCopy(){
+        var tfn=window.__zekiqGuestT;
+        if(typeof tfn!=="function") return;
+        var map={
+          "i18n-iosInstallTitle":"iosInstallTitle",
+          "i18n-iosInstallLead":"iosInstallLead",
+          "i18n-iosInstallStep1":"iosInstallStep1",
+          "i18n-iosInstallStep2":"iosInstallStep2",
+          "i18n-iosInstallStep3":"iosInstallStep3",
+          "i18n-iosInstallNote":"iosInstallNote",
+          "i18n-iosInstallContinue":"iosInstallContinue",
+          "i18n-iosInstallDismiss":"iosInstallDismiss",
+          "i18n-iosInstallLater":"iosInstallLater"
+        };
+        Object.keys(map).forEach(function(id){
+          var el=document.getElementById(id);
+          if(!el) return;
+          el.textContent=tfn(map[id]);
+        });
+      }
+      function showIosInstallSheet(force){
+        if(!isIosInBrowser()) return;
+        if(!force&&!shouldShowIosInstall()) return;
+        applyIosInstallCopy();
+        var sheet=document.getElementById("iosInstallSheet");
+        if(sheet) sheet.classList.add("show");
+        root.classList.add("ios-install-open");
+        fitViewport();
+      }
+      function hideIosInstallSheet(persist){
+        var sheet=document.getElementById("iosInstallSheet");
+        if(sheet) sheet.classList.remove("show");
+        root.classList.remove("ios-install-open");
+        if(persist){try{sessionStorage.setItem(iosInstallKey(),"1");}catch(e){}}
+        burstHideSafariChrome();
+        fitViewport();
+      }
+      function bindIosInstallSheet(){
+        var sheet=document.getElementById("iosInstallSheet");
+        if(!sheet||sheet.__bound) return;
+        sheet.__bound=true;
+        var cont=document.getElementById("iosInstallContinue");
+        var later=document.getElementById("iosInstallLater");
+        var dismiss=document.getElementById("iosInstallDismiss");
+        if(cont) cont.addEventListener("click",function(){hideIosInstallSheet(true);});
+        if(later) later.addEventListener("click",function(){hideIosInstallSheet(true);});
+        if(dismiss) dismiss.addEventListener("click",function(){hideIosInstallSheet(true);});
+      }
+      function isCoachLocked(){
+        return root.classList.contains("coach-locked");
+      }
       function onMenuTap(ev){
-        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
+        if(isCoachLocked()) return;
+        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,.cover-start-btn,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         fitViewport();
         hideSafariChrome();
         enterImmersiveAuto();
@@ -197,18 +268,23 @@
       }
       document.addEventListener("DOMContentLoaded",function(){
         bindSceneFullscreen();
-        enterImmersiveAuto();
+        bindIosInstallSheet();
+        fitViewport();
         updateOrientLock();
-        maybeShowFsHint();
+        if(isIosInBrowser()){
+          burstHideSafariChrome();
+          setTimeout(function(){showIosInstallSheet(false);},420);
+        }
       });
       document.addEventListener("touchstart",function(e){
         if(window.__zekiqLockPortrait) window.__zekiqLockPortrait();
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
+        if(isCoachLocked()) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) onMenuTap(e);
         else fitViewport();
       },{passive:true,capture:true});
       document.addEventListener("click",function(e){
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) return;
         fitViewport();
         showChrome();
@@ -226,7 +302,11 @@
       window.__zekiqTryFullscreen=tryFullscreen;
       window.__zekiqMaybeShowFsHint=maybeShowFsHint;
       window.__zekiqHideSafariChrome=hideSafariChrome;
+      window.__zekiqBurstHideSafariChrome=burstHideSafariChrome;
       window.__zekiqIsIosInBrowser=isIosInBrowser;
+      window.__zekiqShowIosInstall=showIosInstallSheet;
+      window.__zekiqHideIosInstall=hideIosInstallSheet;
+      window.__zekiqRefreshIosInstallCopy=applyIosInstallCopy;
       window.__zekiqBindSceneFullscreen=bindSceneFullscreen;
     })();
   </script>
@@ -237,6 +317,10 @@
       --guest-top:0px;--guest-guide:0px;--guest-nav:52px;
     }
     @supports not (height:100dvh){:root{--app-h:100vh;}}
+    html.ios-inbrowser{--app-h:100svh;}
+    @supports not (height:100svh){html.ios-inbrowser{--app-h:-webkit-fill-available;}}
+    html.ios-standalone{--app-h:100dvh;}
+    html.coach-locked #menuStage{padding-top:0!important;}
     html,body{
       position:fixed;inset:0;
       width:var(--app-w,100vw);height:var(--app-h);min-height:var(--app-h);max-height:var(--app-h);
@@ -381,16 +465,8 @@
       text-align:center;
       pointer-events:none;
     }
-    .scene-hud-shop{
-      color:#c8860a;
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.04em;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .scene-hud-table{display:none!important;}
+    .scene-hud-shop{display:none!important;}
+    .scene-hud-center{display:none!important;}
     #tableFootBadge{
       flex-shrink:0;
       display:none;
@@ -474,7 +550,8 @@
       padding-top:calc(44px + env(safe-area-inset-top,0px));
       display:block;
     }
-    html.coach-locked #menuStage{padding-top:0;}
+    html.immersive.orders-active #sceneHud{display:none!important;}
+    html.immersive.orders-active #menuStage{padding-top:0!important;}
     #menuOrderDock{
       position:absolute;
       left:0;
@@ -489,17 +566,215 @@
       border:none;
       box-shadow:none;
     }
-    #menuStage.orders-overlay #menuOrderDock{
-      max-height:min(52vh,320px);
-      overflow:hidden;
-      background:linear-gradient(180deg,#e4dcc8 0%,#ebe4d3 92%,rgba(235,228,211,.98) 100%);
-      border-bottom:2px solid rgba(180,140,80,.35);
-      box-shadow:0 6px 20px rgba(0,0,0,.14);
-      pointer-events:auto;
+    #menuTopOrders{
+      display:none;
+      position:absolute;
+      left:0;
+      right:0;
+      top:0;
+      z-index:920;
+      margin:0;
+      padding:env(safe-area-inset-top,0px) 0 0;
+      pointer-events:none;
     }
-    #menuOrderDock #guestGuide,
-    #menuOrderDock #guestOrderChip,
-    #menuOrderDock #guestOrderChip *{pointer-events:auto;}
+    #menuTopOrders.guest-hint-only #guestOrderChip{display:none!important;}
+    .guest-empty-hint{
+      display:none;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      margin:4px 12px 6px;
+      padding:9px 14px;
+      border-radius:14px;
+      background:linear-gradient(180deg,rgba(255,254,248,.98) 0%,rgba(243,234,212,.96) 100%);
+      border:1px solid rgba(200,134,10,.38);
+      box-shadow:0 4px 16px rgba(90,56,36,.14);
+      pointer-events:none;
+    }
+    #menuTopOrders.guest-hint-only .guest-empty-hint{display:flex;}
+    .guest-empty-finger{display:none!important;}
+    .guest-empty-hint-txt{
+      font-size:clamp(12px,3.4vw,14px);
+      font-weight:900;
+      color:#5a3d08;
+      line-height:1.35;
+      text-align:center;
+    }
+    .guest-empty-hint-txt strong{color:#2e7d32;font-weight:900;}
+    @keyframes guestFingerTap{
+      0%,100%{transform:translateY(0) scale(1);}
+      45%{transform:translateY(6px) scale(.94);}
+      55%{transform:translateY(6px) scale(.94);}
+    }
+    #guestPlusNudge{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      z-index:880;
+      display:none;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      pointer-events:none;
+      max-width:min(78%,260px);
+      visibility:hidden;
+    }
+    #guestPlusNudge.show{display:flex;visibility:visible;}
+    #guestPlusNudge .guest-nudge-finger{
+      font-size:clamp(36px,10vw,48px);
+      line-height:1;
+      animation:guestFingerTap 1.15s ease-in-out infinite;
+      filter:drop-shadow(0 4px 10px rgba(0,0,0,.28));
+    }
+    #guestPlusNudge .guest-nudge-bubble{
+      padding:8px 14px;
+      border-radius:14px;
+      background:rgba(13,5,0,.82);
+      border:1px solid rgba(200,134,10,.45);
+      color:#ffe082;
+      font-size:clamp(12px,3.4vw,14px);
+      font-weight:900;
+      line-height:1.35;
+      text-align:center;
+      box-shadow:0 6px 20px rgba(0,0,0,.28);
+    }
+    #guestPlusNudge .guest-nudge-bubble strong{color:#7cff9a;font-weight:900;}
+    html.coach-locked .guest-empty-hint,
+    html.coach-locked #guestPlusNudge{display:none!important;}
+    html.orders-active .guest-empty-hint,
+    html.orders-active #guestPlusNudge{display:none!important;}
+    #menuTopOrders.show{
+      display:block;
+      pointer-events:auto;
+      animation:ordersDropFromTop .28s cubic-bezier(.2,.9,.2,1);
+    }
+    #menuTopOrders.guest-hint-only{
+      pointer-events:none;
+      animation:none;
+    }
+    @keyframes ordersDropFromTop{
+      from{transform:translateY(-18px);opacity:.55;}
+      to{transform:translateY(0);opacity:1;}
+    }
+    html.page-flipping #menuTopOrders{
+      visibility:visible!important;
+      pointer-events:auto!important;
+    }
+    html.orders-cover-logo .pw.page-current:not(.turning):not(.turn-next):not(.turn-prev) .pf-brand-strip{
+      max-height:0!important;
+      opacity:0!important;
+      overflow:hidden;
+      pointer-events:none!important;
+      transition:max-height .28s ease,opacity .22s ease;
+    }
+    html.page-flipping .pw.turning .pf-brand-strip,
+    html.page-flipping .pw.turn-next .pf-brand-strip,
+    html.page-flipping .pw.turn-prev .pf-brand-strip,
+    html.page-flipping .pw.page-reveal .pf-brand-strip,
+    html.page-flipping .pw.page-current .pf-brand-strip{
+      opacity:1!important;
+      max-height:none!important;
+      visibility:visible!important;
+      display:block!important;
+      transition:none!important;
+      pointer-events:none!important;
+    }
+    html.page-flipping .pw{
+      transition:none!important;
+    }
+    html.page-flipping #bookPad{
+      opacity:0!important;
+      visibility:hidden!important;
+    }
+    html.page-flipping .pw.page-reveal .page-shade,
+    html.page-flipping .pw.page-reveal .page-edge{
+      opacity:0!important;
+      animation:none!important;
+    }
+    #menuTopOrders .scene-order-panel{
+      background:linear-gradient(180deg,#fffef8 0%,#f3ead4 100%);
+      border:none;
+      border-bottom:1px solid rgba(180,140,80,.32);
+      border-radius:0;
+      box-shadow:0 2px 10px rgba(0,0,0,.06);
+      backdrop-filter:none;
+      -webkit-backdrop-filter:none;
+    }
+    #menuTopOrders .order-chip-head-btn{
+      flex:1;
+      min-width:0;
+      background:transparent;
+      border:none;
+      border-bottom:none;
+      padding:0;
+    }
+    #menuTopOrders .order-chip-head-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      width:100%;
+      padding:6px 10px;
+      background:rgba(200,134,10,.08);
+      border-bottom:1px solid rgba(180,140,80,.22);
+    }
+    #menuTopOrders .order-chip-head{
+      flex:1;
+      min-width:0;
+      text-align:right;
+      font-size:11px;
+      font-weight:900;
+      color:#5a3d08;
+    }
+    #menuTopOrders .order-chip-send{
+      flex-shrink:0;
+      border:none;
+      border-radius:12px;
+      padding:6px 12px;
+      font-size:11px;
+      font-weight:900;
+      cursor:pointer;
+      touch-action:manipulation;
+      background:linear-gradient(135deg,#b87200,#f0a820);
+      color:#1a0a00;
+      box-shadow:0 2px 8px rgba(200,134,10,.35);
+    }
+    #menuTopOrders .order-chip-send.is-empty{
+      opacity:.5;
+      box-shadow:none;
+    }
+    #menuTopOrders .order-chip-list{
+      max-height:var(--orders-list-max-h, min(22vh, calc(var(--order-line-h, 34px) * 3 + 8px)));
+      padding:2px 10px 6px;
+      overflow-y:auto;
+      overflow-x:hidden;
+      -webkit-overflow-scrolling:touch;
+    }
+    #menuTopOrders .order-chip-list.has-overflow::before{
+      top:0;
+      background:linear-gradient(180deg,rgba(255,254,248,.98) 0%,rgba(243,234,212,.55) 55%,transparent 100%);
+    }
+    #menuTopOrders .order-chip-line{
+      color:#3d2806;
+      border-bottom-color:rgba(180,140,80,.2);
+    }
+    #menuTopOrders .order-chip-dec{
+      background:rgba(200,134,10,.14);
+      border-color:rgba(200,134,10,.35);
+      color:#8a5a08;
+    }
+    #menuTopOrders .order-chip-del{
+      background:rgba(180,40,40,.1);
+      border-color:rgba(200,80,80,.4);
+      color:#a83232;
+    }
+    #menuTopOrders .order-chip-price{color:#8a5a08;}
+    #menuTopOrders .order-chip-clear{
+      color:rgba(90,61,8,.75);
+      border-color:rgba(180,140,80,.28);
+    }
+    #menuOrderDock #guestGuide{pointer-events:auto;}
     #menuBookWrap{
       position:absolute;
       left:0;
@@ -516,20 +791,82 @@
     }
     #menuViewport{
       grid-row:1;
+      position:relative;
       min-height:0;
       display:flex;
       flex-direction:column;
       overflow:hidden;
     }
-    #menuCategoryBar{
-      flex-shrink:0;
+    #menuTopDock{
+      position:absolute;
+      left:0;
+      right:0;
+      z-index:880;
+      top:max(0px,calc(var(--menu-img-top, 0px) - var(--menu-top-dock-h, 88px)));
       display:none;
-      padding:6px 0 5px;
-      background:linear-gradient(180deg,#e0d8c6 0%,#ebe4d3 100%);
-      border-bottom:1.5px solid rgba(180,140,80,.3);
-      z-index:25;
+      margin:0;
+      padding:0;
+      pointer-events:auto;
+      touch-action:pan-x;
     }
-    #menuCategoryBar.show{display:block;}
+    #menuTopDock.show{display:block;}
+    #menuCategoryBar{
+      position:relative;
+      left:auto;
+      right:auto;
+      top:auto;
+      z-index:1;
+      display:block;
+      padding:4px 0 3px;
+      margin:0;
+      margin-top:var(--cat-bar-offset, 0px);
+      background:linear-gradient(180deg,rgba(224,216,198,.98) 0%,rgba(235,228,211,.96) 100%);
+      border-bottom:1px solid rgba(180,140,80,.28);
+      pointer-events:auto;
+      touch-action:pan-x;
+    }
+    #menuCategoryBar:not(.show){display:none;}
+    html.page-flipping #menuTopDock{
+      visibility:visible!important;
+      pointer-events:auto!important;
+    }
+    html.page-flipping .pf-overlay{visibility:hidden!important;}
+    .pf-cat-strip{display:none!important;}
+    .pf-brand-strip{
+      position:absolute;
+      left:0;
+      line-height:0;
+      margin:0;
+      padding:0;
+      pointer-events:none;
+      z-index:8;
+      backface-visibility:hidden;
+      -webkit-backface-visibility:hidden;
+      transform:translateZ(2px);
+      overflow:hidden;
+    }
+    .guest-brand-banner-img{
+      display:block;
+      width:100%;
+      height:auto;
+      aspect-ratio:945 / 205;
+      object-fit:cover;
+      object-position:center bottom;
+      pointer-events:none;
+      user-select:none;
+      -webkit-user-drag:none;
+      -webkit-touch-callout:none;
+    }
+    @keyframes catChipPulse{
+      0%,100%{box-shadow:0 1px 6px rgba(0,0,0,.06);transform:translateY(0);}
+      50%{box-shadow:0 3px 14px rgba(200,134,10,.28);transform:translateY(-1px);}
+    }
+    @keyframes catScrollHint{
+      0%,100%{transform:translateX(0);}
+      45%{transform:translateX(-6px);}
+      55%{transform:translateX(6px);}
+    }
+    .menu-cat-scroll.cat-scroll-hint{animation:catScrollHint 2.2s ease-in-out 1;}
     .menu-cat-scroll{
       display:flex;
       gap:8px;
@@ -542,33 +879,50 @@
     .menu-cat-scroll::-webkit-scrollbar{display:none;}
     .cat-chip{
       flex-shrink:0;
-      border:1.5px solid rgba(200,134,10,.42);
-      background:rgba(255,252,245,.88);
-      color:#4a3208;
-      font-size:13px;
+      border:1px solid rgba(180,150,100,.38);
+      background:#fff;
+      color:#3d2806;
+      font-size:11px;
       font-weight:900;
-      padding:8px 15px;
-      border-radius:22px;
+      padding:4px 9px;
+      border-radius:9px;
       cursor:pointer;
       white-space:nowrap;
       touch-action:manipulation;
       font-family:inherit;
-      line-height:1.2;
-      box-shadow:0 1px 6px rgba(0,0,0,.06);
+      line-height:1.1;
+      box-shadow:0 1px 5px rgba(0,0,0,.07);
+      animation:catChipPulse 2.8s ease-in-out infinite;
+      text-align:center;
+      min-width:2.6rem;
     }
     .cat-chip:active{transform:scale(.96);}
     .cat-chip.active{
-      background:linear-gradient(145deg,#ffe082,#e6a817);
+      background:linear-gradient(145deg,#fff8e1,#ffe082);
       color:#1a0a00;
       border-color:#c8860a;
-      box-shadow:0 3px 12px rgba(200,134,10,.38);
+      box-shadow:0 2px 10px rgba(200,134,10,.32);
+      animation:none;
     }
-    .cat-chip .cat-chip-ar{
-      display:block;
+    .cat-chip-page{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:1.35rem;
+      height:1.35rem;
+      margin-inline-start:6px;
+      padding:0 4px;
+      border-radius:8px;
+      border:1px solid rgba(200,134,10,.45);
+      background:rgba(255,255,255,.55);
       font-size:10px;
-      font-weight:700;
-      opacity:.72;
-      margin-top:2px;
+      font-weight:900;
+      vertical-align:middle;
+    }
+    .cat-chip-page.active-page{
+      background:#c8860a;
+      color:#fff;
+      border-color:#a66b08;
     }
     #guestGuide{
       flex-shrink:0;
@@ -625,9 +979,13 @@
       color:#c8860a;
       font-weight:900;
     }
-    html.immersive #guestOrderChip.show,
-    html.immersive.chrome-hidden #guestOrderChip.show,
-    html.immersive.fs-active #guestOrderChip.show{display:block;}
+    #menuTopOrders #guestOrderChip{
+      display:block;
+      padding:0;
+    }
+    html.immersive #menuTopOrders.show #guestOrderChip,
+    html.immersive.chrome-hidden #menuTopOrders.show #guestOrderChip,
+    html.immersive.fs-active #menuTopOrders.show #guestOrderChip{display:block;}
     .scene-order-panel{
       background:rgba(13,5,0,.92);
       border:1.5px solid rgba(200,134,10,.5);
@@ -669,12 +1027,8 @@
     .order-chip-list.has-overflow{
       max-height:min(24vh,calc(var(--order-line-h) * 4 + 8px));
     }
-    #menuStage.orders-overlay .order-chip-list{
-      max-height:min(30vh,calc(var(--order-line-h) * 5 + 8px));
-    }
-    #menuStage.orders-overlay .order-chip-list.has-overflow{
-      max-height:min(36vh,calc(var(--order-line-h) * 6 + 8px));
-    }
+    #menuStage.orders-overlay .order-chip-list,
+    #menuStage.orders-overlay .order-chip-list.has-overflow{display:none!important;}
     .order-chip-list.has-overflow::before{
       content:"";
       display:block;
@@ -999,8 +1353,8 @@
       position:relative;flex:1;min-height:0;width:100%;max-width:100vw;
       transform-style:preserve-3d;transform:translateZ(0);
       touch-action:none;
-      perspective:2200px;
-      perspective-origin:50% 50%;
+      perspective:1600px;
+      perspective-origin:left center;
       background:#ebe4d3;
       margin-bottom:0;
     }
@@ -1016,9 +1370,14 @@
       background:#ebe4d3;
       pointer-events:none;user-select:none;-webkit-user-select:none;
     }
+    .pf-bg{
+      backface-visibility:hidden;
+      -webkit-backface-visibility:hidden;
+    }
     #book.page-swiping .pf-overlay{pointer-events:none!important;}
     #book.page-swiping .plus-hit,#book.page-swiping .plus-hotspot,#book.page-swiping .price-hotspot{pointer-events:none!important;}
     .pw.page-current .pf{overflow:visible;}
+    .pw.turning .pf,.pw.turn-next .pf,.pw.turn-prev .pf,.pw.page-reveal .pf{overflow:visible;}
     #book::before{display:none;}
     .pw{
       position:absolute;inset:0;
@@ -1046,19 +1405,45 @@
     .pb{display:block;}
     .pw:not(.turning):not(.turn-next):not(.turn-prev) .pb{visibility:hidden;pointer-events:none;}
     .pw.turning .pb,.pw.turn-next .pb,.pw.turn-prev .pb{visibility:visible!important;}
-    .pw.turn-next{animation:pageTurnNext .68s cubic-bezier(.38,.02,.24,1) forwards;}
-    .pw.turn-prev{animation:pageTurnPrev .68s cubic-bezier(.38,.02,.24,1) forwards;}
+    .pw.turn-next:not(.page-dragging){animation:pageTurnNext .68s cubic-bezier(.645,.045,.355,1) forwards;}
+    .pw.turn-prev:not(.page-dragging){animation:pageTurnPrev .68s cubic-bezier(.645,.045,.355,1) forwards;}
+    .pw.page-dragging,.pw.page-dragging.turn-next,.pw.page-dragging.turn-prev{animation:none!important;}
+    .pw.page-dragging .pf{animation:none!important;}
     @keyframes pageTurnNext{
-      0%  {transform:rotateY(0deg);}
-      100%{transform:rotateY(-180deg);}
+      0%  {transform:rotateY(0deg) rotateX(0deg) translateZ(0);}
+      18% {transform:rotateY(-32deg) rotateX(-1.6deg) translateZ(16px);}
+      36% {transform:rotateY(-64deg) rotateX(-2.2deg) translateZ(28px);}
+      50% {transform:rotateY(-90deg) rotateX(-2.4deg) translateZ(32px);}
+      64% {transform:rotateY(-116deg) rotateX(-2deg) translateZ(28px);}
+      82% {transform:rotateY(-148deg) rotateX(-1deg) translateZ(12px);}
+      100%{transform:rotateY(-180deg) rotateX(0deg) translateZ(0);}
     }
     @keyframes pageTurnPrev{
-      0%  {transform:rotateY(-180deg);}
-      100%{transform:rotateY(0deg);}
+      0%  {transform:rotateY(-180deg) rotateX(0deg) translateZ(0);}
+      18% {transform:rotateY(-148deg) rotateX(-1deg) translateZ(12px);}
+      36% {transform:rotateY(-116deg) rotateX(-2deg) translateZ(28px);}
+      50% {transform:rotateY(-90deg) rotateX(-2.4deg) translateZ(32px);}
+      64% {transform:rotateY(-64deg) rotateX(-2.2deg) translateZ(28px);}
+      82% {transform:rotateY(-32deg) rotateX(-1.6deg) translateZ(16px);}
+      100%{transform:rotateY(0deg) rotateX(0deg) translateZ(0);}
+    }
+    .pw.turn-next .pf,.pw.turn-prev .pf{
+      transform-origin:left center;
+      animation:pageBookBend .68s cubic-bezier(.645,.045,.355,1) forwards,pageBookShadow .68s cubic-bezier(.645,.045,.355,1) forwards;
+    }
+    @keyframes pageBookBend{
+      0%,100%{transform:rotateX(0deg);}
+      50%{transform:rotateX(-4deg);}
+    }
+    @keyframes pageBookShadow{
+      0%,100%{box-shadow:2px 2px 8px rgba(0,0,0,.06);}
+      50%{box-shadow:10px 8px 32px rgba(0,0,0,.2);}
     }
     .pf,.pb{
       position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;
       border-radius:0;box-shadow:none;
+      transform-style:preserve-3d;
+      -webkit-transform-style:preserve-3d;
     }
     .pf-rail-top,.pf-rail-bottom{
       position:absolute;left:0;right:0;z-index:6;
@@ -1129,30 +1514,30 @@
     .pw.page-flip-top{z-index:55!important;}
     .page-shade{
       position:absolute;inset:0;z-index:6;pointer-events:none;opacity:0;border-radius:inherit;
-      background:linear-gradient(to left,rgba(0,0,0,.18) 0%,rgba(0,0,0,.05) 38%,transparent 68%);
+      background:linear-gradient(to left,rgba(0,0,0,.24) 0%,rgba(0,0,0,.09) 34%,transparent 66%);
     }
     .pw.turn-next .pf .page-shade,.pw.turn-prev .pf .page-shade{
-      animation:pageShadeFold .68s ease forwards;
+      animation:pageShadeFold .68s cubic-bezier(.645,.045,.355,1) forwards;
     }
     @keyframes pageShadeFold{
       0%,100%{opacity:0;}
-      22%,78%{opacity:.38;}
+      15%,85%{opacity:.34;}
+      50%{opacity:.5;}
     }
     .page-edge{
-      position:absolute;top:0;right:0;width:1px;height:100%;z-index:7;pointer-events:none;
+      position:absolute;top:0;right:0;width:2px;height:100%;z-index:7;pointer-events:none;
       opacity:0;
-      background:linear-gradient(to bottom,rgba(255,255,255,.55),rgba(0,0,0,.07) 50%,rgba(255,255,255,.35));
+      background:linear-gradient(to bottom,rgba(255,255,255,.6),rgba(0,0,0,.1) 50%,rgba(240,235,225,.5));
       transform-origin:left center;
     }
     .pw.turn-next .page-edge,.pw.turn-prev .page-edge{
-      animation:pageEdgeFold .68s ease forwards;
+      animation:pageEdgeFold .68s cubic-bezier(.645,.045,.355,1) forwards;
     }
     @keyframes pageEdgeFold{
       0%,100%{opacity:0;}
-      25%,75%{opacity:.65;}
+      28%,72%{opacity:.75;}
+      50%{opacity:.95;}
     }
-    .pw.turn-next .pf{box-shadow:-3px 0 12px rgba(0,0,0,.1);}
-    .pw.turn-prev .pf{box-shadow:-3px 0 12px rgba(0,0,0,.1);}
     .pw.turning .hotspot{pointer-events:none!important;opacity:.35;}
     .pf-bg,.pb-bg{
       position:absolute;inset:0;width:100%;height:100%;
@@ -1259,6 +1644,34 @@
       border-radius:2px 2px 10px 10px;
       pointer-events:none;
     }
+    .cover-brand-banner{
+      position:relative;z-index:2;
+      width:100%;
+      margin:0;
+      padding:0;
+      line-height:0;
+      flex-shrink:0;
+      overflow:hidden;
+      background:#ebe4d3;
+    }
+    .cover-brand-banner .cover-banner-img{
+      display:block;
+      width:100%;
+      height:auto;
+      aspect-ratio:945 / 205;
+      object-fit:cover;
+      object-position:center bottom;
+      pointer-events:none;
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+    .cover-body{
+      position:relative;z-index:1;
+      width:100%;
+      display:flex;flex-direction:column;align-items:center;
+      gap:clamp(6px,1.6vw,10px);
+      flex:1;min-height:0;
+    }
     .cover-menu-label{
       position:relative;z-index:1;
       margin:0 0 6px;
@@ -1300,13 +1713,14 @@
     .cover-table-line{
       position:relative;z-index:1;
       margin:0;
-      font-size:clamp(11px,3vw,13px);
-      font-weight:700;
-      color:#3d2818;
-      padding:6px 16px;
+      font-size:clamp(11px,3vw,12px);
+      font-weight:800;
+      color:#6b4a12;
+      padding:4px 12px;
       border-radius:999px;
-      border:1px solid rgba(120,80,40,.28);
-      background:rgba(255,255,255,.42);
+      border:1px solid rgba(180,150,100,.38);
+      background:rgba(255,255,255,.72);
+      letter-spacing:.03em;
     }
     .book-cover-swipe-hint{
       position:relative;z-index:1;
@@ -1329,35 +1743,222 @@
     }
     .book-cover-start .cover-arrow-next{animation-delay:0s;}
     .book-cover-start .cover-arrow-prev{opacity:.35;animation-delay:1.2s;}
+    html.coach-locked #menuTopDock,
+    html.coach-locked #menuCategoryBar{display:none!important;}
+    html.coach-locked .pf.book-cover-start{
+      padding:0;
+      background:#ebe4d3;
+    }
+    html.coach-locked .book-cover-inner{
+      width:100%;
+      height:100%;
+    }
+    html.coach-locked .book-cover-leather{
+      width:100%;
+      height:100%;
+      max-height:none;
+      border-radius:0;
+      padding:0;
+      background:transparent;
+      box-shadow:none;
+    }
+    html.coach-locked .book-cover-leather::before{display:none;}
+    html.coach-locked .book-cover-panel{
+      overflow:hidden;
+      justify-content:flex-start;
+      width:100%;
+      height:100%;
+      padding:0;
+      gap:0;
+      border-radius:0;
+      background:#ebe4d3;
+      box-shadow:none;
+    }
+    html.coach-locked .book-cover-panel::before,
+    html.coach-locked .book-cover-panel::after{display:none;}
+    html.coach-locked .cover-body{
+      flex:1;
+      min-height:0;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:clamp(6px,1.6vw,8px);
+      padding:clamp(8px,2.2vw,12px) clamp(12px,3.2vw,16px) clamp(6px,1.6vw,10px);
+    }
+    html.coach-locked .book-cover-inner,
+    html.coach-locked .book-cover-leather{
+      height:100%;
+      max-height:100%;
+    }
+    .cover-order-guide{
+      position:relative;z-index:1;
+      width:100%;
+      max-width:420px;
+      padding:0;
+      border-radius:0;
+      text-align:center;
+      background:transparent;
+      border:none;
+      box-shadow:none;
+      flex-shrink:1;min-height:0;
+    }
+    html.coach-locked .cover-order-guide{
+      flex:1 1 auto;
+      max-height:100%;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+    .cover-welcome-block{
+      width:100%;
+      flex-shrink:0;
+    }
+    .cover-welcome-greet{
+      margin:0 0 5px;
+      font-size:clamp(24px,6.8vw,30px);
+      font-weight:900;
+      color:#6b4a12;
+      line-height:1.12;
+      letter-spacing:.02em;
+      flex-shrink:0;
+    }
+    .cover-welcome-sub{
+      margin:0 0 clamp(8px,2.2vw,10px);
+      padding-bottom:clamp(8px,2.2vw,10px);
+      border-bottom:1px solid rgba(180,150,100,.38);
+      font-size:clamp(13px,3.6vw,15px);
+      font-weight:700;
+      line-height:1.45;
+      color:#4a3420;
+      flex-shrink:0;
+    }
+    .cover-order-head,
+    .cover-order-guide .cover-order-head{
+      margin:0 0 3px;
+      font-size:clamp(14px,3.8vw,16px);
+      font-weight:900;
+      color:#3d2806;
+      line-height:1.2;
+      letter-spacing:.02em;
+      flex-shrink:0;
+    }
+    .cover-order-lead,
+    .cover-order-guide .cover-order-lead{
+      margin:0 0 clamp(8px,2.2vw,10px);
+      font-size:clamp(12px,3.2vw,13px);
+      font-weight:700;
+      line-height:1.35;
+      color:#5c4228;
+      flex-shrink:0;
+    }
+    .cover-welcome-pitches{
+      margin:0 0 12px;
+      padding:0;
+      list-style:none;
+      display:flex;flex-direction:column;gap:6px;
+      text-align:start;
+    }
+    .cover-welcome-pitches li{
+      position:relative;
+      padding-inline-start:22px;
+      font-size:clamp(11px,2.9vw,12px);
+      line-height:1.45;
+      font-weight:700;
+      color:#4a3420;
+    }
+    .cover-welcome-pitches li::before{
+      content:"✦";
+      position:absolute;
+      inset-inline-start:0;top:0;
+      color:#b87200;font-size:11px;
+    }
+    .cover-how-title{
+      margin:0 0 2px;
+      padding-top:10px;
+      border-top:1px dashed rgba(46,125,50,.32);
+      font-size:clamp(14px,3.8vw,17px);
+      font-weight:900;
+      color:#1b5e20;
+      text-align:center;
+    }
     .cover-instructions{
-      position:relative;z-index:1;width:min(92%,320px);
-      text-align:right;direction:rtl;
-      display:flex;flex-direction:column;gap:7px;
-      margin-top:4px;
+      position:relative;z-index:1;width:100%;
+      text-align:start;
+      direction:inherit;
+      display:flex;flex-direction:column;gap:clamp(5px,1.4vw,7px);
+      margin-top:0;
+    }
+    .cover-ios-tip{
+      position:relative;z-index:1;
+      width:100%;max-width:420px;
+      margin:4px 0 0;
+      padding:8px 12px;
+      border-radius:12px;
+      font-size:11px;font-weight:800;line-height:1.45;
+      color:#4a3208;text-align:center;
+      background:rgba(255,240,200,.82);
+      border:1px solid rgba(200,134,10,.38);
+      flex-shrink:0;
+    }
+    html:not(.ios-inbrowser) .cover-ios-tip,
+    html.ios-standalone .cover-ios-tip{display:none!important;}
+    html.coach-locked .cover-instructions{
+      flex:1 1 auto;
+      min-height:0;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+      scrollbar-width:thin;
     }
     .cover-instructions .cover-step{
-      display:flex;align-items:flex-start;gap:8px;
-      font-size:11px;line-height:1.45;color:#4a3420;
+      display:flex;align-items:center;gap:clamp(6px,1.6vw,8px);
+      padding:clamp(7px,2vw,9px) clamp(8px,2.2vw,10px);
+      border-radius:10px;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(180,150,100,.38);
+      box-shadow:0 1px 5px rgba(0,0,0,.05);
+      font-size:clamp(12px,3.2vw,14px);
+      line-height:1.35;
+      font-weight:700;
+      color:#3d2806;
+      flex-shrink:0;
     }
     .cover-instructions .cover-step-num{
-      flex-shrink:0;width:20px;height:20px;border-radius:50%;
-      background:linear-gradient(135deg,#b87200,#f0a820);
-      color:#1a0e06;font-size:10px;font-weight:900;
+      flex-shrink:0;width:clamp(26px,7vw,30px);height:clamp(26px,7vw,30px);border-radius:50%;
+      background:linear-gradient(145deg,#fff8e1,#ffe082);
+      color:#6b4a12;font-size:clamp(12px,3.2vw,14px);font-weight:900;
       display:flex;align-items:center;justify-content:center;
+      border:1px solid rgba(200,134,10,.35);
+      box-shadow:0 1px 4px rgba(200,134,10,.18);
     }
+    .cover-step-ico{
+      flex-shrink:0;font-size:clamp(18px,5vw,22px);line-height:1;
+    }
+    .cover-step-text{flex:1;min-width:0;}
+    .cover-step-text strong{color:#c62828;font-weight:900;}
     .cover-start-btn{
-      position:relative;z-index:2;
-      width:min(92%,280px);margin-top:6px;
-      background:linear-gradient(135deg,#b87200,#f0a820);
-      border:none;border-radius:14px;padding:13px 16px;
-      font-size:15px;font-weight:900;color:#1a0e06;cursor:pointer;
-      box-shadow:0 4px 18px rgba(184,114,0,.35);
+      position:relative;z-index:1;
+      width:100%;margin-top:clamp(8px,2.2vw,10px);
+      background:linear-gradient(145deg,#fff8e1,#ffe082);
+      border:1px solid rgba(200,134,10,.45);
+      border-radius:12px;padding:clamp(12px,3.2vw,14px) clamp(14px,3.6vw,16px);
+      font-size:clamp(14px,3.8vw,16px);font-weight:900;color:#3d2806;cursor:pointer;
+      box-shadow:0 4px 14px rgba(200,134,10,.22),inset 0 1px 0 rgba(255,255,255,.5);
+      letter-spacing:.02em;
+      flex-shrink:0;
     }
-    .cover-start-btn:active{transform:scale(.97);}
+    .cover-start-btn:active{transform:scale(.98);background:linear-gradient(145deg,#ffe082,#ffd54f);}
     html:not(.coach-locked) .cover-instructions,
-    html:not(.coach-locked) .cover-start-btn{display:none!important;}
+    html:not(.coach-locked) .cover-start-btn,
+    html:not(.coach-locked) .cover-order-guide{display:none!important;}
+    html.coach-locked .book-cover-swipe-hint{display:none!important;}
+    html.coach-locked #pageSwipeBar,
+    html.coach-locked #nav,
+    html.coach-locked #thumbs{display:none!important;}
     #coach{display:none!important;}
     html.coach-locked #guestGuide,
+    html.coach-locked #menuTopOrders,
     html.coach-locked #guestOrderChip{display:none!important;}
     .pf.book-cover-end{
       background:linear-gradient(155deg,#120800 0%,#2a1400 42%,#1a0c00 100%);
@@ -1454,9 +2055,9 @@
     .hotspot.plus-hit::after,.hotspot.plus-hotspot::after{
       content:"";
       position:absolute;left:50%;top:50%;
-      width:calc(100% + 6px);height:calc(100% + 6px);
-      min-width:28px;min-height:28px;
-      max-width:calc(100% + 10px);max-height:calc(100% + 10px);
+      width:calc(100% + 14px);height:calc(100% + 14px);
+      min-width:40px;min-height:40px;
+      max-width:calc(100% + 18px);max-height:calc(100% + 18px);
       transform:translate(-50%,-50%);
       background:transparent;
     }
@@ -1787,6 +2388,138 @@
     #orientLock.show{display:flex;}
     #orientLock p{font-size:15px;line-height:1.6;max-width:280px;margin-top:12px;color:rgba(255,224,130,.85);}
 
+    #iosInstallSheet{
+      position:fixed;inset:0;z-index:98000;
+      display:flex;align-items:flex-end;justify-content:center;
+      background:rgba(0,0,0,.72);
+      opacity:0;pointer-events:none;
+      transition:opacity .32s ease;
+      padding:0;
+    }
+    #iosInstallSheet.show{opacity:1;pointer-events:auto;}
+    .ios-install-card{
+      width:100%;max-width:440px;
+      max-height:min(94%,calc(var(--app-h,100dvh) - 12px));
+      overflow:auto;-webkit-overflow-scrolling:touch;
+      background:linear-gradient(168deg,#1a1008 0%,#0d0500 100%);
+      border-radius:22px 22px 0 0;
+      border:1.5px solid rgba(200,134,10,.45);
+      border-bottom:none;
+      box-shadow:0 -12px 48px rgba(0,0,0,.55);
+      padding:18px 18px calc(16px + env(safe-area-inset-bottom,0px));
+      transform:translateY(105%);
+      transition:transform .38s cubic-bezier(.22,1,.36,1);
+    }
+    #iosInstallSheet.show .ios-install-card{transform:translateY(0);}
+    .ios-install-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:5px 12px;border-radius:999px;
+      background:rgba(200,134,10,.16);border:1px solid rgba(200,134,10,.38);
+      color:#ffe082;font-size:11px;font-weight:900;letter-spacing:.06em;
+      margin-bottom:10px;
+    }
+    .ios-install-title{
+      margin:0 0 6px;font-size:21px;font-weight:900;color:#ffe082;line-height:1.25;
+    }
+    .ios-install-lead{
+      margin:0 0 14px;font-size:13px;line-height:1.55;color:rgba(255,224,130,.78);
+    }
+    .ios-install-mock{
+      margin:0 auto 14px;width:min(100%,320px);
+      border-radius:18px;padding:12px 12px 10px;
+      background:linear-gradient(180deg,#2a2a2e 0%,#1c1c1e 100%);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 8px 28px rgba(0,0,0,.45);
+    }
+    .ios-mock-bar{
+      height:28px;border-radius:8px;margin-bottom:10px;
+      background:rgba(255,255,255,.08);
+      display:flex;align-items:center;justify-content:center;
+      font-size:10px;color:rgba(255,255,255,.45);font-weight:700;
+    }
+    .ios-mock-screen{
+      border-radius:12px;min-height:88px;padding:12px;
+      background:linear-gradient(160deg,#ebe4d3,#d8ccb8);
+      display:flex;align-items:center;justify-content:center;
+      color:#4a3208;font-size:12px;font-weight:800;text-align:center;
+    }
+    .ios-mock-share{
+      margin-top:10px;height:42px;border-radius:12px;
+      background:rgba(255,255,255,.1);
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      border:2px solid rgba(255,224,130,.75);
+      box-shadow:0 0 0 4px rgba(255,193,7,.18);
+      animation:iosSharePulse 1.8s ease-in-out infinite;
+    }
+    .ios-mock-share-ico{font-size:22px;line-height:1;}
+    .ios-mock-share-txt{font-size:12px;font-weight:900;color:#ffe082;}
+    @keyframes iosSharePulse{
+      0%,100%{transform:scale(1);box-shadow:0 0 0 4px rgba(255,193,7,.18);}
+      50%{transform:scale(1.02);box-shadow:0 0 0 7px rgba(255,193,7,.32);}
+    }
+    .ios-install-steps{
+      display:flex;flex-direction:column;gap:8px;margin:0 0 12px;
+    }
+    .ios-install-step{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:10px 12px;border-radius:14px;
+      background:rgba(200,134,10,.08);border:1px solid rgba(200,134,10,.22);
+      font-size:12px;line-height:1.45;color:rgba(255,240,210,.92);font-weight:700;
+    }
+    .ios-install-step-num{
+      flex-shrink:0;width:24px;height:24px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,#e6a817,#b87200);color:#1a0a00;
+      font-size:12px;font-weight:900;
+    }
+    .ios-install-note{
+      margin:0 0 14px;font-size:11px;line-height:1.5;
+      color:rgba(200,134,10,.72);text-align:center;
+    }
+    .ios-install-actions{display:flex;flex-direction:column;gap:8px;}
+    .ios-install-primary{
+      width:100%;border:none;border-radius:14px;padding:14px;
+      background:linear-gradient(135deg,#e6a817,#b87200);color:#1a0a00;
+      font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;
+      touch-action:manipulation;
+    }
+    .ios-install-secondary{
+      width:100%;border:1.5px solid rgba(200,134,10,.42);border-radius:14px;padding:12px;
+      background:transparent;color:#f0a820;font-size:13px;font-weight:800;
+      cursor:pointer;font-family:inherit;touch-action:manipulation;
+    }
+    .ios-install-ghost{
+      width:100%;border:none;background:transparent;
+      color:rgba(200,134,10,.55);font-size:11px;font-weight:700;
+      padding:6px;cursor:pointer;font-family:inherit;
+    }
+    html:not(.ios-inbrowser) #iosInstallSheet,
+    html.ios-standalone #iosInstallSheet{display:none!important;}
+    html.ios-install-open #fsHint{opacity:0!important;}
+    .scene-hud-ios{
+      display:none;
+      background:rgba(200,134,10,.18)!important;
+      border:1px solid rgba(200,134,10,.45)!important;
+      color:#ffe082!important;
+      font-size:16px!important;
+      padding:6px 10px!important;
+    }
+    html.ios-inbrowser:not(.ios-standalone) .scene-hud-ios{display:inline-flex!important;}
+    .cover-install-btn{
+      width:100%;margin-top:8px;
+      border:2px solid rgba(200,134,10,.55);border-radius:14px;padding:13px 14px;
+      background:linear-gradient(145deg,rgba(255,224,130,.22),rgba(230,168,23,.12));
+      color:#3d2818;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;
+      touch-action:manipulation;
+      box-shadow:0 4px 16px rgba(200,134,10,.18);
+    }
+    .cover-install-btn:active{transform:scale(.98);}
+    html:not(.ios-inbrowser) .cover-install-btn,
+    html.ios-standalone .cover-install-btn{display:none!important;}
+    html.ios-standalone #scene,
+    html.ios-standalone body,
+    html.ios-standalone{height:100dvh!important;min-height:100dvh!important;}
+
   </style>
 </head>
 <body>
@@ -1794,6 +2527,34 @@
     <div style="font-size:42px;line-height:1" aria-hidden="true">📱</div>
     <p id="i18n-orientLock">أبقِ الهاتف عمودياً لاستخدام المينو</p>
   </div>
+
+  <div id="iosInstallSheet" aria-hidden="true" role="dialog" aria-labelledby="i18n-iosInstallTitle">
+    <div class="ios-install-card">
+      <div class="ios-install-badge">📲 iPhone · ZEKiQ</div>
+      <h2 class="ios-install-title" id="i18n-iosInstallTitle">ملء الشاشة مثل Android</h2>
+      <p class="ios-install-lead" id="i18n-iosInstallLead">Safari لا يسمح بملء الشاشة تلقائياً — ثبّت المينو على الشاشة الرئيسية مرة واحدة.</p>
+      <div class="ios-install-mock" aria-hidden="true">
+        <div class="ios-mock-bar">Safari</div>
+        <div class="ios-mock-screen">ZEKiQ Menu</div>
+        <div class="ios-mock-share">
+          <span class="ios-mock-share-ico">□↑</span>
+          <span class="ios-mock-share-txt">Share · مشاركة</span>
+        </div>
+      </div>
+      <div class="ios-install-steps">
+        <div class="ios-install-step"><span class="ios-install-step-num">1</span><span id="i18n-iosInstallStep1">اضغط زر المشاركة □↑ أسفل Safari</span></div>
+        <div class="ios-install-step"><span class="ios-install-step-num">2</span><span id="i18n-iosInstallStep2">اختر «Add to Home Screen / إضافة إلى الشاشة الرئيسية»</span></div>
+        <div class="ios-install-step"><span class="ios-install-step-num">3</span><span id="i18n-iosInstallStep3">افتح المينو من الأيقونة — ملء كامل بدون شريط Safari</span></div>
+      </div>
+      <p class="ios-install-note" id="i18n-iosInstallNote">يُحفظ رابط طاولتك تلقائياً عند التثبيت من QR.</p>
+      <div class="ios-install-actions">
+        <button type="button" class="ios-install-primary" id="iosInstallContinue">فهمت — سأثبت الآن</button>
+        <button type="button" class="ios-install-secondary" id="iosInstallLater">متابعة في Safari (شاشة أصغر)</button>
+        <button type="button" class="ios-install-ghost" id="iosInstallDismiss">لا تُظهر مرة أخرى</button>
+      </div>
+    </div>
+  </div>
+
   <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p></div></div>
 
   <div id="okScreen">
@@ -1821,6 +2582,7 @@
     <div id="sceneHud">
       <div class="hud-row">
         <button type="button" class="scene-hud-btn scene-hud-list" id="sceneMenuBtn" onclick="return window.__zekiqOpenMenu&&window.__zekiqOpenMenu(event)"><span id="i18n-sceneMenuBtn">📋 القائمة</span></button>
+        <button type="button" class="scene-hud-btn scene-hud-ios" id="sceneIosInstallBtn" title="ملء الشاشة" onclick="window.__zekiqShowIosInstall&&window.__zekiqShowIosInstall(true);return false;">📲</button>
         <div class="scene-hud-center">
           <div class="scene-hud-shop" id="sceneHudShop">ZEKiQ</div>
           <div class="scene-hud-table" id="sceneHudTable">🪑 طاولة —</div>
@@ -1829,26 +2591,41 @@
       </div>
     </div>
     <div id="menuStage">
+      <div id="menuTopOrders">
+        <div id="guestEmptyHint" class="guest-empty-hint" aria-live="polite">
+          <span class="guest-empty-finger" aria-hidden="true">👆</span>
+          <span class="guest-empty-hint-txt" id="i18n-tapPlusHint"></span>
+        </div>
+        <div id="guestOrderChip">
+          <div class="scene-order-panel">
+            <div class="order-chip-head-row">
+              <button type="button" class="order-chip-head-btn" id="sceneOrderBtn">
+                <div class="order-chip-head" id="sceneOrderSummary"></div>
+              </button>
+              <button type="button" class="order-chip-send is-empty" id="topOrderSendBtn"><span id="i18n-topOrderSend">إرسال ✓</span></button>
+            </div>
+            <div class="order-chip-list" id="sceneOrderList"></div>
+          </div>
+        </div>
+      </div>
       <div id="menuOrderDock">
         <div id="guestGuide" class="guest-guide">
           <div class="guide-step" id="i18n-guide1"><span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة</div>
           <div class="guide-step" id="i18n-guide2"><span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد</div>
         </div>
-        <div id="guestOrderChip">
-          <div class="scene-order-panel">
-            <button type="button" class="order-chip-head-btn" id="sceneOrderBtn">
-              <div class="order-chip-head" id="sceneOrderSummary"></div>
-            </button>
-            <div class="order-chip-list" id="sceneOrderList"></div>
-          </div>
-        </div>
       </div>
       <div id="menuBookWrap">
       <div id="menuViewport">
+      <div id="menuTopDock">
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
       </div>
+      </div>
       <div id="book"></div>
+      <div id="guestPlusNudge" aria-hidden="true">
+        <span class="guest-nudge-finger">👆</span>
+        <div class="guest-nudge-bubble" id="i18n-tapPlusNudge"></div>
+      </div>
       </div>
       <div id="pageSwipeBar" aria-live="polite" aria-label="اسحب لقلب الصفحة">
         <div class="swipe-foot-panel">
@@ -1973,19 +2750,28 @@
       send: "إرسال ✓",
       guide1: '<span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة',
       guide2: '<span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد',
-      coachTitle: "كيف تطلب؟",
-      coach1: 'تصفّح <strong>المينو</strong> — اسحب يميناً أو يساراً على الصورة لقلب الصفحة',
-      coach2: 'اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام',
-      coach3: 'اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong>',
-      coach4: 'في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال',
-      coachOk: "فهمت — ابدأ الطلب ✓",
+      coachTitle: "كيف تطلب بنفسك؟",
+      coverWelcomeGreet: "أهلاً بك",
+      coverWelcomeSub: "حرصاً على راحتك — لأن راحتك تهمنا",
+      coverOrderHead: "اطلب بنفسك بسهولة — والطلب سيصل إلى طاولتك",
+      coverOrderLead: "٤ خطوات بسيطة من هاتفك إلى طاولتك",
+      coverWelcomeHead: "أهلاً بك",
+      coverWelcomeLead: "حرصاً على راحتك — لأن راحتك تهمنا",
+      coverPitch1: "نقدّم بين يديك تحكّماً كاملاً بطلباتك",
+      coverPitch2: "تصفّح المينو بحرية وأرسل طلبك مباشرة للمطبخ",
+      coverPitch3: "أضف ملاحظاتك لكل صنف — كما تحب بالضبط",
+      coach1: "اسحب يميناً أو يساراً لقلب صفحات المينو",
+      coach2: 'اضغط <strong>+ الأخضر</strong> على الطبق الذي تريده',
+      coach3: 'اضغط <strong>إرسال ↑</strong> في الأعلى ثم أكّد طلبك',
+      coach4: 'ضع <strong>ملاحظتك</strong> على الطلب — مثلاً إذا رغبت في إزالة أو إضافة شيء',
+      coachOk: "فهمت — ابدأ الطلب الآن ✓",
       coverStartBadge: "الغلاف",
       coverStartTitle: "Tonino Coffee",
       coverStartKicker: "MENU",
       coverDigitalMenu: "المينو الرقمي",
       coverBrandSub: "Coffee · Restaurant",
       coverTagline: "Kahve · Yemek · Hayat",
-      coverStartSub: "اسحب لفتح المينو",
+      coverStartSub: "اضغط «فهمت» لبدء الطلب",
       coverEndBadge: "نهاية المينو",
       coverEndTitle: "انتهى المينو",
       coverEndSub: "اسحب للخلف أو أرسل طلبك من الأعلى",
@@ -1994,8 +2780,21 @@
       orientLock: "أبقِ الهاتف عمودياً لاستخدام المينو",
       swipeHint: "اسحب لقلب الشاشة",
       railOrderHint: "اضغط + الأخضر على الصورة للطلب",
+      tapPlusHint: 'اضغط الزر <strong>+ الأخضر</strong> على الطبق في الصورة',
+      tapPlusNudge: 'اضغط <strong>+</strong> الأخضر على الصورة',
       fsHint: "👆 اضغط على المينو لملء الشاشة",
       fsHintIos: "↑ اسحب للأعلى قليلاً لإخفاء شريط Safari وملء الشاشة",
+      coverIosTip: "📱 iPhone: اسحب للأعلى لإخفاء شريط Safari — أو «مشاركة → إضافة إلى الشاشة الرئيسية» لملء الشاشة دائماً",
+      iosInstallTitle: "ملء الشاشة مثل Android",
+      iosInstallLead: "Safari لا يسمح للمواقع بملء الشاشة تلقائياً — ثبّت المينو على الشاشة الرئيسية مرة واحدة فقط.",
+      iosInstallStep1: "اضغط زر المشاركة □↑ أسفل Safari",
+      iosInstallStep2: "اختر «Add to Home Screen / إضافة إلى الشاشة الرئيسية»",
+      iosInstallStep3: "افتح المينو من الأيقونة — ملء كامل بدون شريط Safari",
+      iosInstallNote: "يُحفظ رابط طاولتك تلقائياً عند التثبيت من QR.",
+      iosInstallContinue: "فهمت — سأثبت الآن",
+      iosInstallLater: "متابعة في Safari (شاشة أصغر)",
+      iosInstallDismiss: "لا تُظهر مرة أخرى",
+      iosInstallCoverBtn: "📲 ملء الشاشة — تثبيت على iPhone",
       menuTitle: "📋 قائمة الأطباق",
       menuSub: "ابحث واطلب من أي صفحة",
       menuSearch: "ابحث… Türk kahve, menemen, pasta…",
@@ -2048,19 +2847,28 @@
       send: "Gönder ✓",
       guide1: '<span class="guide-n">1</span> Resimdeki yeşil <strong>+</strong> düğmesine basın',
       guide2: '<span class="guide-n">2</span> Sonra onay için <strong>Gönder</strong>',
-      coachTitle: "Nasıl sipariş verilir?",
-      coach1: '<strong>Menüde</strong> gezinin — sayfayı çevirmek için resimde sağa/sola kaydırın',
-      coach2: 'Yemek eklemek için resimdeki <strong>yeşil +</strong> düğmesine basın',
-      coach3: 'Üstte <strong>Gönder</strong> → sepeti kontrol et → <strong>Onayla</strong>',
-      coach4: 'Göndermeden önce her ürünün altına <strong>açık bir not</strong> yazabilirsiniz',
-      coachOk: "Anladım — siparişe başla ✓",
+      coachTitle: "Kendin nasıl sipariş verirsin?",
+      coverWelcomeGreet: "Hoş geldiniz",
+      coverWelcomeSub: "Konforunuz bizim için önemli — rahatınız önceliğimiz",
+      coverOrderHead: "Kendin kolayca sipariş ver — siparişin masana gelir",
+      coverOrderLead: "Telefondan masana 4 basit adım",
+      coverWelcomeHead: "Hoş geldiniz",
+      coverWelcomeLead: "Konforunuz bizim için önemli — rahatınız önceliğimiz",
+      coverPitch1: "Siparişlerinizde tam kontrol sizde",
+      coverPitch2: "Menüyü özgürce gezinin, siparişinizi doğrudan mutfağa gönderin",
+      coverPitch3: "Her ürüne istediğiniz notu ekleyin — tam istediğiniz gibi",
+      coach1: "Menü sayfalarını çevirmek için sağa/sola kaydırın",
+      coach2: 'İstediğiniz yemeğe <strong>yeşil +</strong> basın',
+      coach3: 'Üstte <strong>Gönder ↑</strong> → sepeti kontrol et → <strong>Onayla</strong>',
+      coach4: 'Siparişe <strong>not</strong> ekleyin — örneğin bir şeyi çıkarmak veya eklemek için',
+      coachOk: "Anladım — şimdi siparişe başla ✓",
       coverStartBadge: "Kapak",
       coverStartTitle: "Tonino Coffee",
       coverStartKicker: "MENU",
       coverDigitalMenu: "Dijital Menü",
       coverBrandSub: "Coffee · Restaurant",
       coverTagline: "Kahve · Yemek · Hayat",
-      coverStartSub: "Menüyü açmak için kaydırın",
+      coverStartSub: "Başlamak için «Anladım»a basın",
       coverEndBadge: "Menü sonu",
       coverEndTitle: "Menü bitti",
       coverEndSub: "Geri kaydırın veya üstten sipariş gönderin",
@@ -2069,8 +2877,21 @@
       orientLock: "Telefonu dikey tutun",
       swipeHint: "Sayfayı çevirmek için kaydırın",
       railOrderHint: "Sipariş için resimdeki yeşil + düğmesine basın",
+      tapPlusHint: 'Resimdeki yemeğe <strong>yeşil +</strong> düğmesine basın',
+      tapPlusNudge: 'Resimde <strong>yeşil +</strong> düğmesine basın',
       fsHint: "👆 Tam ekran için menüye dokunun",
       fsHintIos: "↑ Safari çubuğunu gizlemek için yukarı kaydırın",
+      coverIosTip: "📱 iPhone: Safari çubuğunu gizlemek için yukarı kaydırın — veya tam ekran için «Paylaş → Ana Ekrana Ekle»",
+      iosInstallTitle: "Android gibi tam ekran",
+      iosInstallLead: "Safari otomatik tam ekrana izin vermez — menüyü Ana Ekrana bir kez ekleyin.",
+      iosInstallStep1: "Safari altındaki Paylaş □↑ düğmesine dokunun",
+      iosInstallStep2: "«Ana Ekrana Ekle / Add to Home Screen» seçin",
+      iosInstallStep3: "Menüyü simgeden açın — Safari çubuğu olmadan tam ekran",
+      iosInstallNote: "QR ile açtığınızda masa bağlantınız otomatik kaydedilir.",
+      iosInstallContinue: "Anladım — şimdi ekleyeceğim",
+      iosInstallLater: "Safari'de devam et (daha küçük ekran)",
+      iosInstallDismiss: "Bir daha gösterme",
+      iosInstallCoverBtn: "📲 Tam ekran — iPhone'a ekle",
       menuTitle: "📋 Yemek listesi",
       menuSub: "Ara ve her sayfadan sipariş ver",
       menuSearch: "Ara… Türk kahve, menemen, pasta…",
@@ -2123,19 +2944,28 @@
       send: "Send ✓",
       guide1: '<span class="guide-n">1</span> Tap the green <strong>+</strong> on the image',
       guide2: '<span class="guide-n">2</span> Then <strong>Send</strong> to confirm',
-      coachTitle: "How to order?",
-      coach1: 'Browse the <strong>menu</strong> — swipe left or right on the image to turn the page',
-      coach2: 'Tap the green <strong>+</strong> on the image to add food',
-      coach3: 'Tap <strong>Send</strong> at top → review cart → <strong>Confirm</strong>',
-      coach4: 'In the cart, add a <strong>clear note</strong> under each item before sending',
-      coachOk: "Got it — start ordering ✓",
+      coachTitle: "How do you order yourself?",
+      coverWelcomeGreet: "Welcome",
+      coverWelcomeSub: "Your comfort matters — we care about your experience",
+      coverOrderHead: "Order easily — your order arrives at your table",
+      coverOrderLead: "4 simple steps from your phone to your table",
+      coverWelcomeHead: "Welcome",
+      coverWelcomeLead: "Your comfort matters — we care about your experience",
+      coverPitch1: "Full control of your orders, right in your hands",
+      coverPitch2: "Browse the menu freely and send orders straight to the kitchen",
+      coverPitch3: "Add notes to each item — exactly how you want it",
+      coach1: "Swipe left or right to turn menu pages",
+      coach2: 'Tap the green <strong>+</strong> on the dish you want',
+      coach3: 'Tap <strong>Send ↑</strong> at the top, then confirm',
+      coach4: 'Add a <strong>note</strong> to your order — e.g. to remove or add something',
+      coachOk: "Got it — start ordering now ✓",
       coverStartBadge: "Cover",
       coverStartTitle: "Tonino Coffee",
       coverStartKicker: "MENU",
       coverDigitalMenu: "Digital Menu",
       coverBrandSub: "Coffee · Restaurant",
       coverTagline: "Kahve · Yemek · Hayat",
-      coverStartSub: "Swipe to open the menu",
+      coverStartSub: "Tap «Got it» to start ordering",
       coverEndBadge: "Menu end",
       coverEndTitle: "End of menu",
       coverEndSub: "Swipe back or send your order above",
@@ -2144,8 +2974,21 @@
       orientLock: "Keep your phone upright to browse the menu",
       swipeHint: "Swipe to turn the page",
       railOrderHint: "Tap the green + on the image to order",
+      tapPlusHint: 'Tap the green <strong>+</strong> button on the dish in the image',
+      tapPlusNudge: 'Tap the green <strong>+</strong> on the image',
       fsHint: "👆 Tap the menu for full screen",
       fsHintIos: "↑ Swipe up slightly to hide Safari bar and fill the screen",
+      coverIosTip: "📱 iPhone: swipe up to hide Safari bar — or Share → Add to Home Screen for always-fullscreen",
+      iosInstallTitle: "Full screen like Android",
+      iosInstallLead: "Safari blocks automatic fullscreen — add the menu to your Home Screen once.",
+      iosInstallStep1: "Tap Share □↑ at the bottom of Safari",
+      iosInstallStep2: "Choose «Add to Home Screen»",
+      iosInstallStep3: "Open the menu from the icon — full screen, no Safari bar",
+      iosInstallNote: "Your table link is saved automatically when you install from QR.",
+      iosInstallContinue: "Got it — I'll install now",
+      iosInstallLater: "Continue in Safari (smaller view)",
+      iosInstallDismiss: "Don't show again",
+      iosInstallCoverBtn: "📲 Full screen — Add to iPhone",
       menuTitle: "📋 Dish list",
       menuSub: "Search and order from any page",
       menuSearch: "Search… coffee, pasta…",
@@ -2210,6 +3053,7 @@
       "i18n-load-sub": "loadingSub",
       "i18n-sceneMenuBtn": "menuList",
       "i18n-sceneSendBtn": "send",
+      "i18n-topOrderSend": "send",
       "i18n-guide1": "guide1",
       "i18n-guide2": "guide2",
       "i18n-coach-title": "coachTitle",
@@ -2222,6 +3066,8 @@
       "i18n-next": "next",
       "i18n-swipeHint": "swipeHint",
       "i18n-railOrderHint": "railOrderHint",
+      "i18n-tapPlusHint": "tapPlusHint",
+      "i18n-tapPlusNudge": "tapPlusNudge",
       "i18n-orientLock": "orientLock",
       "i18n-fsHint": "fsHint",
       "i18n-menu-title": "menuTitle",
@@ -2242,7 +3088,7 @@
       var el = document.getElementById(id);
       if (!el) return;
       var val = t(htmlIds[id]);
-      if (htmlIds[id].indexOf("guide") === 0 || htmlIds[id].indexOf("coach") === 0) el.innerHTML = val;
+      if (htmlIds[id].indexOf("guide") === 0 || htmlIds[id].indexOf("coach") === 0 || htmlIds[id] === "tapPlusHint" || htmlIds[id] === "tapPlusNudge") el.innerHTML = val;
       else el.textContent = val;
     });
     var note = document.getElementById("noteInp");
@@ -2283,6 +3129,9 @@
     function coachDoneKey() {
       return "zekiq_coach_done:" + (TOKEN || "x").slice(0, 48);
     }
+    (function applyEarlyCoachGate() {
+      document.documentElement.classList.add("coach-locked");
+    })();
     function clearGuestOverlays() {
       cart.length = 0;
       done = false;
@@ -2304,8 +3153,141 @@
     let singlePagePlusOnly = false;
     let plusButtonsAllPages = false;
     let bookCacheVer = "";
+    let categoryBarOffsetPx = 0;
     let cur = 0, animating = false, popupItem = null, popupQty = 1, sending = false, done = false;
     const FLIP_MS = 680;
+    let dragFlip = null;
+    let dragRaf = 0;
+    const BOOK_LIFT_MAX = 32;
+    function bookPageWidth() {
+      const book = document.getElementById("book");
+      return Math.max(280, book ? book.offsetWidth : window.innerWidth);
+    }
+    function bookTurnPose(t, dir) {
+      t = Math.max(0, Math.min(1, t));
+      const theta = t * Math.PI;
+      const lift = Math.sin(theta);
+      const y = dir === "next" ? -180 * t : -180 * (1 - t);
+      const z = lift * BOOK_LIFT_MAX;
+      const x = -lift * 2.4;
+      const bend = -lift * 4;
+      return {
+        y, x, z, bend,
+        shade: lift * 0.5,
+        edge: lift * 0.92,
+        shadow: lift,
+      };
+    }
+    function applyBookTurnPose(pw, t, dir) {
+      if (!pw) return;
+      const p = bookTurnPose(t, dir);
+      pw.style.transform = "rotateY(" + p.y + "deg) rotateX(" + p.x + "deg) translateZ(" + p.z + "px)";
+      const pf = pw.querySelector(".pf");
+      if (pf) {
+        pf.style.transformOrigin = "left center";
+        pf.style.transform = "rotateX(" + p.bend + "deg)";
+        const spread = 6 + p.shadow * 14;
+        const down = 2 + p.shadow * 5;
+        const blur = 8 + p.shadow * 26;
+        const alpha = 0.06 + p.shadow * 0.17;
+        pf.style.boxShadow = spread + "px " + down + "px " + blur + "px rgba(0,0,0," + alpha + ")";
+      }
+      const shadeEl = pw.querySelector(".page-shade");
+      if (shadeEl) shadeEl.style.opacity = String(p.shade);
+      const edgeEl = pw.querySelector(".page-edge");
+      if (edgeEl) edgeEl.style.opacity = String(p.edge);
+    }
+    function clearBookTurnInline(pw) {
+      if (!pw) return;
+      pw.style.transform = "";
+      const pf = pw.querySelector(".pf");
+      if (pf) {
+        pf.style.transform = "";
+        pf.style.transformOrigin = "";
+        pf.style.boxShadow = "";
+      }
+      pw.querySelectorAll(".page-shade,.page-edge").forEach(el => { el.style.opacity = ""; });
+    }
+    function beginDragFlip(dir) {
+      if (navLocked()) return false;
+      if (dragFlip || animating) return false;
+      if (dir === "next" && cur >= bookSpread.length - 1) return false;
+      if (dir === "prev" && cur <= 0) return false;
+      const idx = cur;
+      let turnPw, revealPw;
+      if (dir === "next") {
+        turnPw = document.getElementById("pw" + idx);
+        revealPw = document.getElementById("pw" + (idx + 1));
+        if (!turnPw || !revealPw) return false;
+        setBookPad(bookSpread[idx + 1]);
+        layoutPageFace(revealPw.querySelector(".pf"));
+        revealPw.classList.add("page-current", "page-reveal");
+        turnPw.classList.add("page-current", "page-flip-top", "turning", "turn-next", "page-dragging");
+      } else {
+        turnPw = document.getElementById("pw" + (idx - 1));
+        revealPw = document.getElementById("pw" + idx);
+        if (!turnPw || !revealPw) return false;
+        setBookPad(bookSpread[idx]);
+        layoutPageFace(turnPw.querySelector(".pf"));
+        revealPw.classList.add("page-current", "page-reveal");
+        turnPw.classList.add("page-current", "page-flip-top", "turning", "turn-prev", "page-dragging");
+      }
+      animating = true;
+      setPageFlipping(true);
+      dragFlip = { dir, idx, turnPw, revealPw, t: 0 };
+      applyBookTurnPose(turnPw, 0, dir);
+      sync(true);
+      return true;
+    }
+    function setDragFlipProgress(t) {
+      if (!dragFlip) return;
+      dragFlip.t = Math.max(0, Math.min(1, t));
+      applyBookTurnPose(dragFlip.turnPw, dragFlip.t, dragFlip.dir);
+    }
+    function cancelDragRaf() {
+      if (dragRaf) cancelAnimationFrame(dragRaf);
+      dragRaf = 0;
+    }
+    function settleDragFlip(normVel) {
+      if (!dragFlip) return;
+      const { dir, idx, turnPw, revealPw, t } = dragFlip;
+      let target = 0;
+      if (dir === "next") {
+        if (t > 0.22 || normVel < -0.42) target = 1;
+      } else if (t > 0.22 || normVel > 0.42) {
+        target = 1;
+      }
+      const dist = Math.abs(target - t);
+      const speed = Math.max(0.45, Math.min(2.6, Math.abs(normVel) * 2.2 + 0.55));
+      const duration = Math.max(110, Math.min(FLIP_MS, Math.round((dist / speed) * FLIP_MS)));
+      const startT = t;
+      const t0 = performance.now();
+      cancelDragRaf();
+      function step(now) {
+        const u = Math.min(1, (now - t0) / duration);
+        const ease = 1 - Math.pow(1 - u, 3);
+        const curT = startT + (target - startT) * ease;
+        setDragFlipProgress(curT);
+        if (u < 1) dragRaf = requestAnimationFrame(step);
+        else finishDragFlip(target === 1);
+      }
+      dragRaf = requestAnimationFrame(step);
+    }
+    function finishDragFlip(completed) {
+      if (!dragFlip) return;
+      cancelDragRaf();
+      const { dir, idx, turnPw, revealPw } = dragFlip;
+      dragFlip = null;
+      if (completed) {
+        if (dir === "next") cur = idx + 1;
+        else cur = idx - 1;
+      }
+      turnPw.classList.remove("page-current", "page-flip-top", "turning", "turn-next", "turn-prev", "page-dragging", "page-reveal");
+      revealPw.classList.remove("page-current", "page-reveal", "page-flip-top");
+      clearBookTurnInline(turnPw);
+      endPageTurn(turnPw);
+      sync(false);
+    }
     window.__zekiqGestureSwipe = false;
     function panelBlocksSwipe(el) {
       if (!el || !el.closest) return false;
@@ -2319,33 +3301,32 @@
       if (document.__bookSwipeBound) return;
       document.__bookSwipeBound = true;
       const SWIPE_MIN = 28;
-      const SWIPE_COMMIT = 22;
+      const SWIPE_COMMIT = 14;
       let x0 = 0;
       let y0 = 0;
+      let t0 = 0;
       let tracking = false;
       let swipeCommitted = false;
+      let lastX = 0;
+      let lastT = 0;
+      let dragDir = "";
 
       function canFlip() {
-        return !animating && bookSpread.length > 1;
+        return !navLocked() && !animating && bookSpread.length > 1;
       }
       function isHorizontalSwipe(dx, dy) {
         return Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy) * 0.8;
       }
-      function finishSwipe(dx, dy) {
-        if (!canFlip() || !isHorizontalSwipe(dx, dy)) return false;
-        if (dx < 0) nextPage();
-        else prevPage();
-        bumpSwipeLearned();
-        return true;
-      }
       function swipeZone(el) {
         if (!el || !el.closest) return false;
         if (panelBlocksSwipe(el)) return false;
+        if (el.closest(".pf-cat-strip,.cat-chip,.cat-chip-page")) return false;
         return !!el.closest("#book,#pageSwipeBar,.pf,.pf-bg,.pw");
       }
       function clearSwipeVisual() {
         tracking = false;
         swipeCommitted = false;
+        dragDir = "";
         window.__zekiqPageSwiping = false;
         const book = document.getElementById("book");
         if (book) book.classList.remove("page-swiping");
@@ -2353,27 +3334,59 @@
       function onSwipeStart(x, y) {
         x0 = x;
         y0 = y;
+        t0 = performance.now();
+        lastX = x;
+        lastT = t0;
         tracking = true;
         swipeCommitted = false;
+        dragDir = "";
         window.__zekiqPageSwiping = false;
       }
       function onSwipeMove(x, y) {
-        if (!tracking || swipeCommitted) return;
+        if (!tracking) return;
         const dx = x - x0;
         const dy = y - y0;
-        if (Math.abs(dx) >= SWIPE_COMMIT && Math.abs(dx) > Math.abs(dy) * 0.75) {
-          swipeCommitted = true;
-          window.__zekiqPageSwiping = true;
-          const book = document.getElementById("book");
-          if (book) book.classList.add("page-swiping");
+        if (!dragDir && Math.abs(dx) >= SWIPE_COMMIT && Math.abs(dx) > Math.abs(dy) * 0.72) {
+          if (navLocked()) { clearSwipeVisual(); return; }
+          dragDir = dx < 0 ? "next" : "prev";
         }
+        if (dragDir) {
+          if (!dragFlip && !beginDragFlip(dragDir)) {
+            dragDir = "";
+            return;
+          }
+          if (dragFlip) {
+            swipeCommitted = true;
+            window.__zekiqPageSwiping = true;
+            document.getElementById("book")?.classList.add("page-swiping");
+            const pageW = bookPageWidth();
+            setDragFlipProgress(Math.min(1, Math.abs(dx) / (pageW * 0.94)));
+          }
+        }
+        lastX = x;
+        lastT = performance.now();
       }
       function onSwipeEnd(x, y) {
         if (!tracking) return;
         const dx = x - x0;
         const dy = y - y0;
-        const flipped = finishSwipe(dx, dy);
+        const dt = Math.max(8, performance.now() - t0);
+        const normVel = (x - lastX) / Math.max(6, performance.now() - lastT) / bookPageWidth();
+        let flipped = false;
+        if (dragFlip) {
+          settleDragFlip(normVel);
+          flipped = true;
+        } else if (canFlip() && isHorizontalSwipe(dx, dy)) {
+          const dir = dx < 0 ? "next" : "prev";
+          if (beginDragFlip(dir)) {
+            const pageW = bookPageWidth();
+            setDragFlipProgress(Math.min(1, Math.abs(dx) / (pageW * 0.94)));
+            settleDragFlip(dx / dt / pageW);
+            flipped = true;
+          }
+        }
         if (flipped || swipeCommitted) {
+          bumpSwipeLearned();
           window.__zekiqGestureSwipe = true;
           setTimeout(function () { window.__zekiqGestureSwipe = false; }, 450);
         }
@@ -2410,7 +3423,10 @@
       );
       document.addEventListener(
         "touchcancel",
-        function () { clearSwipeVisual(); },
+        function () {
+          if (dragFlip) settleDragFlip(0);
+          clearSwipeVisual();
+        },
         { capture: true, passive: true }
       );
 
@@ -2467,20 +3483,21 @@
     function guestDisplayShopName(raw) {
       const s = String(raw || "").trim();
       if (!s) return "Tonino Coffee";
+      const lower = s.toLowerCase().replace(/\s+/g, " ");
+      if (/zekiq\s*dev|zekiq\s*vendor|dev\s*zekiq|zekiq\s*—\s*dev|^zekiq$/i.test(lower)) return "Tonino Coffee";
       const digits = s.replace(/\D/g, "");
       const compact = s.replace(/\s/g, "");
       if (digits.length >= 8 && digits.length / Math.max(compact.length, 1) >= 0.85) return "Tonino Coffee";
       return s;
     }
-    function coverBrandSubText() {
-      const name = (shopName || "").toLowerCase();
-      if (/tonino|coffee|kafe|cafe/.test(name)) return guestT("coverBrandSub");
-      return guestT("coverDigitalMenu");
-    }
     function coverTaglineText() {
       const name = (shopName || "").toLowerCase();
       if (/tonino/.test(name)) return guestT("coverTagline");
       return "";
+    }
+    function coverLogoSrc() {
+      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1";
+      return "assets/tonino-brand-banner.jpg" + bv;
     }
     function fillCoverPage(pf, kind) {
       pf.classList.add("book-cover", kind === "cover-start" ? "book-cover-start" : "book-cover-end");
@@ -2492,46 +3509,61 @@
         const panel = document.createElement("div");
         panel.className = "book-cover-panel";
 
-        const plate = document.createElement("div");
-        plate.className = "cover-brand-plate";
+        const banner = document.createElement("div");
+        banner.className = "cover-brand-banner";
 
-        const menuLabel = document.createElement("p");
-        menuLabel.className = "cover-menu-label";
-        menuLabel.textContent = guestT("coverStartKicker");
+        const logo = document.createElement("img");
+        logo.className = "cover-banner-img guest-brand-banner-img";
+        logo.src = coverLogoSrc();
+        logo.alt = shopName || guestT("coverStartTitle");
+        logo.draggable = false;
+        logo.decoding = "async";
 
-        const title = document.createElement("h1");
-        title.className = "cover-shop-script";
-        title.textContent = shopName || guestT("coverStartTitle");
+        banner.appendChild(logo);
 
-        const brandSub = document.createElement("p");
-        brandSub.className = "cover-brand-sub";
-        brandSub.textContent = coverBrandSubText();
-
-        plate.appendChild(menuLabel);
-        plate.appendChild(title);
-        plate.appendChild(brandSub);
-
-        const tagline = coverTaglineText();
-        if (tagline) {
-          const tag = document.createElement("p");
-          tag.className = "cover-tagline";
-          tag.textContent = tagline;
-          plate.appendChild(tag);
-        }
+        const body = document.createElement("div");
+        body.className = "cover-body";
 
         const tableLine = document.createElement("p");
         tableLine.className = "cover-table-line";
-        tableLine.textContent =
-          section && tableNum ? section + " · " + guestT("table") + " " + tableNum : "";
+        if (section && tableNum) {
+          tableLine.textContent = section + " · " + guestT("table") + " " + tableNum;
+        }
+
+        const guide = document.createElement("div");
+        guide.className = "cover-order-guide";
+        guide.innerHTML =
+          '<div class="cover-welcome-block">' +
+          '<p class="cover-welcome-greet">' + esc(guestT("coverWelcomeGreet")) + "</p>" +
+          '<p class="cover-welcome-sub">' + esc(guestT("coverWelcomeSub")) + "</p>" +
+          "</div>" +
+          '<p class="cover-ios-tip">' + esc(guestT("coverIosTip")) + "</p>" +
+          '<h2 class="cover-order-head">' + esc(guestT("coverOrderHead")) + "</h2>" +
+          '<p class="cover-order-lead">' + esc(guestT("coverOrderLead")) + "</p>";
 
         const instr = document.createElement("div");
         instr.className = "cover-instructions";
+        const stepIcons = ["📖", "➕", "✓", "📝"];
         [1, 2, 3, 4].forEach(n => {
           const row = document.createElement("div");
           row.className = "cover-step";
-          row.innerHTML = '<span class="cover-step-num">' + n + '</span><span class="cover-step-text">' + guestT("coach" + n) + "</span>";
+          row.innerHTML =
+            '<span class="cover-step-num">' + n + '</span>' +
+            '<span class="cover-step-ico" aria-hidden="true">' + stepIcons[n - 1] + "</span>" +
+            '<span class="cover-step-text">' + guestT("coach" + n) + "</span>";
           instr.appendChild(row);
         });
+        guide.appendChild(instr);
+
+        const installBtn = document.createElement("button");
+        installBtn.type = "button";
+        installBtn.className = "cover-install-btn";
+        installBtn.id = "coverInstallBtn";
+        installBtn.textContent = guestT("iosInstallCoverBtn");
+        installBtn.onclick = function () {
+          if (window.__zekiqShowIosInstall) window.__zekiqShowIosInstall(true);
+        };
+        guide.appendChild(installBtn);
 
         const startBtn = document.createElement("button");
         startBtn.type = "button";
@@ -2539,19 +3571,12 @@
         startBtn.id = "coverStartBtn";
         startBtn.textContent = guestT("coachOk");
         startBtn.onclick = dismissCoach;
+        guide.appendChild(startBtn);
 
-        const hint = document.createElement("div");
-        hint.className = "book-cover-swipe-hint";
-        hint.innerHTML =
-          '<span class="cover-arrow cover-arrow-prev" aria-hidden="true">‹</span>' +
-          "<span>" + esc(guestT("coverStartSub")) + "</span>" +
-          '<span class="cover-arrow cover-arrow-next" aria-hidden="true">›</span>';
-
-        panel.appendChild(plate);
-        if (section && tableNum) panel.appendChild(tableLine);
-        panel.appendChild(instr);
-        panel.appendChild(startBtn);
-        panel.appendChild(hint);
+        panel.appendChild(banner);
+        if (section && tableNum) body.appendChild(tableLine);
+        body.appendChild(guide);
+        panel.appendChild(body);
         leather.appendChild(panel);
         inner.appendChild(leather);
       } else {
@@ -2583,31 +3608,49 @@
       document.querySelectorAll(".book-cover-swipe-hint span:not(.cover-arrow)").forEach(el => {
         el.textContent = guestT("coverStartSub");
       });
-      document.querySelectorAll(".cover-menu-label").forEach(el => {
-        el.textContent = guestT("coverStartKicker");
+      document.querySelectorAll(".cover-banner-img,.cover-brand-banner .guest-brand-banner-img").forEach(el => {
+        el.src = coverLogoSrc();
+        el.alt = shopName || guestT("coverStartTitle");
       });
-      document.querySelectorAll(".cover-brand-sub").forEach(el => {
-        el.textContent = coverBrandSubText();
+      document.querySelectorAll(".cover-welcome-greet").forEach(el => {
+        el.textContent = guestT("coverWelcomeGreet");
       });
-      document.querySelectorAll(".cover-shop-script").forEach(el => {
-        el.textContent = shopName || guestT("coverStartTitle");
+      document.querySelectorAll(".cover-welcome-sub").forEach(el => {
+        el.textContent = guestT("coverWelcomeSub");
       });
-      document.querySelectorAll(".cover-tagline").forEach(el => {
-        const tag = coverTaglineText();
-        el.textContent = tag;
-        el.style.display = tag ? "" : "none";
+      document.querySelectorAll(".cover-order-head").forEach(el => {
+        el.textContent = guestT("coverOrderHead");
+      });
+      document.querySelectorAll(".cover-order-lead").forEach(el => {
+        el.textContent = guestT("coverOrderLead");
+      });
+      document.querySelectorAll(".cover-ios-tip").forEach(el => {
+        el.textContent = guestT("coverIosTip");
+      });
+      document.querySelectorAll(".cover-install-btn").forEach(el => {
+        el.textContent = guestT("iosInstallCoverBtn");
+      });
+      if (window.__zekiqRefreshIosInstallCopy) window.__zekiqRefreshIosInstallCopy();
+      document.querySelectorAll(".cover-how-title").forEach(el => {
+        el.textContent = guestT("coachTitle");
       });
       document.querySelectorAll(".cover-table-line").forEach(el => {
         if (section && tableNum) el.textContent = section + " · " + guestT("table") + " " + tableNum;
       });
       document.querySelectorAll(".cover-instructions .cover-step").forEach((row, i) => {
         const txt = row.querySelector(".cover-step-text");
-        if (txt) txt.innerHTML = guestT("coach" + (i + 1));
+        const icons = ["📖", "➕", "✓", "📝"];
+        const ico = row.querySelector(".cover-step-ico");
+        if (ico && icons[i]) ico.textContent = icons[i];
+        if (txt && i < 4) txt.innerHTML = guestT("coach" + (i + 1));
       });
       const csb = document.getElementById("coverStartBtn");
       if (csb) csb.textContent = guestT("coachOk");
     }
     let coachDone = false, orderOn = false;
+    function navLocked() {
+      return !coachDone || document.documentElement.classList.contains("coach-locked");
+    }
 
     const guestT = k => {
       const fn = window.__zekiqGuestT;
@@ -2616,6 +3659,7 @@
     window.__zekiqOnGuestLang = function () {
       if (typeof syncSceneHud === "function") syncSceneHud();
       if (document.getElementById("cart-panel")?.classList.contains("open") && typeof renderCart === "function") renderCart();
+      if (window.__zekiqRefreshIosInstallCopy) window.__zekiqRefreshIosInstallCopy();
     };
 
     function esc(s) {
@@ -2649,8 +3693,15 @@
       "soguk icecek": "İçecek",
       "icecek": "İçecek",
       "nargile": "Nargile",
+      "sporcu": "Spor",
     };
+    const PAGE_CHIP_SHORT = [
+      "Serpme", "Kahvaltı", "Tost", "Makarna", "Tavuk", "Tavuk", "Pizza", "Köfte", "Burger",
+      "Spor", "Tatlı", "Çay", "Kahve", "Kahve", "Frozen", "Smoothie", "Milkshake", "Mojito",
+      "Kokteyl", "İçecek",
+    ];
     function categoryChipLabel(pageIdx) {
+      if (PAGE_CHIP_SHORT[pageIdx]) return PAGE_CHIP_SHORT[pageIdx];
       const cats = pageCategories[String(pageIdx)] || pageCategories[pageIdx] || [];
       const raw = cats[0] || "";
       const key = normCat(raw);
@@ -2661,15 +3712,17 @@
     }
     function buildCategoryChips() {
       const chips = [];
-      const seen = new Set();
-      for (let i = 0; i < menuPageCount; i++) {
+      let i = 0;
+      while (i < menuPageCount) {
         const label = categoryChipLabel(i);
-        const key = normCat(label);
-        if (!key || seen.has(key)) continue;
-        seen.add(key);
-        const cats = pageCategories[String(i)] || pageCategories[i] || [];
-        const ar = catLabelAr(cats[0] || label);
-        chips.push({ pageIdx: i, label, ar });
+        const start = i;
+        const pages = [i];
+        i++;
+        while (i < menuPageCount && categoryChipLabel(i) === label) {
+          pages.push(i);
+          i++;
+        }
+        chips.push({ pageIdx: start, label, pages });
       }
       return chips;
     }
@@ -2681,47 +3734,229 @@
       return menuIdx + 1;
     }
     function jumpToCategoryPage(menuIdx) {
-      if (!coachDone) dismissCoach();
+      if (!coachDone) return;
       goToPage(spreadIdxForMenuPage(menuIdx), false);
+    }
+    function applyCategoryBarOffset(px) {
+      categoryBarOffsetPx = Math.max(0, Math.min(120, Math.round(Number(px) || 0)));
+      const bar = document.getElementById("menuCategoryBar");
+      if (bar) bar.style.setProperty("--cat-bar-offset", categoryBarOffsetPx + "px");
+      lastCategoryDockKey = "";
+    }
+    function logoStripHeight(rect) {
+      return Math.max(28, Math.round(rect.dw * 205 / 945));
+    }
+    function refreshPageBrandBanners(cacheVer) {
+      const bv = cacheVer ? "?v=" + encodeURIComponent(cacheVer) : "?v=1";
+      const src = "assets/tonino-brand-banner.jpg" + bv;
+      document.querySelectorAll(".pf-brand-strip .guest-brand-banner-img,.cover-banner-img").forEach(img => {
+        img.src = src;
+      });
+    }
+    function categoryChipsHtml() {
+      const chips = buildCategoryChips();
+      return chips.map(c => {
+        const pagesHtml = c.pages.length > 1
+          ? c.pages.map(p =>
+              '<span class="cat-chip-page" data-jump-page="' + p + '">' + (p + 1) + "</span>"
+            ).join("")
+          : "";
+        return '<button type="button" class="cat-chip" data-page-idx="' + c.pageIdx + '">' +
+          esc(c.label) + pagesHtml + "</button>";
+      }).join("");
+    }
+    function wireCategoryChipHandlers(root) {
+      if (!root) return;
+      root.querySelectorAll(".cat-chip").forEach(btn => {
+        btn.onclick = e => {
+          if (e.target && e.target.closest && e.target.closest(".cat-chip-page")) return;
+          e.stopPropagation();
+          jumpToCategoryPage(Number(btn.dataset.pageIdx));
+        };
+      });
+      root.querySelectorAll(".cat-chip-page").forEach(sp => {
+        sp.onclick = e => {
+          e.stopPropagation();
+          jumpToCategoryPage(Number(sp.dataset.jumpPage));
+        };
+      });
+    }
+    function layoutPfBrandStrip(pf, rect) {
+      const strip = pf?.querySelector(".pf-brand-strip");
+      if (!strip || !rect || pf.classList.contains("book-cover")) {
+        if (strip) strip.style.display = "none";
+        return;
+      }
+      const bar = document.getElementById("menuCategoryBar");
+      const catH = bar && bar.classList.contains("show") ? Math.round(bar.offsetHeight) : 0;
+      const logoH = logoStripHeight(rect);
+      strip.style.display = "";
+      strip.style.left = rect.ox + "px";
+      strip.style.width = rect.dw + "px";
+      strip.style.top = Math.max(0, rect.oy - logoH - catH) + "px";
+      strip.style.height = logoH + "px";
+      strip.style.maxHeight = logoH + "px";
+      const img = strip.querySelector(".guest-brand-banner-img");
+      if (img) {
+        img.style.width = "100%";
+        img.style.height = logoH + "px";
+        img.style.objectFit = "cover";
+        img.style.objectPosition = "center bottom";
+      }
+    }
+    function syncMenuTopDock(show) {
+      const dock = document.getElementById("menuTopDock");
+      const bar = document.getElementById("menuCategoryBar");
+      if (dock) dock.classList.toggle("show", !!show);
+      if (bar) bar.classList.toggle("show", !!show);
     }
     function buildCategoryBar() {
       const bar = document.getElementById("menuCategoryBar");
       const scroll = document.getElementById("menuCategoryScroll");
       if (!bar || !scroll) return;
-      const chips = buildCategoryChips();
-      if (!chips.length || menuPageCount <= 1) {
-        bar.classList.remove("show");
+      if (navLocked()) {
+        syncMenuTopDock(false);
         scroll.innerHTML = "";
         return;
       }
-      scroll.innerHTML = chips.map(c => {
-        const arHtml = c.ar ? '<span class="cat-chip-ar">' + esc(c.ar) + "</span>" : "";
-        return '<button type="button" class="cat-chip" data-page-idx="' + c.pageIdx + '">' +
-          esc(c.label) + arHtml + "</button>";
-      }).join("");
-      scroll.querySelectorAll(".cat-chip").forEach(btn => {
-        btn.onclick = e => {
-          e.stopPropagation();
-          jumpToCategoryPage(Number(btn.dataset.pageIdx));
-        };
-      });
-      bar.classList.toggle("show", coachDone);
+      const chips = buildCategoryChips();
+      if (!chips.length || menuPageCount <= 1) {
+        syncMenuTopDock(false);
+        scroll.innerHTML = "";
+        return;
+      }
+      scroll.innerHTML = categoryChipsHtml();
+      wireCategoryChipHandlers(bar);
+      scroll.classList.add("cat-scroll-hint");
+      setTimeout(() => scroll.classList.remove("cat-scroll-hint"), 2400);
+      syncMenuTopDock(true);
       syncCategoryBar();
+    }
+    let lastCategoryDockKey = "";
+    let lastCategoryScrollPi = -1;
+    let lastOrdersListMaxH = -1;
+    function syncOrdersListHeight() {
+      const stage = document.getElementById("menuStage");
+      const ordersWrap = document.getElementById("menuTopOrders");
+      const chip = document.getElementById("guestOrderChip");
+      const listEl = document.getElementById("sceneOrderList");
+      if (!stage || !ordersWrap?.classList.contains("show") || !listEl || chip?.classList.contains("orders-folded")) {
+        if (ordersWrap && lastOrdersListMaxH >= 0) {
+          ordersWrap.style.removeProperty("--orders-list-max-h");
+          lastOrdersListMaxH = -1;
+        }
+        return;
+      }
+      const stageRect = stage.getBoundingClientRect();
+      let boundaryTop = null;
+      const dock = document.getElementById("menuTopDock");
+      const bar = document.getElementById("menuCategoryBar");
+      if (dock?.classList.contains("show") && bar && bar.offsetHeight > 0) {
+        boundaryTop = dock.getBoundingClientRect().top;
+      } else {
+        const pf = document.querySelector("#pw" + cur + " .pf");
+        if (pf && !pf.classList.contains("book-cover")) {
+          const rect = imageOverlayRect(pf, { measureOnly: true });
+          if (rect) boundaryTop = pf.getBoundingClientRect().top + rect.oy;
+        }
+      }
+      if (boundaryTop == null) {
+        ordersWrap.style.removeProperty("--orders-list-max-h");
+        lastOrdersListMaxH = -1;
+        return;
+      }
+      const headRow = chip?.querySelector(".order-chip-head-row");
+      const headH = headRow ? headRow.offsetHeight : 0;
+      const maxH = Math.max(0, Math.floor(boundaryTop - ordersWrap.getBoundingClientRect().top - headH));
+      if (maxH !== lastOrdersListMaxH) {
+        lastOrdersListMaxH = maxH;
+        ordersWrap.style.setProperty("--orders-list-max-h", maxH + "px");
+      }
+    }
+    function syncTopOrdersLayout(lineCount, overflows, chip) {
+      const dock = document.getElementById("menuTopDock");
+      const ordersWrap = document.getElementById("menuTopOrders");
+      if (!dock || !ordersWrap) return;
+      const pf = document.querySelector("#pw" + cur + " .pf");
+      if (pf) syncCategoryDock(pf);
+      syncOrdersListHeight();
+      const listEl = document.getElementById("sceneOrderList");
+      const liveOverflow =
+        listEl && listEl.scrollHeight > listEl.clientHeight + 2;
+      const coverLogo =
+        lineCount > 2 || liveOverflow || overflows ||
+        (chip && chip.classList.contains("orders-expanded"));
+      if (!document.documentElement.classList.contains("page-flipping")) {
+        dock.classList.toggle("orders-cover-logo", !!coverLogo);
+        document.documentElement.classList.toggle("orders-cover-logo", !!coverLogo);
+      }
+      ordersWrap.classList.toggle("orders-expanded", !!(chip && chip.classList.contains("orders-expanded")));
+      if (listEl) listEl.classList.toggle("has-overflow", liveOverflow || lineCount > 3);
+    }
+    function syncCategoryDock(pf) {
+      const view = document.getElementById("menuViewport");
+      const dock = document.getElementById("menuTopDock");
+      const bar = document.getElementById("menuCategoryBar");
+      if (!view || !dock) return;
+      const show = dock.classList.contains("show");
+      const onMenu = pf && !pf.classList.contains("book-cover") && menuIdxFromCur(cur) >= 0;
+      if (!show || !onMenu || !pf) {
+        if (lastCategoryDockKey) {
+          lastCategoryDockKey = "";
+          view.style.removeProperty("--menu-img-top");
+          view.style.removeProperty("--menu-top-dock-h");
+          view.style.removeProperty("--cat-bar-h");
+          view.style.removeProperty("--logo-strip-h");
+        }
+        return;
+      }
+      const rect = imageOverlayRect(pf, { measureOnly: true });
+      if (!rect) return;
+      const catH = Math.round(bar?.offsetHeight || 0);
+      const logoH = logoStripHeight(rect);
+      const oy = Math.round(rect.oy);
+      const dockKey = oy + "|" + catH + "|" + logoH;
+      if (lastCategoryDockKey === dockKey) return;
+      lastCategoryDockKey = dockKey;
+      view.style.setProperty("--menu-img-top", oy + "px");
+      view.style.setProperty("--cat-bar-h", catH + "px");
+      view.style.setProperty("--logo-strip-h", logoH + "px");
+      view.style.setProperty("--menu-top-dock-h", catH + "px");
+      layoutPfBrandStrip(pf, rect);
+      syncOrdersListHeight();
     }
     function syncCategoryBar() {
       const bar = document.getElementById("menuCategoryBar");
       if (!bar) return;
-      bar.classList.toggle("show", menuPageCount > 1 && coachDone);
+      const showBar = menuPageCount > 1 && spreadKind(cur) === "menu" && !navLocked();
+      syncMenuTopDock(showBar);
+      if (!showBar) {
+        syncCategoryDock(null);
+        lastCategoryScrollPi = -1;
+        return;
+      }
+      const chips = buildCategoryChips();
       const activeIdx = menuIdxFromCur(cur);
       const onMenu = spreadKind(cur) === "menu";
       bar.querySelectorAll(".cat-chip").forEach(btn => {
         const pi = Number(btn.dataset.pageIdx);
-        btn.classList.toggle("active", onMenu && pi === activeIdx);
+        const group = chips.find(c => c.pageIdx === pi);
+        const inGroup = group && group.pages.indexOf(activeIdx) >= 0;
+        btn.classList.toggle("active", onMenu && inGroup);
+        btn.querySelectorAll(".cat-chip-page").forEach(sp => {
+          const p = Number(sp.dataset.jumpPage);
+          sp.classList.toggle("active-page", onMenu && p === activeIdx);
+        });
       });
       const activeBtn = bar.querySelector(".cat-chip.active");
-      if (activeBtn) {
-        activeBtn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      if (activeBtn && onMenu) {
+        const pi = Number(activeBtn.dataset.pageIdx);
+        if (pi !== lastCategoryScrollPi) {
+          lastCategoryScrollPi = pi;
+          activeBtn.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
+        }
       }
+      syncCategoryDock(document.querySelector("#pw" + cur + " .pf"));
     }
     const SERPME_PRICES = new Set([1250, 1650, 1850]);
     const PAGE_LABELS = [
@@ -2923,11 +4158,19 @@
           used.add(item.id);
           out.push({ item, spot: {
             x: spot.x, y: spot.y,
-            w: spot.w || 0.055, h: spot.h || 0.032,
+            w: Math.max(Number(spot.w) || 0, 0.048),
+            h: Math.max(Number(spot.h) || 0, 0.034),
             anchor: spot.anchor || "center",
             kind: "plus",
           } });
         }
+        const missing = pageItems.filter(it => !used.has(it.id));
+        missing.forEach((item, i) => {
+          out.push({
+            item,
+            spot: { ...gridSpotForItem(i, missing.length, pageIdx), kind: "plus" },
+          });
+        });
         return out.sort((a, b) => a.spot.y - b.spot.y || a.spot.x - b.spot.x);
       }
       const pageItems = itemsForPage(pageIdx);
@@ -3019,47 +4262,83 @@
       const cats = pageCategories[String(menuIdx)] || pageCategories[menuIdx] || [];
       return Array.isArray(cats) ? cats.filter(Boolean) : [];
     }
-    function imageOverlayRect(pf) {
+    function imageOverlayRect(pf, opts) {
+      const rect = computeOverlayRect(pf);
+      if (!rect) return null;
+      if (!opts || !opts.measureOnly) applyOverlayImage(pf, rect);
+      return rect;
+    }
+    function computeOverlayRect(pf) {
       const nw = Number(pf.dataset.nw), nh = Number(pf.dataset.nh);
       if (!nw || !nh) return null;
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
-      const img = pf.querySelector(".pf-bg");
       const isCover = pf.classList.contains("book-cover");
       const scale = Math.min(cw / nw, ch / nh);
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
       const oy = isCover ? (ch - dh) / 2 : (ch - dh);
-      if (img) {
-        img.style.clipPath = "";
-        img.style.maxWidth = "";
-        img.style.maxHeight = "";
-        if (isCover) {
-          img.style.position = "";
-          img.style.left = "";
-          img.style.top = "";
-          img.style.width = "";
-          img.style.height = "";
-          img.style.objectFit = "contain";
-          img.style.objectPosition = "center";
-          img.style.transform = "translateZ(0)";
-        } else {
-          img.style.position = "absolute";
-          img.style.left = ox + "px";
-          img.style.top = oy + "px";
-          img.style.width = dw + "px";
-          img.style.height = dh + "px";
-          img.style.objectFit = "fill";
-          img.style.objectPosition = "center";
-          img.style.transform = "translateZ(0)";
-        }
-      }
       return {
         ox, oy, dw, dh,
         wasteTop: Math.max(0, oy),
         wasteBottom: isCover ? Math.max(0, ch - oy - dh) : 0,
       };
+    }
+    function applyBackOverlayImage(pb, rect) {
+      const img = pb?.querySelector(".pb-bg");
+      if (!img || !rect) return;
+      const layoutKey = "b|" + Math.round(rect.ox) + "|" + Math.round(rect.oy) + "|" +
+        Math.round(rect.dw) + "|" + Math.round(rect.dh);
+      if (pb.dataset.layoutKey === layoutKey) return;
+      pb.dataset.layoutKey = layoutKey;
+      img.style.clipPath = "";
+      img.style.maxWidth = "";
+      img.style.maxHeight = "";
+      img.style.inset = "auto";
+      img.style.position = "absolute";
+      img.style.left = rect.ox + "px";
+      img.style.top = rect.oy + "px";
+      img.style.width = rect.dw + "px";
+      img.style.height = rect.dh + "px";
+      img.style.objectFit = "fill";
+      img.style.objectPosition = "center";
+      img.style.transform = "translateZ(0)";
+    }
+    function applyOverlayImage(pf, rect) {
+      const img = pf.querySelector(".pf-bg");
+      if (!img || !rect) return;
+      const isCover = pf.classList.contains("book-cover");
+      const layoutKey = Math.round(rect.ox) + "|" + Math.round(rect.oy) + "|" +
+        Math.round(rect.dw) + "|" + Math.round(rect.dh) + "|" + (isCover ? "c" : "m");
+      if (pf.dataset.layoutKey === layoutKey) return;
+      pf.dataset.layoutKey = layoutKey;
+      img.style.clipPath = "";
+      img.style.maxWidth = "";
+      img.style.maxHeight = "";
+      if (isCover) {
+        img.style.position = "";
+        img.style.left = "";
+        img.style.top = "";
+        img.style.width = "";
+        img.style.height = "";
+        img.style.objectFit = "contain";
+        img.style.objectPosition = "center";
+        img.style.transform = "translateZ(0)";
+      } else {
+        img.style.position = "absolute";
+        img.style.left = rect.ox + "px";
+        img.style.top = rect.oy + "px";
+        img.style.width = rect.dw + "px";
+        img.style.height = rect.dh + "px";
+        img.style.objectFit = "fill";
+        img.style.objectPosition = "center";
+        img.style.transform = "translateZ(0)";
+      }
+    }
+    function layoutBackImage(pw, rect) {
+      const pb = pw?.querySelector(".pb");
+      if (pb && rect) applyBackOverlayImage(pb, rect);
     }
     function swipeArrowTrackHtml() {
       return '<div class="swipe-arrow-track" aria-hidden="true">' +
@@ -3082,6 +4361,12 @@
       return html + "</div>";
     }
     function layoutLetterboxRails(pf, menuIdx) {
+      const catDock = document.getElementById("menuTopDock");
+      if (catDock && catDock.classList.contains("show")) {
+        pf?.querySelectorAll(".pf-rail-top,.pf-rail-bottom").forEach(el => { el.style.display = "none"; });
+        pf?.classList.remove("pf-rail-top-only");
+        return false;
+      }
       if (!pf || pf.classList.contains("book-cover") || menuIdx < 0) {
         pf?.querySelectorAll(".pf-rail-top,.pf-rail-bottom").forEach(el => { el.style.display = "none"; });
         pf.classList.remove("pf-rail-top-only");
@@ -3160,6 +4445,7 @@
       img.onload = () => {
         pf.dataset.nw = String(img.naturalWidth);
         pf.dataset.nh = String(img.naturalHeight);
+        pf.dataset.layoutKey = "";
         layoutPfHotspots(pf);
         if (onReady) onReady();
       };
@@ -3175,6 +4461,10 @@
       img.decoding = "async";
       img.setAttribute("aria-hidden", "true");
       pb.appendChild(img);
+      img.onload = () => {
+        const pf = pb.closest(".pw")?.querySelector(".pf");
+        if (pf && pf.dataset.nw) layoutPfHotspots(pf);
+      };
       img.src = src;
     }
     function fillPaperBack(pb) {
@@ -3198,8 +4488,8 @@
         h.style.left = (x * rect.dw) + "px";
         h.style.top = (y * rect.dh) + "px";
         if (isPlus) {
-          const w = parseFloat(h.dataset.w) || 0.055;
-          const hh = parseFloat(h.dataset.h) || 0.032;
+          const w = Math.max(parseFloat(h.dataset.w) || 0, 0.048);
+          const hh = Math.max(parseFloat(h.dataset.h) || 0, 0.034);
           h.style.width = (w * rect.dw) + "px";
           h.style.height = (hh * rect.dh) + "px";
         }
@@ -3212,16 +4502,28 @@
         return menuIdxFromCur(spreadIdx);
       })();
       layoutLetterboxRails(pf, menuIdx);
+      layoutPfBrandStrip(pf, rect);
+      layoutBackImage(pf.closest(".pw"), rect);
     }
     function layoutAllHotspots() {
+      if (animating) return;
       document.querySelectorAll(".pf").forEach(pf => {
         layoutPfHotspots(pf);
       });
       syncFootLayout();
       syncSwipeBar();
+      syncCategoryDock(document.querySelector("#pw" + cur + " .pf"));
+      syncOrdersListHeight();
+      layoutGuestPlusNudge();
+    }
+    let hotspotLayoutTimer = 0;
+    function scheduleHotspotRelayout() {
+      if (animating) return;
+      clearTimeout(hotspotLayoutTimer);
+      hotspotLayoutTimer = setTimeout(() => layoutAllHotspots(), 48);
     }
     window.__zekiqRelayout = function() {
-      layoutAllHotspots();
+      scheduleHotspotRelayout();
     };
     function resolveSpot(item, pageIdx, spots, usedSpot) {
       let spot = findManualSpot(item, pageIdx);
@@ -3528,6 +4830,11 @@
         if (spread.kind === "menu") {
           const pageSrc = fixImgUrl(spread.imgUrl) + (String(spread.imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
           primePageBg(pf, pageSrc);
+          const brandStrip = document.createElement("div");
+          brandStrip.className = "pf-brand-strip";
+          brandStrip.setAttribute("aria-hidden", "true");
+          brandStrip.innerHTML = '<img class="guest-brand-banner-img" alt="Tonino" draggable="false" src="assets/tonino-brand-banner.jpg" />';
+          pf.appendChild(brandStrip);
           const shade = document.createElement("div");
           shade.className = "page-shade";
           pf.appendChild(shade);
@@ -3572,11 +4879,9 @@
       document.getElementById("loadScreen").style.display = "none";
       if (!window.__hotspotRo) {
         window.__hotspotRo = new ResizeObserver(() => {
-          layoutAllHotspots();
-          if (window.__zekiqFitViewport) window.__zekiqFitViewport();
+          scheduleHotspotRelayout();
         });
         window.__hotspotRo.observe(document.getElementById("book"));
-        window.__hotspotRo.observe(document.getElementById("scene"));
       }
       setTimeout(() => document.querySelectorAll(".price-cover.pulse").forEach(p => p.classList.remove("pulse")), 5500);
       bookSpread.forEach((_, i) => {
@@ -3588,22 +4893,13 @@
       bindBookSwipe();
       syncSwipeBar();
       buildCategoryBar();
+      refreshPageBrandBanners(bookCacheVer);
     }
 
     function initCoverGate() {
       cur = 0;
-      try {
-        if (sessionStorage.getItem(coachDoneKey()) === "1") {
-          coachDone = true;
-          document.documentElement.classList.remove("coach-locked");
-        } else {
-          coachDone = false;
-          document.documentElement.classList.add("coach-locked");
-        }
-      } catch (e) {
-        coachDone = false;
-        document.documentElement.classList.add("coach-locked");
-      }
+      coachDone = false;
+      document.documentElement.classList.add("coach-locked");
       goToPage(0, true);
       syncSceneHud();
     }
@@ -3612,10 +4908,16 @@
       coachDone = true;
       try { sessionStorage.setItem(coachDoneKey(), "1"); } catch (e) {}
       document.documentElement.classList.remove("coach-locked");
-      goToPage(cur, true);
+      goToPage(1, false);
       syncSceneHud();
-      if (window.__zekiqHideSafariChrome) window.__zekiqHideSafariChrome();
-      if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
+      if (window.__zekiqEngage) window.__zekiqEngage(true);
+      else {
+        if (window.__zekiqTryFullscreen) window.__zekiqTryFullscreen();
+        if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
+      }
+      if (window.__zekiqBurstHideSafariChrome) window.__zekiqBurstHideSafariChrome();
+      else if (window.__zekiqHideSafariChrome) window.__zekiqHideSafariChrome();
+      if (window.__zekiqMaybeShowFsHint) window.__zekiqMaybeShowFsHint();
       if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       if (window.__zekiqLockPortrait) window.__zekiqLockPortrait();
       buildCategoryBar();
@@ -3626,60 +4928,50 @@
       const u = fixImgUrl(spread.imgUrl);
       return u + (String(spread.imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
     }
-    function setBookPad(spread) {
-      try {
-        const book = document.getElementById("book");
-        if (!book) return;
-        let pad = document.getElementById("bookPad");
-        if (!pad) {
-          pad = document.createElement("div");
-          pad.id = "bookPad";
-          pad.innerHTML = '<img class="book-pad-img" alt="" draggable="false" aria-hidden="true" />';
-          book.insertBefore(pad, book.firstChild);
-        }
-        const img = pad.querySelector(".book-pad-img");
-        const src = spreadImgSrc(spread);
-        if (!img) return;
-        if (!src) {
-          img.removeAttribute("src");
-          img.style.display = "none";
-        } else {
-          img.style.display = "";
-          img.src = src;
-        }
-        pad.classList.add("show");
-      } catch (e) { /* never block page turn */ }
+    function setBookPad(_spread) {
+      /* page-reveal shows the target page — skip bookPad img to avoid flash */
     }
-    function hideBookPad() {
-      try {
-        document.getElementById("bookPad")?.classList.remove("show");
-      } catch (e) {}
+    function hideBookPad() {}
+
+    function setPageFlipping(on) {
+      document.documentElement.classList.toggle("page-flipping", !!on);
     }
 
     function endPageTurn(pw) {
       hideBookPad();
+      cancelDragRaf();
+      dragFlip = null;
       document.querySelectorAll(".pw").forEach(el => {
-        el.classList.remove("page-reveal", "page-flip-top");
+        el.classList.remove("page-reveal", "page-flip-top", "page-dragging");
       });
       if (pw) {
         pw.classList.remove("turn-next", "turn-prev", "turning", "page-leave");
-        pw.style.transform = "";
+        clearBookTurnInline(pw);
       }
       animating = false;
-      requestAnimationFrame(() => {
-        layoutAllHotspots();
-      });
+      setPageFlipping(false);
+      requestAnimationFrame(() => layoutAllHotspots());
+    }
+
+    function layoutPageFace(pf) {
+      if (!pf || !pf.dataset.nw) return;
+      const rect = imageOverlayRect(pf);
+      if (!rect) return;
+      layoutPfBrandStrip(pf, rect);
+      layoutBackImage(pf.closest(".pw"), rect);
     }
 
     function nextPage() {
-      if (animating || cur >= bookSpread.length - 1) return;
+      if (navLocked() || animating || cur >= bookSpread.length - 1) return;
       animating = true;
+      setPageFlipping(true);
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
       const nextPw = document.getElementById("pw" + (idx + 1));
-      if (!pw || !nextPw) { animating = false; return; }
+      if (!pw || !nextPw) { animating = false; setPageFlipping(false); return; }
       try {
         setBookPad(bookSpread[idx + 1]);
+        layoutPageFace(nextPw.querySelector(".pf"));
         nextPw.classList.add("page-current", "page-reveal");
         pw.classList.add("page-current", "page-flip-top", "turning", "turn-next");
         sync(true);
@@ -3691,23 +4983,27 @@
             endPageTurn(pw);
           } catch (e) {
             animating = false;
+            setPageFlipping(false);
             hideBookPad();
           }
         }, FLIP_MS);
       } catch (e) {
         animating = false;
+        setPageFlipping(false);
         hideBookPad();
       }
     }
     function prevPage() {
-      if (animating || cur <= 0) return;
+      if (navLocked() || animating || cur <= 0) return;
       animating = true;
+      setPageFlipping(true);
       const idx = cur;
       const pw = document.getElementById("pw" + idx);
       const prevPw = document.getElementById("pw" + (idx - 1));
-      if (!prevPw) { animating = false; return; }
+      if (!prevPw) { animating = false; setPageFlipping(false); return; }
       try {
         setBookPad(bookSpread[idx]);
+        layoutPageFace(prevPw.querySelector(".pf"));
         if (pw) pw.classList.add("page-current", "page-reveal");
         prevPw.classList.add("page-current", "page-flip-top", "turning", "turn-prev");
         sync(true);
@@ -3720,16 +5016,22 @@
             endPageTurn(prevPw);
           } catch (e) {
             animating = false;
+            setPageFlipping(false);
             hideBookPad();
           }
         }, FLIP_MS);
       } catch (e) {
         animating = false;
+        setPageFlipping(false);
         hideBookPad();
       }
     }
     function goToPage(n, instant) {
       n = Math.max(0, Math.min(bookSpread.length - 1, Number(n) || 0));
+      if (navLocked() && n !== 0) {
+        if (!instant) return;
+        n = 0;
+      }
       if (n === cur && !animating) {
         sync();
         return;
@@ -3747,13 +5049,20 @@
       goTo(n);
     }
     function goTo(t) {
+      if (navLocked()) return;
       if (animating || t === cur) return;
       const step = t > cur
         ? () => { if (cur < t) { nextPage(); setTimeout(step, FLIP_MS + 50); } }
         : () => { if (cur > t) { prevPage(); setTimeout(step, FLIP_MS + 50); } };
       step();
     }
+    let lastSyncCur = -1;
     function sync(duringFlip) {
+      if (cur !== lastSyncCur) {
+        lastSyncCur = cur;
+        lastCategoryDockKey = "";
+        lastCategoryScrollPi = -1;
+      }
       const pgText = formatPageLabel();
       const pg = document.getElementById("pgnum");
       if (pg) pg.textContent = pgText;
@@ -3763,11 +5072,13 @@
       if (swipePg) swipePg.textContent = pgText;
       const prevBtn = document.getElementById("prevBtn");
       const nextBtn = document.getElementById("nextBtn");
-      if (prevBtn) prevBtn.disabled = cur === 0;
-      if (nextBtn) nextBtn.disabled = cur >= bookSpread.length - 1;
-      syncSwipeBar();
-      refreshCoverTitles();
-      syncCategoryBar();
+      if (prevBtn) prevBtn.disabled = navLocked() || cur === 0;
+      if (nextBtn) nextBtn.disabled = navLocked() || cur >= bookSpread.length - 1;
+      if (!duringFlip) {
+        syncSwipeBar();
+        refreshCoverTitles();
+        syncCategoryBar();
+      }
       if (!duringFlip) {
         document.querySelectorAll(".pw").forEach((pw, i) => {
           pw.classList.toggle("page-current", i === cur);
@@ -3780,9 +5091,18 @@
         if (!duringFlip && activeMenuIdx === i) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       });
       renderPageDock();
+      if (duringFlip) {
+        document.querySelectorAll(".pw.turning,.pw.turn-next,.pw.turn-prev,.pw.page-reveal,.pw.page-current").forEach(pw => {
+          const pf = pw.querySelector(".pf");
+          if (!pf || pf.classList.contains("book-cover")) return;
+          const rect = imageOverlayRect(pf, { measureOnly: true });
+          if (rect) layoutPfBrandStrip(pf, rect);
+        });
+      }
       if (!duringFlip) {
         mountPageOverlays(cur);
-        requestAnimationFrame(() => layoutAllHotspots());
+        scheduleHotspotRelayout();
+        syncGuestPlusNudge();
       }
     }
 
@@ -3827,8 +5147,9 @@
             chip.classList.add("orders-folded");
           }
         }
+        syncTopOrdersLayout(lineCount, overflows, chip);
         if (lineCount > 0) {
-          listEl.scrollTop = listEl.scrollHeight;
+          listEl.scrollTop = 0;
         }
         if (window.__zekiqRelayout) window.__zekiqRelayout();
       });
@@ -3848,7 +5169,7 @@
         setTimeout(() => row.classList.remove("flash-added"), 1200);
         const listEl = document.getElementById("sceneOrderList");
         if (listEl) {
-          listEl.scrollTop = listEl.scrollHeight;
+          listEl.scrollTop = 0;
         }
       });
     }
@@ -3876,6 +5197,45 @@
         badge.classList.remove("show");
       }
     }
+    function layoutGuestPlusNudge() {
+      const nudge = document.getElementById("guestPlusNudge");
+      const vp = document.getElementById("menuViewport");
+      if (!nudge || !vp) return;
+      if (!nudge.classList.contains("show") || spreadKind(cur) !== "menu") {
+        nudge.style.visibility = "hidden";
+        return;
+      }
+      const pf = document.querySelector("#pw" + cur + " .pf");
+      if (!pf || pf.classList.contains("book-cover")) {
+        nudge.style.visibility = "hidden";
+        return;
+      }
+      const rect = imageOverlayRect(pf, { measureOnly: true });
+      if (!rect) {
+        nudge.style.visibility = "hidden";
+        return;
+      }
+      const pfBox = pf.getBoundingClientRect();
+      const vpBox = vp.getBoundingClientRect();
+      const cx = pfBox.left - vpBox.left + rect.ox + rect.dw / 2;
+      const cy = pfBox.top - vpBox.top + rect.oy + rect.dh * 0.52;
+      nudge.style.left = Math.round(cx) + "px";
+      nudge.style.top = Math.round(cy) + "px";
+      nudge.style.transform = "translate(-50%, -50%)";
+      nudge.style.visibility = "visible";
+    }
+    function syncGuestPlusNudge() {
+      const nudge = document.getElementById("guestPlusNudge");
+      const ordersWrap = document.getElementById("menuTopOrders");
+      const onMenu = coachDone && !navLocked() && cart.length === 0 && spreadKind(cur) === "menu";
+      if (nudge) nudge.classList.toggle("show", !!onMenu);
+      if (ordersWrap) {
+        ordersWrap.classList.toggle("guest-hint-only", !!onMenu);
+        if (onMenu) ordersWrap.classList.add("show");
+        else if (!cart.length) ordersWrap.classList.remove("show", "guest-hint-only");
+      }
+      layoutGuestPlusNudge();
+    }
     function syncSceneHud() {
       const t = cart.reduce((s, i) => s + i.qty, 0);
       const total = cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0);
@@ -3883,44 +5243,58 @@
       const tableEl = document.getElementById("sceneHudTable");
       const sendBtn = document.getElementById("sceneSendBtn");
       const sendBadge = document.getElementById("sceneSendBadge");
+      const topSendBtn = document.getElementById("topOrderSendBtn");
       const guideEl = document.getElementById("guestGuide");
       const chipEl = document.getElementById("guestOrderChip");
+      const ordersWrap = document.getElementById("menuTopOrders");
       const stageEl = document.getElementById("menuStage");
       const summaryEl = document.getElementById("sceneOrderSummary");
       const listEl = document.getElementById("sceneOrderList");
-      if (shopEl && shopName) shopEl.textContent = shopName;
+      document.documentElement.classList.toggle("orders-active", t > 0 && coachDone);
+      if (shopEl) shopEl.textContent = "";
       refreshCoverTitles();
       if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
       syncTableFootBadge();
       if (!coachDone || document.documentElement.classList.contains("coach-locked")) {
         if (stageEl) stageEl.classList.remove("orders-overlay");
+        if (ordersWrap) ordersWrap.classList.remove("show", "guest-hint-only");
+        document.getElementById("guestPlusNudge")?.classList.remove("show");
         if (guideEl) guideEl.classList.remove("show");
         if (chipEl) chipEl.classList.remove("show");
         if (sendBtn) sendBtn.classList.add("is-empty");
         if (sendBadge) sendBadge.hidden = true;
+        if (topSendBtn) topSendBtn.classList.add("is-empty");
+        document.getElementById("menuTopDock")?.classList.remove("orders-cover-logo");
         return;
       }
       if (sendBtn) {
         sendBtn.hidden = false;
         sendBtn.classList.toggle("is-empty", !t);
       }
+      if (topSendBtn) topSendBtn.classList.toggle("is-empty", !t);
       if (sendBadge) {
         sendBadge.hidden = !t;
         if (t) sendBadge.textContent = String(t);
       }
       if (!t) {
         if (stageEl) stageEl.classList.remove("orders-overlay");
-        if (guideEl) guideEl.classList.remove("show");
         if (chipEl) chipEl.classList.remove("show");
         if (summaryEl) summaryEl.textContent = "";
         if (listEl) listEl.innerHTML = "";
         const chip = document.getElementById("guestOrderChip");
         if (chip) chip.classList.remove("orders-folded", "orders-expanded");
+        document.getElementById("menuTopDock")?.classList.remove("orders-cover-logo");
+        syncGuestPlusNudge();
+        syncCategoryBar();
         return;
       }
+      if (ordersWrap) ordersWrap.classList.remove("guest-hint-only");
+      const nudge = document.getElementById("guestPlusNudge");
+      if (nudge) nudge.classList.remove("show");
       if (guideEl) guideEl.classList.remove("show");
+      if (ordersWrap) ordersWrap.classList.add("show");
       if (chipEl) chipEl.classList.add("show");
-      if (stageEl) stageEl.classList.add("orders-overlay");
+      if (stageEl) stageEl.classList.remove("orders-overlay");
       if (summaryEl) summaryEl.textContent = "🛒 " + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
       if (listEl) {
         listEl.innerHTML = cart.map(l => `
@@ -3943,6 +5317,7 @@
         if (sceneClear) sceneClear.onclick = e => { e.stopPropagation(); clearCart(); };
         syncOrderListView(listEl);
       }
+      syncCategoryBar();
     }
     function openCartConfirm(e) {
       if (!coachDone) return;
@@ -3955,6 +5330,7 @@
       if (chip && chip.classList.contains("orders-folded")) {
         chip.classList.remove("orders-folded");
         chip.classList.add("orders-expanded");
+        syncOrderListView(document.getElementById("sceneOrderList"));
         return;
       }
       openCart();
@@ -4017,6 +5393,7 @@
     bindTopBtn(document.getElementById("cartBtn"), () => openCart());
     bindTopBtn(sceneOrderBtn, openCartConfirm);
     bindTopBtn(sceneSendBtn, openCartConfirm);
+    bindTopBtn(document.getElementById("topOrderSendBtn"), openCartConfirm);
     bindTopBtn(document.getElementById("prevBtn"), prevPage);
     bindTopBtn(document.getElementById("nextBtn"), nextPage);
     document.getElementById("closeCart").onclick = closeCart;
@@ -4301,6 +5678,8 @@
       }
       if (plusButtonsAllPages) singlePagePlusOnly = false;
       bookCacheVer = String((data.book && (data.book.updatedAt || data.book.version)) || "").replace(/[:.]/g, "");
+      applyCategoryBarOffset(data.book && data.book.categoryBarOffsetPx);
+      refreshPageBrandBanners(bookCacheVer);
       if (data.guestLanguage && window.applyGuestLanguage) window.applyGuestLanguage(data.guestLanguage);
       document.title = shopName + " — " + guestT("table") + " " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
