@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v91: صفحة ترحيب + فهمت؛ iPhone = تخطيط فوق شريط Safari -->
+  <!-- guest-table-ui-v92: ترحيب دائماً عند فتح QR — لا تخطّي تلقائي -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -185,7 +185,6 @@
       function showIosInstallSheet(force){
         if(!isIosInBrowser()) return;
         if(!force&&!shouldShowIosInstall()) return;
-        if(typeof window.__zekiqEnterGuestMenu==="function") window.__zekiqEnterGuestMenu();
         applyIosInstallCopy();
         var sheet=document.getElementById("iosInstallSheet");
         if(sheet) sheet.classList.add("show");
@@ -219,9 +218,9 @@
         var cont=document.getElementById("iosInstallContinue");
         var later=document.getElementById("iosInstallLater");
         var dismiss=document.getElementById("iosInstallDismiss");
-        if(cont) cont.addEventListener("click",function(){hideIosInstallSheet(true);if(window.__zekiqEnterGuestMenu)window.__zekiqEnterGuestMenu();});
-        if(later) later.addEventListener("click",function(){hideIosInstallSheet(true);if(window.__zekiqEnterGuestMenu)window.__zekiqEnterGuestMenu();});
-        if(dismiss) dismiss.addEventListener("click",function(){hideIosInstallSheet(true);if(window.__zekiqEnterGuestMenu)window.__zekiqEnterGuestMenu();});
+        if(cont) cont.addEventListener("click",function(){hideIosInstallSheet(true);});
+        if(later) later.addEventListener("click",function(){hideIosInstallSheet(true);});
+        if(dismiss) dismiss.addEventListener("click",function(){hideIosInstallSheet(true);});
         var tip=document.getElementById("iosCompactTip");
         if(tip&&!tip.__bound){
           tip.__bound=true;
@@ -2591,7 +2590,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v91</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v92</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -4962,7 +4961,6 @@
     }
     function finishGuestMenuEntry() {
       coachDone = true;
-      try { sessionStorage.setItem(coachDoneKey(), "1"); } catch (e) {}
       document.documentElement.classList.remove("coach-locked");
       document.documentElement.classList.add("guest-menu-active");
       syncSceneHud();
@@ -4993,16 +4991,16 @@
     window.__zekiqEnterGuestMenu = enterGuestMenu;
     function initCoverGate() {
       document.documentElement.classList.remove("guest-menu-active");
-      try {
-        if (sessionStorage.getItem(coachDoneKey()) === "1" && bookSpread.length > 1) {
-          forceMenuPageVisible();
-          finishGuestMenuEntry();
-          return;
-        }
-      } catch (e) {}
+      try { sessionStorage.removeItem(coachDoneKey()); } catch (e) {}
       cur = 0;
       coachDone = false;
+      animating = false;
       document.documentElement.classList.add("coach-locked");
+      document.querySelectorAll(".pw").forEach(function (pw, i) {
+        pw.classList.toggle("page-current", i === 0);
+        pw.classList.remove("page-reveal", "page-flip-top", "turning", "turn-next", "turn-prev", "page-leave", "page-dragging");
+        pw.style.transform = "";
+      });
       goToPage(0, true);
       syncSceneHud();
     }
