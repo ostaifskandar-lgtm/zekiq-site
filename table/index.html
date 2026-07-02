@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v90: iPhone = تخطيط فوق شريط Safari، بدون شعار؛ Android = ملء الشاشة -->
+  <!-- guest-table-ui-v91: صفحة ترحيب + فهمت؛ iPhone = تخطيط فوق شريط Safari -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -41,9 +41,9 @@
       function isIosInAppBrowser(){
         return isIosInBrowser()&&!isIosSafari();
       }
-        if(isIosInBrowser()) root.classList.add("ios-inbrowser","ios-direct-menu","ios-safe-layout");
+        if(isIosInBrowser()) root.classList.add("ios-inbrowser","ios-safe-layout");
       if(isIosInAppBrowser()) root.classList.add("ios-inapp");
-      if(isStandalone()) root.classList.add("ios-standalone","ios-direct-menu");
+      if(isStandalone()) root.classList.add("ios-standalone");
       function fitViewport(){
         var vv=window.visualViewport;
         if(vv&&vv.scale&&vv.scale>1.02) return;
@@ -347,7 +347,6 @@
       window.__zekiqIsIosInAppBrowser=isIosInAppBrowser;
       window.__zekiqUpdateIosCompactTip=updateIosCompactTip;
       window.__zekiqShowIosInstall=showIosInstallSheet;
-      window.__zekiqIosDirectMenu=function(){return root.classList.contains("ios-direct-menu");};
       window.__zekiqHideIosInstall=hideIosInstallSheet;
       window.__zekiqRefreshIosInstallCopy=applyIosInstallCopy;
       window.__zekiqBindSceneFullscreen=bindSceneFullscreen;
@@ -374,9 +373,7 @@
     html.ios-inbrowser:not(.ios-standalone) .swipe-foot-panel{
       padding:4px 10px calc(6px + var(--ios-safe-bottom,34px));
     }
-    html.ios-inbrowser:not(.ios-standalone) .pf-brand-strip,
-    html.ios-inbrowser:not(.ios-standalone) .cover-banner-img,
-    html.ios-inbrowser:not(.ios-standalone) .cover-brand-banner{display:none!important;}
+    html.ios-inbrowser:not(.ios-standalone) .pf-brand-strip{display:none!important;}
     html.ios-inbrowser:not(.ios-standalone) .scene-hud-ios{display:none!important;}
     html.ios-inbrowser:not(.ios-standalone) #pageSwipeBar .swipe-order-hint{display:none!important;}
     html.ios-inbrowser:not(.ios-standalone) .swipe-foot-panel{min-height:calc(44px + var(--ios-safe-bottom,34px));}
@@ -403,6 +400,7 @@
     #iosCompactTip:active{filter:brightness(1.08);}
     html.ios-standalone #iosCompactTip{display:none!important;}
     html.coach-locked #menuStage{padding-top:0!important;}
+    html.coach-locked.ios-inbrowser:not(.ios-standalone) #menuBookWrap{padding-bottom:0!important;}
     html{height:100dvh;overflow:hidden;}
     body{height:100dvh;overflow:hidden;}
     html,body{
@@ -2543,9 +2541,8 @@
       color:rgba(200,134,10,.55);font-size:11px;font-weight:700;
       padding:6px;cursor:pointer;font-family:inherit;
     }
-    html.ios-direct-menu #iosInstallSheet,
-    html.ios-direct-menu #iosCompactTip,
-    html.ios-direct-menu .cover-install-btn{display:none!important;}
+    html.ios-inbrowser:not(.ios-standalone) #iosInstallSheet,
+    html.ios-inbrowser:not(.ios-standalone) #iosCompactTip{display:none!important;}
     html.ios-install-open #fsHint{opacity:0!important;}
     .scene-hud-ios{
       display:none;
@@ -2594,7 +2591,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v90</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v91</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3171,7 +3168,6 @@
       return "zekiq_coach_done:" + (TOKEN || "x").slice(0, 48);
     }
     (function applyEarlyCoachGate() {
-      if (document.documentElement.classList.contains("ios-direct-menu")) return;
       document.documentElement.classList.add("coach-locked");
     })();
     function clearGuestOverlays() {
@@ -4995,16 +4991,8 @@
     function dismissCoach() { enterGuestMenu(); }
     window.__zekiqDismissCoach = dismissCoach;
     window.__zekiqEnterGuestMenu = enterGuestMenu;
-    function iosDirectMenu() {
-      return document.documentElement.classList.contains("ios-direct-menu") ||
-        (window.__zekiqIosDirectMenu && window.__zekiqIosDirectMenu());
-    }
     function initCoverGate() {
       document.documentElement.classList.remove("guest-menu-active");
-      if (iosDirectMenu() && bookSpread.length > 1) {
-        enterGuestMenu();
-        return;
-      }
       try {
         if (sessionStorage.getItem(coachDoneKey()) === "1" && bookSpread.length > 1) {
           forceMenuPageVisible();
