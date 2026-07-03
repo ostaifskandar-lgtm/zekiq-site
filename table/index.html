@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v105: iPhone ترحيب — اللوغو فقط -->
+  <!-- guest-table-ui-v106: iPhone اقتطاع مينو مثل أندرويد — شريط المجموعات يغطي ترويسة الصفحة -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -568,9 +568,10 @@
       height:100%;
       overflow:hidden;
     }
+    /* Same as Android: dock sits on the menu image top (covers printed page title strip). */
     html.ios-inbrowser:not(.ios-standalone) #menuTopDock{
       position:absolute;
-      top:0;
+      top:var(--menu-img-top, 0px);
       left:0;
       right:0;
       z-index:16;
@@ -585,8 +586,9 @@
     }
     html.ios-inbrowser:not(.ios-standalone) #menuCategoryBar{
       margin-top:0!important;
-      padding:3px 0 2px;
+      padding:4px 0 4px;
       border-bottom:1px solid rgba(180,140,80,.32);
+      background:linear-gradient(180deg,#ebe4d3 0%,rgba(235,228,211,.98) 88%,rgba(235,228,211,.88) 100%);
     }
     html.ios-inbrowser:not(.ios-standalone) #book{
       position:absolute;
@@ -596,7 +598,7 @@
       bottom:0;
       width:100%;
       height:100%;
-      padding-top:var(--ios-cat-h,0px);
+      padding-top:0;
       box-sizing:border-box;
       flex:none;
       min-height:0;
@@ -2856,7 +2858,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v105</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v106</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -4329,21 +4331,23 @@
       const rect = imageOverlayRect(pf, { measureOnly: true });
       if (!rect) return;
       const catH = Math.round(bar?.offsetHeight || 0);
+      const oy = Math.round(rect.oy);
       if (isIosGuestNoLogo()) {
-        const dockKey = "ios-pad|" + catH;
+        /* Cover printed page-title strip on the photo (same visual as Android brand zone). */
+        const headerCover = Math.max(catH, Math.round(rect.dh * 0.09), 36);
+        const dockKey = "ios-overlay|" + oy + "|" + catH + "|" + headerCover;
         if (lastCategoryDockKey === dockKey) return;
         lastCategoryDockKey = dockKey;
-        view.style.setProperty("--ios-cat-h", catH > 0 ? catH + "px" : "0px");
-        view.style.removeProperty("--menu-img-top");
-        view.style.removeProperty("--menu-top-dock-h");
-        view.style.removeProperty("--cat-bar-h");
-        view.style.removeProperty("--logo-strip-h");
+        view.style.setProperty("--menu-img-top", oy + "px");
+        view.style.setProperty("--cat-bar-h", catH + "px");
+        view.style.setProperty("--logo-strip-h", headerCover + "px");
+        view.style.setProperty("--menu-top-dock-h", "0px");
+        view.style.removeProperty("--ios-cat-h");
         syncOrdersListHeight();
         scheduleHotspotRelayout();
         return;
       }
       const logoH = logoStripHeight(rect);
-      const oy = Math.round(rect.oy);
       const dockKey = oy + "|" + catH + "|" + logoH;
       if (lastCategoryDockKey === dockKey) return;
       lastCategoryDockKey = dockKey;
