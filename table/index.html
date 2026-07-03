@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v103: iPhone — مينو بحجم طبيعي (contain) ملتصق بالأسفل -->
+  <!-- guest-table-ui-v104: سعر بدون ₺ + ضغط مطوّل لملاحظة الصنف -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -234,7 +234,7 @@
       }
       function onMenuTap(ev){
         if(isCoachLocked()) return;
-        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,.cover-start-btn,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList")) return;
+        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,.cover-start-btn,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList,#line-note-sheet,#item-popup")) return;
         fitViewport();
         if(!isIosInBrowser()) hideSafariChrome();
         if(!isIosInBrowser()) enterImmersiveAuto();
@@ -1275,6 +1275,10 @@
       font-weight:700;
       line-height:1.4;
       color:#ffe082;
+      -webkit-touch-callout:none;
+      -webkit-user-select:none;
+      user-select:none;
+      touch-action:manipulation;
     }
     .order-chip-line:last-child{border-bottom:none;}
     .order-chip-line.flash-added{
@@ -2400,11 +2404,35 @@
     .hotspot:active .add-pin{filter:brightness(.95);}
 
     .hotspot:active .price-cover{transform:scale(.93);filter:brightness(.95);}
-    #item-popup{
+    #item-popup,#line-note-sheet{
       position:fixed;inset:0;z-index:1000;display:flex;align-items:flex-end;justify-content:center;
       opacity:0;pointer-events:none;transition:opacity .25s;background:rgba(0,0,0,0);
     }
-    #item-popup.show{opacity:1;pointer-events:all;background:rgba(0,0,0,.65);}
+    #item-popup.show,#line-note-sheet.show{opacity:1;pointer-events:all;background:rgba(0,0,0,.65);}
+    #line-note-sheet{z-index:1100;}
+    #line-note-sheet .line-note-card{
+      width:min(420px,100vw);background:linear-gradient(160deg,#1f0c00,#2d1400);
+      border:1.5px solid #c8860a;border-radius:24px 24px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px));
+      transform:translateY(100%);transition:transform .32s cubic-bezier(.34,1.2,.64,1);
+      box-shadow:0 -10px 50px rgba(200,134,10,.2);
+    }
+    #line-note-sheet.show .line-note-card{transform:translateY(0);}
+    .line-note-title{color:#fff;font-size:16px;font-weight:800;text-align:center;margin-bottom:6px;}
+    .line-note-sub{color:rgba(255,224,130,.75);font-size:12px;text-align:center;margin-bottom:12px;font-weight:700;}
+    #lineNoteInp{
+      width:100%;min-height:88px;resize:vertical;box-sizing:border-box;
+      border-radius:14px;border:1.5px solid rgba(200,134,10,.45);
+      background:rgba(255,248,230,.96);color:#2a1a04;
+      padding:12px 14px;font-size:15px;font-weight:600;font-family:inherit;
+      margin-bottom:14px;
+    }
+    #lineNoteInp::placeholder{color:rgba(74,44,0,.55);font-weight:500;}
+    #lineNoteInp:focus{outline:none;border-color:#c8860a;box-shadow:0 0 0 3px rgba(200,134,10,.2);}
+    .order-chip-line.has-note .order-chip-name::after{
+      content:" ✎";
+      color:#8a5a08;
+      font-size:.9em;
+    }
     #popup-card{
       width:min(420px,100vw);background:linear-gradient(160deg,#1f0c00,#2d1400);
       border:1.5px solid #c8860a;border-radius:24px 24px 0 0;padding:28px 24px 34px;
@@ -2781,7 +2809,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v103</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v104</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -2932,6 +2960,18 @@
     </div>
   </div>
 
+  <div id="line-note-sheet" aria-hidden="true">
+    <div class="line-note-card">
+      <div class="line-note-title" id="lineNoteTitle">ملاحظة للصنف</div>
+      <div class="line-note-sub" id="lineNoteItemName"></div>
+      <textarea id="lineNoteInp" rows="3" maxlength="120" placeholder="ملاحظة لهذا الصنف (بدون بصل، نصف محمص…)"></textarea>
+      <div class="popup-actions">
+        <button type="button" class="popup-close" id="lineNoteCancel">إلغاء</button>
+        <button type="button" class="popup-add" id="lineNoteSave">حفظ</button>
+      </div>
+    </div>
+  </div>
+
   <div id="menu-panel">
     <div class="menu-hd">
       <div><div class="menu-title" id="i18n-menu-title">📋 قائمة الأطباق</div><div class="menu-sub" id="i18n-menu-sub">ابحث واطلب من أي صفحة</div></div>
@@ -3039,6 +3079,8 @@
       toastCleared: "تم مسح السلة",
       notePh: "ملاحظة عامة للطلب (اختياري)…",
       itemNotePh: "ملاحظة لهذا الصنف (بدون بصل، نصف محمص…)",
+      lineNoteTitle: "ملاحظة للصنف",
+      lineNoteSave: "حفظ",
       popupClose: "إلغاء",
       popupAdd: "أضف للسلة",
       sugarChoose: "اختر مستوى السكر",
@@ -3143,6 +3185,8 @@
       toastCleared: "Sepet temizlendi",
       notePh: "Genel sipariş notu (isteğe bağlı)…",
       itemNotePh: "Bu ürün için not (soğansız, az pişmiş…)",
+      lineNoteTitle: "Ürün notu",
+      lineNoteSave: "Kaydet",
       popupClose: "İptal",
       popupAdd: "Sepete ekle",
       sugarChoose: "Şeker tercihini seçin",
@@ -3247,6 +3291,8 @@
       toastCleared: "Cart cleared",
       notePh: "General order note (optional)…",
       itemNotePh: "Note for this item (no onion, medium rare…)",
+      lineNoteTitle: "Item note",
+      lineNoteSave: "Save",
       popupClose: "Cancel",
       popupAdd: "Add to cart",
       sugarChoose: "Choose sugar level",
@@ -3344,6 +3390,14 @@
     });
     var note = document.getElementById("noteInp");
     if (note) note.placeholder = t("notePh");
+    var lineNoteTitle = document.getElementById("lineNoteTitle");
+    if (lineNoteTitle) lineNoteTitle.textContent = t("lineNoteTitle");
+    var lineNoteInp = document.getElementById("lineNoteInp");
+    if (lineNoteInp) lineNoteInp.placeholder = t("itemNotePh");
+    var lineNoteCancel = document.getElementById("lineNoteCancel");
+    if (lineNoteCancel) lineNoteCancel.textContent = t("popupClose");
+    var lineNoteSave = document.getElementById("lineNoteSave");
+    if (lineNoteSave) lineNoteSave.textContent = t("lineNoteSave");
     var search = document.getElementById("menuSearch");
     if (search) search.placeholder = t("menuSearch");
     if (typeof global.__zekiqOnGuestLang === "function") global.__zekiqOnGuestLang(lang);
@@ -3942,6 +3996,8 @@
       return String(s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
     }
     function money(n) { return (Math.round(Number(n) || 0)).toLocaleString("tr-TR") + " ₺"; }
+    /** Price digits only (no TL / ₺) — used in selected-orders chip. */
+    function moneyPlain(n) { return (Math.round(Number(n) || 0)).toLocaleString("tr-TR"); }
     function deptEmoji(d) {
       if (d === "kitchen") return "🍳";
       if (d === "barista") return "☕";
@@ -5686,16 +5742,17 @@
         listEl.innerHTML = cart.map((l, idx) => {
           const qty = Math.max(1, Number(l.qty) || 1);
           const name = String(l.item?.name || "").trim() || "—";
-          const note = l.note ? " · " + esc(l.note) : "";
+          const noteText = String(l.note || "").trim();
+          const note = noteText ? " · " + esc(noteText) : "";
           /* qty=1 → delete only; qty>1 → decrease only (frees space for name on iPhone) */
           const showDel = qty <= 1;
           return `
-          <div class="order-chip-line" data-line-idx="${idx}" data-qty="${qty}">
-            <span class="order-chip-name" title="${esc(name)}">${qty}× ${esc(name)}${note}</span>
+          <div class="order-chip-line${noteText ? " has-note" : ""}" data-line-idx="${idx}" data-qty="${qty}">
+            <span class="order-chip-name" title="${esc(name)}${noteText ? " — " + esc(noteText) : ""}">${qty}× ${esc(name)}${note}</span>
             <div class="order-chip-actions">
               <button type="button" class="order-chip-dec" data-dec-idx="${idx}" aria-label="−"${showDel ? " hidden" : ""}>−</button>
               <button type="button" class="order-chip-del" data-del-idx="${idx}" aria-label="${esc(guestT("cartDelete"))}"${showDel ? "" : " hidden"}>🗑</button>
-              <span class="order-chip-price">${money(Number(l.item.price) * qty)}</span>
+              <span class="order-chip-price">${moneyPlain(Number(l.item.price) * qty)}</span>
             </div>
           </div>`;
         }).join("") +
@@ -5708,6 +5765,7 @@
         });
         const sceneClear = listEl.querySelector("#sceneClearCart");
         if (sceneClear) sceneClear.onclick = e => { e.stopPropagation(); clearCart(); };
+        bindOrderLineNotePress(listEl);
         syncOrderListView(listEl);
       }
       syncCategoryBar();
@@ -5860,6 +5918,113 @@
       updateBadge();
       renderCart();
     }
+
+    let lineNoteIdx = -1;
+    let lineNotePressTimer = 0;
+    function closeLineNoteSheet() {
+      const sheet = document.getElementById("line-note-sheet");
+      if (sheet) {
+        sheet.classList.remove("show");
+        sheet.setAttribute("aria-hidden", "true");
+      }
+      lineNoteIdx = -1;
+    }
+    function openLineNoteSheet(idx) {
+      if (idx < 0 || idx >= cart.length) return;
+      const line = cart[idx];
+      if (!line) return;
+      lineNoteIdx = idx;
+      const sheet = document.getElementById("line-note-sheet");
+      const title = document.getElementById("lineNoteTitle");
+      const nameEl = document.getElementById("lineNoteItemName");
+      const inp = document.getElementById("lineNoteInp");
+      if (title) title.textContent = guestT("lineNoteTitle");
+      if (nameEl) nameEl.textContent = String(line.item?.name || "");
+      if (inp) {
+        inp.value = String(line.note || "");
+        inp.placeholder = guestT("itemNotePh");
+      }
+      const cancel = document.getElementById("lineNoteCancel");
+      const save = document.getElementById("lineNoteSave");
+      if (cancel) cancel.textContent = guestT("popupClose");
+      if (save) save.textContent = guestT("lineNoteSave");
+      if (sheet) {
+        sheet.classList.add("show");
+        sheet.setAttribute("aria-hidden", "false");
+      }
+      setTimeout(() => {
+        try { inp?.focus({ preventScroll: true }); } catch (_) { inp?.focus(); }
+      }, 80);
+      if (navigator.vibrate) navigator.vibrate(18);
+    }
+    function saveLineNoteSheet() {
+      if (lineNoteIdx < 0 || lineNoteIdx >= cart.length) {
+        closeLineNoteSheet();
+        return;
+      }
+      const inp = document.getElementById("lineNoteInp");
+      const note = String(inp?.value || "").trim().slice(0, 120);
+      cart[lineNoteIdx].note = note;
+      closeLineNoteSheet();
+      updateBadge();
+      renderCart();
+    }
+    function bindOrderLineNotePress(listEl) {
+      if (!listEl) return;
+      listEl.querySelectorAll(".order-chip-line").forEach(row => {
+        let startX = 0;
+        let startY = 0;
+        const clearTimer = () => {
+          if (lineNotePressTimer) {
+            clearTimeout(lineNotePressTimer);
+            lineNotePressTimer = 0;
+          }
+        };
+        const onStart = e => {
+          if (e.target.closest("button, .order-chip-actions, .order-chip-dec, .order-chip-del, .order-chip-price")) return;
+          const t = e.touches ? e.touches[0] : e;
+          startX = t.clientX;
+          startY = t.clientY;
+          clearTimer();
+          const idx = Number(row.dataset.lineIdx);
+          lineNotePressTimer = setTimeout(() => {
+            lineNotePressTimer = 0;
+            openLineNoteSheet(idx);
+          }, 340);
+        };
+        const onMove = e => {
+          if (!lineNotePressTimer) return;
+          const t = e.touches ? e.touches[0] : e;
+          if (Math.abs(t.clientX - startX) > 12 || Math.abs(t.clientY - startY) > 12) clearTimer();
+        };
+        row.addEventListener("touchstart", onStart, { passive: true });
+        row.addEventListener("touchmove", onMove, { passive: true });
+        row.addEventListener("touchend", clearTimer);
+        row.addEventListener("touchcancel", clearTimer);
+        row.addEventListener("mousedown", onStart);
+        row.addEventListener("mousemove", onMove);
+        row.addEventListener("mouseup", clearTimer);
+        row.addEventListener("mouseleave", clearTimer);
+      });
+    }
+    (function initLineNoteSheet() {
+      const sheet = document.getElementById("line-note-sheet");
+      const cancel = document.getElementById("lineNoteCancel");
+      const save = document.getElementById("lineNoteSave");
+      if (cancel) cancel.onclick = e => { e.stopPropagation(); closeLineNoteSheet(); };
+      if (save) save.onclick = e => { e.stopPropagation(); saveLineNoteSheet(); };
+      if (sheet) {
+        sheet.addEventListener("click", e => {
+          if (e.target === sheet) closeLineNoteSheet();
+        });
+      }
+      const inp = document.getElementById("lineNoteInp");
+      if (inp) {
+        inp.addEventListener("keydown", e => {
+          if (e.key === "Escape") closeLineNoteSheet();
+        });
+      }
+    })();
 
     function showToast(msg) {
       const t = document.getElementById("toast");
