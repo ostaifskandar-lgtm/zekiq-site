@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v93: iOS Safari — لا حجز مزدوج لشريط المتصفح، مينو يملأ الشاشة -->
+  <!-- guest-table-ui-v94: iPhone — بدون لوغو، نفس تخطيط أندرويد -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -345,6 +345,7 @@
       window.__zekiqHideSafariChrome=hideSafariChrome;
       window.__zekiqBurstHideSafariChrome=burstHideSafariChrome;
       window.__zekiqIsIosSafari=isIosSafari;
+      window.__zekiqIsIosInBrowser=isIosInBrowser;
       window.__zekiqIsIosInAppBrowser=isIosInAppBrowser;
       window.__zekiqUpdateIosCompactTip=updateIosCompactTip;
       window.__zekiqShowIosInstall=showIosInstallSheet;
@@ -365,30 +366,30 @@
       --ios-safe-bottom:env(safe-area-inset-bottom,0px);
     }
     html.ios-standalone{--app-h:100dvh;--ios-safe-bottom:env(safe-area-inset-bottom,0px);}
-    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders.guest-hint-only{display:none!important;}
-    html.ios-inbrowser:not(.ios-standalone) #sceneHud{display:flex!important;}
-    html.ios-inbrowser:not(.ios-standalone) #sceneHud .hud-row{min-height:32px;}
-    html.ios-inbrowser:not(.ios-standalone) #sceneHud{padding-top:max(2px,env(safe-area-inset-top,0px));padding-bottom:2px;}
+    /* iPhone Safari — نفس أندرويد: بدون لوغو، شريط علوي immersive، مينو يملأ الشاشة */
+    html.ios-inbrowser:not(.ios-standalone) .cover-brand-banner,
+    html.ios-inbrowser:not(.ios-standalone) .pf-brand-strip,
+    html.ios-inbrowser:not(.ios-standalone) .guest-brand-banner-img,
+    html.ios-inbrowser:not(.ios-standalone) #header .logo{display:none!important;}
+    html.ios-inbrowser:not(.ios-standalone) .cover-ios-tip,
+    html.ios-inbrowser:not(.ios-standalone) .cover-install-btn,
+    html.ios-inbrowser:not(.ios-standalone) .scene-hud-ios{display:none!important;}
     html.ios-inbrowser:not(.ios-standalone) #menuStage{
       flex:1 1 0;
       min-height:0;
       height:0;
-      padding-top:calc(40px + env(safe-area-inset-top,0px))!important;
+      padding-top:calc(44px + env(safe-area-inset-top,0px))!important;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuBookWrap{padding-bottom:0;}
     html.ios-inbrowser:not(.ios-standalone) #menuViewport{height:100%;min-height:0;}
     html.ios-inbrowser:not(.ios-standalone) #book{height:100%;min-height:0;}
     html.ios-inbrowser:not(.ios-standalone) .swipe-foot-panel{
-      padding:4px 10px calc(6px + env(safe-area-inset-bottom,0px));
+      padding:5px 10px calc(5px + env(safe-area-inset-bottom,0px));
       min-height:calc(44px + env(safe-area-inset-bottom,0px));
     }
-    html.ios-inbrowser:not(.ios-standalone) .pf-brand-strip{display:none!important;}
-    html.ios-inbrowser:not(.ios-standalone) .scene-hud-ios{display:none!important;}
-    html.ios-inbrowser:not(.ios-standalone) #pageSwipeBar .swipe-order-hint{display:none!important;}
-    html.ios-inbrowser:not(.ios-standalone) .swipe-arrow-track{height:18px;width:108px;}
-    html.ios-inbrowser:not(.ios-standalone) .swipe-hint-text{font-size:10px;line-height:1.2;}
-    html.ios-inbrowser:not(.ios-standalone) .swipe-page-num{font-size:9px;}
-    html.ios-inbrowser:not(.ios-standalone) #tableFootBadge.show{display:flex;}
+    html.ios-inbrowser:not(.ios-standalone).coach-locked .cover-body{
+      padding-top:clamp(10px,2.8vw,14px);
+    }
     #iosCompactTip{
       display:none;
       position:fixed;
@@ -2570,7 +2571,6 @@
       font-size:16px!important;
       padding:6px 10px!important;
     }
-    html.ios-inbrowser:not(.ios-standalone) .scene-hud-ios{display:inline-flex!important;}
     .cover-install-btn{
       width:100%;margin-top:8px;
       border:2px solid rgba(200,134,10,.55);border-radius:14px;padding:13px 14px;
@@ -2609,7 +2609,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v92</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v94</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3574,6 +3574,10 @@
       if (/tonino/.test(name)) return guestT("coverTagline");
       return "";
     }
+    function isIosGuestNoLogo() {
+      const root = document.documentElement;
+      return root.classList.contains("ios-inbrowser") && !root.classList.contains("ios-standalone");
+    }
     function coverLogoSrc() {
       const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1";
       return "assets/tonino-brand-banner.jpg" + bv;
@@ -3591,14 +3595,15 @@
         const banner = document.createElement("div");
         banner.className = "cover-brand-banner";
 
-        const logo = document.createElement("img");
-        logo.className = "cover-banner-img guest-brand-banner-img";
-        logo.src = coverLogoSrc();
-        logo.alt = shopName || guestT("coverStartTitle");
-        logo.draggable = false;
-        logo.decoding = "async";
-
-        banner.appendChild(logo);
+        if (!isIosGuestNoLogo()) {
+          const logo = document.createElement("img");
+          logo.className = "cover-banner-img guest-brand-banner-img";
+          logo.src = coverLogoSrc();
+          logo.alt = shopName || guestT("coverStartTitle");
+          logo.draggable = false;
+          logo.decoding = "async";
+          banner.appendChild(logo);
+        }
 
         const body = document.createElement("div");
         body.className = "cover-body";
@@ -3616,7 +3621,7 @@
           '<p class="cover-welcome-greet">' + esc(guestT("coverWelcomeGreet")) + "</p>" +
           '<p class="cover-welcome-sub">' + esc(guestT("coverWelcomeSub")) + "</p>" +
           "</div>" +
-          '<p class="cover-ios-tip">' + esc(guestT("coverIosTip")) + "</p>" +
+          (isIosGuestNoLogo() ? "" : ('<p class="cover-ios-tip">' + esc(guestT("coverIosTip")) + "</p>")) +
           '<h2 class="cover-order-head">' + esc(guestT("coverOrderHead")) + "</h2>" +
           '<p class="cover-order-lead">' + esc(guestT("coverOrderLead")) + "</p>";
 
@@ -3642,7 +3647,7 @@
         installBtn.onclick = function () {
           if (window.__zekiqShowIosInstall) window.__zekiqShowIosInstall(true);
         };
-        guide.appendChild(installBtn);
+        if (!isIosGuestNoLogo()) guide.appendChild(installBtn);
 
         const startBtn = document.createElement("button");
         startBtn.type = "button";
@@ -3658,6 +3663,7 @@
         guide.appendChild(startBtn);
 
         panel.appendChild(banner);
+        if (isIosGuestNoLogo() && banner.childElementCount === 0) banner.style.display = "none";
         if (section && tableNum) body.appendChild(tableLine);
         body.appendChild(guide);
         panel.appendChild(body);
@@ -4959,11 +4965,13 @@
         if (spread.kind === "menu") {
           const pageSrc = fixImgUrl(spread.imgUrl) + (String(spread.imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
           primePageBg(pf, pageSrc);
-          const brandStrip = document.createElement("div");
-          brandStrip.className = "pf-brand-strip";
-          brandStrip.setAttribute("aria-hidden", "true");
-          brandStrip.innerHTML = '<img class="guest-brand-banner-img" alt="Tonino" draggable="false" src="assets/tonino-brand-banner.jpg" />';
-          pf.appendChild(brandStrip);
+          if (!isIosGuestNoLogo()) {
+            const brandStrip = document.createElement("div");
+            brandStrip.className = "pf-brand-strip";
+            brandStrip.setAttribute("aria-hidden", "true");
+            brandStrip.innerHTML = '<img class="guest-brand-banner-img" alt="Tonino" draggable="false" src="assets/tonino-brand-banner.jpg" />';
+            pf.appendChild(brandStrip);
+          }
           const shade = document.createElement("div");
           shade.className = "page-shade";
           pf.appendChild(shade);
@@ -5399,14 +5407,11 @@
     }
     function syncGuestPlusNudge() {
       const ordersWrap = document.getElementById("menuTopOrders");
-      const iosBrowser = window.__zekiqIsIosInBrowser && window.__zekiqIsIosInBrowser();
       const onMenu = coachDone && !navLocked() && cart.length === 0 && spreadKind(cur) === "menu";
       if (ordersWrap) {
-        const showHint = onMenu && !iosBrowser;
-        ordersWrap.classList.toggle("guest-hint-only", showHint);
-        if (onMenu && !iosBrowser) ordersWrap.classList.add("show");
+        ordersWrap.classList.toggle("guest-hint-only", onMenu);
+        if (onMenu) ordersWrap.classList.add("show");
         else if (!cart.length) ordersWrap.classList.remove("show", "guest-hint-only");
-        else if (onMenu && iosBrowser) ordersWrap.classList.remove("show", "guest-hint-only");
       }
     }
     function syncSceneHud() {
