@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v102: iPhone — اسم الطلب ظاهر، زر − أو 🗑 حسب الكمية -->
+  <!-- guest-table-ui-v103: iPhone — مينو بحجم طبيعي (contain) ملتصق بالأسفل -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -554,8 +554,8 @@
       flex:none;
       min-height:0;
       overflow:hidden;
+      background:#ebe4d3;
     }
-    html.ios-inbrowser:not(.ios-standalone) .pw,
     html.ios-inbrowser:not(.ios-standalone) .pw.page-current .pf{
       overflow:hidden;
     }
@@ -2781,7 +2781,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v102</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v103</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -4613,13 +4613,12 @@
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
       const isCover = pf.classList.contains("book-cover");
-      const iosMenu = isIosGuestNoLogo() && !isCover;
-      /* iOS: cover fills height under category bar — no empty strip at bottom */
-      const scale = iosMenu ? Math.max(cw / nw, ch / nh) : Math.min(cw / nw, ch / nh);
+      /* Natural size (contain). Bottom-align menu pages so no empty strip under the image. */
+      const scale = Math.min(cw / nw, ch / nh);
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
-      const oy = isCover ? (ch - dh) / 2 : (iosMenu ? 0 : (ch - dh));
+      const oy = isCover ? (ch - dh) / 2 : (ch - dh);
       return {
         ox, oy, dw, dh,
         wasteTop: Math.max(0, oy),
