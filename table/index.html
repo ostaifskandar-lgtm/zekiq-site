@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v95: iPhone — إلغاء الشريط السفلي (طاولة/سحب) لمزيد من مساحة الطلبات -->
+  <!-- guest-table-ui-v96: iPhone — إخفاء السلة و«القائمة» من الأعلى -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -374,6 +374,25 @@
     html.ios-inbrowser:not(.ios-standalone) .cover-ios-tip,
     html.ios-inbrowser:not(.ios-standalone) .cover-install-btn,
     html.ios-inbrowser:not(.ios-standalone) .scene-hud-ios{display:none!important;}
+    html.ios-inbrowser:not(.ios-standalone) #header{display:none!important;}
+    html.ios-inbrowser:not(.ios-standalone) .scene-hud-list{display:none!important;}
+    html.ios-inbrowser:not(.ios-standalone) #sceneHud .hud-row{justify-content:flex-start;}
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-head{
+      font-size:10px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-head-btn{
+      flex:1;
+      min-width:0;
+      max-width:calc(100% - 88px);
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-send{
+      flex-shrink:0;
+      position:relative;
+      z-index:2;
+    }
     html.ios-inbrowser:not(.ios-standalone) #menuStage{
       flex:1 1 0;
       min-height:0;
@@ -2609,7 +2628,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v95</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v96</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -5479,7 +5498,7 @@
       if (ordersWrap) ordersWrap.classList.add("show");
       if (chipEl) chipEl.classList.add("show");
       if (stageEl) stageEl.classList.remove("orders-overlay");
-      if (summaryEl) summaryEl.textContent = "🛒 " + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
+      if (summaryEl) summaryEl.textContent = (isIosGuestNoLogo() ? "" : "🛒 ") + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
       if (listEl) {
         listEl.innerHTML = cart.map((l, idx) => `
           <div class="order-chip-line" data-line-idx="${idx}">
