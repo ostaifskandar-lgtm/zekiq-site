@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v98: iPhone — أصناف مختارة أفقياً، صفّان بصنفين -->
+  <!-- guest-table-ui-v99: iPhone — إظهار شريط المجموعات تحت الطلبات -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -464,12 +464,36 @@
       scroll-snap-align:end;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuStage{
+      display:flex;
+      flex-direction:column;
       flex:1 1 0;
       min-height:0;
       height:0;
       padding-top:calc(44px + env(safe-area-inset-top,0px))!important;
     }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders{
+      position:relative;
+      top:auto;
+      left:auto;
+      right:auto;
+      flex-shrink:0;
+      width:100%;
+      z-index:30;
+      padding-top:0;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders:not(.show){
+      display:none!important;
+    }
     html.ios-inbrowser:not(.ios-standalone) #menuBookWrap{
+      position:relative;
+      flex:1 1 0;
+      min-height:0;
+      height:auto;
+      top:auto;
+      left:0;
+      right:0;
+      bottom:auto;
+      width:100%;
       padding-bottom:0;
       grid-template-rows:1fr;
     }
@@ -487,7 +511,10 @@
       right:auto;
       flex-shrink:0;
       width:100%;
-      z-index:880;
+      z-index:12;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopDock.show{
+      display:block!important;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuCategoryBar{
       margin-top:0!important;
@@ -2719,7 +2746,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v98</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v99</p></div></div>
 
   <div id="okScreen">
     <div>
