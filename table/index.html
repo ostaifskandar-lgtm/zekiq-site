@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v94: iPhone — بدون لوغو، نفس تخطيط أندرويد -->
+  <!-- guest-table-ui-v95: iPhone — إلغاء الشريط السفلي (طاولة/سحب) لمزيد من مساحة الطلبات -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -380,13 +380,13 @@
       height:0;
       padding-top:calc(44px + env(safe-area-inset-top,0px))!important;
     }
-    html.ios-inbrowser:not(.ios-standalone) #menuBookWrap{padding-bottom:0;}
+    html.ios-inbrowser:not(.ios-standalone) #menuBookWrap{
+      padding-bottom:0;
+      grid-template-rows:1fr;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #pageSwipeBar{display:none!important;}
     html.ios-inbrowser:not(.ios-standalone) #menuViewport{height:100%;min-height:0;}
     html.ios-inbrowser:not(.ios-standalone) #book{height:100%;min-height:0;}
-    html.ios-inbrowser:not(.ios-standalone) .swipe-foot-panel{
-      padding:5px 10px calc(5px + env(safe-area-inset-bottom,0px));
-      min-height:calc(44px + env(safe-area-inset-bottom,0px));
-    }
     html.ios-inbrowser:not(.ios-standalone).coach-locked .cover-body{
       padding-top:clamp(10px,2.8vw,14px);
     }
@@ -2609,7 +2609,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v94</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v95</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3577,6 +3577,9 @@
     function isIosGuestNoLogo() {
       const root = document.documentElement;
       return root.classList.contains("ios-inbrowser") && !root.classList.contains("ios-standalone");
+    }
+    function isIosGuestHideFootBar() {
+      return isIosGuestNoLogo();
     }
     function coverLogoSrc() {
       const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1";
@@ -4559,7 +4562,8 @@
       document.documentElement.classList.toggle("letterbox-nav", !!useTopRail);
       if (pgEl && menuIdx >= 0) pgEl.textContent = (menuIdx + 1) + " / " + menuPageCount;
       if (!bar) return;
-      bar.style.display = bookSpread.length <= 1 ? "none" : "";
+      if (isIosGuestHideFootBar()) bar.style.display = "none";
+      else bar.style.display = bookSpread.length <= 1 ? "none" : "";
       syncFootLayout();
     }
     function primePageBg(pf, src, onReady) {
@@ -5394,6 +5398,11 @@
       const numEl = document.getElementById("tableFootNum");
       const secEl = document.getElementById("tableFootSection");
       if (!badge || !numEl) return;
+      if (isIosGuestHideFootBar()) {
+        badge.hidden = true;
+        badge.classList.remove("show");
+        return;
+      }
       if (section && tableNum) {
         badge.hidden = false;
         badge.classList.add("show");
