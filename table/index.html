@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v101: iPhone — مجموعات فوق المينو، المينو يملأ حتى الأسفل بدون فراغ -->
+  <!-- guest-table-ui-v102: iPhone — اسم الطلب ظاهر، زر − أو 🗑 حسب الكمية -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -394,11 +394,11 @@
       z-index:2;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-list{
-      --order-line-h:28px;
+      --order-line-h:30px;
       display:grid;
       grid-template-rows:repeat(3, minmax(var(--order-line-h), auto));
       grid-auto-flow:column;
-      grid-auto-columns:minmax(142px, calc(50vw - 18px));
+      grid-auto-columns:minmax(168px, calc(52vw - 14px));
       gap:3px 8px;
       align-content:start;
       max-height:calc(var(--order-line-h) * 3 + 16px)!important;
@@ -418,34 +418,50 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:4px;
+      gap:5px;
       min-width:0;
       padding:3px 6px;
       border-bottom:none;
       border:1px solid rgba(180,140,80,.24);
       border-radius:10px;
-      background:rgba(255,255,255,.55);
+      background:rgba(255,255,255,.72);
       font-size:10px;
       line-height:1.25;
+      color:#2a1a04;
       scroll-snap-align:start;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-name{
-      font-size:10px;
+      flex:1 1 auto;
+      min-width:0;
+      max-width:none;
+      font-size:11px;
+      font-weight:800;
+      color:#2a1a04;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
+      text-align:right;
     }
-    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-actions{gap:3px;}
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-actions{
+      gap:3px;
+      flex:0 0 auto;
+    }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-dec,
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-del{
-      width:24px;
-      height:24px;
-      font-size:12px;
+      width:26px;
+      height:26px;
+      font-size:13px;
       border-radius:7px;
+      flex-shrink:0;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-dec[hidden],
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-del[hidden]{
+      display:none!important;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-price{
-      min-width:44px;
+      min-width:36px;
       font-size:9px;
+      color:#6b4510;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-clear{
       grid-row:1 / span 3;
@@ -2765,7 +2781,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v101</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v102</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -5668,15 +5684,22 @@
       if (stageEl) stageEl.classList.remove("orders-overlay");
       if (summaryEl) summaryEl.textContent = (isIosGuestNoLogo() ? "" : "🛒 ") + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
       if (listEl) {
-        listEl.innerHTML = cart.map((l, idx) => `
-          <div class="order-chip-line" data-line-idx="${idx}">
-            <span class="order-chip-name">${l.qty}× ${esc(l.item.name)}${l.note ? " · " + esc(l.note) : ""}</span>
+        listEl.innerHTML = cart.map((l, idx) => {
+          const qty = Math.max(1, Number(l.qty) || 1);
+          const name = String(l.item?.name || "").trim() || "—";
+          const note = l.note ? " · " + esc(l.note) : "";
+          /* qty=1 → delete only; qty>1 → decrease only (frees space for name on iPhone) */
+          const showDel = qty <= 1;
+          return `
+          <div class="order-chip-line" data-line-idx="${idx}" data-qty="${qty}">
+            <span class="order-chip-name" title="${esc(name)}">${qty}× ${esc(name)}${note}</span>
             <div class="order-chip-actions">
-              <button type="button" class="order-chip-dec" data-dec-idx="${idx}" aria-label="−">−</button>
-              <button type="button" class="order-chip-del" data-del-idx="${idx}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
-              <span class="order-chip-price">${money(Number(l.item.price) * l.qty)}</span>
+              <button type="button" class="order-chip-dec" data-dec-idx="${idx}" aria-label="−"${showDel ? " hidden" : ""}>−</button>
+              <button type="button" class="order-chip-del" data-del-idx="${idx}" aria-label="${esc(guestT("cartDelete"))}"${showDel ? "" : " hidden"}>🗑</button>
+              <span class="order-chip-price">${money(Number(l.item.price) * qty)}</span>
             </div>
-          </div>`).join("") +
+          </div>`;
+        }).join("") +
           `<button type="button" class="order-chip-clear" id="sceneClearCart">${esc(guestT("cartClearAll"))}</button>`;
         listEl.querySelectorAll("[data-dec-idx]").forEach(btn => {
           btn.onclick = e => { e.stopPropagation(); chQtyLine(Number(btn.dataset.decIdx), -1); };
