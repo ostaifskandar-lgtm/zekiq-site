@@ -2219,7 +2219,7 @@
 
     .hotspot:active .price-cover{transform:scale(.93);filter:brightness(.95);}
     #item-popup{
-      position:fixed;inset:0;z-index:400;display:flex;align-items:flex-end;justify-content:center;
+      position:fixed;inset:0;z-index:1000;display:flex;align-items:flex-end;justify-content:center;
       opacity:0;pointer-events:none;transition:opacity .25s;background:rgba(0,0,0,0);
     }
     #item-popup.show{opacity:1;pointer-events:all;background:rgba(0,0,0,.65);}
@@ -2240,6 +2240,16 @@
     .popup-actions{display:flex;gap:12px;}
     .popup-close{flex:1;background:rgba(200,134,10,.12);border:1.5px solid rgba(200,134,10,.4);color:#c8860a;border-radius:14px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;}
     .popup-add{flex:2;background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:900;color:#0d0500;cursor:pointer;}
+    .popup-add:disabled{opacity:.45;cursor:not-allowed;}
+    #popup-sugar{margin-bottom:18px;}
+    .popup-sugar-title{color:rgba(255,255,255,.72);font-size:13px;font-weight:700;text-align:center;margin-bottom:10px;}
+    .popup-sugar-opts{display:flex;flex-direction:column;gap:8px;}
+    .sugar-opt{
+      width:100%;border:1.5px solid rgba(200,134,10,.35);border-radius:14px;padding:12px 14px;
+      background:rgba(200,134,10,.08);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;
+    }
+    .sugar-opt.selected{border-color:#f0a820;background:rgba(240,168,32,.22);box-shadow:0 0 0 2px rgba(240,168,32,.18);}
+    .ci-variant{color:rgba(255,224,130,.82);font-size:11px;margin-top:3px;font-weight:700;}
 
     #cart-panel{
       position:fixed;top:0;right:-105%;width:min(390px,100vw);height:var(--app-h,100dvh);
@@ -2311,7 +2321,7 @@
       box-shadow:0 0 0 3px rgba(230,168,23,.28),inset 0 1px 0 rgba(255,255,255,.95);
     }
 
-    #overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s;}
+    #overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:990;opacity:0;pointer-events:none;transition:opacity .3s;}
     #overlay.show{opacity:1;pointer-events:all;}
 
     #toast{
@@ -2721,6 +2731,14 @@
       <div class="popup-name" id="p-name"></div>
       <div class="popup-cat" id="p-cat"></div>
       <div class="popup-price" id="p-price"></div>
+      <div id="popup-sugar" hidden>
+        <div class="popup-sugar-title" id="popupSugarTitle">اختر مستوى السكر</div>
+        <div class="popup-sugar-opts">
+          <button type="button" class="sugar-opt" data-sugar="sade">سادة</button>
+          <button type="button" class="sugar-opt" data-sugar="orta">وسط سكر</button>
+          <button type="button" class="sugar-opt" data-sugar="sekerli">سكر كامل</button>
+        </div>
+      </div>
       <div class="popup-qty">
         <button type="button" class="qty-btn" id="pqDec">−</button>
         <span class="qty-num" id="p-qty">1</span>
@@ -2842,6 +2860,11 @@
       itemNotePh: "ملاحظة لهذا الصنف (بدون بصل، نصف محمص…)",
       popupClose: "إلغاء",
       popupAdd: "أضف للسلة",
+      sugarChoose: "اختر مستوى السكر",
+      sugarSade: "سادة",
+      sugarOrta: "وسط سكر",
+      sugarSekerli: "سكر كامل",
+      sugarRequired: "اختر مستوى السكر أولاً",
       okTitle: "شكراً! ✓",
       okAsk: "هل لديك طلب إضافي؟",
       againBtn: "طلب إضافي",
@@ -2941,6 +2964,11 @@
       itemNotePh: "Bu ürün için not (soğansız, az pişmiş…)",
       popupClose: "İptal",
       popupAdd: "Sepete ekle",
+      sugarChoose: "Şeker tercihini seçin",
+      sugarSade: "Sade",
+      sugarOrta: "Orta şekerli",
+      sugarSekerli: "Şekerli",
+      sugarRequired: "Önce şeker tercihini seçin",
       okTitle: "Teşekkürler! ✓",
       okAsk: "Ek siparişiniz var mı?",
       againBtn: "Ek sipariş",
@@ -3040,6 +3068,11 @@
       itemNotePh: "Note for this item (no onion, medium rare…)",
       popupClose: "Cancel",
       popupAdd: "Add to cart",
+      sugarChoose: "Choose sugar level",
+      sugarSade: "Plain (no sugar)",
+      sugarOrta: "Medium sugar",
+      sugarSekerli: "Full sugar",
+      sugarRequired: "Choose sugar level first",
       okTitle: "Thank you! ✓",
       okAsk: "Would you like to order more?",
       againBtn: "Order more",
@@ -3191,7 +3224,7 @@
     let plusButtonsAllPages = false;
     let bookCacheVer = "";
     let categoryBarOffsetPx = 0;
-    let cur = 0, animating = false, popupItem = null, popupQty = 1, sending = false, done = false;
+    let cur = 0, animating = false, popupItem = null, popupQty = 1, popupSugarChoice = null, sending = false, done = false;
     const FLIP_MS = 680;
     let dragFlip = null;
     let dragRaf = 0;
@@ -4074,11 +4107,43 @@
     }
     function itemHint(name) {
       const n = String(name || "");
+      if (needsTurkishCoffeeSugar(n)) return guestT("sugarChoose");
       const m = n.match(/(\d+)\s*ki[sş]ilik/i);
       if (m) return m[1] + " أشخاص · " + m[1] + " kişi";
       if (/ki[sş]ilik/i.test(n)) return "حسب عدد الأشخاص";
       if (/tek\s*ki[sş]ilik/i.test(n)) return "شخص واحد";
       return "";
+    }
+    const TURKISH_COFFEE_SUGAR = [
+      { id: "sade", note: "Sade", labelKey: "sugarSade" },
+      { id: "orta", note: "Orta şekerli", labelKey: "sugarOrta" },
+      { id: "sekerli", note: "Şekerli", labelKey: "sugarSekerli" },
+    ];
+    function needsTurkishCoffeeSugar(name) {
+      const n = normName(name);
+      return /\bturk\s+kahve/.test(n);
+    }
+    function sugarNoteForChoice(id) {
+      const hit = TURKISH_COFFEE_SUGAR.find(o => o.id === id);
+      return hit ? hit.note : "";
+    }
+    function refreshPopupSugarLabels() {
+      const title = document.getElementById("popupSugarTitle");
+      if (title) title.textContent = guestT("sugarChoose");
+      document.querySelectorAll(".sugar-opt").forEach(btn => {
+        const hit = TURKISH_COFFEE_SUGAR.find(o => o.id === btn.dataset.sugar);
+        if (hit) btn.textContent = guestT(hit.labelKey);
+      });
+    }
+    function setPopupSugarChoice(id) {
+      popupSugarChoice = id || null;
+      document.querySelectorAll(".sugar-opt").forEach(btn => {
+        btn.classList.toggle("selected", btn.dataset.sugar === id);
+      });
+      const addBtn = document.getElementById("popupAdd");
+      if (addBtn && document.getElementById("popup-sugar") && !document.getElementById("popup-sugar").hidden) {
+        addBtn.disabled = !popupSugarChoice;
+      }
     }
     function menuSearchHay(item) {
       return normName(item.name) + " " + normCat(item.category) + " " + catLabelAr(item.category);
@@ -4789,6 +4854,10 @@
 
     function quickAddItem(item) {
       if (!coachDone) return;
+      if (needsTurkishCoffeeSugar(item.name)) {
+        openPopup(item);
+        return;
+      }
       addToCart(item, { flash: true });
     }
     function openMenuList() {
@@ -5192,27 +5261,56 @@
       if (!coachDone) return;
       popupItem = item;
       popupQty = 1;
+      popupSugarChoice = null;
+      const sugarBox = document.getElementById("popup-sugar");
+      const needsSugar = needsTurkishCoffeeSugar(item.name);
+      if (sugarBox) {
+        sugarBox.hidden = !needsSugar;
+        refreshPopupSugarLabels();
+        setPopupSugarChoice(null);
+      }
       document.getElementById("p-emoji").textContent = item.icon || deptEmoji(item.dept);
       document.getElementById("p-name").textContent = item.name;
       const hint = itemHint(item.name);
       document.getElementById("p-cat").textContent = (item.category || "") + (hint ? " · " + hint : "");
       document.getElementById("p-price").textContent = money(item.price);
       document.getElementById("p-qty").textContent = "1";
+      const addBtn = document.getElementById("popupAdd");
+      if (addBtn) addBtn.disabled = needsSugar;
+      document.getElementById("overlay").classList.add("show");
       document.getElementById("item-popup").classList.add("show");
     }
     function closePopup() {
       document.getElementById("item-popup").classList.remove("show");
+      if (!document.getElementById("cart-panel").classList.contains("open")) {
+        document.getElementById("overlay").classList.remove("show");
+      }
       popupItem = null;
+      popupSugarChoice = null;
+      const addBtn = document.getElementById("popupAdd");
+      if (addBtn) addBtn.disabled = false;
     }
     document.getElementById("popupClose").onclick = closePopup;
     document.getElementById("item-popup").onclick = e => { if (e.target.id === "item-popup") closePopup(); };
+    document.querySelectorAll(".sugar-opt").forEach(btn => {
+      btn.onclick = () => setPopupSugarChoice(btn.dataset.sugar);
+    });
     document.getElementById("pqDec").onclick = () => { popupQty = Math.max(1, popupQty - 1); document.getElementById("p-qty").textContent = popupQty; };
     document.getElementById("pqInc").onclick = () => { popupQty++; document.getElementById("p-qty").textContent = popupQty; };
     document.getElementById("popupAdd").onclick = () => {
       if (!coachDone || !popupItem) return;
-      for (let i = 0; i < popupQty; i++) addToCart(popupItem, { flash: i === popupQty - 1 });
+      const needsSugar = needsTurkishCoffeeSugar(popupItem.name);
+      const sugarNote = needsSugar ? sugarNoteForChoice(popupSugarChoice) : "";
+      if (needsSugar && !sugarNote) {
+        showToast("☕ " + guestT("sugarRequired"));
+        return;
+      }
+      for (let i = 0; i < popupQty; i++) {
+        addToCart(popupItem, { flash: i === popupQty - 1, note: sugarNote || undefined });
+      }
       closePopup();
     };
+    window.__zekiqOnGuestLang = function () { refreshPopupSugarLabels(); };
 
     function syncOrderListView(listEl) {
       if (!listEl) return;
@@ -5236,14 +5334,14 @@
         if (window.__zekiqRelayout) window.__zekiqRelayout();
       });
     }
-    function flashOrderLine(itemId) {
+    function flashOrderLine(lineIdx) {
       requestAnimationFrame(() => {
         const chip = document.getElementById("guestOrderChip");
         if (chip && chip.classList.contains("orders-folded")) {
           chip.classList.remove("orders-folded");
           chip.classList.add("orders-expanded");
         }
-        const row = document.querySelector('#sceneOrderList .order-chip-line[data-item-id="' + itemId + '"]');
+        const row = document.querySelector('#sceneOrderList .order-chip-line[data-line-idx="' + lineIdx + '"]');
         if (!row) return;
         row.classList.remove("flash-added");
         void row.offsetWidth;
@@ -5256,10 +5354,18 @@
       });
     }
     function addToCart(item, opts) {
-      const ex = cart.find(i => i.item.id === item.id);
-      if (ex) ex.qty++; else cart.push({ item, qty: 1, note: "" });
+      const note = opts && opts.note ? String(opts.note).trim() : "";
+      const ex = cart.find(i => i.item.id === item.id && (i.note || "").trim() === note);
+      let lineIdx = 0;
+      if (ex) {
+        ex.qty += (opts && opts.qty) || 1;
+        lineIdx = cart.indexOf(ex);
+      } else {
+        cart.push({ item, qty: (opts && opts.qty) || 1, note });
+        lineIdx = cart.length - 1;
+      }
       updateBadge();
-      if (opts && opts.flash) flashOrderLine(item.id);
+      if (opts && opts.flash) flashOrderLine(lineIdx);
       if (navigator.vibrate) navigator.vibrate(12);
     }
     function syncTableFootBadge() {
@@ -5349,21 +5455,21 @@
       if (stageEl) stageEl.classList.remove("orders-overlay");
       if (summaryEl) summaryEl.textContent = "🛒 " + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
       if (listEl) {
-        listEl.innerHTML = cart.map(l => `
-          <div class="order-chip-line" data-item-id="${l.item.id}">
-            <span class="order-chip-name">${l.qty}× ${esc(l.item.name)}</span>
+        listEl.innerHTML = cart.map((l, idx) => `
+          <div class="order-chip-line" data-line-idx="${idx}">
+            <span class="order-chip-name">${l.qty}× ${esc(l.item.name)}${l.note ? " · " + esc(l.note) : ""}</span>
             <div class="order-chip-actions">
-              <button type="button" class="order-chip-dec" data-dec-id="${l.item.id}" aria-label="−">−</button>
-              <button type="button" class="order-chip-del" data-del-id="${l.item.id}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
+              <button type="button" class="order-chip-dec" data-dec-idx="${idx}" aria-label="−">−</button>
+              <button type="button" class="order-chip-del" data-del-idx="${idx}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
               <span class="order-chip-price">${money(Number(l.item.price) * l.qty)}</span>
             </div>
           </div>`).join("") +
           `<button type="button" class="order-chip-clear" id="sceneClearCart">${esc(guestT("cartClearAll"))}</button>`;
-        listEl.querySelectorAll("[data-dec-id]").forEach(btn => {
-          btn.onclick = e => { e.stopPropagation(); chQty(Number(btn.dataset.decId), -1); };
+        listEl.querySelectorAll("[data-dec-idx]").forEach(btn => {
+          btn.onclick = e => { e.stopPropagation(); chQtyLine(Number(btn.dataset.decIdx), -1); };
         });
-        listEl.querySelectorAll("[data-del-id]").forEach(btn => {
-          btn.onclick = e => { e.stopPropagation(); removeItem(Number(btn.dataset.delId)); };
+        listEl.querySelectorAll("[data-del-idx]").forEach(btn => {
+          btn.onclick = e => { e.stopPropagation(); removeLine(Number(btn.dataset.delIdx)); };
         });
         const sceneClear = listEl.querySelector("#sceneClearCart");
         if (sceneClear) sceneClear.onclick = e => { e.stopPropagation(); clearCart(); };
@@ -5452,11 +5558,10 @@
     document.getElementById("overlay").onclick = closeCart;
     document.getElementById("clearCartBtn").onclick = clearCart;
 
-    function removeItem(id) {
-      const i = cart.findIndex(x => x.item.id === id);
-      if (i < 0) return;
-      const name = cart[i].item.name;
-      cart.splice(i, 1);
+    function removeLine(idx) {
+      if (idx < 0 || idx >= cart.length) return;
+      const name = cart[idx].item.name;
+      cart.splice(idx, 1);
       updateBadge();
       renderCart();
       showToast("🗑 " + name);
@@ -5480,38 +5585,37 @@
         return;
       }
       if (clearBtn) clearBtn.hidden = false;
-      c.innerHTML = cart.map(l => `
+      c.innerHTML = cart.map((l, idx) => `
         <div class="ci">
           <div class="ci-row">
-            <div class="ci-body"><div class="ci-name">${esc(l.item.name)}</div><div class="ci-price">${money(Number(l.item.price) * l.qty)}</div></div>
+            <div class="ci-body"><div class="ci-name">${esc(l.item.name)}</div>${l.note ? '<div class="ci-variant">' + esc(l.note) + "</div>" : ""}<div class="ci-price">${money(Number(l.item.price) * l.qty)}</div></div>
             <div class="ci-actions">
               <div class="ci-qty">
-                <button type="button" class="ci-btn" data-dec="${l.item.id}">−</button>
+                <button type="button" class="ci-btn" data-dec-idx="${idx}">−</button>
                 <span class="ci-n">${l.qty}</span>
-                <button type="button" class="ci-btn" data-inc="${l.item.id}">+</button>
+                <button type="button" class="ci-btn" data-inc-idx="${idx}">+</button>
               </div>
-              <button type="button" class="ci-del" data-del="${l.item.id}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
+              <button type="button" class="ci-del" data-del-idx="${idx}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
             </div>
           </div>
-          <textarea class="ci-note" data-item-id="${l.item.id}" rows="2" maxlength="120" placeholder="${esc(guestT("itemNotePh"))}">${esc(l.note || "")}</textarea>
+          ${needsTurkishCoffeeSugar(l.item.name) ? "" : `<textarea class="ci-note" data-line-idx="${idx}" rows="2" maxlength="120" placeholder="${esc(guestT("itemNotePh"))}">${esc(l.note || "")}</textarea>`}
         </div>`).join("");
       document.getElementById("total").textContent = money(cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0));
       document.getElementById("sendBtn").disabled = sending;
-      document.querySelectorAll("[data-inc]").forEach(b => b.onclick = () => chQty(Number(b.dataset.inc), 1));
-      document.querySelectorAll("[data-dec]").forEach(b => b.onclick = () => chQty(Number(b.dataset.dec), -1));
-      document.querySelectorAll("[data-del]").forEach(b => b.onclick = () => removeItem(Number(b.dataset.del)));
+      document.querySelectorAll("[data-inc-idx]").forEach(b => b.onclick = () => chQtyLine(Number(b.dataset.incIdx), 1));
+      document.querySelectorAll("[data-dec-idx]").forEach(b => b.onclick = () => chQtyLine(Number(b.dataset.decIdx), -1));
+      document.querySelectorAll("[data-del-idx]").forEach(b => b.onclick = () => removeLine(Number(b.dataset.delIdx)));
       c.querySelectorAll(".ci-note").forEach(inp => {
         inp.addEventListener("input", () => {
-          const line = cart.find(x => x.item.id === Number(inp.dataset.itemId));
-          if (line) line.note = inp.value.slice(0, 120);
+          const line = cart[Number(inp.dataset.lineIdx)];
+          if (line && !needsTurkishCoffeeSugar(line.item.name)) line.note = inp.value.slice(0, 120);
         });
       });
     }
-    function chQty(id, d) {
-      const i = cart.findIndex(x => x.item.id === id);
-      if (i < 0) return;
-      cart[i].qty += d;
-      if (cart[i].qty <= 0) cart.splice(i, 1);
+    function chQtyLine(idx, d) {
+      if (idx < 0 || idx >= cart.length) return;
+      cart[idx].qty += d;
+      if (cart[idx].qty <= 0) cart.splice(idx, 1);
       updateBadge();
       renderCart();
     }
