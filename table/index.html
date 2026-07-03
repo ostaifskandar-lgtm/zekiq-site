@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v96: iPhone — إخفاء السلة و«القائمة» من الأعلى -->
+  <!-- guest-table-ui-v97: iPhone — شريط المجموعات ثابت فوق المينو لا يغطي العناوين -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -404,8 +404,29 @@
       grid-template-rows:1fr;
     }
     html.ios-inbrowser:not(.ios-standalone) #pageSwipeBar{display:none!important;}
-    html.ios-inbrowser:not(.ios-standalone) #menuViewport{height:100%;min-height:0;}
-    html.ios-inbrowser:not(.ios-standalone) #book{height:100%;min-height:0;}
+    html.ios-inbrowser:not(.ios-standalone) #menuViewport{
+      display:flex;
+      flex-direction:column;
+      height:100%;
+      min-height:0;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopDock{
+      position:relative;
+      top:auto;
+      left:auto;
+      right:auto;
+      flex-shrink:0;
+      width:100%;
+      z-index:880;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuCategoryBar{
+      margin-top:0!important;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #book{
+      flex:1;
+      min-height:0;
+      height:auto;
+    }
     html.ios-inbrowser:not(.ios-standalone).coach-locked .cover-body{
       padding-top:clamp(10px,2.8vw,14px);
     }
@@ -2628,7 +2649,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v96</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v97</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3851,6 +3872,7 @@
       goToPage(spreadIdxForMenuPage(menuIdx), false);
     }
     function applyCategoryBarOffset(px) {
+      if (isIosGuestNoLogo()) px = 0;
       categoryBarOffsetPx = Math.max(0, Math.min(120, Math.round(Number(px) || 0)));
       const bar = document.getElementById("menuCategoryBar");
       if (bar) bar.style.setProperty("--cat-bar-offset", categoryBarOffsetPx + "px");
@@ -4033,6 +4055,18 @@
       const rect = imageOverlayRect(pf, { measureOnly: true });
       if (!rect) return;
       const catH = Math.round(bar?.offsetHeight || 0);
+      if (isIosGuestNoLogo()) {
+        const dockKey = "ios-flow|" + catH;
+        if (lastCategoryDockKey === dockKey) return;
+        lastCategoryDockKey = dockKey;
+        view.style.removeProperty("--menu-img-top");
+        view.style.removeProperty("--menu-top-dock-h");
+        view.style.removeProperty("--cat-bar-h");
+        view.style.removeProperty("--logo-strip-h");
+        syncOrdersListHeight();
+        scheduleHotspotRelayout();
+        return;
+      }
       const logoH = logoStripHeight(rect);
       const oy = Math.round(rect.oy);
       const dockKey = oy + "|" + catH + "|" + logoH;
