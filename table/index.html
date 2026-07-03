@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v106: iPhone اقتطاع مينو مثل أندرويد — شريط المجموعات يغطي ترويسة الصفحة -->
+  <!-- guest-table-ui-v107: iPhone — شريط المجموعات مباشرة فوق المينو -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -568,10 +568,10 @@
       height:100%;
       overflow:hidden;
     }
-    /* Same as Android: dock sits on the menu image top (covers printed page title strip). */
+    /* Category chips sit directly above the menu image (no overlap). */
     html.ios-inbrowser:not(.ios-standalone) #menuTopDock{
       position:absolute;
-      top:var(--menu-img-top, 0px);
+      top:max(0px, calc(var(--menu-img-top, 0px) - var(--menu-top-dock-h, 0px)));
       left:0;
       right:0;
       z-index:16;
@@ -588,7 +588,7 @@
       margin-top:0!important;
       padding:4px 0 4px;
       border-bottom:1px solid rgba(180,140,80,.32);
-      background:linear-gradient(180deg,#ebe4d3 0%,rgba(235,228,211,.98) 88%,rgba(235,228,211,.88) 100%);
+      background:linear-gradient(180deg,#ebe4d3 0%,rgba(235,228,211,.98) 92%,rgba(235,228,211,.9) 100%);
     }
     html.ios-inbrowser:not(.ios-standalone) #book{
       position:absolute;
@@ -2858,7 +2858,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v106</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v107</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -4333,15 +4333,15 @@
       const catH = Math.round(bar?.offsetHeight || 0);
       const oy = Math.round(rect.oy);
       if (isIosGuestNoLogo()) {
-        /* Cover printed page-title strip on the photo (same visual as Android brand zone). */
-        const headerCover = Math.max(catH, Math.round(rect.dh * 0.09), 36);
-        const dockKey = "ios-overlay|" + oy + "|" + catH + "|" + headerCover;
+        /* Category chips directly above menu: reserve catH, image starts at oy (= catH). */
+        const dockH = catH > 0 ? catH : 0;
+        const dockKey = "ios-above|" + oy + "|" + dockH;
         if (lastCategoryDockKey === dockKey) return;
         lastCategoryDockKey = dockKey;
-        view.style.setProperty("--menu-img-top", oy + "px");
-        view.style.setProperty("--cat-bar-h", catH + "px");
-        view.style.setProperty("--logo-strip-h", headerCover + "px");
-        view.style.setProperty("--menu-top-dock-h", "0px");
+        view.style.setProperty("--menu-top-dock-h", dockH + "px");
+        view.style.setProperty("--menu-img-top", Math.max(oy, dockH) + "px");
+        view.style.setProperty("--cat-bar-h", dockH + "px");
+        view.style.removeProperty("--logo-strip-h");
         view.style.removeProperty("--ios-cat-h");
         syncOrdersListHeight();
         scheduleHotspotRelayout();
@@ -4735,18 +4735,34 @@
       if (!opts || !opts.measureOnly) applyOverlayImage(pf, rect);
       return rect;
     }
+    function iosCategoryReservePx() {
+      if (!isIosGuestNoLogo()) return 0;
+      const dock = document.getElementById("menuTopDock");
+      if (!dock?.classList.contains("show")) return 0;
+      const view = document.getElementById("menuViewport");
+      const fromCss = parseFloat(view?.style?.getPropertyValue("--menu-top-dock-h") || "0");
+      if (fromCss > 0) return Math.round(fromCss);
+      const bar = document.getElementById("menuCategoryBar");
+      return Math.round(bar?.offsetHeight || 0);
+    }
     function computeOverlayRect(pf) {
       const nw = Number(pf.dataset.nw), nh = Number(pf.dataset.nh);
       if (!nw || !nh) return null;
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
       const isCover = pf.classList.contains("book-cover");
-      /* Natural size (contain). Bottom-align menu pages so no empty strip under the image. */
-      const scale = Math.min(cw / nw, ch / nh);
+      const iosMenu = isIosGuestNoLogo() && !isCover;
+      /* iOS: reserve category-bar height so chips sit directly above the menu image. */
+      const catReserve = iosMenu ? iosCategoryReservePx() : 0;
+      const usableH = Math.max(1, ch - catReserve);
+      const scale = Math.min(cw / nw, usableH / nh);
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
-      const oy = isCover ? (ch - dh) / 2 : (ch - dh);
+      let oy;
+      if (isCover) oy = (ch - dh) / 2;
+      else if (iosMenu) oy = catReserve; /* top of image = bottom of category bar */
+      else oy = ch - dh;
       return {
         ox, oy, dw, dh,
         wasteTop: Math.max(0, oy),
