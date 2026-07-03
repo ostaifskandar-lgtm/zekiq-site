@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v99: iPhone — إظهار شريط المجموعات تحت الطلبات -->
+  <!-- guest-table-ui-v100: iPhone — مجموعات فوق المينو بدون قص، طلبات 3 صفوف -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -394,15 +394,15 @@
       z-index:2;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-list{
-      --order-line-h:30px;
+      --order-line-h:28px;
       display:grid;
-      grid-template-rows:repeat(2, minmax(var(--order-line-h), auto));
+      grid-template-rows:repeat(3, minmax(var(--order-line-h), auto));
       grid-auto-flow:column;
-      grid-auto-columns:minmax(148px, calc(50vw - 18px));
-      gap:4px 8px;
+      grid-auto-columns:minmax(142px, calc(50vw - 18px));
+      gap:3px 8px;
       align-content:start;
-      max-height:calc(var(--order-line-h) * 2 + 14px)!important;
-      height:calc(var(--order-line-h) * 2 + 14px);
+      max-height:calc(var(--order-line-h) * 3 + 16px)!important;
+      height:calc(var(--order-line-h) * 3 + 16px);
       padding:4px 8px 6px;
       overflow-x:auto;
       overflow-y:hidden;
@@ -448,7 +448,7 @@
       font-size:9px;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-clear{
-      grid-row:1 / span 2;
+      grid-row:1 / span 3;
       align-self:stretch;
       width:auto;
       min-width:58px;
@@ -499,30 +499,43 @@
     }
     html.ios-inbrowser:not(.ios-standalone) #pageSwipeBar{display:none!important;}
     html.ios-inbrowser:not(.ios-standalone) #menuViewport{
-      display:flex;
-      flex-direction:column;
-      height:100%;
+      position:relative;
+      flex:1;
       min-height:0;
+      height:100%;
+      overflow:hidden;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopDock{
-      position:relative;
-      top:auto;
-      left:auto;
-      right:auto;
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      z-index:16;
       flex-shrink:0;
       width:100%;
-      z-index:12;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopDock:not(.show){
+      display:none!important;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopDock.show{
       display:block!important;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuCategoryBar{
       margin-top:0!important;
+      padding:3px 0 2px;
+      border-bottom:1px solid rgba(180,140,80,.32);
     }
     html.ios-inbrowser:not(.ios-standalone) #book{
-      flex:1;
+      position:absolute;
+      inset:0;
+      padding-top:var(--ios-cat-h,0px);
+      box-sizing:border-box;
+      flex:none;
       min-height:0;
       height:auto;
+    }
+    html.ios-inbrowser:not(.ios-standalone) .pw.page-current .pf{
+      overflow:visible;
     }
     html.ios-inbrowser:not(.ios-standalone).coach-locked .cover-body{
       padding-top:clamp(10px,2.8vw,14px);
@@ -2746,7 +2759,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v99</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v100</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -4145,7 +4158,7 @@
       }
       ordersWrap.classList.toggle("orders-expanded", !!(chip && chip.classList.contains("orders-expanded")));
       if (listEl) {
-        const iosOverflow = isIosGuestNoLogo() && (liveOverflow || lineCount > 4);
+        const iosOverflow = isIosGuestNoLogo() && (liveOverflow || lineCount > 6);
         listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (liveOverflow || lineCount > 3)));
       }
     }
@@ -4163,6 +4176,7 @@
           view.style.removeProperty("--menu-top-dock-h");
           view.style.removeProperty("--cat-bar-h");
           view.style.removeProperty("--logo-strip-h");
+          view.style.removeProperty("--ios-cat-h");
         }
         return;
       }
@@ -4170,9 +4184,10 @@
       if (!rect) return;
       const catH = Math.round(bar?.offsetHeight || 0);
       if (isIosGuestNoLogo()) {
-        const dockKey = "ios-flow|" + catH;
+        const dockKey = "ios-pad|" + catH;
         if (lastCategoryDockKey === dockKey) return;
         lastCategoryDockKey = dockKey;
+        view.style.setProperty("--ios-cat-h", catH > 0 ? catH + "px" : "0px");
         view.style.removeProperty("--menu-img-top");
         view.style.removeProperty("--menu-top-dock-h");
         view.style.removeProperty("--cat-bar-h");
@@ -4576,15 +4591,16 @@
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
       const isCover = pf.classList.contains("book-cover");
+      const iosMenu = isIosGuestNoLogo() && !isCover;
       const scale = Math.min(cw / nw, ch / nh);
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
-      const oy = isCover ? (ch - dh) / 2 : (ch - dh);
+      const oy = isCover ? (ch - dh) / 2 : (iosMenu ? 0 : (ch - dh));
       return {
         ox, oy, dw, dh,
         wasteTop: Math.max(0, oy),
-        wasteBottom: isCover ? Math.max(0, ch - oy - dh) : 0,
+        wasteBottom: isCover ? Math.max(0, ch - oy - dh) : Math.max(0, ch - oy - dh),
       };
     }
     function applyBackOverlayImage(pb, rect) {
@@ -5510,10 +5526,10 @@
         const chip = document.getElementById("guestOrderChip");
         const lineCount = lines.length;
         const overflows = orderListOverflows(listEl);
-        const iosOverflow = isIosGuestNoLogo() && (overflows || lineCount > 4);
+        const iosOverflow = isIosGuestNoLogo() && (overflows || lineCount > 6);
         listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (overflows || lineCount > 3)));
         if (chip) {
-          if (lineCount <= 5) {
+          if (lineCount <= 8) {
             chip.classList.remove("orders-folded", "orders-expanded");
           } else if (!chip.classList.contains("orders-expanded")) {
             chip.classList.add("orders-folded");
