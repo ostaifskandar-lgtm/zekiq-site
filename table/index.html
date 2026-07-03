@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v97: iPhone — شريط المجموعات ثابت فوق المينو لا يغطي العناوين -->
+  <!-- guest-table-ui-v98: iPhone — أصناف مختارة أفقياً، صفّان بصنفين -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -392,6 +392,76 @@
       flex-shrink:0;
       position:relative;
       z-index:2;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-list{
+      --order-line-h:30px;
+      display:grid;
+      grid-template-rows:repeat(2, minmax(var(--order-line-h), auto));
+      grid-auto-flow:column;
+      grid-auto-columns:minmax(148px, calc(50vw - 18px));
+      gap:4px 8px;
+      align-content:start;
+      max-height:calc(var(--order-line-h) * 2 + 14px)!important;
+      height:calc(var(--order-line-h) * 2 + 14px);
+      padding:4px 8px 6px;
+      overflow-x:auto;
+      overflow-y:hidden;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior-x:contain;
+      touch-action:pan-x;
+      scroll-snap-type:x proximity;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-list.has-overflow::before{
+      display:none;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-line{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:4px;
+      min-width:0;
+      padding:3px 6px;
+      border-bottom:none;
+      border:1px solid rgba(180,140,80,.24);
+      border-radius:10px;
+      background:rgba(255,255,255,.55);
+      font-size:10px;
+      line-height:1.25;
+      scroll-snap-align:start;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-name{
+      font-size:10px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-actions{gap:3px;}
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-dec,
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-del{
+      width:24px;
+      height:24px;
+      font-size:12px;
+      border-radius:7px;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-price{
+      min-width:44px;
+      font-size:9px;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-clear{
+      grid-row:1 / span 2;
+      align-self:stretch;
+      width:auto;
+      min-width:58px;
+      max-width:72px;
+      margin:0;
+      padding:6px 8px;
+      font-size:9px;
+      line-height:1.25;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      scroll-snap-align:end;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuStage{
       flex:1 1 0;
@@ -2649,7 +2719,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v97</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v98</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3621,6 +3691,16 @@
     function isIosGuestHideFootBar() {
       return isIosGuestNoLogo();
     }
+    function orderListOverflows(listEl) {
+      if (!listEl) return false;
+      if (isIosGuestNoLogo()) return listEl.scrollWidth > listEl.clientWidth + 2;
+      return listEl.scrollHeight > listEl.clientHeight + 2;
+    }
+    function resetOrderListScroll(listEl) {
+      if (!listEl) return;
+      if (isIosGuestNoLogo()) listEl.scrollLeft = 0;
+      else listEl.scrollTop = 0;
+    }
     function coverLogoSrc() {
       const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1";
       return "assets/tonino-brand-banner.jpg" + bv;
@@ -3989,6 +4069,11 @@
         }
         return;
       }
+      if (isIosGuestNoLogo()) {
+        ordersWrap.style.removeProperty("--orders-list-max-h");
+        lastOrdersListMaxH = -1;
+        return;
+      }
       const stageRect = stage.getBoundingClientRect();
       let boundaryTop = null;
       const dock = document.getElementById("menuTopDock");
@@ -4023,8 +4108,7 @@
       if (pf) syncCategoryDock(pf);
       syncOrdersListHeight();
       const listEl = document.getElementById("sceneOrderList");
-      const liveOverflow =
-        listEl && listEl.scrollHeight > listEl.clientHeight + 2;
+      const liveOverflow = orderListOverflows(listEl);
       const coverLogo =
         lineCount > 2 || liveOverflow || overflows ||
         (chip && chip.classList.contains("orders-expanded"));
@@ -4033,7 +4117,10 @@
         document.documentElement.classList.toggle("orders-cover-logo", !!coverLogo);
       }
       ordersWrap.classList.toggle("orders-expanded", !!(chip && chip.classList.contains("orders-expanded")));
-      if (listEl) listEl.classList.toggle("has-overflow", liveOverflow || lineCount > 3);
+      if (listEl) {
+        const iosOverflow = isIosGuestNoLogo() && (liveOverflow || lineCount > 4);
+        listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (liveOverflow || lineCount > 3)));
+      }
     }
     function syncCategoryDock(pf) {
       const view = document.getElementById("menuViewport");
@@ -5395,8 +5482,9 @@
         const lines = listEl.querySelectorAll(".order-chip-line");
         const chip = document.getElementById("guestOrderChip");
         const lineCount = lines.length;
-        const overflows = listEl.scrollHeight > listEl.clientHeight + 2;
-        listEl.classList.toggle("has-overflow", overflows || lineCount > 3);
+        const overflows = orderListOverflows(listEl);
+        const iosOverflow = isIosGuestNoLogo() && (overflows || lineCount > 4);
+        listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (overflows || lineCount > 3)));
         if (chip) {
           if (lineCount <= 5) {
             chip.classList.remove("orders-folded", "orders-expanded");
@@ -5405,9 +5493,7 @@
           }
         }
         syncTopOrdersLayout(lineCount, overflows, chip);
-        if (lineCount > 0) {
-          listEl.scrollTop = 0;
-        }
+        if (lineCount > 0) resetOrderListScroll(listEl);
         if (window.__zekiqRelayout) window.__zekiqRelayout();
       });
     }
@@ -5425,9 +5511,7 @@
         row.classList.add("flash-added");
         setTimeout(() => row.classList.remove("flash-added"), 1200);
         const listEl = document.getElementById("sceneOrderList");
-        if (listEl) {
-          listEl.scrollTop = 0;
-        }
+        if (listEl) resetOrderListScroll(listEl);
       });
     }
     function addToCart(item, opts) {
