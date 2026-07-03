@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v108: اسم الصنف يأخذ أكبر مساحة في خانة الطلبات -->
+  <!-- guest-table-ui-v109: ترحيب الآيفون مثل أندرويد (لوغو + تعليمات + ابدأ) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -366,7 +366,7 @@
       --ios-safe-bottom:env(safe-area-inset-bottom,0px);
     }
     html.ios-standalone{--app-h:100dvh;--ios-safe-bottom:env(safe-area-inset-bottom,0px);}
-    /* iPhone Safari — شريط علوي immersive، مينو يملأ الشاشة؛ الترحيب = لوغو فقط */
+    /* iPhone Safari — ترحيب مثل أندرويد؛ إخفاء اللوغو فقط داخل صفحات المينو */
     html.ios-inbrowser:not(.ios-standalone) .pf-brand-strip,
     html.ios-inbrowser:not(.ios-standalone) #header .logo{display:none!important;}
     html.ios-inbrowser:not(.ios-standalone):not(.coach-locked) .cover-brand-banner,
@@ -374,38 +374,10 @@
     html.ios-inbrowser:not(.ios-standalone) .cover-ios-tip,
     html.ios-inbrowser:not(.ios-standalone) .cover-install-btn,
     html.ios-inbrowser:not(.ios-standalone) .scene-hud-ios{display:none!important;}
-    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .book-cover-panel.cover-logo-only{
-      display:flex!important;
-      align-items:center;
-      justify-content:center;
-      background:#0c0604;
-      cursor:pointer;
-      -webkit-tap-highlight-color:transparent;
-    }
-    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-brand-banner{
-      display:flex!important;
-      align-items:center;
-      justify-content:center;
-      width:100%;
-      height:100%;
-      margin:0;
-      padding:clamp(24px,8vw,48px);
-      background:transparent;
-      flex:1 1 auto;
-    }
-    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-brand-banner .cover-banner-img,
-    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-brand-banner .guest-brand-banner-img{
+    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-brand-banner,
+    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-banner-img,
+    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .guest-brand-banner-img{
       display:block!important;
-      width:min(68vw,260px);
-      max-width:100%;
-      height:auto;
-      max-height:min(46vh,280px);
-      aspect-ratio:auto;
-      object-fit:contain;
-      object-position:center;
-      margin:0 auto;
-      pointer-events:none;
-      filter:drop-shadow(0 8px 28px rgba(0,0,0,.45));
     }
     html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-body,
     html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-order-guide,
@@ -413,13 +385,27 @@
     html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-start-btn,
     html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-instructions,
     html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-welcome-block{
-      display:none!important;
+      display:flex!important;
     }
-    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start{
-      background:#0c0604!important;
+    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-order-guide{
+      flex-direction:column;
+      align-items:center;
     }
-    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .book-cover-panel.cover-logo-only{
-      background:#0c0604!important;
+    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-instructions{
+      display:flex!important;
+      flex-direction:column;
+    }
+    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-welcome-block{
+      flex-direction:column;
+      align-items:center;
+    }
+    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-start-btn{
+      display:flex!important;
+      align-items:center;
+      justify-content:center;
+    }
+    html.ios-inbrowser:not(.ios-standalone).coach-locked .book-cover-start .cover-table-line{
+      display:block!important;
     }
     html.ios-inbrowser:not(.ios-standalone) #header{display:none!important;}
     html.ios-inbrowser:not(.ios-standalone) .scene-hud-list{display:none!important;}
@@ -2872,7 +2858,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v108</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v109</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3884,15 +3870,12 @@
       const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1";
       return "assets/tonino-brand-banner.jpg" + bv;
     }
-    function coverLogoOnlySrc() {
-      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1";
-      return "assets/tonino-cover-logo.png" + bv;
-    }
     function fillCoverPage(pf, kind) {
       pf.classList.add("book-cover", kind === "cover-start" ? "book-cover-start" : "book-cover-end");
       const inner = document.createElement("div");
       inner.className = "book-cover-inner";
       if (kind === "cover-start") {
+        /* Same welcome UI on iPhone and Android: logo + welcome + steps + start */
         const leather = document.createElement("div");
         leather.className = "book-cover-leather";
         const panel = document.createElement("div");
@@ -3900,68 +3883,49 @@
 
         const banner = document.createElement("div");
         banner.className = "cover-brand-banner";
-
         const logo = document.createElement("img");
         logo.className = "cover-banner-img guest-brand-banner-img";
+        logo.src = coverLogoSrc();
         logo.alt = shopName || guestT("coverStartTitle");
         logo.draggable = false;
         logo.decoding = "async";
-        if (isIosGuestNoLogo()) {
-          /* iPhone welcome: logo only — tap anywhere to open menu */
-          logo.src = coverLogoOnlySrc();
-          logo.onerror = function () {
-            logo.onerror = null;
-            logo.src = coverLogoSrc();
-          };
-          banner.appendChild(logo);
-          panel.classList.add("cover-logo-only");
-          panel.appendChild(banner);
-          function onCoverStart(ev) {
-            if (ev) { ev.preventDefault(); ev.stopPropagation(); }
-            enterGuestMenu();
-          }
-          panel.addEventListener("click", onCoverStart);
-          panel.addEventListener("touchend", onCoverStart, { passive: false });
-          leather.appendChild(panel);
-          inner.appendChild(leather);
-        } else {
-          logo.src = coverLogoSrc();
-          banner.appendChild(logo);
+        banner.appendChild(logo);
 
-          const body = document.createElement("div");
-          body.className = "cover-body";
+        const body = document.createElement("div");
+        body.className = "cover-body";
 
-          const tableLine = document.createElement("p");
-          tableLine.className = "cover-table-line";
-          if (section && tableNum) {
-            tableLine.textContent = section + " · " + guestT("table") + " " + tableNum;
-          }
+        const tableLine = document.createElement("p");
+        tableLine.className = "cover-table-line";
+        if (section && tableNum) {
+          tableLine.textContent = section + " · " + guestT("table") + " " + tableNum;
+        }
 
-          const guide = document.createElement("div");
-          guide.className = "cover-order-guide";
-          guide.innerHTML =
-            '<div class="cover-welcome-block">' +
-            '<p class="cover-welcome-greet">' + esc(guestT("coverWelcomeGreet")) + "</p>" +
-            '<p class="cover-welcome-sub">' + esc(guestT("coverWelcomeSub")) + "</p>" +
-            "</div>" +
-            '<p class="cover-ios-tip">' + esc(guestT("coverIosTip")) + "</p>" +
-            '<h2 class="cover-order-head">' + esc(guestT("coverOrderHead")) + "</h2>" +
-            '<p class="cover-order-lead">' + esc(guestT("coverOrderLead")) + "</p>";
+        const guide = document.createElement("div");
+        guide.className = "cover-order-guide";
+        guide.innerHTML =
+          '<div class="cover-welcome-block">' +
+          '<p class="cover-welcome-greet">' + esc(guestT("coverWelcomeGreet")) + "</p>" +
+          '<p class="cover-welcome-sub">' + esc(guestT("coverWelcomeSub")) + "</p>" +
+          "</div>" +
+          (isIosGuestNoLogo() ? "" : ('<p class="cover-ios-tip">' + esc(guestT("coverIosTip")) + "</p>")) +
+          '<h2 class="cover-order-head">' + esc(guestT("coverOrderHead")) + "</h2>" +
+          '<p class="cover-order-lead">' + esc(guestT("coverOrderLead")) + "</p>";
 
-          const instr = document.createElement("div");
-          instr.className = "cover-instructions";
-          const stepIcons = ["📖", "➕", "✓", "📝"];
-          [1, 2, 3, 4].forEach(n => {
-            const row = document.createElement("div");
-            row.className = "cover-step";
-            row.innerHTML =
-              '<span class="cover-step-num">' + n + '</span>' +
-              '<span class="cover-step-ico" aria-hidden="true">' + stepIcons[n - 1] + "</span>" +
-              '<span class="cover-step-text">' + guestT("coach" + n) + "</span>";
-            instr.appendChild(row);
-          });
-          guide.appendChild(instr);
+        const instr = document.createElement("div");
+        instr.className = "cover-instructions";
+        const stepIcons = ["📖", "➕", "✓", "📝"];
+        [1, 2, 3, 4].forEach(n => {
+          const row = document.createElement("div");
+          row.className = "cover-step";
+          row.innerHTML =
+            '<span class="cover-step-num">' + n + '</span>' +
+            '<span class="cover-step-ico" aria-hidden="true">' + stepIcons[n - 1] + "</span>" +
+            '<span class="cover-step-text">' + guestT("coach" + n) + "</span>";
+          instr.appendChild(row);
+        });
+        guide.appendChild(instr);
 
+        if (!isIosGuestNoLogo()) {
           const installBtn = document.createElement("button");
           installBtn.type = "button";
           installBtn.className = "cover-install-btn";
@@ -3971,27 +3935,27 @@
             if (window.__zekiqShowIosInstall) window.__zekiqShowIosInstall(true);
           };
           guide.appendChild(installBtn);
-
-          const startBtn = document.createElement("button");
-          startBtn.type = "button";
-          startBtn.className = "cover-start-btn";
-          startBtn.id = "coverStartBtn";
-          startBtn.textContent = guestT("coachOk");
-          function onCoverStart(ev) {
-            if (ev) { ev.preventDefault(); ev.stopPropagation(); }
-            enterGuestMenu();
-          }
-          startBtn.addEventListener("click", onCoverStart);
-          startBtn.addEventListener("touchend", onCoverStart, { passive: false });
-          guide.appendChild(startBtn);
-
-          panel.appendChild(banner);
-          if (section && tableNum) body.appendChild(tableLine);
-          body.appendChild(guide);
-          panel.appendChild(body);
-          leather.appendChild(panel);
-          inner.appendChild(leather);
         }
+
+        const startBtn = document.createElement("button");
+        startBtn.type = "button";
+        startBtn.className = "cover-start-btn";
+        startBtn.id = "coverStartBtn";
+        startBtn.textContent = guestT("coachOk");
+        function onCoverStart(ev) {
+          if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+          enterGuestMenu();
+        }
+        startBtn.addEventListener("click", onCoverStart);
+        startBtn.addEventListener("touchend", onCoverStart, { passive: false });
+        guide.appendChild(startBtn);
+
+        panel.appendChild(banner);
+        if (section && tableNum) body.appendChild(tableLine);
+        body.appendChild(guide);
+        panel.appendChild(body);
+        leather.appendChild(panel);
+        inner.appendChild(leather);
       } else {
         const frame = document.createElement("div");
         frame.className = "book-cover-frame";
