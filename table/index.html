@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v100: iPhone — مجموعات فوق المينو بدون قص، طلبات 3 صفوف -->
+  <!-- guest-table-ui-v101: iPhone — مجموعات فوق المينو، المينو يملأ حتى الأسفل بدون فراغ -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -527,15 +527,21 @@
     }
     html.ios-inbrowser:not(.ios-standalone) #book{
       position:absolute;
-      inset:0;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      width:100%;
+      height:100%;
       padding-top:var(--ios-cat-h,0px);
       box-sizing:border-box;
       flex:none;
       min-height:0;
-      height:auto;
+      overflow:hidden;
     }
+    html.ios-inbrowser:not(.ios-standalone) .pw,
     html.ios-inbrowser:not(.ios-standalone) .pw.page-current .pf{
-      overflow:visible;
+      overflow:hidden;
     }
     html.ios-inbrowser:not(.ios-standalone).coach-locked .cover-body{
       padding-top:clamp(10px,2.8vw,14px);
@@ -2759,7 +2765,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v100</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v101</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -4592,7 +4598,8 @@
       if (!cw || !ch) return null;
       const isCover = pf.classList.contains("book-cover");
       const iosMenu = isIosGuestNoLogo() && !isCover;
-      const scale = Math.min(cw / nw, ch / nh);
+      /* iOS: cover fills height under category bar — no empty strip at bottom */
+      const scale = iosMenu ? Math.max(cw / nw, ch / nh) : Math.min(cw / nw, ch / nh);
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
@@ -4600,7 +4607,7 @@
       return {
         ox, oy, dw, dh,
         wasteTop: Math.max(0, oy),
-        wasteBottom: isCover ? Math.max(0, ch - oy - dh) : Math.max(0, ch - oy - dh),
+        wasteBottom: Math.max(0, ch - oy - dh),
       };
     }
     function applyBackOverlayImage(pb, rect) {
