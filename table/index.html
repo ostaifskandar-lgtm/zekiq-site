@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v107: iPhone — شريط المجموعات مباشرة فوق المينو -->
+  <!-- guest-table-ui-v108: اسم الصنف يأخذ أكبر مساحة في خانة الطلبات -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -445,7 +445,7 @@
       display:grid;
       grid-template-rows:repeat(3, minmax(var(--order-line-h), auto));
       grid-auto-flow:column;
-      grid-auto-columns:minmax(168px, calc(52vw - 14px));
+      grid-auto-columns:minmax(220px, calc(78vw - 10px));
       gap:3px 8px;
       align-content:start;
       max-height:calc(var(--order-line-h) * 3 + 16px)!important;
@@ -464,10 +464,10 @@
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-line{
       display:flex;
       align-items:center;
-      justify-content:space-between;
-      gap:5px;
+      justify-content:flex-start;
+      gap:4px;
       min-width:0;
-      padding:3px 6px;
+      padding:3px 5px;
       border-bottom:none;
       border:1px solid rgba(180,140,80,.24);
       border-radius:10px;
@@ -478,7 +478,7 @@
       scroll-snap-align:start;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-name{
-      flex:1 1 auto;
+      flex:1 1 0;
       min-width:0;
       max-width:none;
       font-size:11px;
@@ -490,14 +490,16 @@
       text-align:right;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-actions{
-      gap:3px;
+      gap:2px;
       flex:0 0 auto;
+      flex-shrink:0;
+      margin-inline-start:auto;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-dec,
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-del{
-      width:26px;
-      height:26px;
-      font-size:13px;
+      width:24px;
+      height:24px;
+      font-size:12px;
       border-radius:7px;
       flex-shrink:0;
     }
@@ -506,9 +508,12 @@
       display:none!important;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-price{
-      min-width:36px;
+      min-width:0;
+      max-width:42px;
       font-size:9px;
       color:#6b4510;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-clear{
       grid-row:1 / span 3;
@@ -1341,8 +1346,17 @@
       45%{background:rgba(46,180,60,.28);box-shadow:0 0 18px 4px rgba(76,220,90,.45),inset 0 0 0 1px rgba(120,255,130,.75);}
       100%{background:transparent;box-shadow:none;}
     }
-    .order-chip-name{flex:1;min-width:0;text-align:right;word-break:break-word;}
-    .order-chip-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+    .order-chip-name{flex:1 1 0;min-width:0;text-align:right;word-break:break-word;}
+    .order-chip-qty{font-weight:900;opacity:.75;margin-inline-end:2px;}
+    .order-chip-actions{display:flex;align-items:center;gap:6px;flex:0 0 auto;flex-shrink:0;}
+    #menuTopOrders .order-chip-name{
+      flex:1 1 0;
+      min-width:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    #menuTopOrders .order-chip-price{flex:0 0 auto;min-width:0;}
     .order-chip-dec,.order-chip-del{
       border:none;cursor:pointer;touch-action:manipulation;
       width:28px;height:28px;border-radius:8px;font-size:14px;font-weight:900;line-height:1;
@@ -2858,7 +2872,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v107</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v108</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -5831,12 +5845,11 @@
           const qty = Math.max(1, Number(l.qty) || 1);
           const name = String(l.item?.name || "").trim() || "—";
           const noteText = String(l.note || "").trim();
-          const note = noteText ? " · " + esc(noteText) : "";
           /* qty=1 → delete only; qty>1 → decrease only (frees space for name on iPhone) */
           const showDel = qty <= 1;
           return `
           <div class="order-chip-line${noteText ? " has-note" : ""}" data-line-idx="${idx}" data-qty="${qty}">
-            <span class="order-chip-name" title="${esc(name)}${noteText ? " — " + esc(noteText) : ""}">${qty}× ${esc(name)}${note}</span>
+            <span class="order-chip-name" title="${esc(name)}${noteText ? " — " + esc(noteText) : ""}"><bdi class="order-chip-qty">${qty}×</bdi> ${esc(name)}</span>
             <div class="order-chip-actions">
               <button type="button" class="order-chip-dec" data-dec-idx="${idx}" aria-label="−"${showDel ? " hidden" : ""}>−</button>
               <button type="button" class="order-chip-del" data-del-idx="${idx}" aria-label="${esc(guestT("cartDelete"))}"${showDel ? "" : " hidden"}>🗑</button>
