@@ -4121,7 +4121,9 @@
     ];
     function needsTurkishCoffeeSugar(name) {
       const n = normName(name);
-      return /\bturk\s+kahve/.test(n);
+      return /\bturk\s+kahve/.test(n)
+        || /\bdibek\s+kahve/.test(n)
+        || /\bmenengic\s+kahve/.test(n);
     }
     function sugarNoteForChoice(id) {
       const hit = TURKISH_COFFEE_SUGAR.find(o => o.id === id);
@@ -5555,7 +5557,13 @@
     bindTopBtn(document.getElementById("prevBtn"), prevPage);
     bindTopBtn(document.getElementById("nextBtn"), nextPage);
     document.getElementById("closeCart").onclick = closeCart;
-    document.getElementById("overlay").onclick = closeCart;
+    document.getElementById("overlay").onclick = () => {
+      if (document.getElementById("item-popup").classList.contains("show")) {
+        closePopup();
+        return;
+      }
+      closeCart();
+    };
     document.getElementById("clearCartBtn").onclick = clearCart;
 
     function removeLine(idx) {
