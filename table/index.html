@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v116: بدون ملاحظة عامة + تقييم المطعم في صفحة الخروج -->
+  <!-- guest-table-ui-v117: خروج أقوى — رجوع/شاشة الهاتف/صفحة إغلاق ذهبية -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -3047,7 +3047,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v116</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v117</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3346,6 +3346,8 @@
       againBtn: "طلب إضافي",
       exitBtn: "خروج",
       exitDone: "شكراً لزيارتك — تم إنهاء الطلب",
+      exitHomeBtn: "العودة لشاشة الهاتف",
+      exitHomeHint: "اضغط الزر أدناه، أو زر الصفحة الرئيسية في هاتفك",
       okFeedback:
         "رأيك يهمّنا — إن كان لديك ملاحظة على الخدمة أو شكوى، ساعدنا لنحسّن أداء المطعم.",
       okFeedbackOpen: "شاركنا رأيك",
@@ -3460,6 +3462,8 @@
       againBtn: "Ek sipariş",
       exitBtn: "Çıkış",
       exitDone: "Teşekkürler — sipariş tamamlandı",
+      exitHomeBtn: "Telefon ana ekranına dön",
+      exitHomeHint: "Aşağıdaki düğmeye veya telefonunuzun ana ekran düğmesine basın",
       okFeedback:
         "Görüşünüz bizim için önemli — hizmet hakkında notunuz veya şikayetiniz varsa restoranımızı geliştirmemize yardımcı olun.",
       okFeedbackOpen: "Görüşünüzü paylaşın",
@@ -3574,6 +3578,8 @@
       againBtn: "Order more",
       exitBtn: "Exit",
       exitDone: "Thank you — order complete",
+      exitHomeBtn: "Back to phone home",
+      exitHomeHint: "Tap the button below, or your phone’s Home button",
       okFeedback:
         "Your opinion matters — if you have feedback or a complaint, help us improve the restaurant.",
       okFeedbackOpen: "Share your feedback",
@@ -6510,7 +6516,61 @@
       updateBadge();
       if (bookSpread.length > 1) goToPage(1, true);
     };
-    function leaveGuestPageFully() {
+    const ANDROID_HOME_INTENT =
+      "intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.HOME;launchFlags=0x10000000;end";
+
+    function buildExitLandingHtml() {
+      const title = esc(guestT("okTitle"));
+      const doneMsg = esc(guestT("exitDone"));
+      const hint = esc(guestT("exitHomeHint"));
+      const homeBtn = esc(guestT("exitHomeBtn"));
+      const intent = ANDROID_HOME_INTENT.replace(/"/g, "&quot;");
+      return (
+        "<!DOCTYPE html><html lang=\"ar\" dir=\"rtl\"><head><meta charset=\"utf-8\">" +
+        '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">' +
+        "<title>" + title + "</title><style>" +
+        "html,body{margin:0;min-height:100%;background:linear-gradient(180deg,#fffaf0,#ffe9b8);font-family:system-ui,sans-serif;}" +
+        ".box{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:28px;text-align:center;box-sizing:border-box;}" +
+        "h1{margin:0 0 10px;font-size:24px;color:#8a5a08;}p{margin:0 0 18px;font-size:15px;color:#5a3a08;line-height:1.5;}" +
+        "a.home{display:block;width:100%;max-width:320px;margin:0 auto;padding:16px 18px;border-radius:14px;" +
+        "background:linear-gradient(135deg,#c8860a,#f0b820);color:#1a0a00;font-weight:900;font-size:16px;" +
+        "text-decoration:none;box-shadow:0 4px 16px rgba(200,134,10,.35);}" +
+        "</style></head><body><div class=\"box\"><div>" +
+        "<h1>" + title + "</h1><p>" + doneMsg + "</p><p>" + hint + "</p>" +
+        '<a class="home" id="homeLink" href="' + intent + '">' + homeBtn + "</a>" +
+        "<script>(function(){var a=document.getElementById('homeLink');" +
+        "function go(){try{location.href=a.href;}catch(e){}" +
+        "try{window.close();}catch(e){}};" +
+        "a.addEventListener('click',function(ev){ev.preventDefault();go();});" +
+        "setTimeout(go,80);})();<\/script>" +
+        "</div></div></body></html>"
+      );
+    }
+
+    function tryAndroidHomeSync() {
+      if (!/Android/i.test(navigator.userAgent || "")) return false;
+      try {
+        const a = document.createElement("a");
+        a.href = ANDROID_HOME_INTENT;
+        a.rel = "noopener";
+        a.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0;";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch (e) {}
+      try {
+        location.href = ANDROID_HOME_INTENT;
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function leaveGuestPageFully(ev) {
+      if (ev) {
+        try { ev.preventDefault(); } catch (e) {}
+        try { ev.stopPropagation(); } catch (e) {}
+      }
       try { window.stop(); } catch (e) {}
       try {
         cart = [];
@@ -6519,52 +6579,33 @@
       } catch (e) {}
       document.getElementById("okScreen")?.classList.remove("show");
 
-      /* 1) Close tab/window when the browser allows it */
-      try {
-        window.open("", "_self");
-        window.close();
-      } catch (e) {}
+      /* Must stay in the same user-gesture turn for close/home to have a chance. */
+      try { window.open("about:blank", "_self"); } catch (e) {}
+      try { window.close(); } catch (e) {}
       try {
         if (window.closed) return;
       } catch (e) {}
 
-      /* 2) Leave site history (QR / in-app browser often has a previous page) */
+      /* QR / Custom Tab: back often closes the in-app browser entirely. */
       try {
-        if (history.length > 1) {
-          history.go(1 - history.length);
-        }
+        if (history.length > 1) history.back();
       } catch (e) {}
 
-      /* 3) Android: return to home screen when possible */
-      const ua = navigator.userAgent || "";
-      if (/Android/i.test(ua)) {
+      /* Android: jump to phone home screen when the browser allows it. */
+      tryAndroidHomeSync();
+
+      /* Landing page with a big Home button (second user tap usually works). */
+      setTimeout(function () {
         try {
-          location.replace(
-            "intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.HOME;end"
-          );
-          return;
-        } catch (e) {}
-      }
-
-      /* 4) Blank page — user is free to switch apps */
-      try {
-        location.replace("about:blank");
-        return;
-      } catch (e) {}
-
-      document.documentElement.innerHTML =
-        '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-        "<title></title></head><body style=\"margin:0;min-height:100dvh;display:flex;align-items:center;justify-content:center;" +
-        "background:#fff8e8;color:#8a5a08;font-family:system-ui,sans-serif;text-align:center;padding:28px\">" +
-        '<div><p style="font-size:22px;font-weight:900;margin:0 0 10px">' +
-        esc(guestT("okTitle")) +
-        '</p><p style="font-size:15px;margin:0;opacity:.85">' +
-        esc(guestT("exitDone")) +
-        "</p></div></body>";
+          if (document.hidden) return;
+          const html = buildExitLandingHtml();
+          location.replace("data:text/html;charset=utf-8," + encodeURIComponent(html));
+        } catch (e) {
+          try { location.replace("about:blank"); } catch (e2) {}
+        }
+      }, 280);
     }
-    document.getElementById("exitBtn").onclick = () => {
-      leaveGuestPageFully();
-    };
+    document.getElementById("exitBtn").onclick = leaveGuestPageFully;
 
     function isSafeApiUrl(u) {
       try {
