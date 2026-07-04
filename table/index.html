@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v121: شوربة على صورة الطبق + صفحة المقبلات 12–16 -->
+  <!-- guest-table-ui-v122: خانة فوق Günün Çorbası + تفعيل من الإعدادات -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -2469,33 +2469,39 @@
       z-index:18;
       pointer-events:none;
       display:flex;
-      flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap:1px;
-      min-width:72px;
-      max-width:42%;
-      padding:4px 10px 5px;
-      border-radius:999px;
-      background:linear-gradient(180deg,rgba(255,248,220,.96),rgba(240,184,32,.94));
-      border:1.5px solid rgba(120,70,10,.35);
-      box-shadow:0 2px 10px rgba(40,20,0,.28);
+      min-width:88px;
+      max-width:38%;
+      min-height:22px;
+      padding:3px 12px;
+      border-radius:8px;
+      background:rgba(255,252,240,.94);
+      border:1.5px solid rgba(180,120,20,.55);
+      box-shadow:0 1px 6px rgba(40,20,0,.22);
       color:#1a0a00;
       text-align:center;
       line-height:1.15;
-      transform:translate(-50%,0);
+      /* Anchor sits on top of printed «Günün Çorbası» — box grows upward */
+      transform:translate(-50%,calc(-100% - 3px));
     }
-    .daily-soup-tag .dst-label{
-      font-size:9px;
-      font-weight:800;
-      opacity:.78;
-      letter-spacing:.02em;
+    .daily-soup-tag.is-empty{
+      background:rgba(255,252,240,.72);
+      border-style:dashed;
+      border-color:rgba(160,110,20,.45);
+      min-width:96px;
+      min-height:24px;
     }
     .daily-soup-tag .dst-name{
       font-size:12px;
       font-weight:900;
       letter-spacing:.01em;
       word-break:break-word;
+      min-height:1em;
+    }
+    .daily-soup-tag.is-empty .dst-name{
+      opacity:0;
+      min-width:4.5em;
     }
     .hotspot.plus-hit::after,.hotspot.plus-hotspot::after{
       content:"";
@@ -3070,7 +3076,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v121</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v122</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -4382,6 +4388,7 @@
       goToPage(spreadIdxForMenuPage(menuIdx), true);
     }
     let todaySoupName = "";
+    let dailySoupFeatureOn = false;
     function isSoupMenuItem(it) {
       const n = normName(it && it.name);
       return /gunun\s*corbasi|corbasi|corba|soup|شوربة|شوربه/.test(n);
@@ -4420,8 +4427,9 @@
         return new Date().getHours();
       }
     }
-    /** 12:00–15:59 → open starters / soup page first. */
+    /** 12:00–15:59 → open starters / soup page first (when feature on). */
     function isLunchSpecialWindow() {
+      if (!dailySoupFeatureOn) return false;
       const h = istanbulHourNow();
       return h >= 12 && h < 16;
     }
@@ -4432,8 +4440,9 @@
       }
       return 1;
     }
-    function applyDailySoupBanner(name) {
-      todaySoupName = String(name || "").trim();
+    function applyDailySoupBanner(name, enabled) {
+      dailySoupFeatureOn = enabled !== false;
+      todaySoupName = dailySoupFeatureOn ? String(name == null ? "" : name).trim() : "";
       document.querySelectorAll(".pf").forEach(pf => {
         const overlay = pf.querySelector(".pf-overlay");
         if (overlay) attachDailySoupTag(overlay, menuIdxFromPf(pf));
@@ -4449,19 +4458,20 @@
     function attachDailySoupTag(overlay, menuIdx) {
       if (!overlay) return;
       overlay.querySelectorAll(".daily-soup-tag").forEach(el => el.remove());
-      const clean = todaySoupName;
-      if (!clean || menuIdx < 0) return;
+      if (!dailySoupFeatureOn || menuIdx < 0) return;
       const pin = findSoupPinOnPage(menuIdx);
       if (!pin) return;
+      const clean = todaySoupName;
       const tag = document.createElement("div");
-      tag.className = "daily-soup-tag";
+      tag.className = "daily-soup-tag" + (clean ? "" : " is-empty");
       tag.setAttribute("aria-live", "polite");
-      tag.dataset.x = String(pin.spot.x);
-      /* Just under the soup photo / plus button */
-      tag.dataset.y = String(Math.min(0.97, Number(pin.spot.y) + Math.max(Number(pin.spot.h) || 0.04, 0.04) * 0.55 + 0.028));
-      tag.innerHTML =
-        '<span class="dst-label">' + esc(guestT("dailySoupPhoto")) + "</span>" +
-        '<span class="dst-name">' + esc(clean) + "</span>";
+      /* Center over printed dish title (left of +), sit just above «Günün Çorbası». */
+      const sx = Number(pin.spot.x) || 0.5;
+      const sy = Number(pin.spot.y) || 0.4;
+      const sh = Math.max(Number(pin.spot.h) || 0.04, 0.034);
+      tag.dataset.x = String(Math.max(0.08, Math.min(0.92, sx - 0.1)));
+      tag.dataset.y = String(Math.max(0.04, Math.min(0.96, sy + sh * 0.85 + 0.018)));
+      tag.innerHTML = '<span class="dst-name">' + (clean ? esc(clean) : "&nbsp;") + "</span>";
       overlay.appendChild(tag);
     }
     function layoutDailySoupTags(overlay, rect) {
@@ -6901,7 +6911,7 @@
       applyCategoryBarOffset(data.book && data.book.categoryBarOffsetPx);
       refreshPageBrandBanners(bookCacheVer);
       if (data.guestLanguage && window.applyGuestLanguage) window.applyGuestLanguage(data.guestLanguage);
-      applyDailySoupBanner(data.dailySoup);
+      applyDailySoupBanner(data.dailySoup, data.dailySoupEnabled !== false);
       document.title = shopName + " — " + guestT("table") + " " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
       document.getElementById("tblLabel").textContent = section + " · " + guestT("table") + " " + tableNum;
