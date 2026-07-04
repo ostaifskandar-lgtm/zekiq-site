@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v111: أندرويد — خانة الطلبات صنفان في كل سطر -->
+  <!-- guest-table-ui-v112: أندرويد — طلبات حتى 6 أسطر حتى شريط المجموعات -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -912,21 +912,20 @@
     html:not(.ios-inbrowser) #menuTopOrders.guest-hint-only{
       display:none!important;
     }
-    /* Android/Samsung: selected orders — 2 items per row */
+    /* Android/Samsung: selected orders — 2 items per row, grow to 6 rows / category bar */
     html:not(.ios-inbrowser) #menuTopOrders .order-chip-list{
       --order-line-h:32px;
+      --orders-rows-cap:6;
+      --orders-list-cap:calc(var(--order-line-h) * var(--orders-rows-cap) + 4px * 5 + 40px);
       display:grid;
       grid-template-columns:minmax(0,1fr) minmax(0,1fr);
       gap:4px 6px;
       align-content:start;
-      max-height:calc(var(--order-line-h) * 3 + 28px);
-      max-height:min(22vh, calc(var(--order-line-h) * 3 + 28px));
+      max-height:min(var(--orders-list-max-h, var(--orders-list-cap)), var(--orders-list-cap));
       padding:4px 8px 6px;
       overflow-x:hidden;
       overflow-y:auto;
-    }
-    html:not(.ios-inbrowser) #menuTopOrders .order-chip-list.has-overflow{
-      max-height:min(28vh, calc(var(--order-line-h) * 4 + 28px));
+      -webkit-overflow-scrolling:touch;
     }
     html:not(.ios-inbrowser) #menuTopOrders .order-chip-list.has-overflow::before{
       display:none;
@@ -2944,7 +2943,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v111</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v112</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -4346,7 +4345,17 @@
       }
       const headRow = chip?.querySelector(".order-chip-head-row");
       const headH = headRow ? headRow.offsetHeight : 0;
-      const maxH = Math.max(0, Math.floor(boundaryTop - ordersWrap.getBoundingClientRect().top - headH));
+      /* Leave a small gap above category chips; Android caps at 6 item-rows. */
+      const gapAboveCats = 6;
+      let maxH = Math.max(
+        0,
+        Math.floor(boundaryTop - ordersWrap.getBoundingClientRect().top - headH - gapAboveCats)
+      );
+      if (!isIosGuestNoLogo()) {
+        const rowH = 36;
+        const sixRowsCap = rowH * 6 + 40;
+        maxH = Math.min(maxH, sixRowsCap);
+      }
       if (maxH !== lastOrdersListMaxH) {
         lastOrdersListMaxH = maxH;
         ordersWrap.style.setProperty("--orders-list-max-h", maxH + "px");
@@ -4371,8 +4380,8 @@
       ordersWrap.classList.toggle("orders-expanded", !!(chip && chip.classList.contains("orders-expanded")));
       if (listEl) {
         const iosOverflow = isIosGuestNoLogo() && (liveOverflow || lineCount > 6);
-        /* Android: 2 items per row → overflow after ~3 rows (6 items) */
-        listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (liveOverflow || lineCount > 6)));
+        /* Android: 2 items per row × 6 rows = 12 items before scroll */
+        listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (liveOverflow || lineCount > 12)));
       }
     }
     function syncCategoryDock(pf) {
@@ -5758,7 +5767,7 @@
         const lineCount = lines.length;
         const overflows = orderListOverflows(listEl);
         const iosOverflow = isIosGuestNoLogo() && (overflows || lineCount > 6);
-        listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (overflows || lineCount > 6)));
+        listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (overflows || lineCount > 12)));
         if (chip) {
           if (lineCount <= 8) {
             chip.classList.remove("orders-folded", "orders-expanded");
