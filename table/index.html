@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v114: سلة ذهبية مشرقة — بدون مسح السلة + زر تم للملاحظة -->
+  <!-- guest-table-ui-v115: خروج كامل بعد الطلب — إغلاق الصفحة والعودة للهاتف -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -3002,7 +3002,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v114</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v115</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3012,7 +3012,7 @@
       <p id="i18n-ok-ask" style="font-size:14px;color:rgba(240,168,32,.85);margin-top:14px;font-weight:700">هل لديك طلب إضافي؟</p>
       <div class="ok-actions">
         <button type="button" class="order-btn" id="againBtn">طلب إضافي</button>
-        <button type="button" class="order-btn ok-btn-exit" id="exitBtn">إنهاء — إغلاق الصفحة</button>
+        <button type="button" class="order-btn ok-btn-exit" id="exitBtn">خروج</button>
       </div>
     </div>
   </div>
@@ -3287,8 +3287,8 @@
       okTitle: "شكراً! ✓",
       okAsk: "هل لديك طلب إضافي؟",
       againBtn: "طلب إضافي",
-      exitBtn: "إنهاء — إغلاق الصفحة",
-      exitDone: "يمكنك إغلاق هذه الصفحة — شكراً لزيارتك",
+      exitBtn: "خروج",
+      exitDone: "شكراً لزيارتك — تم إنهاء الطلب",
       table: "طاولة",
       items: "أصناف",
       orderTotal: "المجموع",
@@ -3394,8 +3394,8 @@
       okTitle: "Teşekkürler! ✓",
       okAsk: "Ek siparişiniz var mı?",
       againBtn: "Ek sipariş",
-      exitBtn: "Bitir — sayfayı kapat",
-      exitDone: "Bu sayfayı kapatabilirsiniz — teşekkürler",
+      exitBtn: "Çıkış",
+      exitDone: "Teşekkürler — sipariş tamamlandı",
       table: "Masa",
       items: "ürün",
       orderTotal: "Toplam",
@@ -3501,8 +3501,8 @@
       okTitle: "Thank you! ✓",
       okAsk: "Would you like to order more?",
       againBtn: "Order more",
-      exitBtn: "Done — close page",
-      exitDone: "You can close this page — thank you",
+      exitBtn: "Exit",
+      exitDone: "Thank you — order complete",
       table: "Table",
       items: "items",
       orderTotal: "Total",
@@ -6360,12 +6360,60 @@
       updateBadge();
       if (bookSpread.length > 1) goToPage(1, true);
     };
-    document.getElementById("exitBtn").onclick = () => {
-      document.getElementById("okScreen").classList.remove("show");
-      try { window.close(); } catch (e) {}
-      if (!window.closed) {
-        document.body.innerHTML = '<div style="min-height:100dvh;display:flex;align-items:center;justify-content:center;background:#0d0500;color:#f0a820;font-family:system-ui;text-align:center;padding:24px"><div><p style="font-size:20px;font-weight:800;margin-bottom:8px">' + esc(guestT("okTitle")) + '</p><p style="font-size:14px;opacity:.75">' + esc(guestT("exitDone")) + "</p></div></div>";
+    function leaveGuestPageFully() {
+      try { window.stop(); } catch (e) {}
+      try {
+        cart = [];
+        done = true;
+        sending = false;
+      } catch (e) {}
+      document.getElementById("okScreen")?.classList.remove("show");
+
+      /* 1) Close tab/window when the browser allows it */
+      try {
+        window.open("", "_self");
+        window.close();
+      } catch (e) {}
+      try {
+        if (window.closed) return;
+      } catch (e) {}
+
+      /* 2) Leave site history (QR / in-app browser often has a previous page) */
+      try {
+        if (history.length > 1) {
+          history.go(1 - history.length);
+        }
+      } catch (e) {}
+
+      /* 3) Android: return to home screen when possible */
+      const ua = navigator.userAgent || "";
+      if (/Android/i.test(ua)) {
+        try {
+          location.replace(
+            "intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.HOME;end"
+          );
+          return;
+        } catch (e) {}
       }
+
+      /* 4) Blank page — user is free to switch apps */
+      try {
+        location.replace("about:blank");
+        return;
+      } catch (e) {}
+
+      document.documentElement.innerHTML =
+        '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+        "<title></title></head><body style=\"margin:0;min-height:100dvh;display:flex;align-items:center;justify-content:center;" +
+        "background:#fff8e8;color:#8a5a08;font-family:system-ui,sans-serif;text-align:center;padding:28px\">" +
+        '<div><p style="font-size:22px;font-weight:900;margin:0 0 10px">' +
+        esc(guestT("okTitle")) +
+        '</p><p style="font-size:15px;margin:0;opacity:.85">' +
+        esc(guestT("exitDone")) +
+        "</p></div></body>";
+    }
+    document.getElementById("exitBtn").onclick = () => {
+      leaveGuestPageFully();
     };
 
     function isSafeApiUrl(u) {
