@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v112: أندرويد — طلبات حتى 6 أسطر حتى شريط المجموعات -->
+  <!-- guest-table-ui-v113: إصلاح كتابة الملاحظات في سلة الإرسال -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -278,10 +278,18 @@
         ol.classList.toggle("show",!!land);
         ol.setAttribute("aria-hidden",land?"false":"true");
       }
+      function isEditableTarget(el){
+        return !!(el&&el.closest&&el.closest(
+          "#cart-panel,#menu-panel,#line-note-sheet,#item-popup,"+
+          "#cart-items,#menu-list,#menuSearch,textarea,input,select,"+
+          ".ci-note,.note,#noteInp,#lineNoteInp"
+        ));
+      }
       function blockScroll(e){
         if(window.__zekiqPageSwiping){e.preventDefault();return;}
         if(e.touches&&e.touches.length>1) return;
-        if(e.target&&e.target.closest&&e.target.closest("#cart-items,#menu-list,#thumbs,#sceneOrderList,.order-chip-list,.ci-note,#noteInp,#pageSwipeBar,#menuStage,#book,.pf,.pf-bg,#scene")) return;
+        if(isEditableTarget(e.target)) return;
+        if(e.target&&e.target.closest&&e.target.closest("#thumbs,#sceneOrderList,.order-chip-list,#pageSwipeBar,#menuStage,#book,.pf,.pf-bg,#scene")) return;
         e.preventDefault();
       }
       function onFsChange(){
@@ -320,19 +328,27 @@
       document.addEventListener("touchstart",function(e){
         if(window.__zekiqLockPortrait) window.__zekiqLockPortrait();
         if(isCoachLocked()) return;
+        if(isEditableTarget(e.target)) return;
         if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList,#line-note-sheet,#item-popup")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) onMenuTap(e);
         else fitViewport();
       },{passive:true,capture:true});
       document.addEventListener("click",function(e){
+        if(isEditableTarget(e.target)) return;
         if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList,#line-note-sheet,#item-popup")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) return;
         fitViewport();
         showChrome();
       },{capture:true});
       document.addEventListener("touchmove",blockScroll,{passive:false});
-      document.addEventListener("contextmenu",function(e){e.preventDefault();},{capture:true});
-      document.addEventListener("dragstart",function(e){e.preventDefault();},{capture:true});
+      document.addEventListener("contextmenu",function(e){
+        if(isEditableTarget(e.target)) return;
+        e.preventDefault();
+      },{capture:true});
+      document.addEventListener("dragstart",function(e){
+        if(isEditableTarget(e.target)) return;
+        e.preventDefault();
+      },{capture:true});
       window.__zekiqLockPortrait=lockPortrait;
       window.__zekiqUpdateOrientLock=updateOrientLock;
       window.__zekiqShowChrome=showChrome;
@@ -2597,8 +2613,9 @@
 
     #cart-panel{
       position:fixed;top:0;right:-105%;width:min(390px,100vw);height:var(--app-h,100dvh);
-      background:linear-gradient(180deg,#0d0500,#1f0c00);border-left:1.5px solid #c8860a;z-index:350;
+      background:linear-gradient(180deg,#0d0500,#1f0c00);border-left:1.5px solid #c8860a;z-index:1005;
       transition:right .4s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;
+      pointer-events:auto;
     }
     #cart-panel.open{right:0;}
     .cart-hd{padding:18px 20px;border-bottom:1px solid rgba(200,134,10,.25);display:flex;align-items:center;justify-content:space-between;}
@@ -2631,6 +2648,10 @@
       box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 8px rgba(0,0,0,.12);
       outline:none;
       -webkit-text-fill-color:#2a1600;
+      pointer-events:auto;
+      touch-action:manipulation;
+      -webkit-user-select:text;
+      user-select:text;
     }
     .ci-note::placeholder{color:rgba(74,44,0,.62);font-weight:500;}
     .ci-note:focus{
@@ -2657,6 +2678,10 @@
       padding:10px 12px;font-size:13px;font-weight:600;color:#2a1600;outline:none;font-family:inherit;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 8px rgba(0,0,0,.12);
       -webkit-text-fill-color:#2a1600;
+      pointer-events:auto;
+      touch-action:manipulation;
+      -webkit-user-select:text;
+      user-select:text;
     }
     .note::placeholder{color:rgba(74,44,0,.62);font-weight:500;}
     .note:focus{
@@ -2667,6 +2692,16 @@
 
     #overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:990;opacity:0;pointer-events:none;transition:opacity .3s;}
     #overlay.show{opacity:1;pointer-events:all;}
+    /* Cart/menu must sit above overlay so notes/inputs receive taps (Samsung/Android). */
+    #cart-panel.open,#menu-panel.open{z-index:1005;}
+    #cart-panel textarea,#cart-panel input,
+    #menu-panel textarea,#menu-panel input,
+    #lineNoteInp,.ci-note,.note,#noteInp,#menuSearch{
+      pointer-events:auto!important;
+      -webkit-user-select:text!important;
+      user-select:text!important;
+      touch-action:manipulation;
+    }
 
     #toast{
       position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;
@@ -2679,9 +2714,10 @@
     #toast.show{transform:translateX(-50%) translateY(0);}
 
     #menu-panel{
-      position:fixed;inset:0;z-index:360;display:flex;flex-direction:column;
+      position:fixed;inset:0;z-index:1005;display:flex;flex-direction:column;
       background:linear-gradient(180deg,#0d0500,#1a0800);
       transform:translateY(100%);transition:transform .38s cubic-bezier(.25,.46,.45,.94);
+      pointer-events:auto;
     }
     #menu-panel.open{transform:translateY(0);}
     .menu-hd{padding:16px 18px 10px;border-bottom:1px solid rgba(200,134,10,.25);display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:calc(12px + env(safe-area-inset-top));}
@@ -2943,7 +2979,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v112</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v113</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3731,9 +3767,10 @@
     function panelBlocksSwipe(el) {
       if (!el || !el.closest) return false;
       return !!el.closest(
-        "#item-popup.show,#cart-panel.open,#menu-panel.open,#loadScreen.show,#okScreen.show," +
+        "#item-popup.show,#cart-panel,#cart-panel.open,#menu-panel,#menu-panel.open," +
+          "#line-note-sheet,#loadScreen.show,#okScreen.show," +
           ".nav-arrow,.list-btn,.cart-btn,.scene-hud-btn,.cover-start-btn,#coachOk," +
-          "#cart-items,#menu-list,#menuSearch"
+          "#cart-items,#menu-list,#menuSearch,textarea,input,.ci-note,.note,#noteInp,#lineNoteInp"
       );
     }
     function bindBookSwipe() {
@@ -6072,6 +6109,12 @@
       document.querySelectorAll("[data-dec-idx]").forEach(b => b.onclick = () => chQtyLine(Number(b.dataset.decIdx), -1));
       document.querySelectorAll("[data-del-idx]").forEach(b => b.onclick = () => removeLine(Number(b.dataset.delIdx)));
       c.querySelectorAll(".ci-note").forEach(inp => {
+        const focusNote = e => {
+          e.stopPropagation();
+          try { inp.focus({ preventScroll: false }); } catch (_) { inp.focus(); }
+        };
+        inp.addEventListener("touchend", focusNote, { passive: true });
+        inp.addEventListener("click", focusNote);
         inp.addEventListener("input", () => {
           const line = cart[Number(inp.dataset.lineIdx)];
           if (line && !needsTurkishCoffeeSugar(line.item.name)) line.note = inp.value.slice(0, 120);
