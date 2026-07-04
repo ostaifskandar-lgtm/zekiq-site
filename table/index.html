@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v120: شوربة اليوم — تنبيه كاشير + عرض على QR -->
+  <!-- guest-table-ui-v121: شوربة على صورة الطبق + صفحة المقبلات 12–16 -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -1207,25 +1207,6 @@
       touch-action:pan-x;
     }
     #menuTopDock.show{display:block;}
-    #dailySoupBanner{
-      display:none;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      margin:0;
-      padding:7px 12px;
-      background:linear-gradient(90deg,#c8860a,#f0b820,#c8860a);
-      color:#1a0a00;
-      font-size:13px;
-      font-weight:900;
-      letter-spacing:.02em;
-      text-align:center;
-      box-shadow:0 2px 10px rgba(160,100,20,.25);
-      border-bottom:1px solid rgba(120,70,10,.25);
-    }
-    #dailySoupBanner.show{display:flex;}
-    #dailySoupBanner .soup-label{opacity:.85;font-weight:800;}
-    #dailySoupBanner .soup-name{font-size:14px;}
     #menuCategoryBar{
       position:relative;
       left:auto;
@@ -2173,8 +2154,8 @@
     .book-cover-start .cover-arrow-next{animation-delay:0s;}
     .book-cover-start .cover-arrow-prev{opacity:.35;animation-delay:1.2s;}
     html.coach-locked #menuTopDock,
-    html.coach-locked #menuCategoryBar,
-    html.coach-locked #dailySoupBanner{display:none!important;}
+    html.coach-locked #menuCategoryBar{display:none!important;}
+    html.coach-locked .daily-soup-tag{display:none!important;}
     html.coach-locked .pf.book-cover-start{
       padding:0;
       background:#ebe4d3;
@@ -2482,6 +2463,39 @@
       opacity:1;
       box-shadow:none;filter:none;
       -webkit-tap-highlight-color:rgba(188,208,36,.22);
+    }
+    .daily-soup-tag{
+      position:absolute;
+      z-index:18;
+      pointer-events:none;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:1px;
+      min-width:72px;
+      max-width:42%;
+      padding:4px 10px 5px;
+      border-radius:999px;
+      background:linear-gradient(180deg,rgba(255,248,220,.96),rgba(240,184,32,.94));
+      border:1.5px solid rgba(120,70,10,.35);
+      box-shadow:0 2px 10px rgba(40,20,0,.28);
+      color:#1a0a00;
+      text-align:center;
+      line-height:1.15;
+      transform:translate(-50%,0);
+    }
+    .daily-soup-tag .dst-label{
+      font-size:9px;
+      font-weight:800;
+      opacity:.78;
+      letter-spacing:.02em;
+    }
+    .daily-soup-tag .dst-name{
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.01em;
+      word-break:break-word;
     }
     .hotspot.plus-hit::after,.hotspot.plus-hotspot::after{
       content:"";
@@ -3056,7 +3070,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v120</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v121</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3134,11 +3148,6 @@
       <div id="menuBookWrap">
       <div id="menuViewport">
       <div id="menuTopDock">
-      <div id="dailySoupBanner" aria-live="polite">
-        <span class="soup-label" id="dailySoupLabel">شوربة اليوم</span>
-        <span aria-hidden="true">·</span>
-        <span class="soup-name" id="dailySoupName"></span>
-      </div>
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
       </div>
@@ -3315,6 +3324,7 @@
       next: "التالي ▶",
       orientLock: "أبقِ الهاتف عمودياً لاستخدام المينو",
       dailySoupBanner: "شوربة اليوم",
+      dailySoupPhoto: "صورة الشوربة",
       swipeHint: "اسحب لقلب الشاشة",
       railOrderHint: "اضغط + الأخضر على الصورة للطلب",
       tapPlusHint: 'اضغط الزر <strong>+ الأخضر</strong> على الطبق في الصورة',
@@ -3432,6 +3442,7 @@
       next: "Sonraki ▶",
       orientLock: "Telefonu dikey tutun",
       dailySoupBanner: "Günün çorbası",
+      dailySoupPhoto: "Çorba fotoğrafı",
       swipeHint: "Sayfayı çevirmek için kaydırın",
       railOrderHint: "Sipariş için resimdeki yeşil + düğmesine basın",
       tapPlusHint: 'Resimdeki yemeğe <strong>yeşil +</strong> düğmesine basın',
@@ -3549,6 +3560,7 @@
       next: "Next ▶",
       orientLock: "Keep your phone upright to browse the menu",
       dailySoupBanner: "Soup of the day",
+      dailySoupPhoto: "Soup photo",
       swipeHint: "Swipe to turn the page",
       railOrderHint: "Tap the green + on the image to order",
       tapPlusHint: 'Tap the green <strong>+</strong> button on the dish in the image',
@@ -3702,8 +3714,6 @@
     if (lineNoteSave) lineNoteSave.textContent = t("lineNoteSave");
     var search = document.getElementById("menuSearch");
     if (search) search.placeholder = t("menuSearch");
-    var soupLabel = document.getElementById("dailySoupLabel");
-    if (soupLabel) soupLabel.textContent = t("dailySoupBanner");
     if (typeof global.__zekiqOnGuestLang === "function") global.__zekiqOnGuestLang(lang);
   }
 
@@ -4371,24 +4381,98 @@
       /* Instant jump — never flip page-by-page (was ~0.7s × pages). */
       goToPage(spreadIdxForMenuPage(menuIdx), true);
     }
-    function applyDailySoupBanner(name) {
-      const banner = document.getElementById("dailySoupBanner");
-      const nameEl = document.getElementById("dailySoupName");
-      const labelEl = document.getElementById("dailySoupLabel");
-      if (!banner || !nameEl) return;
-      const clean = String(name || "").trim();
-      if (!clean) {
-        banner.classList.remove("show");
-        nameEl.textContent = "";
-        lastCategoryDockKey = "";
-        return;
+    let todaySoupName = "";
+    function isSoupMenuItem(it) {
+      const n = normName(it && it.name);
+      return /gunun\s*corbasi|corbasi|corba|soup|شوربة|شوربه/.test(n);
+    }
+    function isSoupSpot(spot) {
+      const n = normName(spot && spot.name);
+      return /gunun\s*corbasi|corbasi|corba|soup|شوربة|شوربه/.test(n);
+    }
+    function findSoupMenuPageIdx() {
+      for (const key of Object.keys(manualSpots || {})) {
+        const list = manualSpots[key] || [];
+        if (list.some(isSoupSpot)) {
+          const n = Number(key);
+          if (Number.isFinite(n)) return n;
+        }
       }
-      if (labelEl) labelEl.textContent = guestT("dailySoupBanner");
-      nameEl.textContent = clean;
-      banner.classList.add("show");
-      lastCategoryDockKey = "";
-      const pf = document.querySelector("#pw" + cur + " .pf");
-      if (pf) syncCategoryDock(pf);
+      for (let i = 0; i < menuPageCount; i++) {
+        if (itemsForPage(i).some(isSoupMenuItem)) return i;
+      }
+      return -1;
+    }
+    function findSoupPinOnPage(menuIdx) {
+      const pins = collectPagePins(menuIdx);
+      return pins.find(p => isSoupMenuItem(p.item) || isSoupSpot(p.spot)) || null;
+    }
+    function istanbulHourNow() {
+      try {
+        const parts = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Europe/Istanbul",
+          hour: "numeric",
+          hour12: false,
+        }).formatToParts(new Date());
+        const h = Number(parts.find(p => p.type === "hour")?.value);
+        return Number.isFinite(h) ? h : new Date().getHours();
+      } catch (_) {
+        return new Date().getHours();
+      }
+    }
+    /** 12:00–15:59 → open starters / soup page first. */
+    function isLunchSpecialWindow() {
+      const h = istanbulHourNow();
+      return h >= 12 && h < 16;
+    }
+    function defaultEntryMenuSpreadIdx() {
+      if (isLunchSpecialWindow()) {
+        const soupPage = findSoupMenuPageIdx();
+        if (soupPage >= 0) return spreadIdxForMenuPage(soupPage);
+      }
+      return 1;
+    }
+    function applyDailySoupBanner(name) {
+      todaySoupName = String(name || "").trim();
+      document.querySelectorAll(".pf").forEach(pf => {
+        const overlay = pf.querySelector(".pf-overlay");
+        if (overlay) attachDailySoupTag(overlay, menuIdxFromPf(pf));
+      });
+      scheduleHotspotRelayout();
+    }
+    function menuIdxFromPf(pf) {
+      const pw = pf?.closest(".pw");
+      if (!pw || !pw.id) return menuIdxFromCur(cur);
+      const spreadIdx = Number(String(pw.id).replace(/^pw/, ""));
+      return menuIdxFromCur(spreadIdx);
+    }
+    function attachDailySoupTag(overlay, menuIdx) {
+      if (!overlay) return;
+      overlay.querySelectorAll(".daily-soup-tag").forEach(el => el.remove());
+      const clean = todaySoupName;
+      if (!clean || menuIdx < 0) return;
+      const pin = findSoupPinOnPage(menuIdx);
+      if (!pin) return;
+      const tag = document.createElement("div");
+      tag.className = "daily-soup-tag";
+      tag.setAttribute("aria-live", "polite");
+      tag.dataset.x = String(pin.spot.x);
+      /* Just under the soup photo / plus button */
+      tag.dataset.y = String(Math.min(0.97, Number(pin.spot.y) + Math.max(Number(pin.spot.h) || 0.04, 0.04) * 0.55 + 0.028));
+      tag.innerHTML =
+        '<span class="dst-label">' + esc(guestT("dailySoupPhoto")) + "</span>" +
+        '<span class="dst-name">' + esc(clean) + "</span>";
+      overlay.appendChild(tag);
+    }
+    function layoutDailySoupTags(overlay, rect) {
+      if (!overlay || !rect) return;
+      overlay.querySelectorAll(".daily-soup-tag").forEach(tag => {
+        const x = parseFloat(tag.dataset.x);
+        const y = parseFloat(tag.dataset.y);
+        if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+        tag.style.left = (x * rect.dw) + "px";
+        tag.style.top = (y * rect.dh) + "px";
+      });
     }
     function applyCategoryBarOffset(px) {
       if (isIosGuestNoLogo()) px = 0;
@@ -4591,14 +4675,12 @@
       }
       const rect = imageOverlayRect(pf, { measureOnly: true });
       if (!rect) return;
-      const soupBanner = document.getElementById("dailySoupBanner");
-      const soupH = soupBanner?.classList.contains("show") ? Math.round(soupBanner.offsetHeight || 0) : 0;
-      const catH = Math.round(bar?.offsetHeight || 0) + soupH;
+      const catH = Math.round(bar?.offsetHeight || 0);
       const oy = Math.round(rect.oy);
       if (isIosGuestNoLogo()) {
-        /* Category chips (+ soup banner) directly above menu. */
+        /* Category chips directly above menu. */
         const dockH = catH > 0 ? catH : 0;
-        const dockKey = "ios-above|" + oy + "|" + dockH + "|" + soupH;
+        const dockKey = "ios-above|" + oy + "|" + dockH;
         if (lastCategoryDockKey === dockKey) return;
         lastCategoryDockKey = dockKey;
         view.style.setProperty("--menu-top-dock-h", dockH + "px");
@@ -4611,7 +4693,7 @@
         return;
       }
       const logoH = logoStripHeight(rect);
-      const dockKey = oy + "|" + catH + "|" + logoH + "|" + soupH;
+      const dockKey = oy + "|" + catH + "|" + logoH;
       if (lastCategoryDockKey === dockKey) return;
       lastCategoryDockKey = dockKey;
       view.style.setProperty("--menu-img-top", oy + "px");
@@ -5243,6 +5325,7 @@
         }
         h.style.transform = spotTransform(h.dataset.anchor || (isPlus ? "center" : "right"));
       });
+      layoutDailySoupTags(overlay, rect);
       const menuIdx = (() => {
         const pw = pf.closest(".pw");
         if (!pw || !pw.id) return menuIdxFromCur(cur);
@@ -5451,6 +5534,7 @@
         if (spot.kind === "plus") attachPlusHotspot(overlay, item, spot, pinIdx);
         else attachPriceCover(overlay, item, spot, false, menuIdx);
       });
+      attachDailySoupTag(overlay, menuIdx);
       const relayout = () => layoutPfHotspots(pf);
       if (pf.dataset.nw) relayout();
       else {
@@ -5653,14 +5737,15 @@
     function forceMenuPageVisible() {
       if (bookSpread.length <= 1) return false;
       animating = false;
-      cur = 1;
+      const entry = defaultEntryMenuSpreadIdx();
+      cur = entry;
       document.querySelectorAll(".pw").forEach(function (pw, i) {
-        pw.classList.toggle("page-current", i === 1);
+        pw.classList.toggle("page-current", i === entry);
         pw.classList.remove("page-reveal", "page-flip-top", "turning", "turn-next", "turn-prev", "page-leave", "page-dragging");
         pw.style.transform = "";
       });
       sync(false);
-      if (typeof mountPageOverlays === "function") mountPageOverlays(1);
+      if (typeof mountPageOverlays === "function") mountPageOverlays(entry);
       if (typeof layoutAllHotspots === "function") layoutAllHotspots();
       return spreadKind(cur) === "menu";
     }
@@ -5670,8 +5755,8 @@
       document.documentElement.classList.add("guest-menu-active");
       lastCategoryDockKey = "";
       syncSceneHud();
-      const pfSoup = document.querySelector("#pw" + cur + " .pf");
-      if (pfSoup) syncCategoryDock(pfSoup);
+      const pfEntry = document.querySelector("#pw" + cur + " .pf");
+      if (pfEntry) syncCategoryDock(pfEntry);
       if (window.__zekiqEngage) window.__zekiqEngage(true);
       else {
         if (window.__zekiqTryFullscreen) window.__zekiqTryFullscreen();
