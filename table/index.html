@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v110: أندرويد — بدون تلميح أعلى (موجود بالأسفل) -->
+  <!-- guest-table-ui-v111: أندرويد — خانة الطلبات صنفان في كل سطر -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -911,6 +911,86 @@
     html:not(.ios-inbrowser) .guest-empty-hint,
     html:not(.ios-inbrowser) #menuTopOrders.guest-hint-only{
       display:none!important;
+    }
+    /* Android/Samsung: selected orders — 2 items per row */
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-list{
+      --order-line-h:32px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:4px 6px;
+      align-content:start;
+      max-height:calc(var(--order-line-h) * 3 + 28px);
+      max-height:min(22vh, calc(var(--order-line-h) * 3 + 28px));
+      padding:4px 8px 6px;
+      overflow-x:hidden;
+      overflow-y:auto;
+    }
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-list.has-overflow{
+      max-height:min(28vh, calc(var(--order-line-h) * 4 + 28px));
+    }
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-list.has-overflow::before{
+      display:none;
+    }
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-line{
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap:4px;
+      min-width:0;
+      padding:4px 6px;
+      border-bottom:none;
+      border:1px solid rgba(180,140,80,.24);
+      border-radius:10px;
+      background:rgba(255,255,255,.72);
+      font-size:10px;
+      line-height:1.25;
+      color:#2a1a04;
+    }
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-line:last-child{
+      border-bottom:none;
+    }
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-name{
+      flex:1 1 0;
+      min-width:0;
+      font-size:11px;
+      font-weight:800;
+      color:#2a1a04;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      text-align:right;
+    }
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-actions{
+      gap:2px;
+      flex:0 0 auto;
+      margin-inline-start:auto;
+    }
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-dec,
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-del{
+      width:24px;
+      height:24px;
+      font-size:12px;
+      border-radius:7px;
+      flex-shrink:0;
+    }
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-dec[hidden],
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-del[hidden]{
+      display:none!important;
+    }
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-price{
+      min-width:0;
+      max-width:40px;
+      font-size:9px;
+      color:#6b4510;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    html:not(.ios-inbrowser) #menuTopOrders .order-chip-clear{
+      grid-column:1 / -1;
+      width:100%;
+      margin:2px 0 0;
+      padding:6px 8px;
+      font-size:10px;
     }
     #menuTopOrders.show{
       display:block;
@@ -2864,7 +2944,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v110</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v111</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -4291,7 +4371,8 @@
       ordersWrap.classList.toggle("orders-expanded", !!(chip && chip.classList.contains("orders-expanded")));
       if (listEl) {
         const iosOverflow = isIosGuestNoLogo() && (liveOverflow || lineCount > 6);
-        listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (liveOverflow || lineCount > 3)));
+        /* Android: 2 items per row → overflow after ~3 rows (6 items) */
+        listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (liveOverflow || lineCount > 6)));
       }
     }
     function syncCategoryDock(pf) {
@@ -5677,7 +5758,7 @@
         const lineCount = lines.length;
         const overflows = orderListOverflows(listEl);
         const iosOverflow = isIosGuestNoLogo() && (overflows || lineCount > 6);
-        listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (overflows || lineCount > 3)));
+        listEl.classList.toggle("has-overflow", iosOverflow || (!isIosGuestNoLogo() && (overflows || lineCount > 6)));
         if (chip) {
           if (lineCount <= 8) {
             chip.classList.remove("orders-folded", "orders-expanded");
