@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v125: صفحة البوظة بعد الحلويات -->
+  <!-- guest-table-ui-v129: ice cream + spot routes to sheet on phone -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -235,7 +235,7 @@
       }
       function onMenuTap(ev){
         if(isCoachLocked()) return;
-        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,.cover-start-btn,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList,#line-note-sheet,#item-popup")) return;
+        if(ev&&ev.target&&ev.target.closest&&ev.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,.cover-start-btn,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList,#line-note-sheet,#item-popup,#ice-cream-sheet")) return;
         fitViewport();
         if(!isIosInBrowser()) hideSafariChrome();
         if(!isIosInBrowser()) enterImmersiveAuto();
@@ -281,7 +281,7 @@
       }
       function isEditableTarget(el){
         return !!(el&&el.closest&&el.closest(
-          "#cart-panel,#menu-panel,#line-note-sheet,#item-popup,"+
+          "#cart-panel,#menu-panel,#line-note-sheet,#item-popup,#ice-cream-sheet,"+
           "#cart-items,#menu-list,#menuSearch,textarea,input,select,"+
           ".ci-note,.note,#noteInp,#lineNoteInp,#okFeedbackMsg,#okFeedbackForm"
         ));
@@ -330,13 +330,13 @@
         if(window.__zekiqLockPortrait) window.__zekiqLockPortrait();
         if(isCoachLocked()) return;
         if(isEditableTarget(e.target)) return;
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList,#line-note-sheet,#item-popup")) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList,#line-note-sheet,#item-popup,#ice-cream-sheet")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) onMenuTap(e);
         else fitViewport();
       },{passive:true,capture:true});
       document.addEventListener("click",function(e){
         if(isEditableTarget(e.target)) return;
-        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList,#line-note-sheet,#item-popup")) return;
+        if(e.target&&e.target.closest&&e.target.closest(".plus-hit,.plus-hotspot,.price-hotspot,.scene-hud-btn,.order-chip-head-btn,.order-chip-dec,.order-chip-del,.order-chip-clear,.scene-hud-send,#sceneHud,#menuTopOrders,#menuTopDock,#menuCategoryBar,.pf-cat-strip,.cat-chip,.cat-chip-page,#guestOrderChip,#guestGuide,#pageSwipeBar,#header,.list-btn,.cart-btn,#nav,.nav-arrow,.order-chip-list,#sceneOrderList,#line-note-sheet,#item-popup,#ice-cream-sheet")) return;
         if(e.target&&e.target.closest&&e.target.closest("#book,.pw")) return;
         fitViewport();
         showChrome();
@@ -2571,34 +2571,40 @@
       cursor:pointer;
     }
     .dd-continue:active{transform:scale(.98);}
-    .desserts-ice-cover{
-      position:absolute;left:0;right:0;
-      background:linear-gradient(180deg,rgba(235,228,211,.2),#ebe4d3 18%);
-      display:flex;align-items:center;justify-content:center;
-      z-index:25;pointer-events:auto;
-    }
-    .desserts-ice-go{
-      border:none;border-radius:999px;
-      padding:10px 18px;
-      font-size:13px;font-weight:900;
-      color:#1a0a00;
-      background:linear-gradient(145deg,#ffd54f,#f0b820);
-      box-shadow:0 4px 14px rgba(40,20,0,.25);
-      cursor:pointer;
-    }
-    .ice-cream-page{
-      position:absolute;inset:0;
+    #ice-cream-sheet{z-index:1105;}
+    #ice-cream-sheet .ice-sheet-card{
+      width:min(420px,100vw);max-height:min(92dvh,720px);
       display:flex;flex-direction:column;
-      align-items:stretch;justify-content:flex-start;
-      padding:12px 14px 16px;
-      overflow:auto;
       background:linear-gradient(165deg,#2a1608,#4a2a12 45%,#1a0e04);
-      color:#fff8e8;
-      pointer-events:auto;
+      border:1.5px solid #c8860a;border-radius:24px 24px 0 0;
+      padding:18px 16px calc(16px + env(safe-area-inset-bottom,0px));
+      transform:translateY(100%);transition:transform .32s cubic-bezier(.34,1.2,.64,1);
+      box-shadow:0 -10px 50px rgba(200,134,10,.25);
+      color:#fff8e8;pointer-events:auto;
     }
-    .ice-cream-page h2{
-      margin:4px 0 10px;text-align:center;
-      font-size:22px;font-weight:900;color:#ffd54f;
+    #ice-cream-sheet.show .ice-sheet-card{transform:translateY(0);}
+    .ice-sheet-title{
+      text-align:center;font-size:20px;font-weight:900;color:#ffd54f;
+      margin:0 0 10px;flex-shrink:0;
+    }
+    .ice-sheet-list{
+      flex:1;overflow-y:auto;min-height:0;
+      display:flex;flex-direction:column;gap:10px;
+      margin-bottom:10px;padding-right:2px;
+    }
+    .ice-serving-card{
+      border:1.5px solid rgba(255,213,79,.35);
+      border-radius:14px;padding:10px 12px;
+      background:rgba(0,0,0,.18);
+    }
+    .ice-serving-head{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:8px;gap:8px;
+    }
+    .ice-serving-label{font-size:13px;font-weight:900;color:#ffd54f;}
+    .ice-serving-remove{
+      border:none;background:rgba(255,100,80,.15);color:#ffb4a8;
+      border-radius:999px;padding:4px 10px;font-size:11px;font-weight:800;cursor:pointer;
     }
     .ice-sec{margin-bottom:12px;}
     .ice-sec-label{
@@ -2632,6 +2638,16 @@
       cursor:pointer;
     }
     .ice-add:disabled{opacity:.45;cursor:default;}
+    .ice-sheet-add-serving{
+      width:100%;border:1.5px dashed rgba(255,213,79,.5);
+      background:rgba(255,255,255,.06);color:#ffd54f;
+      border-radius:12px;padding:10px 12px;font-size:13px;font-weight:800;
+      cursor:pointer;margin-bottom:8px;
+    }
+    .ice-sheet-total{
+      text-align:center;font-size:17px;font-weight:900;color:#ffd54f;
+      margin-bottom:10px;
+    }
     .hotspot.plus-hit::after,.hotspot.plus-hotspot::after{
       content:"";
       position:absolute;left:50%;top:50%;
@@ -2757,11 +2773,11 @@
     .hotspot:active .add-pin{filter:brightness(.95);}
 
     .hotspot:active .price-cover{transform:scale(.93);filter:brightness(.95);}
-    #item-popup,#line-note-sheet{
+    #item-popup,#line-note-sheet,#ice-cream-sheet{
       position:fixed;inset:0;z-index:1000;display:flex;align-items:flex-end;justify-content:center;
       opacity:0;pointer-events:none;transition:opacity .25s;background:rgba(0,0,0,0);
     }
-    #item-popup.show,#line-note-sheet.show{opacity:1;pointer-events:all;background:rgba(0,0,0,.65);}
+    #item-popup.show,#line-note-sheet.show,#ice-cream-sheet.show{opacity:1;pointer-events:all;background:rgba(0,0,0,.65);}
     #line-note-sheet{z-index:1100;}
     #line-note-sheet .line-note-card{
       width:min(420px,100vw);background:linear-gradient(160deg,#1f0c00,#2d1400);
@@ -3205,7 +3221,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v125</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v129</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -3392,6 +3408,19 @@
     </div>
   </div>
 
+  <div id="ice-cream-sheet" aria-hidden="true">
+    <div class="ice-sheet-card">
+      <div class="ice-sheet-title" id="iceSheetTitle">البوظة</div>
+      <div class="ice-sheet-list" id="iceSheetList"></div>
+      <button type="button" class="ice-sheet-add-serving" id="iceAddServingBtn">+ أضف كاسة أخرى</button>
+      <div class="ice-sheet-total" id="iceSheetTotal"></div>
+      <div class="popup-actions">
+        <button type="button" class="popup-close" id="iceSheetCancel">إلغاء</button>
+        <button type="button" class="popup-add" id="iceSheetConfirm">أضف للطلب</button>
+      </div>
+    </div>
+  </div>
+
   <div id="menu-panel">
     <div class="menu-hd">
       <div><div class="menu-title" id="i18n-menu-title">📋 قائمة الأطباق</div><div class="menu-sub" id="i18n-menu-sub">ابحث واطلب من أي صفحة</div></div>
@@ -3485,8 +3514,12 @@
       iceCreamCone: "قرصاس بسكويت",
       iceCreamAdd: "أضف للطلب",
       iceCreamTotal: "المجموع",
-      iceCreamGoPage: "البوظة ← اختر النكهة والطابات",
       iceCreamScoopUnit: "طابة",
+      iceCreamServing: "كاسة",
+      iceCreamScoopN: "طابة",
+      iceCreamAddServing: "+ أضف كاسة أخرى",
+      iceCreamAddAll: "أضف الكل للطلب",
+      iceCreamRemoveServing: "حذف",
       swipeHint: "اسحب لقلب الشاشة",
       railOrderHint: "اضغط + الأخضر على الصورة للطلب",
       tapPlusHint: 'اضغط الزر <strong>+ الأخضر</strong> على الطبق في الصورة',
@@ -3622,8 +3655,12 @@
       iceCreamCone: "Külah",
       iceCreamAdd: "Siparişe ekle",
       iceCreamTotal: "Toplam",
-      iceCreamGoPage: "Dondurma → çeşit ve top seç",
       iceCreamScoopUnit: "top",
+      iceCreamServing: "Kase",
+      iceCreamScoopN: "Top",
+      iceCreamAddServing: "+ Bir kase daha",
+      iceCreamAddAll: "Hepsini siparişe ekle",
+      iceCreamRemoveServing: "Sil",
       swipeHint: "Sayfayı çevirmek için kaydırın",
       railOrderHint: "Sipariş için resimdeki yeşil + düğmesine basın",
       tapPlusHint: 'Resimdeki yemeğe <strong>yeşil +</strong> düğmesine basın',
@@ -3759,8 +3796,12 @@
       iceCreamCone: "Cone",
       iceCreamAdd: "Add to order",
       iceCreamTotal: "Total",
-      iceCreamGoPage: "Ice cream → pick flavor & scoops",
       iceCreamScoopUnit: "scoop",
+      iceCreamServing: "Cup",
+      iceCreamScoopN: "Scoop",
+      iceCreamAddServing: "+ Add another cup",
+      iceCreamAddAll: "Add all to order",
+      iceCreamRemoveServing: "Remove",
       swipeHint: "Swipe to turn the page",
       railOrderHint: "Tap the green + on the image to order",
       tapPlusHint: 'Tap the green <strong>+</strong> button on the dish in the image',
@@ -4110,7 +4151,7 @@
       if (!el || !el.closest) return false;
       return !!el.closest(
         "#item-popup.show,#cart-panel,#cart-panel.open,#menu-panel,#menu-panel.open," +
-          "#line-note-sheet,#loadScreen.show,#okScreen.show," +
+          "#line-note-sheet,#loadScreen.show,#okScreen.show,#ice-cream-sheet.show," +
           ".nav-arrow,.list-btn,.cart-btn,.scene-hud-btn,.cover-start-btn,#coachOk," +
           "#cart-items,#menu-list,#menuSearch,textarea,input,.ci-note,.note,#noteInp,#lineNoteInp"
       );
@@ -4279,17 +4320,15 @@
         if (n >= 3) root.classList.add("swipe-mastered");
       } catch (_) {}
     }
-    const ICE_CREAM_AFTER_MENU_IDX = 10; /* TATLILAR */
     const ICE_CREAM_SCOOP_PRICE = 60;
     const ICE_CREAM_FLAVORS = [
-      "Çilek", "Çikolata", "Karamel", "Yaban Mersini", "Vanilya",
-      "Oreo", "Bubble Gum", "Limon", "Antep Fıstık",
+      "Çikolata", "Vanilya", "Muz", "Böğürtlen", "Yaban Mersini",
+      "Limon", "Antep Fıstığı", "Karamelli",
     ];
     function rebuildBookSpread() {
       bookSpread = [{ kind: "cover-start" }];
       bookPages.forEach((imgUrl, i) => {
         bookSpread.push({ kind: "menu", menuIdx: i, imgUrl });
-        if (i === ICE_CREAM_AFTER_MENU_IDX) bookSpread.push({ kind: "ice-cream" });
       });
       menuPageCount = bookPages.length;
     }
@@ -4300,17 +4339,10 @@
       const s = bookSpread[c];
       return s && s.kind === "menu" ? s.menuIdx : -1;
     }
-    function spreadIdxForIceCream() {
-      for (let s = 0; s < bookSpread.length; s++) {
-        if (bookSpread[s] && bookSpread[s].kind === "ice-cream") return s;
-      }
-      return -1;
-    }
     function formatPageLabel() {
       const kind = spreadKind(cur);
       if (kind === "cover-start") return guestT("coverStartBadge");
       if (kind === "cover-end") return guestT("coverEndBadge");
-      if (kind === "ice-cream") return guestT("iceCreamChip");
       const mi = menuIdxFromCur(cur);
       return mi >= 0 ? (mi + 1) + " / " + menuPageCount : "—";
     }
@@ -4320,8 +4352,19 @@
       if (/dondurmali/.test(n)) return false;
       return n === "dondurma top" || n === "dondurma" || /^dondurma\s*top/.test(n);
     }
+    function isIceCreamOrderSpot(spot, item) {
+      if (spot && spot.kind === "ice-cream") return true;
+      if (item && isStandaloneIceCreamItem(item)) return true;
+      const sn = normName(spot && spot.name);
+      return sn === "dondurma top" || sn === "dondurma" || /^dondurma\s*top/.test(sn);
+    }
     function findIceCreamMenuItem() {
-      return menu.find(isStandaloneIceCreamItem) || null;
+      return menu.find(isStandaloneIceCreamItem) ||
+        menu.find(it => {
+          const n = normName(it && it.name);
+          return n.includes("dondurma") && !n.includes("dondurmali");
+        }) ||
+        null;
     }
     function guestDisplayShopName(raw) {
       const s = String(raw || "").trim();
@@ -4358,91 +4401,178 @@
       const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1";
       return "assets/tonino-brand-banner.jpg" + bv;
     }
-    function fillIceCreamPage(pf) {
-      pf.classList.add("book-cover", "book-cover-ice");
-      pf.innerHTML = "";
-      const root = document.createElement("div");
-      root.className = "ice-cream-page";
-      root.dir = "rtl";
-      let flavor = ICE_CREAM_FLAVORS[0];
-      let scoops = 1;
-      let vessel = "cup";
-      function render() {
-        const total = ICE_CREAM_SCOOP_PRICE * scoops;
-        root.innerHTML =
-          "<h2>" + esc(guestT("iceCreamTitle")) + "</h2>" +
-          '<div class="ice-sec"><div class="ice-sec-label">' + esc(guestT("iceCreamFlavor")) + "</div>" +
-          '<div class="ice-flavors">' +
-          ICE_CREAM_FLAVORS.map(function (f) {
-            return '<button type="button" class="ice-chip' + (f === flavor ? " active" : "") +
-              '" data-flavor="' + esc(f) + '">' + esc(f) + "</button>";
-          }).join("") +
-          "</div></div>" +
-          '<div class="ice-sec"><div class="ice-sec-label">' + esc(guestT("iceCreamScoops")) + "</div>" +
+    let iceSheetServings = [];
+    function newIceServing() {
+      return { vessel: "cup", scoops: 1, flavors: [ICE_CREAM_FLAVORS[0]] };
+    }
+    function normalizeIceServing(serving) {
+      if (!serving) return newIceServing();
+      serving.vessel = serving.vessel === "cone" ? "cone" : "cup";
+      serving.scoops = Math.max(1, Math.min(4, Number(serving.scoops) || 1));
+      if (!Array.isArray(serving.flavors)) serving.flavors = [];
+      while (serving.flavors.length < serving.scoops) {
+        serving.flavors.push(ICE_CREAM_FLAVORS[serving.flavors.length % ICE_CREAM_FLAVORS.length]);
+      }
+      serving.flavors = serving.flavors.slice(0, serving.scoops);
+      return serving;
+    }
+    function iceServingTotal(serving) {
+      return ICE_CREAM_SCOOP_PRICE * (Number(serving && serving.scoops) || 1);
+    }
+    function iceSheetGrandTotal() {
+      return iceSheetServings.reduce((sum, s) => sum + iceServingTotal(s), 0);
+    }
+    function closeIceCreamSheet() {
+      const sheet = document.getElementById("ice-cream-sheet");
+      if (sheet) {
+        sheet.classList.remove("show");
+        sheet.setAttribute("aria-hidden", "true");
+      }
+      iceSheetServings = [];
+    }
+    function renderIceCreamSheet() {
+      const list = document.getElementById("iceSheetList");
+      const totalEl = document.getElementById("iceSheetTotal");
+      const title = document.getElementById("iceSheetTitle");
+      const addBtn = document.getElementById("iceAddServingBtn");
+      const cancelBtn = document.getElementById("iceSheetCancel");
+      const confirmBtn = document.getElementById("iceSheetConfirm");
+      if (title) title.textContent = guestT("iceCreamTitle");
+      if (addBtn) addBtn.textContent = guestT("iceCreamAddServing");
+      if (cancelBtn) cancelBtn.textContent = guestT("popupClose");
+      if (confirmBtn) {
+        confirmBtn.textContent = iceSheetServings.length > 1
+          ? guestT("iceCreamAddAll")
+          : guestT("iceCreamAdd");
+      }
+      if (totalEl) {
+        totalEl.textContent = guestT("iceCreamTotal") + ": " + iceSheetGrandTotal() + " ₺";
+      }
+      if (!list) return;
+      list.innerHTML = "";
+      iceSheetServings.forEach(function (serving, si) {
+        normalizeIceServing(serving);
+        const card = document.createElement("div");
+        card.className = "ice-serving-card";
+        card.dataset.servingIdx = String(si);
+        const head = document.createElement("div");
+        head.className = "ice-serving-head";
+        const label = document.createElement("div");
+        label.className = "ice-serving-label";
+        label.textContent = guestT("iceCreamServing") + " " + (si + 1);
+        head.appendChild(label);
+        if (iceSheetServings.length > 1) {
+          const rm = document.createElement("button");
+          rm.type = "button";
+          rm.className = "ice-serving-remove";
+          rm.textContent = guestT("iceCreamRemoveServing");
+          rm.onclick = function (e) {
+            e.stopPropagation();
+            iceSheetServings.splice(si, 1);
+            renderIceCreamSheet();
+          };
+          head.appendChild(rm);
+        }
+        card.appendChild(head);
+        const vesselSec = document.createElement("div");
+        vesselSec.className = "ice-sec";
+        vesselSec.innerHTML =
+          '<div class="ice-sec-label">' + esc(guestT("iceCreamVessel")) + "</div>" +
+          '<div class="ice-vessel">' +
+          '<button type="button" class="ice-chip' + (serving.vessel === "cup" ? " active" : "") +
+          '" data-vessel="cup">' + esc(guestT("iceCreamCup")) + "</button>" +
+          '<button type="button" class="ice-chip' + (serving.vessel === "cone" ? " active" : "") +
+          '" data-vessel="cone">' + esc(guestT("iceCreamCone")) + "</button>" +
+          "</div>";
+        card.appendChild(vesselSec);
+        const scoopSec = document.createElement("div");
+        scoopSec.className = "ice-sec";
+        scoopSec.innerHTML =
+          '<div class="ice-sec-label">' + esc(guestT("iceCreamScoops")) + "</div>" +
           '<div class="ice-scoops">' +
           [1, 2, 3, 4].map(function (n) {
-            return '<button type="button" class="ice-chip' + (n === scoops ? " active" : "") +
+            return '<button type="button" class="ice-chip' + (n === serving.scoops ? " active" : "") +
               '" data-scoops="' + n + '">' + n + " " + esc(guestT("iceCreamScoopUnit")) + "</button>";
           }).join("") +
-          "</div></div>" +
-          '<div class="ice-sec"><div class="ice-sec-label">' + esc(guestT("iceCreamVessel")) + "</div>" +
-          '<div class="ice-vessel">' +
-          '<button type="button" class="ice-chip' + (vessel === "cup" ? " active" : "") +
-          '" data-vessel="cup">' + esc(guestT("iceCreamCup")) + "</button>" +
-          '<button type="button" class="ice-chip' + (vessel === "cone" ? " active" : "") +
-          '" data-vessel="cone">' + esc(guestT("iceCreamCone")) + "</button>" +
-          "</div></div>" +
-          '<div class="ice-total">' + esc(guestT("iceCreamTotal")) + ": " + total + " ₺</div>" +
-          '<button type="button" class="ice-add" id="iceAddBtn">' + esc(guestT("iceCreamAdd")) + "</button>";
-        root.querySelectorAll("[data-flavor]").forEach(function (btn) {
-          btn.onclick = function (e) {
-            e.stopPropagation();
-            flavor = btn.getAttribute("data-flavor") || flavor;
-            render();
-          };
-        });
-        root.querySelectorAll("[data-scoops]").forEach(function (btn) {
-          btn.onclick = function (e) {
-            e.stopPropagation();
-            scoops = Number(btn.getAttribute("data-scoops")) || 1;
-            render();
-          };
-        });
-        root.querySelectorAll("[data-vessel]").forEach(function (btn) {
-          btn.onclick = function (e) {
-            e.stopPropagation();
-            vessel = btn.getAttribute("data-vessel") === "cone" ? "cone" : "cup";
-            render();
-          };
-        });
-        const addBtn = root.querySelector("#iceAddBtn");
-        if (addBtn) {
-          addBtn.onclick = function (e) {
-            e.stopPropagation();
-            addIceCreamToCart(flavor, scoops, vessel);
-          };
+          "</div>";
+        card.appendChild(scoopSec);
+        for (let fi = 0; fi < serving.scoops; fi++) {
+          const flavorSec = document.createElement("div");
+          flavorSec.className = "ice-sec";
+          const scoopLabel = serving.scoops > 1
+            ? (guestT("iceCreamScoopN") + " " + (fi + 1))
+            : guestT("iceCreamFlavor");
+          flavorSec.innerHTML =
+            '<div class="ice-sec-label">' + esc(scoopLabel) + "</div>" +
+            '<div class="ice-flavors">' +
+            ICE_CREAM_FLAVORS.map(function (f) {
+              return '<button type="button" class="ice-chip' + (f === serving.flavors[fi] ? " active" : "") +
+                '" data-flavor="' + esc(f) + '">' + esc(f) + "</button>";
+            }).join("") +
+            "</div>";
+          flavorSec.querySelectorAll("[data-flavor]").forEach(function (btn) {
+            btn.onclick = function (e) {
+              e.stopPropagation();
+              serving.flavors[fi] = btn.getAttribute("data-flavor") || serving.flavors[fi];
+              renderIceCreamSheet();
+            };
+          });
+          card.appendChild(flavorSec);
         }
-      }
-      render();
-      pf.appendChild(root);
+        card.querySelectorAll("[data-scoops]").forEach(function (btn) {
+          btn.onclick = function (e) {
+            e.stopPropagation();
+            serving.scoops = Number(btn.getAttribute("data-scoops")) || 1;
+            normalizeIceServing(serving);
+            renderIceCreamSheet();
+          };
+        });
+        card.querySelectorAll("[data-vessel]").forEach(function (btn) {
+          btn.onclick = function (e) {
+            e.stopPropagation();
+            serving.vessel = btn.getAttribute("data-vessel") === "cone" ? "cone" : "cup";
+            renderIceCreamSheet();
+          };
+        });
+        list.appendChild(card);
+      });
     }
-    function addIceCreamToCart(flavor, scoops, vessel) {
+    function openIceCreamSheet() {
       if (!coachDone) return;
-      const base = findIceCreamMenuItem();
-      if (!base) return;
-      const n = Math.max(1, Math.min(8, Number(scoops) || 1));
+      iceSheetServings = [newIceServing()];
+      renderIceCreamSheet();
+      const sheet = document.getElementById("ice-cream-sheet");
+      if (sheet) {
+        sheet.classList.add("show");
+        sheet.setAttribute("aria-hidden", "false");
+      }
+      if (navigator.vibrate) navigator.vibrate(12);
+    }
+    function confirmIceCreamSheet() {
+      if (!coachDone || !iceSheetServings.length) return;
+      iceSheetServings.forEach(function (s) { addIceCreamToCart(s); });
+      closeIceCreamSheet();
+    }
+    function addIceCreamToCart(serving) {
+      if (!coachDone || !serving) return;
+      let base = findIceCreamMenuItem();
+      if (!base) {
+        base = { id: 0, itemId: "t0071", name: "Dondurma Top", price: String(ICE_CREAM_SCOOP_PRICE), category: "DONDURMA" };
+      }
+      normalizeIceServing(serving);
+      const n = serving.scoops;
+      const vessel = serving.vessel;
       const vesselLabel = vessel === "cone" ? guestT("iceCreamCone") : guestT("iceCreamCup");
-      const note = flavor + " · " + n + " " + guestT("iceCreamScoopUnit") + " · " + vesselLabel;
+      const flavorNote = n === 1
+        ? serving.flavors[0]
+        : serving.flavors.join(" + ");
+      const note = flavorNote + " · " + n + " " + guestT("iceCreamScoopUnit") + " · " + vesselLabel;
       const displayName = "Dondurma · " + note;
       const price = ICE_CREAM_SCOOP_PRICE * n;
       const item = Object.assign({}, base, { name: displayName, price: String(price) });
       addToCart(item, { flash: true, note: note });
     }
     function fillCoverPage(pf, kind) {
-      if (kind === "ice-cream") {
-        fillIceCreamPage(pf);
-        return;
-      }
       pf.classList.add("book-cover", kind === "cover-start" ? "book-cover-start" : "book-cover-end");
       const inner = document.createElement("div");
       inner.className = "book-cover-inner";
@@ -4640,6 +4770,7 @@
       "pizza": "Pizza",
       "kofte & burger": "Köfte",
       "tatlilar": "Tatlı",
+      "dondurma": "Dondurma",
       "cay": "Çay",
       "kahve": "Kahve",
       "soguk icecek": "İçecek",
@@ -4649,7 +4780,7 @@
     };
     const PAGE_CHIP_SHORT = [
       "Serpme", "Kahvaltı", "Tost", "Makarna", "Tavuk", "Tavuk", "Pizza", "Köfte", "Burger",
-      "Spor", "Tatlı", "Çay", "Kahve", "Kahve", "Frozen", "Smoothie", "Milkshake", "Mojito",
+      "Spor", "Tatlı", "Dondurma", "Çay", "Kahve", "Kahve", "Frozen", "Smoothie", "Milkshake", "Mojito",
       "Kokteyl", "İçecek",
     ];
     function categoryChipLabel(pageIdx) {
@@ -4675,9 +4806,6 @@
           i++;
         }
         chips.push({ pageIdx: start, label, pages, kind: "menu" });
-        if (pages.indexOf(ICE_CREAM_AFTER_MENU_IDX) >= 0 && spreadIdxForIceCream() >= 0) {
-          chips.push({ pageIdx: -1, label: guestT("iceCreamChip"), pages: [], kind: "ice-cream" });
-        }
       }
       return chips;
     }
@@ -4692,11 +4820,6 @@
       if (!coachDone) return;
       /* Instant jump — never flip page-by-page (was ~0.7s × pages). */
       goToPage(spreadIdxForMenuPage(menuIdx), true);
-    }
-    function jumpToIceCreamPage() {
-      if (!coachDone) return;
-      const idx = spreadIdxForIceCream();
-      if (idx >= 0) goToPage(idx, true);
     }
     let todaySoupName = "";
     let dailySoupFeatureOn = false;
@@ -4902,10 +5025,6 @@
     function categoryChipsHtml() {
       const chips = buildCategoryChips();
       return chips.map(c => {
-        if (c.kind === "ice-cream") {
-          return '<button type="button" class="cat-chip cat-chip-ice" data-kind="ice-cream">' +
-            esc(c.label) + "</button>";
-        }
         const pagesHtml = c.pages.length > 1
           ? c.pages.map(p =>
               '<span class="cat-chip-page" data-jump-page="' + p + '">' + (p + 1) + "</span>"
@@ -4921,8 +5040,7 @@
         btn.onclick = e => {
           if (e.target && e.target.closest && e.target.closest(".cat-chip-page")) return;
           e.stopPropagation();
-          if (btn.dataset.kind === "ice-cream") jumpToIceCreamPage();
-          else jumpToCategoryPage(Number(btn.dataset.pageIdx));
+          jumpToCategoryPage(Number(btn.dataset.pageIdx));
         };
       });
       root.querySelectorAll(".cat-chip-page").forEach(sp => {
@@ -5118,7 +5236,7 @@
       const bar = document.getElementById("menuCategoryBar");
       if (!bar) return;
       const showBar = menuPageCount > 1 &&
-        (spreadKind(cur) === "menu" || spreadKind(cur) === "ice-cream") &&
+        spreadKind(cur) === "menu" &&
         !navLocked();
       syncMenuTopDock(showBar);
       if (!showBar) {
@@ -5129,12 +5247,7 @@
       const chips = buildCategoryChips();
       const activeIdx = menuIdxFromCur(cur);
       const onMenu = spreadKind(cur) === "menu";
-      const onIce = spreadKind(cur) === "ice-cream";
       bar.querySelectorAll(".cat-chip").forEach(btn => {
-        if (btn.dataset.kind === "ice-cream") {
-          btn.classList.toggle("active", onIce);
-          return;
-        }
         const pi = Number(btn.dataset.pageIdx);
         const group = chips.find(c => c.kind === "menu" && c.pageIdx === pi);
         const inGroup = group && group.pages.indexOf(activeIdx) >= 0;
@@ -5145,8 +5258,8 @@
         });
       });
       const activeBtn = bar.querySelector(".cat-chip.active");
-      if (activeBtn && (onMenu || onIce)) {
-        const key = activeBtn.dataset.kind === "ice-cream" ? -99 : Number(activeBtn.dataset.pageIdx);
+      if (activeBtn && onMenu) {
+        const key = Number(activeBtn.dataset.pageIdx);
         if (key !== lastCategoryScrollPi) {
           lastCategoryScrollPi = key;
           activeBtn.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
@@ -5167,6 +5280,7 @@
       "Burger · برجر",
       "Sporcu Menüsü · رياضيون",
       "Tatlılar · حلويات",
+      "Dondurma · بوظة",
       "Çay · شاي",
       "Sıcak Kahveler · قهوة ساخنة",
       "Soğuk Kahveler · قهوة باردة",
@@ -5199,18 +5313,19 @@
         case 8: return catMatches(item.category, "KÖFTE & BURGER") && n.includes("burger");
         case 9: return false;
         case 10: return catMatches(item.category, "TATLILAR");
-        case 11: return catMatches(item.category, "ÇAY");
-        case 12: return catMatches(item.category, "KAHVE") && !n.includes("iced");
-        case 13: return catMatches(item.category, "KAHVE") && n.includes("iced");
-        case 14: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("frozen");
-        case 15: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("smoothie") && !n.includes("bubble");
-        case 16: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("milkshake");
-        case 17: return catMatches(item.category, "SOĞUK İÇECEK") && (n.includes("mojito") || n.includes("limonata") || n.includes("portakal"));
-        case 18: return catMatches(item.category, "SOĞUK İÇECEK") && (
+        case 11: return catMatches(item.category, "DONDURMA") || isStandaloneIceCreamItem(item);
+        case 12: return catMatches(item.category, "ÇAY");
+        case 13: return catMatches(item.category, "KAHVE") && !n.includes("iced");
+        case 14: return catMatches(item.category, "KAHVE") && n.includes("iced");
+        case 15: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("frozen");
+        case 16: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("smoothie") && !n.includes("bubble");
+        case 17: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("milkshake");
+        case 18: return catMatches(item.category, "SOĞUK İÇECEK") && (n.includes("mojito") || n.includes("limonata") || n.includes("portakal"));
+        case 19: return catMatches(item.category, "SOĞUK İÇECEK") && (
           n.includes("bubble") || n.includes("mathilda") || n.includes("valentina") ||
           n.includes("churchill") || n.includes("cool lime") || n.includes("margarita") || n.includes("ice lime")
         );
-        case 19: return catExact(item.category, "İÇECEK") || catExact(item.category, "NARGILE") || item.dept === "nargile";
+        case 20: return catExact(item.category, "İÇECEK") || catExact(item.category, "NARGILE") || item.dept === "nargile";
         default: return false;
       }
     }
@@ -5297,7 +5412,14 @@
       return cart.filter(l => l.item.id === id).reduce((s, l) => s + l.qty, 0);
     }
     function menuItemById(id) {
-      return menu.find(m => m.id === Number(id)) || null;
+      const raw = String(id == null ? "" : id).trim();
+      if (!raw) return null;
+      const num = Number(raw);
+      if (Number.isFinite(num) && num > 0) {
+        const byDb = menu.find(m => m.id === num);
+        if (byDb) return byDb;
+      }
+      return menu.find(m => m.itemId && String(m.itemId) === raw) || null;
     }
     function spotHasName(spot) {
       return !!(spot && String(spot.name || "").trim());
@@ -5372,8 +5494,9 @@
     }
     function collectPagePins(pageIdx) {
       const manual = (manualSpots[String(pageIdx)] || manualSpots[pageIdx] || []).filter(function (s) {
-        return s && !isStandaloneIceCreamItem(s);
+        return s && (s.kind === "ice-cream" || !isStandaloneIceCreamItem(s));
       });
+      const iceManual = manual.filter(s => s && s.kind === "ice-cream");
       const hasPlusManual = manual.some(s => s && (s.kind === "plus" || plusButtonsAllPages));
       const plusOnly = singlePagePlusOnly || plusButtonsAllPages || bookPages.length <= 1 || hasPlusManual;
       if (plusOnly) {
@@ -5385,15 +5508,20 @@
         const out = [];
         for (let i = 0; i < sorted.length; i++) {
           const spot = sorted[i];
-          const item = resolvePlusSpotItem(spot, pageItems, pageItems, i, offset, used);
+          let item = resolvePlusSpotItem(spot, pageItems, pageItems, i, offset, used);
+          if (!item && isIceCreamOrderSpot(spot, null)) {
+            item = findIceCreamMenuItem() ||
+              { id: 0, itemId: "t0071", name: "Dondurma Top", price: String(ICE_CREAM_SCOOP_PRICE) };
+          }
           if (!item) continue;
           used.add(item.id);
+          const pinKind = isIceCreamOrderSpot(spot, item) ? "ice-cream" : "plus";
           out.push({ item, spot: {
             x: spot.x, y: spot.y,
             w: Math.max(Number(spot.w) || 0, 0.048),
             h: Math.max(Number(spot.h) || 0, 0.034),
             anchor: spot.anchor || "center",
-            kind: "plus",
+            kind: pinKind,
           } });
         }
         const missing = pageItems.filter(it => !used.has(it.id));
@@ -5401,6 +5529,24 @@
           out.push({
             item,
             spot: { ...gridSpotForItem(i, missing.length, pageIdx), kind: "plus" },
+          });
+        });
+        const iceBase = findIceCreamMenuItem();
+        iceManual.forEach(function (spot) {
+          const already = out.some(function (p) {
+            return Math.abs(Number(p.spot.x) - Number(spot.x)) < 0.0001 &&
+              Math.abs(Number(p.spot.y) - Number(spot.y)) < 0.0001;
+          });
+          if (already) return;
+          out.push({
+            item: iceBase || { id: 0, itemId: "t0071", name: "Dondurma Top", price: String(ICE_CREAM_SCOOP_PRICE) },
+            spot: {
+              x: spot.x, y: spot.y,
+              w: Math.max(Number(spot.w) || 0, 0.048),
+              h: Math.max(Number(spot.h) || 0, 0.034),
+              anchor: spot.anchor || "center",
+              kind: "ice-cream",
+            },
           });
         });
         return out.sort((a, b) => a.spot.y - b.spot.y || a.spot.x - b.spot.x);
@@ -5752,40 +5898,9 @@
         const spreadIdx = Number(String(pw.id).replace(/^pw/, ""));
         return menuIdxFromCur(spreadIdx);
       })();
-      layoutDessertsIceCreamCover(overlay, rect);
       layoutLetterboxRails(pf, menuIdx);
       layoutPfBrandStrip(pf, rect);
       layoutBackImage(pf.closest(".pw"), rect);
-    }
-    function attachDessertsIceCreamCover(overlay, menuIdx) {
-      if (!overlay) return;
-      overlay.querySelectorAll(".desserts-ice-cover").forEach(el => el.remove());
-      if (menuIdx !== ICE_CREAM_AFTER_MENU_IDX) return;
-      const cover = document.createElement("div");
-      cover.className = "desserts-ice-cover";
-      cover.dataset.y0 = "0.835";
-      cover.innerHTML =
-        '<button type="button" class="desserts-ice-go">' + esc(guestT("iceCreamGoPage")) + "</button>";
-      const btn = cover.querySelector("button");
-      if (btn) {
-        btn.onclick = function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          jumpToIceCreamPage();
-        };
-      }
-      overlay.appendChild(cover);
-    }
-    function layoutDessertsIceCreamCover(overlay, rect) {
-      if (!overlay || !rect) return;
-      overlay.querySelectorAll(".desserts-ice-cover").forEach(function (cover) {
-        const y0 = parseFloat(cover.dataset.y0);
-        const top = (Number.isFinite(y0) ? y0 : 0.835) * rect.dh;
-        cover.style.left = "0px";
-        cover.style.top = top + "px";
-        cover.style.width = rect.dw + "px";
-        cover.style.height = Math.max(24, rect.dh - top) + "px";
-      });
     }
     function layoutAllHotspots() {
       if (animating) return;
@@ -5855,10 +5970,14 @@
       if (iid) {
         const byItemId = allPageItems.find(it => it.itemId && String(it.itemId) === iid && !used.has(it.id));
         if (byItemId) return byItemId;
+        const byItemIdGlobal = menu.find(it => it.itemId && String(it.itemId) === iid && !used.has(it.id));
+        if (byItemIdGlobal) return byItemIdGlobal;
       }
       if (spot.menuItemId != null) {
         const byId = allPageItems.find(it => it.id === Number(spot.menuItemId) && !used.has(it.id));
         if (byId) return byId;
+        const byIdGlobal = menu.find(it => it.id === Number(spot.menuItemId) && !used.has(it.id));
+        if (byIdGlobal) return byIdGlobal;
       }
       if (spotHasName(spot)) {
         const p = spot.price != null ? Math.round(Number(spot.price)) : null;
@@ -5868,6 +5987,12 @@
           const byBoth = named.find(it => Math.round(Number(it.price)) === p);
           if (byBoth) return byBoth;
         }
+        const namedGlobal = menu.filter(it => !used.has(it.id) && nameMatches(it.name, spot.name));
+        if (namedGlobal.length === 1) return namedGlobal[0];
+        if (namedGlobal.length > 1 && p != null) {
+          const byBothG = namedGlobal.find(it => Math.round(Number(it.price)) === p);
+          if (byBothG) return byBothG;
+        }
         return null;
       }
       if (spot.price != null) {
@@ -5875,6 +6000,8 @@
         if (allByPrice.length === 1) return allByPrice[0];
         const poolByPrice = uniquePriceMatches(pool, spot.price, used);
         if (poolByPrice.length === 1) return poolByPrice[0];
+        const globalByPrice = uniquePriceMatches(menu, spot.price, used);
+        if (globalByPrice.length === 1) return globalByPrice[0];
       }
       const idx = spotIdx + offset;
       if (idx >= 0 && idx < pool.length) {
@@ -5887,9 +6014,10 @@
       return String(1200 + Math.round((1 - Number(spot.y || 0)) * 800));
     }
     function renderPageDock() { /* full-screen: ordering on page only */ }
-    function bindHotspotTap(h, handler) {
+    function bindHotspotTap(h, handler, opts) {
       let startX = 0, startY = 0, touchMoved = false;
-      const SLOP = 14;
+      const SLOP = (opts && opts.slop) || 14;
+      const optionalItem = opts && opts.optionalItem;
       h.addEventListener("touchstart", e => {
         if (e.touches.length !== 1) return;
         startX = e.touches[0].clientX;
@@ -5912,8 +6040,10 @@
         last = now;
         if (e.cancelable) e.preventDefault();
         e.stopPropagation();
-        const item = menuItemById(h.dataset.itemId);
-        if (!item) return;
+        let item = null;
+        if (h.dataset.itemId) item = menuItemById(h.dataset.itemId);
+        if (!item && h.dataset.menuItemId) item = menuItemById(h.dataset.menuItemId);
+        if (!item && !optionalItem) return;
         handler(e, item);
       };
       h.addEventListener("touchend", fire, { passive: false });
@@ -5924,6 +6054,35 @@
     }
     function bindPlusTap(h) {
       bindHotspotTap(h, (e, item) => quickAddItem(item));
+    }
+    function attachIceCreamHotspot(overlay, spot, glowIndex) {
+      const h = document.createElement("button");
+      h.className = "hotspot plus-hit ice-cream-hit";
+      h.type = "button";
+      const iceBase = findIceCreamMenuItem();
+      if (iceBase) {
+        h.dataset.itemId = iceBase.id;
+        if (iceBase.itemId) h.dataset.menuItemId = iceBase.itemId;
+      }
+      h.dataset.x = String(spot.x);
+      h.dataset.y = String(spot.y);
+      h.dataset.w = String(spot.w);
+      h.dataset.h = String(spot.h);
+      h.dataset.anchor = spot.anchor || "center";
+      h.style.zIndex = hotspotZIndex(spot) + 2;
+      const glow = document.createElement("span");
+      glow.className = "plus-glow";
+      glow.setAttribute("aria-hidden", "true");
+      glow.style.animationDelay = (Number(glowIndex) || 0) * 0.5 + "s";
+      h.appendChild(glow);
+      h.title = guestT("iceCreamTitle");
+      h.setAttribute("aria-label", guestT("iceCreamTitle"));
+      bindHotspotTap(h, function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openIceCreamSheet();
+      }, { optionalItem: true, slop: 22 });
+      overlay.appendChild(h);
     }
     function attachPlusHotspot(overlay, item, spot, glowIndex) {
       const h = document.createElement("button");
@@ -5982,11 +6141,12 @@
       pf.appendChild(overlay);
       const pins = collectPagePins(menuIdx);
       pins.forEach(({ item, spot }, pinIdx) => {
-        if (spot.kind === "plus") attachPlusHotspot(overlay, item, spot, pinIdx);
+        if (spot.kind === "ice-cream" || isIceCreamOrderSpot(spot, item)) {
+          attachIceCreamHotspot(overlay, spot, pinIdx);
+        } else if (spot.kind === "plus") attachPlusHotspot(overlay, item, spot, pinIdx);
         else attachPriceCover(overlay, item, spot, false, menuIdx);
       });
       attachDailySoupTag(overlay, menuIdx);
-      attachDessertsIceCreamCover(overlay, menuIdx);
       const relayout = () => layoutPfHotspots(pf);
       if (pf.dataset.nw) relayout();
       else {
@@ -6023,6 +6183,10 @@
 
     function quickAddItem(item) {
       if (!coachDone) return;
+      if (item && isStandaloneIceCreamItem(item)) {
+        openIceCreamSheet();
+        return;
+      }
       if (needsTurkishCoffeeSugar(item.name)) {
         openPopup(item);
         return;
@@ -6229,7 +6393,7 @@
       });
     }
     function enterGuestMenu() {
-      if (coachDone && (spreadKind(cur) === "menu" || spreadKind(cur) === "ice-cream")) return;
+      if (coachDone && spreadKind(cur) === "menu") return;
       if (!dailyDishSeen && hasDailyDishPackage()) {
         if (renderDailyDishScreen()) return;
       }
@@ -6978,6 +7142,27 @@
       if (inp) {
         inp.addEventListener("keydown", e => {
           if (e.key === "Escape") closeLineNoteSheet();
+        });
+      }
+    })();
+
+    (function initIceCreamSheet() {
+      const sheet = document.getElementById("ice-cream-sheet");
+      const cancel = document.getElementById("iceSheetCancel");
+      const confirm = document.getElementById("iceSheetConfirm");
+      const addServing = document.getElementById("iceAddServingBtn");
+      if (cancel) cancel.onclick = function (e) { e.stopPropagation(); closeIceCreamSheet(); };
+      if (confirm) confirm.onclick = function (e) { e.stopPropagation(); confirmIceCreamSheet(); };
+      if (addServing) {
+        addServing.onclick = function (e) {
+          e.stopPropagation();
+          iceSheetServings.push(newIceServing());
+          renderIceCreamSheet();
+        };
+      }
+      if (sheet) {
+        sheet.addEventListener("click", function (e) {
+          if (e.target === sheet) closeIceCreamSheet();
         });
       }
     })();
