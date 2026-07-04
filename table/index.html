@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v122: خانة فوق Günün Çorbası + تفعيل من الإعدادات -->
+  <!-- guest-table-ui-v123: موضع اسم الشوربة من لوحة أزرار المينو -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -2482,8 +2482,8 @@
       color:#1a0a00;
       text-align:center;
       line-height:1.15;
-      /* Anchor sits on top of printed «Günün Çorbası» — box grows upward */
-      transform:translate(-50%,calc(-100% - 3px));
+      /* Same anchor as editor marker — center of placed point */
+      transform:translate(-50%,-50%);
     }
     .daily-soup-tag.is-empty{
       background:rgba(255,252,240,.72);
@@ -3076,7 +3076,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v122</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v123</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -4389,6 +4389,7 @@
     }
     let todaySoupName = "";
     let dailySoupFeatureOn = false;
+    let dailySoupLabelSpot = null;
     function isSoupMenuItem(it) {
       const n = normName(it && it.name);
       return /gunun\s*corbasi|corbasi|corba|soup|شوربة|شوربه/.test(n);
@@ -4440,9 +4441,18 @@
       }
       return 1;
     }
-    function applyDailySoupBanner(name, enabled) {
+    function applyDailySoupBanner(name, enabled, labelSpot) {
       dailySoupFeatureOn = enabled !== false;
       todaySoupName = dailySoupFeatureOn ? String(name == null ? "" : name).trim() : "";
+      if (labelSpot && Number.isFinite(labelSpot.pageIdx) && Number.isFinite(labelSpot.x) && Number.isFinite(labelSpot.y)) {
+        dailySoupLabelSpot = {
+          pageIdx: Math.floor(Number(labelSpot.pageIdx)),
+          x: Math.min(1, Math.max(0, Number(labelSpot.x))),
+          y: Math.min(1, Math.max(0, Number(labelSpot.y))),
+        };
+      } else {
+        dailySoupLabelSpot = null;
+      }
       document.querySelectorAll(".pf").forEach(pf => {
         const overlay = pf.querySelector(".pf-overlay");
         if (overlay) attachDailySoupTag(overlay, menuIdxFromPf(pf));
@@ -4455,22 +4465,33 @@
       const spreadIdx = Number(String(pw.id).replace(/^pw/, ""));
       return menuIdxFromCur(spreadIdx);
     }
+    function resolveSoupLabelPos(menuIdx) {
+      if (dailySoupLabelSpot && dailySoupLabelSpot.pageIdx === menuIdx) {
+        return { x: dailySoupLabelSpot.x, y: dailySoupLabelSpot.y };
+      }
+      /* Fallback until cashier places the label in the menu editor. */
+      const pin = findSoupPinOnPage(menuIdx);
+      if (!pin) return null;
+      const sx = Number(pin.spot.x) || 0.5;
+      const sy = Number(pin.spot.y) || 0.4;
+      const sh = Math.max(Number(pin.spot.h) || 0.04, 0.034);
+      return {
+        x: Math.max(0.08, Math.min(0.92, sx - 0.1)),
+        y: Math.max(0.04, Math.min(0.96, sy + sh * 0.85 + 0.018)),
+      };
+    }
     function attachDailySoupTag(overlay, menuIdx) {
       if (!overlay) return;
       overlay.querySelectorAll(".daily-soup-tag").forEach(el => el.remove());
       if (!dailySoupFeatureOn || menuIdx < 0) return;
-      const pin = findSoupPinOnPage(menuIdx);
-      if (!pin) return;
+      const pos = resolveSoupLabelPos(menuIdx);
+      if (!pos) return;
       const clean = todaySoupName;
       const tag = document.createElement("div");
       tag.className = "daily-soup-tag" + (clean ? "" : " is-empty");
       tag.setAttribute("aria-live", "polite");
-      /* Center over printed dish title (left of +), sit just above «Günün Çorbası». */
-      const sx = Number(pin.spot.x) || 0.5;
-      const sy = Number(pin.spot.y) || 0.4;
-      const sh = Math.max(Number(pin.spot.h) || 0.04, 0.034);
-      tag.dataset.x = String(Math.max(0.08, Math.min(0.92, sx - 0.1)));
-      tag.dataset.y = String(Math.max(0.04, Math.min(0.96, sy + sh * 0.85 + 0.018)));
+      tag.dataset.x = String(pos.x);
+      tag.dataset.y = String(pos.y);
       tag.innerHTML = '<span class="dst-name">' + (clean ? esc(clean) : "&nbsp;") + "</span>";
       overlay.appendChild(tag);
     }
@@ -6911,7 +6932,11 @@
       applyCategoryBarOffset(data.book && data.book.categoryBarOffsetPx);
       refreshPageBrandBanners(bookCacheVer);
       if (data.guestLanguage && window.applyGuestLanguage) window.applyGuestLanguage(data.guestLanguage);
-      applyDailySoupBanner(data.dailySoup, data.dailySoupEnabled !== false);
+      applyDailySoupBanner(
+        data.dailySoup,
+        data.dailySoupEnabled !== false,
+        (data.book && data.book.dailySoupLabelSpot) || null
+      );
       document.title = shopName + " — " + guestT("table") + " " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
       document.getElementById("tblLabel").textContent = section + " · " + guestT("table") + " " + tableNum;
