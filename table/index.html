@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v109: ترحيب الآيفون مثل أندرويد (لوغو + تعليمات + ابدأ) -->
+  <!-- guest-table-ui-v110: أندرويد — بدون تلميح أعلى (موجود بالأسفل) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -906,6 +906,12 @@
     .guest-empty-hint-txt strong{color:#2e7d32;font-weight:900;}
     html.coach-locked .guest-empty-hint,
     html.orders-active .guest-empty-hint{display:none!important;}
+    /* Android/Samsung: swipe + tap hints already on bottom bar — hide top banner */
+    html:not(.ios-inbrowser) #guestEmptyHint,
+    html:not(.ios-inbrowser) .guest-empty-hint,
+    html:not(.ios-inbrowser) #menuTopOrders.guest-hint-only{
+      display:none!important;
+    }
     #menuTopOrders.show{
       display:block;
       pointer-events:auto;
@@ -2858,7 +2864,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v109</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v110</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -5740,7 +5746,13 @@
     }
     function syncGuestPlusNudge() {
       const ordersWrap = document.getElementById("menuTopOrders");
-      const onMenu = coachDone && !navLocked() && cart.length === 0 && spreadKind(cur) === "menu";
+      /* Top tap-hint only on iPhone (bottom swipe bar is hidden there). Android keeps bottom bar only. */
+      const onMenu =
+        coachDone &&
+        !navLocked() &&
+        cart.length === 0 &&
+        spreadKind(cur) === "menu" &&
+        isIosGuestNoLogo();
       if (ordersWrap) {
         ordersWrap.classList.toggle("guest-hint-only", onMenu);
         if (onMenu) ordersWrap.classList.add("show");
