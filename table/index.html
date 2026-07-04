@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v118: iPhone — طلبات صنفان متساويان في كل سطر -->
+  <!-- guest-table-ui-v119: انتقال فوري عند الضغط على المجموعات -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -3036,7 +3036,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v118</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v119</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -4338,7 +4338,8 @@
     }
     function jumpToCategoryPage(menuIdx) {
       if (!coachDone) return;
-      goToPage(spreadIdxForMenuPage(menuIdx), false);
+      /* Instant jump — never flip page-by-page (was ~0.7s × pages). */
+      goToPage(spreadIdxForMenuPage(menuIdx), true);
     }
     function applyCategoryBarOffset(px) {
       if (isIosGuestNoLogo()) px = 0;
@@ -5568,7 +5569,7 @@
         th.className = "th";
         th.id = "th" + i;
         th.innerHTML = '<img src="' + esc(fixImgUrl(imgUrl)) + '" alt="" draggable="false" role="presentation" />';
-        th.onclick = () => goToPage(i + 1, false);
+        th.onclick = () => goToPage(i + 1, true);
         ts.appendChild(th);
       });
       cur = 0;
@@ -5772,13 +5773,29 @@
         return;
       }
       if (instant) {
+        try { cancelDragRaf(); } catch (e) {}
+        dragFlip = null;
         animating = false;
+        setPageFlipping(false);
+        hideBookPad();
         cur = n;
         document.querySelectorAll(".pw").forEach(function (pw) {
-          pw.classList.remove("page-leave", "turn-next", "turn-prev", "turning");
+          pw.classList.remove(
+            "page-leave", "turn-next", "turn-prev", "turning",
+            "page-reveal", "page-flip-top", "page-dragging", "page-current"
+          );
           pw.style.transform = "";
+          try { clearBookTurnInline(pw); } catch (e) {}
         });
-        sync();
+        const targetPw = document.getElementById("pw" + n);
+        const targetPf = targetPw?.querySelector(".pf");
+        if (targetPf) {
+          try { layoutPageFace(targetPf); } catch (e) {}
+        }
+        sync(false);
+        requestAnimationFrame(function () {
+          try { layoutAllHotspots(); } catch (e) {}
+        });
         return;
       }
       goTo(n);
