@@ -1,0 +1,3 @@
+# Public site is for guest QR shell + app downloads only — do not index.
+User-agent: *
+Disallow: /
