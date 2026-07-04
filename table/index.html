@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v115: خروج كامل بعد الطلب — إغلاق الصفحة والعودة للهاتف -->
+  <!-- guest-table-ui-v116: بدون ملاحظة عامة + تقييم المطعم في صفحة الخروج -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -282,7 +282,7 @@
         return !!(el&&el.closest&&el.closest(
           "#cart-panel,#menu-panel,#line-note-sheet,#item-popup,"+
           "#cart-items,#menu-list,#menuSearch,textarea,input,select,"+
-          ".ci-note,.note,#noteInp,#lineNoteInp"
+          ".ci-note,.note,#noteInp,#lineNoteInp,#okFeedbackMsg,#okFeedbackForm"
         ));
       }
       function blockScroll(e){
@@ -686,19 +686,64 @@
 
     #okScreen{
       position:fixed;inset:0;z-index:850;display:none;align-items:center;justify-content:center;
-      background:#0d0500;text-align:center;padding:24px;
+      background:linear-gradient(180deg,#fffaf0 0%,#fff3d6 50%,#ffe9b8 100%);
+      text-align:center;padding:24px;
+      overflow-y:auto;
     }
     #okScreen.show{display:flex;}
+    #okScreen > div{width:min(360px,100%);margin:auto;}
     .ok-ring{
       width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
-      border:2px solid #c8860a;box-shadow:0 0 30px rgba(200,134,10,.35);
+      border:2px solid #c8860a;box-shadow:0 0 30px rgba(200,134,10,.28);
+      background:rgba(255,255,255,.7);
     }
-    .ok-actions{display:flex;flex-direction:column;gap:10px;max-width:260px;margin:18px auto 0;width:100%;}
+    #okScreen h2,#okScreen #i18n-ok-title{color:#8a5a08!important;}
+    #okScreen #okDetail{color:rgba(120,80,20,.7)!important;}
+    #okScreen #i18n-ok-ask{color:#a66b08!important;}
+    .ok-feedback{
+      margin:18px 0 0;padding:14px 14px 12px;
+      border-radius:16px;border:1.5px solid rgba(200,134,10,.4);
+      background:linear-gradient(180deg,#fffef8,#fff6dc);
+      box-shadow:0 4px 16px rgba(160,100,20,.1);
+    }
+    .ok-feedback-text{
+      font-size:13px;line-height:1.55;font-weight:700;color:#5a3a08;margin:0 0 12px;
+    }
+    .ok-feedback-btn{
+      width:100%;border:none;border-radius:12px;padding:12px 14px;
+      background:linear-gradient(135deg,#c8860a,#f0b820);
+      color:#1a0a00;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;
+      box-shadow:0 3px 12px rgba(200,134,10,.28);
+    }
+    .ok-feedback-form{display:none;margin-top:12px;text-align:right;}
+    .ok-feedback-form.open{display:block;}
+    .ok-feedback-form textarea{
+      width:100%;box-sizing:border-box;min-height:88px;resize:vertical;
+      border:1.5px solid #e6a817;border-radius:12px;padding:10px 12px;
+      background:#fffef8;color:#2a1600;font-size:13px;font-weight:600;font-family:inherit;
+      -webkit-user-select:text;user-select:text;
+    }
+    .ok-feedback-stars{display:flex;justify-content:center;gap:8px;margin:0 0 10px;}
+    .ok-feedback-stars button{
+      border:none;background:transparent;font-size:26px;cursor:pointer;opacity:.35;line-height:1;
+      filter:grayscale(.2);
+    }
+    .ok-feedback-stars button.on{opacity:1;filter:none;}
+    .ok-feedback-send{
+      width:100%;margin-top:8px;border:none;border-radius:12px;padding:11px;
+      background:linear-gradient(135deg,#c8860a,#f0b820);
+      color:#1a0a00;font-size:14px;font-weight:900;cursor:pointer;font-family:inherit;
+    }
+    .ok-feedback-thanks{
+      display:none;margin-top:10px;font-size:13px;font-weight:800;color:#2e7d32;
+    }
+    .ok-feedback-thanks.show{display:block;}
+    .ok-actions{display:flex;flex-direction:column;gap:10px;max-width:360px;margin:18px auto 0;width:100%;}
     .ok-actions .order-btn{margin:0;max-width:none;}
     .ok-btn-exit{
       background:transparent!important;
-      border:1.5px solid rgba(200,134,10,.45)!important;
-      color:#f0a820!important;
+      border:1.5px solid rgba(200,134,10,.55)!important;
+      color:#8a5a08!important;
       box-shadow:none!important;
     }
 
@@ -3002,13 +3047,29 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v115</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v116</p></div></div>
 
   <div id="okScreen">
     <div>
       <div class="ok-ring"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c8860a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
       <h2 style="font-size:19px;margin-bottom:8px" id="i18n-ok-title">شكراً! ✓</h2>
       <p id="okDetail" style="font-size:13px;color:rgba(200,134,10,.65);line-height:1.6"></p>
+      <div class="ok-feedback" id="okFeedbackBox">
+        <p class="ok-feedback-text" id="i18n-ok-feedback">رأيك يهمّنا — إن كان لديك ملاحظة على الخدمة أو شكوى، ساعدنا لنحسّن أداء المطعم.</p>
+        <button type="button" class="ok-feedback-btn" id="okFeedbackOpen">شاركنا رأيك</button>
+        <div class="ok-feedback-form" id="okFeedbackForm">
+          <div class="ok-feedback-stars" id="okFeedbackStars" aria-label="تقييم">
+            <button type="button" data-star="1" aria-label="1">★</button>
+            <button type="button" data-star="2" aria-label="2">★</button>
+            <button type="button" data-star="3" aria-label="3">★</button>
+            <button type="button" data-star="4" aria-label="4">★</button>
+            <button type="button" data-star="5" aria-label="5">★</button>
+          </div>
+          <textarea id="okFeedbackMsg" rows="3" maxlength="500" placeholder="اكتب ملاحظتك أو شكواك هنا…"></textarea>
+          <button type="button" class="ok-feedback-send" id="okFeedbackSend">إرسال التقييم</button>
+          <p class="ok-feedback-thanks" id="okFeedbackThanks">شكراً لمساعدتك — وصلنا رأيك.</p>
+        </div>
+      </div>
       <p id="i18n-ok-ask" style="font-size:14px;color:rgba(240,168,32,.85);margin-top:14px;font-weight:700">هل لديك طلب إضافي؟</p>
       <div class="ok-actions">
         <button type="button" class="order-btn" id="againBtn">طلب إضافي</button>
@@ -3182,10 +3243,6 @@
     <div id="cart-items"></div>
     <div class="cart-ft">
       <div class="total-row"><span id="i18n-cart-total-label">المجموع</span><span class="tv" id="total">0 ₺</span></div>
-      <div class="note-wrap">
-        <textarea class="note" id="noteInp" rows="2" placeholder="ملاحظة عامة للطلب (اختياري)…" maxlength="200"></textarea>
-        <button type="button" class="note-done-btn" id="noteDoneBtn">تم</button>
-      </div>
       <button type="button" class="order-btn" id="sendBtn">✓ تأكيد وإرسال للمطبخ</button>
     </div>
   </div>
@@ -3266,7 +3323,7 @@
       menuSub: "ابحث واطلب من أي صفحة",
       menuSearch: "ابحث… Türk kahve, menemen, pasta…",
       cartTitle: "راجع طلبك",
-      cartSub: "عدّل الكمية وأضف ملاحظة تحت كل صنف",
+      cartSub: "عدّل الكمية وأضف ملاحظة لكل صنف إن رغبت",
       cartTotal: "المجموع",
       cartSend: "✓ تأكيد وإرسال للمطبخ",
       cartClearAll: "مسح السلة بالكامل",
@@ -3289,6 +3346,13 @@
       againBtn: "طلب إضافي",
       exitBtn: "خروج",
       exitDone: "شكراً لزيارتك — تم إنهاء الطلب",
+      okFeedback:
+        "رأيك يهمّنا — إن كان لديك ملاحظة على الخدمة أو شكوى، ساعدنا لنحسّن أداء المطعم.",
+      okFeedbackOpen: "شاركنا رأيك",
+      okFeedbackPh: "اكتب ملاحظتك أو شكواك هنا…",
+      okFeedbackSend: "إرسال التقييم",
+      okFeedbackThanks: "شكراً لمساعدتك — وصلنا رأيك.",
+      okFeedbackErr: "تعذّر الإرسال — حاول مرة أخرى",
       table: "طاولة",
       items: "أصناف",
       orderTotal: "المجموع",
@@ -3373,7 +3437,7 @@
       menuSub: "Ara ve her sayfadan sipariş ver",
       menuSearch: "Ara… Türk kahve, menemen, pasta…",
       cartTitle: "Siparişini kontrol et",
-      cartSub: "Miktarı düzenle, her ürünün altına not yaz",
+      cartSub: "Miktarı düzenle, istersen her ürüne not ekle",
       cartTotal: "Toplam",
       cartSend: "✓ Onayla ve mutfağa gönder",
       cartClearAll: "Sepeti temizle",
@@ -3396,6 +3460,13 @@
       againBtn: "Ek sipariş",
       exitBtn: "Çıkış",
       exitDone: "Teşekkürler — sipariş tamamlandı",
+      okFeedback:
+        "Görüşünüz bizim için önemli — hizmet hakkında notunuz veya şikayetiniz varsa restoranımızı geliştirmemize yardımcı olun.",
+      okFeedbackOpen: "Görüşünüzü paylaşın",
+      okFeedbackPh: "Notunuzu veya şikayetinizi yazın…",
+      okFeedbackSend: "Değerlendirmeyi gönder",
+      okFeedbackThanks: "Teşekkürler — görüşünüz bize ulaştı.",
+      okFeedbackErr: "Gönderilemedi — tekrar deneyin",
       table: "Masa",
       items: "ürün",
       orderTotal: "Toplam",
@@ -3480,7 +3551,7 @@
       menuSub: "Search and order from any page",
       menuSearch: "Search… coffee, pasta…",
       cartTitle: "Review your order",
-      cartSub: "Edit qty and add a note under each item",
+      cartSub: "Edit qty and add a note per item if you like",
       cartTotal: "Total",
       cartSend: "✓ Confirm & send to kitchen",
       cartClearAll: "Clear cart",
@@ -3503,6 +3574,13 @@
       againBtn: "Order more",
       exitBtn: "Exit",
       exitDone: "Thank you — order complete",
+      okFeedback:
+        "Your opinion matters — if you have feedback or a complaint, help us improve the restaurant.",
+      okFeedbackOpen: "Share your feedback",
+      okFeedbackPh: "Write your note or complaint here…",
+      okFeedbackSend: "Send feedback",
+      okFeedbackThanks: "Thank you — we received your feedback.",
+      okFeedbackErr: "Could not send — try again",
       table: "Table",
       items: "items",
       orderTotal: "Total",
@@ -3571,13 +3649,16 @@
       "i18n-cart-sub": "cartSub",
       "i18n-cart-total-label": "cartTotal",
       "sendBtn": "cartSend",
-      "noteDoneBtn": "noteDone",
       "popupClose": "popupClose",
       "popupAdd": "popupAdd",
       "i18n-ok-title": "okTitle",
       "againBtn": "againBtn",
       "exitBtn": "exitBtn",
       "i18n-ok-ask": "okAsk",
+      "i18n-ok-feedback": "okFeedback",
+      "okFeedbackOpen": "okFeedbackOpen",
+      "okFeedbackSend": "okFeedbackSend",
+      "okFeedbackThanks": "okFeedbackThanks",
     };
     Object.keys(htmlIds).forEach(function (id) {
       var el = document.getElementById(id);
@@ -3586,8 +3667,8 @@
       if (htmlIds[id].indexOf("guide") === 0 || htmlIds[id].indexOf("coach") === 0 || htmlIds[id] === "tapPlusHint" || htmlIds[id] === "tapPlusNudge") el.innerHTML = val;
       else el.textContent = val;
     });
-    var note = document.getElementById("noteInp");
-    if (note) note.placeholder = t("notePh");
+    var fbMsg = document.getElementById("okFeedbackMsg");
+    if (fbMsg) fbMsg.placeholder = t("okFeedbackPh");
     var lineNoteTitle = document.getElementById("lineNoteTitle");
     if (lineNoteTitle) lineNoteTitle.textContent = t("lineNoteTitle");
     var lineNoteInp = document.getElementById("lineNoteInp");
@@ -3645,8 +3726,6 @@
       document.getElementById("menu-panel")?.classList.remove("open");
       document.getElementById("overlay")?.classList.remove("show");
       document.getElementById("item-popup")?.classList.remove("show");
-      const note = document.getElementById("noteInp");
-      if (note) note.value = "";
       if (typeof updateBadge === "function") updateBadge();
     }
     const INSTANT_PAGE_TURN = false;
@@ -6084,15 +6163,6 @@
       }
       closeCart();
     };
-    const noteDoneBtn = document.getElementById("noteDoneBtn");
-    if (noteDoneBtn) {
-      noteDoneBtn.onclick = e => {
-        e.stopPropagation();
-        const inp = document.getElementById("noteInp");
-        if (inp) inp.blur();
-      };
-    }
-
     function removeLine(idx) {
       if (idx < 0 || idx >= cart.length) return;
       const name = cart[idx].item.name;
@@ -6315,12 +6385,11 @@
       sending = true;
       syncSceneHud();
       renderCart();
-      const note = document.getElementById("noteInp").value || "";
       try {
         const res = await fetch(apiBase + "/api/guest/v1/orders", {
           method: "POST", headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            token: TOKEN, note: note.trim() || undefined,
+            token: TOKEN,
             items: cart.map(l => ({
               menuItemId: l.item.id,
               name: l.item.name,
@@ -6340,6 +6409,7 @@
           updateBadge();
           closeCart();
           document.getElementById("okDetail").innerHTML = esc(guestT("okDetail")) + "<br/><strong style='color:#c8860a'>" + esc(shopName) + "</strong>";
+          resetOkFeedbackUi();
           document.getElementById("okScreen").classList.add("show");
         } else if (data.error === "table_not_active") {
           alert(guestT("errTable"));
@@ -6353,10 +6423,90 @@
       syncSceneHud();
       renderCart();
     }
+    let feedbackRating = 0;
+    let feedbackSent = false;
+    function resetOkFeedbackUi() {
+      feedbackRating = 0;
+      feedbackSent = false;
+      const form = document.getElementById("okFeedbackForm");
+      const openBtn = document.getElementById("okFeedbackOpen");
+      const thanks = document.getElementById("okFeedbackThanks");
+      const msg = document.getElementById("okFeedbackMsg");
+      const send = document.getElementById("okFeedbackSend");
+      form?.classList.remove("open");
+      if (openBtn) openBtn.style.display = "";
+      thanks?.classList.remove("show");
+      if (msg) msg.value = "";
+      if (send) {
+        send.disabled = false;
+        send.textContent = guestT("okFeedbackSend");
+      }
+      document.querySelectorAll("#okFeedbackStars button").forEach(b => b.classList.remove("on"));
+    }
+    function setFeedbackStars(n) {
+      feedbackRating = n;
+      document.querySelectorAll("#okFeedbackStars button").forEach(b => {
+        b.classList.toggle("on", Number(b.dataset.star) <= n);
+      });
+    }
+    document.getElementById("okFeedbackOpen")?.addEventListener("click", () => {
+      const form = document.getElementById("okFeedbackForm");
+      const openBtn = document.getElementById("okFeedbackOpen");
+      form?.classList.add("open");
+      if (openBtn) openBtn.style.display = "none";
+      setTimeout(() => {
+        try { document.getElementById("okFeedbackMsg")?.focus(); } catch (_) {}
+      }, 80);
+    });
+    document.querySelectorAll("#okFeedbackStars button").forEach(btn => {
+      btn.addEventListener("click", () => setFeedbackStars(Number(btn.dataset.star) || 0));
+    });
+    document.getElementById("okFeedbackSend")?.addEventListener("click", async () => {
+      if (feedbackSent) return;
+      const msgEl = document.getElementById("okFeedbackMsg");
+      const sendFb = document.getElementById("okFeedbackSend");
+      const message = String(msgEl?.value || "").trim();
+      if (message.length < 2 && feedbackRating < 1) {
+        try { msgEl?.focus(); } catch (_) {}
+        return;
+      }
+      if (sendFb) {
+        sendFb.disabled = true;
+        sendFb.textContent = "…";
+      }
+      try {
+        const res = await fetch(apiBase + "/api/guest/v1/feedback", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            token: TOKEN,
+            message: message || guestT("okFeedbackOpen"),
+            rating: feedbackRating || undefined,
+          }),
+        });
+        let data = {};
+        try { data = await res.json(); } catch (_) {}
+        if (data.ok) {
+          feedbackSent = true;
+          document.getElementById("okFeedbackForm")?.classList.remove("open");
+          document.getElementById("okFeedbackThanks")?.classList.add("show");
+        } else {
+          throw new Error("fail");
+        }
+      } catch (_) {
+        if (sendFb) {
+          sendFb.disabled = false;
+          sendFb.textContent = guestT("okFeedbackSend");
+        }
+        showToast(guestT("okFeedbackErr"));
+      }
+    });
+
     document.getElementById("sendBtn").onclick = sendOrder;
     document.getElementById("againBtn").onclick = () => {
       done = false;
       document.getElementById("okScreen").classList.remove("show");
+      resetOkFeedbackUi();
       updateBadge();
       if (bookSpread.length > 1) goToPage(1, true);
     };
