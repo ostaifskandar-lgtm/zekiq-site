@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v113: إصلاح كتابة الملاحظات في سلة الإرسال -->
+  <!-- guest-table-ui-v114: سلة ذهبية مشرقة — بدون مسح السلة + زر تم للملاحظة -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -2609,29 +2609,51 @@
       background:rgba(200,134,10,.08);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;
     }
     .sugar-opt.selected{border-color:#f0a820;background:rgba(240,168,32,.22);box-shadow:0 0 0 2px rgba(240,168,32,.18);}
-    .ci-variant{color:rgba(255,224,130,.82);font-size:11px;margin-top:3px;font-weight:700;}
 
     #cart-panel{
       position:fixed;top:0;right:-105%;width:min(390px,100vw);height:var(--app-h,100dvh);
-      background:linear-gradient(180deg,#0d0500,#1f0c00);border-left:1.5px solid #c8860a;z-index:1005;
+      background:linear-gradient(180deg,#fffaf0 0%,#fff3d6 42%,#ffe9b8 100%);
+      border-left:2px solid #c8860a;z-index:1005;
       transition:right .4s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;
       pointer-events:auto;
+      box-shadow:-8px 0 28px rgba(120,70,10,.18);
     }
     #cart-panel.open{right:0;}
-    .cart-hd{padding:18px 20px;border-bottom:1px solid rgba(200,134,10,.25);display:flex;align-items:center;justify-content:space-between;}
-    .cart-title{color:#c8860a;font-size:19px;font-weight:800;}
-    .close-c{background:rgba(200,134,10,.15);border:1px solid #c8860a;border-radius:50%;width:34px;height:34px;color:#c8860a;font-size:18px;cursor:pointer;}
+    .cart-hd{
+      padding:18px 20px;border-bottom:1.5px solid rgba(200,134,10,.35);
+      display:flex;align-items:center;justify-content:space-between;
+      background:linear-gradient(180deg,#fff8e4,#ffeec0);
+    }
+    .cart-title{color:#8a5a08;font-size:19px;font-weight:800;}
+    #cart-panel .menu-sub{color:rgba(120,80,20,.72)!important;}
+    .close-c{background:rgba(200,134,10,.18);border:1.5px solid #c8860a;border-radius:50%;width:34px;height:34px;color:#8a5a08;font-size:18px;cursor:pointer;}
     #cart-items{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
-    .ci{background:rgba(200,134,10,.08);border:1px solid rgba(200,134,10,.25);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;align-items:stretch;gap:8px;}
+    .ci{
+      background:linear-gradient(180deg,#fffef8,#fff6dc);
+      border:1.5px solid rgba(200,134,10,.4);
+      border-radius:14px;padding:12px 14px;
+      display:flex;flex-direction:column;align-items:stretch;gap:8px;
+      box-shadow:0 2px 10px rgba(160,100,20,.1);
+    }
     .ci-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
     .ci-body{flex:1;min-width:0;}
-    .ci-name{color:#fff;font-size:13px;font-weight:700;}
-    .ci-price{color:#c8860a;font-size:13px;margin-top:2px;}
+    .ci-name{color:#2a1600;font-size:13px;font-weight:800;}
+    .ci-price{color:#a66b08;font-size:13px;margin-top:2px;font-weight:800;}
     .ci-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
     .ci-qty{display:flex;align-items:center;gap:8px;}
-    .ci-btn{background:rgba(200,134,10,.2);border:1px solid #c8860a;border-radius:50%;width:28px;height:28px;color:#c8860a;font-size:16px;cursor:pointer;}
-    .ci-del{background:rgba(180,40,40,.15);border:1px solid rgba(220,80,80,.55);border-radius:10px;width:34px;height:34px;color:#ff8a8a;font-size:16px;cursor:pointer;line-height:1;}
-    .ci-n{color:#fff;font-size:15px;font-weight:800;min-width:18px;text-align:center;}
+    .ci-btn{background:linear-gradient(145deg,#ffe082,#e6a817);border:1px solid #c8860a;border-radius:50%;width:28px;height:28px;color:#3a2200;font-size:16px;cursor:pointer;font-weight:900;}
+    .ci-del{background:rgba(180,40,40,.1);border:1px solid rgba(200,80,80,.45);border-radius:10px;width:34px;height:34px;color:#b83232;font-size:16px;cursor:pointer;line-height:1;}
+    .ci-n{color:#3a2200;font-size:15px;font-weight:900;min-width:18px;text-align:center;}
+    .ci-note-wrap{display:flex;flex-direction:column;gap:6px;}
+    .ci-note-done,.note-done-btn{
+      align-self:flex-end;
+      border:none;border-radius:10px;padding:8px 16px;
+      background:linear-gradient(135deg,#c8860a,#f0a820);
+      color:#1a0a00;font-size:13px;font-weight:900;cursor:pointer;font-family:inherit;
+      box-shadow:0 2px 8px rgba(200,134,10,.28);
+    }
+    .ci-note-done:active,.note-done-btn:active{transform:scale(.97);}
+    .ci-variant{color:#8a5a08!important;font-size:11px;margin-top:3px;font-weight:700;}
     .ci-note{
       width:100%;
       border:1.5px solid #e6a817;
@@ -2659,17 +2681,18 @@
       background:#fffef8;
       box-shadow:0 0 0 3px rgba(230,168,23,.28),inset 0 1px 0 rgba(255,255,255,.95);
     }
-    .cart-clear-btn{
-      display:block;width:calc(100% - 28px);margin:0 14px 10px;
-      background:rgba(180,40,40,.12);border:1px solid rgba(220,80,80,.45);color:#ff9a9a;
-      border-radius:12px;padding:10px 14px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;
+    .cart-clear-btn,.order-chip-clear{display:none!important;}
+    .empty-c{text-align:center;color:rgba(120,80,20,.55);padding:50px 20px;}
+    .empty-c small{color:rgba(120,80,20,.45);}
+    .cart-ft{
+      padding:16px 20px calc(16px + env(safe-area-inset-bottom,0px));
+      border-top:1.5px solid rgba(200,134,10,.35);
+      background:linear-gradient(180deg,#fff6dc,#ffe9b8);
     }
-    .cart-clear-btn[hidden]{display:none;}
-    .empty-c{text-align:center;color:rgba(200,134,10,.4);padding:50px 20px;}
-    .cart-ft{padding:18px 20px;border-top:1px solid rgba(200,134,10,.25);}
-    .total-row{display:flex;justify-content:space-between;margin-bottom:14px;}
-    .total-row .tv{color:#c8860a;font-weight:900;font-size:18px;}
-    .order-btn{width:100%;background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:900;color:#0d0500;cursor:pointer;}
+    .total-row{display:flex;justify-content:space-between;margin-bottom:12px;color:#5a3a08;font-weight:800;}
+    .total-row .tv{color:#8a5a08;font-weight:900;font-size:18px;}
+    .note-wrap{display:flex;flex-direction:column;gap:6px;margin:0 0 12px;}
+    .order-btn{width:100%;background:linear-gradient(135deg,#c8860a,#f0b820);border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:900;color:#1a0a00;cursor:pointer;box-shadow:0 4px 14px rgba(200,134,10,.3);}
     .order-btn:disabled{opacity:.45;}
     .note{
       width:100%;margin:0 0 12px;resize:none;border-radius:12px;
@@ -2979,7 +3002,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v113</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v114</p></div></div>
 
   <div id="okScreen">
     <div>
@@ -3137,7 +3160,7 @@
       <textarea id="lineNoteInp" rows="3" maxlength="120" placeholder="ملاحظة لهذا الصنف (بدون بصل، نصف محمص…)"></textarea>
       <div class="popup-actions">
         <button type="button" class="popup-close" id="lineNoteCancel">إلغاء</button>
-        <button type="button" class="popup-add" id="lineNoteSave">حفظ</button>
+        <button type="button" class="popup-add" id="lineNoteSave">تم</button>
       </div>
     </div>
   </div>
@@ -3157,10 +3180,12 @@
       <button type="button" class="close-c" id="closeCart">×</button>
     </div>
     <div id="cart-items"></div>
-    <button type="button" class="cart-clear-btn" id="clearCartBtn" hidden>مسح السلة بالكامل</button>
     <div class="cart-ft">
       <div class="total-row"><span id="i18n-cart-total-label">المجموع</span><span class="tv" id="total">0 ₺</span></div>
-      <textarea class="note" id="noteInp" rows="2" placeholder="ملاحظة عامة للطلب (اختياري)…" maxlength="200"></textarea>
+      <div class="note-wrap">
+        <textarea class="note" id="noteInp" rows="2" placeholder="ملاحظة عامة للطلب (اختياري)…" maxlength="200"></textarea>
+        <button type="button" class="note-done-btn" id="noteDoneBtn">تم</button>
+      </div>
       <button type="button" class="order-btn" id="sendBtn">✓ تأكيد وإرسال للمطبخ</button>
     </div>
   </div>
@@ -3245,12 +3270,13 @@
       cartTotal: "المجموع",
       cartSend: "✓ تأكيد وإرسال للمطبخ",
       cartClearAll: "مسح السلة بالكامل",
+      noteDone: "تم",
       cartDelete: "حذف",
       toastCleared: "تم مسح السلة",
       notePh: "ملاحظة عامة للطلب (اختياري)…",
       itemNotePh: "ملاحظة لهذا الصنف (بدون بصل، نصف محمص…)",
       lineNoteTitle: "ملاحظة للصنف",
-      lineNoteSave: "حفظ",
+      lineNoteSave: "تم",
       popupClose: "إلغاء",
       popupAdd: "أضف للسلة",
       sugarChoose: "اختر مستوى السكر",
@@ -3351,12 +3377,13 @@
       cartTotal: "Toplam",
       cartSend: "✓ Onayla ve mutfağa gönder",
       cartClearAll: "Sepeti temizle",
+      noteDone: "Tamam",
       cartDelete: "Sil",
       toastCleared: "Sepet temizlendi",
       notePh: "Genel sipariş notu (isteğe bağlı)…",
       itemNotePh: "Bu ürün için not (soğansız, az pişmiş…)",
       lineNoteTitle: "Ürün notu",
-      lineNoteSave: "Kaydet",
+      lineNoteSave: "Tamam",
       popupClose: "İptal",
       popupAdd: "Sepete ekle",
       sugarChoose: "Şeker tercihini seçin",
@@ -3457,12 +3484,13 @@
       cartTotal: "Total",
       cartSend: "✓ Confirm & send to kitchen",
       cartClearAll: "Clear cart",
+      noteDone: "Done",
       cartDelete: "Delete",
       toastCleared: "Cart cleared",
       notePh: "General order note (optional)…",
       itemNotePh: "Note for this item (no onion, medium rare…)",
       lineNoteTitle: "Item note",
-      lineNoteSave: "Save",
+      lineNoteSave: "Done",
       popupClose: "Cancel",
       popupAdd: "Add to cart",
       sugarChoose: "Choose sugar level",
@@ -3543,7 +3571,7 @@
       "i18n-cart-sub": "cartSub",
       "i18n-cart-total-label": "cartTotal",
       "sendBtn": "cartSend",
-      "clearCartBtn": "cartClearAll",
+      "noteDoneBtn": "noteDone",
       "popupClose": "popupClose",
       "popupAdd": "popupAdd",
       "i18n-ok-title": "okTitle",
@@ -5959,16 +5987,13 @@
               <span class="order-chip-price">${moneyPlain(Number(l.item.price) * qty)}</span>
             </div>
           </div>`;
-        }).join("") +
-          `<button type="button" class="order-chip-clear" id="sceneClearCart">${esc(guestT("cartClearAll"))}</button>`;
+        }).join("");
         listEl.querySelectorAll("[data-dec-idx]").forEach(btn => {
           btn.onclick = e => { e.stopPropagation(); chQtyLine(Number(btn.dataset.decIdx), -1); };
         });
         listEl.querySelectorAll("[data-del-idx]").forEach(btn => {
           btn.onclick = e => { e.stopPropagation(); removeLine(Number(btn.dataset.delIdx)); };
         });
-        const sceneClear = listEl.querySelector("#sceneClearCart");
-        if (sceneClear) sceneClear.onclick = e => { e.stopPropagation(); clearCart(); };
         bindOrderLineNotePress(listEl);
         syncOrderListView(listEl);
       }
@@ -6059,7 +6084,14 @@
       }
       closeCart();
     };
-    document.getElementById("clearCartBtn").onclick = clearCart;
+    const noteDoneBtn = document.getElementById("noteDoneBtn");
+    if (noteDoneBtn) {
+      noteDoneBtn.onclick = e => {
+        e.stopPropagation();
+        const inp = document.getElementById("noteInp");
+        if (inp) inp.blur();
+      };
+    }
 
     function removeLine(idx) {
       if (idx < 0 || idx >= cart.length) return;
@@ -6077,17 +6109,44 @@
       showToast("🗑 " + guestT("toastCleared"));
     }
 
+    function finishNoteField(inp) {
+      if (!inp) return;
+      const idx = Number(inp.dataset.lineIdx);
+      if (Number.isFinite(idx) && cart[idx] && !needsTurkishCoffeeSugar(cart[idx].item.name)) {
+        cart[idx].note = String(inp.value || "").trim().slice(0, 120);
+      }
+      inp.blur();
+      const wrap = inp.closest(".ci");
+      const variant = wrap?.querySelector(".ci-variant");
+      const note = cart[idx]?.note;
+      if (wrap && Number.isFinite(idx)) {
+        if (note) {
+          if (variant) variant.textContent = note;
+          else {
+            const body = wrap.querySelector(".ci-body");
+            if (body) {
+              const v = document.createElement("div");
+              v.className = "ci-variant";
+              v.textContent = note;
+              const price = body.querySelector(".ci-price");
+              if (price) body.insertBefore(v, price);
+              else body.appendChild(v);
+            }
+          }
+        } else if (variant) {
+          variant.remove();
+        }
+      }
+    }
     function renderCart() {
       const c = document.getElementById("cart-items");
-      const clearBtn = document.getElementById("clearCartBtn");
       if (!cart.length) {
         c.innerHTML = '<div class="empty-c">🍽<br/>' + esc(guestT("emptyCart")) + '<br/><small>' + esc(guestT("emptyCartHint")) + '</small></div>';
         document.getElementById("total").textContent = "0 ₺";
         document.getElementById("sendBtn").disabled = true;
-        if (clearBtn) clearBtn.hidden = true;
         return;
       }
-      if (clearBtn) clearBtn.hidden = false;
+      const doneLabel = esc(guestT("noteDone"));
       c.innerHTML = cart.map((l, idx) => `
         <div class="ci">
           <div class="ci-row">
@@ -6101,7 +6160,7 @@
               <button type="button" class="ci-del" data-del-idx="${idx}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
             </div>
           </div>
-          ${needsTurkishCoffeeSugar(l.item.name) ? "" : `<textarea class="ci-note" data-line-idx="${idx}" rows="2" maxlength="120" placeholder="${esc(guestT("itemNotePh"))}">${esc(l.note || "")}</textarea>`}
+          ${needsTurkishCoffeeSugar(l.item.name) ? "" : `<div class="ci-note-wrap"><textarea class="ci-note" data-line-idx="${idx}" rows="2" maxlength="120" placeholder="${esc(guestT("itemNotePh"))}">${esc(l.note || "")}</textarea><button type="button" class="ci-note-done" data-note-done="${idx}">${doneLabel}</button></div>`}
         </div>`).join("");
       document.getElementById("total").textContent = money(cart.reduce((s, l) => s + Number(l.item.price) * l.qty, 0));
       document.getElementById("sendBtn").disabled = sending;
@@ -6119,6 +6178,14 @@
           const line = cart[Number(inp.dataset.lineIdx)];
           if (line && !needsTurkishCoffeeSugar(line.item.name)) line.note = inp.value.slice(0, 120);
         });
+      });
+      c.querySelectorAll("[data-note-done]").forEach(btn => {
+        btn.onclick = e => {
+          e.stopPropagation();
+          const idx = Number(btn.dataset.noteDone);
+          const inp = c.querySelector('.ci-note[data-line-idx="' + idx + '"]');
+          finishNoteField(inp);
+        };
       });
     }
     function chQtyLine(idx, d) {
