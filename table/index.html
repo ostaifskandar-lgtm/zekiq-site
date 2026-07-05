@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v131: daily dish price + menu overlay -->
+  <!-- guest-table-ui-v133: faster 4G boot + load screen never stuck -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -71,6 +71,7 @@
         root.style.setProperty("--vv-top",Math.round(top)+"px");
         root.style.setProperty("--vv-left",Math.round(left)+"px");
         if(typeof updateIosCompactTip==="function") updateIosCompactTip();
+        if(typeof window.__zekiqResetIosMenuPane==="function") window.__zekiqResetIosMenuPane();
         scheduleRelayout();
       }
       function hideSafariChrome(){
@@ -447,12 +448,15 @@
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .order-chip-list{
       --order-line-h:32px;
       --orders-rows-cap:6;
+      --orders-list-cap:calc(var(--order-line-h) * var(--orders-rows-cap) + 4px * 5 + 12px);
       display:grid;
       grid-template-columns:minmax(0,1fr) minmax(0,1fr);
       grid-auto-flow:row;
       gap:4px 6px;
       align-content:start;
-      max-height:calc(var(--order-line-h) * var(--orders-rows-cap) + 4px * 5 + 12px);
+      flex:1 1 auto;
+      min-height:0;
+      max-height:min(var(--orders-list-max-h, var(--orders-list-cap)), var(--orders-list-cap));
       height:auto;
       padding:4px 8px 6px;
       overflow-x:hidden;
@@ -524,36 +528,50 @@
       display:none!important;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuStage{
-      display:flex;
-      flex-direction:column;
+      display:block;
       flex:1 1 0;
       min-height:0;
       height:0;
       padding-top:calc(44px + env(safe-area-inset-top,0px))!important;
     }
+    /* iPhone: orders scroll in top band; menu pane locked at bottom (no shrink on order). */
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders{
-      position:relative;
-      top:auto;
-      left:auto;
-      right:auto;
-      flex-shrink:0;
-      width:100%;
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      bottom:var(--ios-menu-pane-h, 56%);
       z-index:30;
+      width:100%;
       padding-top:0;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopOrders:not(.show){
       display:none!important;
     }
-    html.ios-inbrowser:not(.ios-standalone) #menuBookWrap{
-      position:relative;
-      flex:1 1 0;
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders.show{
+      animation:none;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuTopOrders .scene-order-panel{
+      flex:1 1 auto;
       min-height:0;
-      height:auto;
-      top:auto;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+    html.ios-inbrowser:not(.ios-standalone) #menuBookWrap{
+      position:absolute;
       left:0;
       right:0;
-      bottom:auto;
+      bottom:0;
+      top:auto;
       width:100%;
+      height:var(--ios-menu-pane-h, 56%);
+      min-height:0;
+      flex:none;
       padding-bottom:0;
       grid-template-rows:1fr;
     }
@@ -2505,17 +2523,9 @@
       min-width:4.5em;
     }
     #dailyDishScreen{
-      display:none;
-      position:fixed;inset:0;z-index:970;
-      align-items:flex-end;justify-content:center;
-      pointer-events:none;
-      padding:0 14px max(14px,env(safe-area-inset-bottom));
-      background:transparent;
-    }
-    #dailyDishScreen.show{
-      display:flex;
-      pointer-events:auto;
-      background:rgba(0,0,0,.38);
+      display:none!important;
+      visibility:hidden!important;
+      pointer-events:none!important;
     }
     .dd-card{
       width:min(420px,100%);
@@ -2604,6 +2614,59 @@
       cursor:pointer;
     }
     .dd-continue:active{transform:scale(.98);}
+    /* Daily dish — full book page (not overlay on another page) */
+    .pf.book-daily-dish{
+      background:linear-gradient(180deg,#fff8e8 0%,#f5e0b0 48%,#ebe4d3 100%);
+      color:#1a0a00;
+    }
+    .book-daily-dish-inner{
+      width:100%;height:100%;box-sizing:border-box;
+      display:flex;flex-direction:column;align-items:stretch;
+      padding:clamp(14px,4vw,22px) clamp(14px,4.5vw,24px) clamp(16px,4vw,22px);
+      overflow-y:auto;-webkit-overflow-scrolling:touch;
+    }
+    .dd-page-kicker{
+      margin:0 0 4px;text-align:center;
+      font-size:12px;font-weight:800;letter-spacing:.08em;
+      color:#8a5a10;opacity:.9;
+    }
+    .dd-page-title{
+      margin:0 0 14px;text-align:center;
+      font-size:clamp(22px,6vw,28px);font-weight:900;line-height:1.2;
+    }
+    .dd-page-list{
+      list-style:none;margin:0;padding:0;
+      display:flex;flex-direction:column;gap:8px;
+      flex:1 1 auto;min-height:0;
+    }
+    .dd-page-list li{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:12px 14px;border-radius:14px;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(160,100,20,.22);
+      font-size:clamp(13px,3.6vw,15px);font-weight:800;line-height:1.35;
+    }
+    .dd-page-list .dd-label{
+      flex:0 0 auto;min-width:4.8em;
+      font-size:11px;font-weight:800;color:#8a5a10;opacity:.92;padding-top:2px;
+    }
+    .dd-page-list .dd-val{flex:1;word-break:break-word;text-align:start;}
+    .dd-page-price{
+      margin:14px 0 0;text-align:center;
+      font-size:clamp(26px,7vw,32px);font-weight:900;color:#8a5a10;line-height:1.1;
+    }
+    .dd-page-order{
+      margin-top:12px;width:100%;border:none;border-radius:14px;
+      padding:14px 12px;font-size:15px;font-weight:900;color:#1a0a00;
+      background:linear-gradient(145deg,#ffd54f,#f0b820);
+      box-shadow:0 4px 14px rgba(160,100,20,.35);
+      cursor:pointer;touch-action:manipulation;
+    }
+    .dd-page-order:active{transform:scale(.98);}
+    .dd-page-order.in-cart{
+      background:linear-gradient(145deg,#81c784,#43a047);
+      color:#fff;
+    }
     #ice-cream-sheet{z-index:1105;}
     #ice-cream-sheet .ice-sheet-card{
       width:min(420px,100vw);max-height:min(92dvh,720px);
@@ -3254,7 +3317,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v131</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v133</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -4373,10 +4436,19 @@
     ];
     function rebuildBookSpread() {
       bookSpread = [{ kind: "cover-start" }];
+      if (hasDailyDishPackage()) {
+        bookSpread.push({ kind: "daily-dish" });
+      }
       bookPages.forEach((imgUrl, i) => {
         bookSpread.push({ kind: "menu", menuIdx: i, imgUrl });
       });
       menuPageCount = bookPages.length;
+    }
+    function spreadIdxForKind(kind) {
+      for (let s = 0; s < bookSpread.length; s++) {
+        if (bookSpread[s] && bookSpread[s].kind === kind) return s;
+      }
+      return -1;
     }
     function spreadKind(i) {
       return (bookSpread[i] || {}).kind || "";
@@ -4389,6 +4461,7 @@
       const kind = spreadKind(cur);
       if (kind === "cover-start") return guestT("coverStartBadge");
       if (kind === "cover-end") return guestT("coverEndBadge");
+      if (kind === "daily-dish") return guestT("dailyDishTitle");
       const mi = menuIdxFromCur(cur);
       return mi >= 0 ? (mi + 1) + " / " + menuPageCount : "—";
     }
@@ -4783,6 +4856,7 @@
     };
     window.__zekiqOnGuestLang = function () {
       if (typeof syncSceneHud === "function") syncSceneHud();
+      if (typeof refreshDailyDishPagesInBook === "function") refreshDailyDishPagesInBook();
       if (document.getElementById("cart-panel")?.classList.contains("open") && typeof renderCart === "function") renderCart();
       if (window.__zekiqRefreshIosInstallCopy) window.__zekiqRefreshIosInstallCopy();
       if (window.__zekiqUpdateIosCompactTip) window.__zekiqUpdateIosCompactTip();
@@ -4826,12 +4900,22 @@
     };
     const PAGE_CHIP_SHORT = [
       "Serpme", "Kahvaltı", "Tost", "Makarna", "Tavuk", "Tavuk", "Pizza", "Köfte", "Burger",
-      "Spor", "Tatlı", "Dondurma", "Çay", "Kahve", "Kahve", "Frozen", "Smoothie", "Milkshake", "Mojito",
+      "Spor", "Tatlı", "Dondurma", "Çay", "Sıcak Kahve", "Soğuk Kahve", "Frozen", "Smoothie", "Milkshake", "Mojito",
       "Kokteyl", "İçecek",
     ];
     function categoryChipLabel(pageIdx) {
-      if (PAGE_CHIP_SHORT[pageIdx]) return PAGE_CHIP_SHORT[pageIdx];
+      const file = bookPages[pageIdx] || "";
+      if (file === "page-013.jpg") return "Çay";
+      if (file === "page-014.jpg") return "Sıcak Kahve";
+      if (file === "page-015.jpg") return "Soğuk Kahve";
       const cats = pageCategories[String(pageIdx)] || pageCategories[pageIdx] || [];
+      const catKey = normCat(cats[0] || "");
+      if (catKey === "cay") return "Çay";
+      if (catKey === "kahve") {
+        if (file === "page-015.jpg" || pageIdx === 14) return "Soğuk Kahve";
+        if (file === "page-014.jpg" || pageIdx === 13) return "Sıcak Kahve";
+      }
+      if (PAGE_CHIP_SHORT[pageIdx]) return PAGE_CHIP_SHORT[pageIdx];
       const raw = cats[0] || "";
       const key = normCat(raw);
       if (CATEGORY_SHORT[key]) return CATEGORY_SHORT[key];
@@ -4841,6 +4925,18 @@
     }
     function buildCategoryChips() {
       const chips = [];
+      if (hasDailyDishPackage()) {
+        const ddSpread = spreadIdxForKind("daily-dish");
+        if (ddSpread >= 0) {
+          chips.push({
+            pageIdx: -1,
+            label: guestT("dailyDishTitle"),
+            pages: [],
+            kind: "daily-dish",
+            spreadIdx: ddSpread,
+          });
+        }
+      }
       let i = 0;
       while (i < menuPageCount) {
         const label = categoryChipLabel(i);
@@ -4864,8 +4960,12 @@
     }
     function jumpToCategoryPage(menuIdx) {
       if (!coachDone) return;
-      /* Instant jump — never flip page-by-page (was ~0.7s × pages). */
       goToPage(spreadIdxForMenuPage(menuIdx), true);
+    }
+    function jumpToDailyDishPage() {
+      if (!coachDone) return;
+      const dd = spreadIdxForKind("daily-dish");
+      if (dd >= 0) goToPage(dd, true);
     }
     let todaySoupName = "";
     let dailySoupFeatureOn = false;
@@ -4917,11 +5017,13 @@
       return h >= 12 && h < 16;
     }
     function defaultEntryMenuSpreadIdx() {
+      const dd = spreadIdxForKind("daily-dish");
+      if (dd >= 0) return dd;
       if (isLunchSpecialWindow()) {
         const soupPage = findSoupMenuPageIdx();
         if (soupPage >= 0) return spreadIdxForMenuPage(soupPage);
       }
-      return 1;
+      return spreadIdxForKind("menu") >= 0 ? spreadIdxForKind("menu") : 1;
     }
     function applyDailySoupBanner(name, enabled, labelSpot, dish) {
       dailySoupFeatureOn = enabled !== false;
@@ -4952,39 +5054,11 @@
         const overlay = pf.querySelector(".pf-overlay");
         if (overlay) attachDailySoupTag(overlay, menuIdxFromPf(pf));
       });
+      refreshDailyDishPagesInBook();
       scheduleHotspotRelayout();
     }
-    function hasDailyDishPackage() {
-      return !!(todayDailyDish && (todayDailyDish.main || todayDailyDish.soup));
-    }
-    function renderDailyDishScreen() {
-      const screen = document.getElementById("dailyDishScreen");
-      const list = document.getElementById("ddList");
-      const title = document.getElementById("ddTitle");
-      const kicker = document.getElementById("ddKicker");
-      const orderBtn = document.getElementById("ddOrder");
-      const menuBtn = document.getElementById("ddContinue");
-      const priceEl = document.getElementById("ddPrice");
-      if (!screen || !list || !todayDailyDish) return false;
-      if (title) title.textContent = guestT("dailyDishTitle");
-      if (kicker) kicker.textContent = guestT("dailyDishToday");
-      if (orderBtn) orderBtn.textContent = guestT("dailyDishOrder");
-      if (menuBtn) {
-        menuBtn.textContent = "→";
-        menuBtn.title = guestT("dailyDishToMenu");
-        menuBtn.setAttribute("aria-label", guestT("dailyDishToMenu"));
-      }
-      const rawPrice = String(todayDailyDish.price || "").trim();
-      const numPrice = Number(String(rawPrice).replace(",", "."));
-      if (priceEl) {
-        if (rawPrice && Number.isFinite(numPrice) && numPrice > 0) {
-          priceEl.hidden = false;
-          priceEl.textContent = Math.round(numPrice) + " ₺";
-        } else {
-          priceEl.hidden = true;
-          priceEl.textContent = "";
-        }
-      }
+    function dailyDishRowHtml() {
+      if (!todayDailyDish) return "";
       const rows = [
         ["dailyDishMain", todayDailyDish.main],
         ["dailyDishSoup", todayDailyDish.soup],
@@ -4992,19 +5066,51 @@
         ["dailyDishDessert", todayDailyDish.dessert],
         ["dailyDishDrink", todayDailyDish.drink],
       ];
-      list.innerHTML = "";
-      rows.forEach(function (row) {
-        if (!row[1]) return;
-        const li = document.createElement("li");
-        li.innerHTML =
-          '<span class="dd-label">' + esc(guestT(row[0])) + "</span>" +
-          '<span class="dd-val">' + esc(row[1]) + "</span>";
-        list.appendChild(li);
-      });
-      if (!list.children.length) return false;
-      screen.hidden = false;
-      screen.classList.add("show");
-      return true;
+      return rows.filter(r => r[1]).map(r =>
+        '<li><span class="dd-label">' + esc(guestT(r[0])) + '</span><span class="dd-val">' + esc(r[1]) + "</span></li>"
+      ).join("");
+    }
+    function fillDailyDishPage(pf) {
+      if (!pf || !todayDailyDish) return;
+      pf.classList.add("book-daily-dish");
+      pf.classList.remove("book-cover");
+      const rowsHtml = dailyDishRowHtml();
+      if (!rowsHtml) return;
+      const rawPrice = String(todayDailyDish.price || "").trim();
+      const numPrice = Number(String(rawPrice).replace(",", "."));
+      const priceHtml = rawPrice && Number.isFinite(numPrice) && numPrice > 0
+        ? '<p class="dd-page-price">' + esc(money(numPrice)) + "</p>"
+        : "";
+      const inCart = cart.some(l => l.item && String(l.item.id) === "guest-daily-dish");
+      pf.innerHTML =
+        '<div class="book-daily-dish-inner">' +
+        '<p class="dd-page-kicker">' + esc(guestT("dailyDishToday")) + "</p>" +
+        '<h2 class="dd-page-title">' + esc(guestT("dailyDishTitle")) + "</h2>" +
+        '<ul class="dd-page-list">' + rowsHtml + "</ul>" +
+        priceHtml +
+        '<button type="button" class="dd-page-order' + (inCart ? " in-cart" : "") + '" data-dd-order="1">' +
+        esc(inCart ? ("✓ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
+        "</button></div>";
+      const btn = pf.querySelector("[data-dd-order]");
+      if (btn) {
+        btn.onclick = function (e) {
+          e.stopPropagation();
+          orderDailyDish();
+          btn.classList.add("in-cart");
+          btn.textContent = "✓ " + guestT("dailyDishOrder");
+        };
+      }
+    }
+    function refreshDailyDishPagesInBook() {
+      document.querySelectorAll(".pf.book-daily-dish").forEach(fillDailyDishPage);
+    }
+    function hasDailyDishPackage() {
+      return !!(todayDailyDish && (todayDailyDish.main || todayDailyDish.soup));
+    }
+    function renderDailyDishScreen() {
+      hideDailyDishScreen();
+      refreshDailyDishPagesInBook();
+      return false;
     }
     function hideDailyDishScreen() {
       const screen = document.getElementById("dailyDishScreen");
@@ -5037,10 +5143,12 @@
       addToCart(item, { flash: true, note: dailyDishCartNote() });
       dailyDishSeen = true;
       hideDailyDishScreen();
+      refreshDailyDishPagesInBook();
     }
     function continueFromDailyDish() {
       dailyDishSeen = true;
       hideDailyDishScreen();
+      if (cur < bookSpread.length - 1) goToPage(cur + 1, true);
     }
     function menuIdxFromPf(pf) {
       const pw = pf?.closest(".pw");
@@ -5115,7 +5223,7 @@
               '<span class="cat-chip-page" data-jump-page="' + p + '">' + (p + 1) + "</span>"
             ).join("")
           : "";
-        return '<button type="button" class="cat-chip" data-page-idx="' + c.pageIdx + '" data-kind="menu">' +
+        return '<button type="button" class="cat-chip" data-page-idx="' + c.pageIdx + '" data-kind="' + esc(c.kind || "menu") + '">' +
           esc(c.label) + pagesHtml + "</button>";
       }).join("");
     }
@@ -5125,7 +5233,8 @@
         btn.onclick = e => {
           if (e.target && e.target.closest && e.target.closest(".cat-chip-page")) return;
           e.stopPropagation();
-          jumpToCategoryPage(Number(btn.dataset.pageIdx));
+          if (btn.dataset.kind === "daily-dish") jumpToDailyDishPage();
+          else jumpToCategoryPage(Number(btn.dataset.pageIdx));
         };
       });
       root.querySelectorAll(".cat-chip-page").forEach(sp => {
@@ -5194,6 +5303,42 @@
     let lastCategoryDockKey = "";
     let lastCategoryScrollPi = -1;
     let lastOrdersListMaxH = -1;
+    let iosMenuPaneHLock = -1;
+    function resetIosMenuPaneLock() {
+      iosMenuPaneHLock = -1;
+      const stage = document.getElementById("menuStage");
+      stage?.style.removeProperty("--ios-menu-pane-h");
+      document.getElementById("menuBookWrap")?.style.removeProperty("height");
+    }
+    window.__zekiqResetIosMenuPane = resetIosMenuPaneLock;
+    function syncIosStableMenuLayout() {
+      if (!isIosGuestNoLogo()) return;
+      const wrap = document.getElementById("menuBookWrap");
+      const stage = document.getElementById("menuStage");
+      if (!wrap || !stage) return;
+      if (iosMenuPaneHLock > 0) {
+        stage.style.setProperty("--ios-menu-pane-h", iosMenuPaneHLock + "px");
+        wrap.style.height = iosMenuPaneHLock + "px";
+        return;
+      }
+      const pf = document.querySelector("#pw" + cur + " .pf");
+      const onMenu = pf && !pf.classList.contains("book-cover") && menuIdxFromCur(cur) >= 0;
+      if (!onMenu) return;
+      const nw = Number(pf.dataset.nw), nh = Number(pf.dataset.nh);
+      if (!nw || !nh) return;
+      const cs = getComputedStyle(stage);
+      const padT = parseFloat(cs.paddingTop) || 0;
+      const padB = parseFloat(cs.paddingBottom) || 0;
+      const innerH = Math.max(1, stage.clientHeight - padT - padB);
+      const cw = stage.clientWidth || pf.clientWidth;
+      const scale = Math.min(cw / nw, innerH / nh);
+      const dh = nh * scale;
+      const bar = document.getElementById("menuCategoryBar");
+      const catH = Math.round(bar?.offsetHeight || 36);
+      iosMenuPaneHLock = Math.ceil(dh + catH);
+      stage.style.setProperty("--ios-menu-pane-h", iosMenuPaneHLock + "px");
+      wrap.style.height = iosMenuPaneHLock + "px";
+    }
     function syncOrdersListHeight() {
       const stage = document.getElementById("menuStage");
       const ordersWrap = document.getElementById("menuTopOrders");
@@ -5206,18 +5351,17 @@
         }
         return;
       }
-      if (isIosGuestNoLogo()) {
-        ordersWrap.style.removeProperty("--orders-list-max-h");
-        lastOrdersListMaxH = -1;
-        return;
-      }
       const stageRect = stage.getBoundingClientRect();
       let boundaryTop = null;
+      const wrap = document.getElementById("menuBookWrap");
+      if (isIosGuestNoLogo() && wrap) {
+        boundaryTop = wrap.getBoundingClientRect().top;
+      }
       const dock = document.getElementById("menuTopDock");
       const bar = document.getElementById("menuCategoryBar");
-      if (dock?.classList.contains("show") && bar && bar.offsetHeight > 0) {
+      if (boundaryTop == null && dock?.classList.contains("show") && bar && bar.offsetHeight > 0) {
         boundaryTop = dock.getBoundingClientRect().top;
-      } else {
+      } else if (boundaryTop == null) {
         const pf = document.querySelector("#pw" + cur + " .pf");
         if (pf && !pf.classList.contains("book-cover")) {
           const rect = imageOverlayRect(pf, { measureOnly: true });
@@ -5292,13 +5436,13 @@
       const catH = Math.round(bar?.offsetHeight || 0);
       const oy = Math.round(rect.oy);
       if (isIosGuestNoLogo()) {
-        /* Category chips directly above menu. */
+        /* Category chips directly above menu image top. */
         const dockH = catH > 0 ? catH : 0;
         const dockKey = "ios-above|" + oy + "|" + dockH;
         if (lastCategoryDockKey === dockKey) return;
         lastCategoryDockKey = dockKey;
         view.style.setProperty("--menu-top-dock-h", dockH + "px");
-        view.style.setProperty("--menu-img-top", Math.max(oy, dockH) + "px");
+        view.style.setProperty("--menu-img-top", oy + "px");
         view.style.setProperty("--cat-bar-h", dockH + "px");
         view.style.removeProperty("--logo-strip-h");
         view.style.removeProperty("--ios-cat-h");
@@ -5320,9 +5464,9 @@
     function syncCategoryBar() {
       const bar = document.getElementById("menuCategoryBar");
       if (!bar) return;
-      const showBar = menuPageCount > 1 &&
-        spreadKind(cur) === "menu" &&
-        !navLocked();
+      const kind = spreadKind(cur);
+      const showBar = !navLocked() && (kind === "menu" || kind === "daily-dish") &&
+        (menuPageCount > 0 || hasDailyDishPackage());
       syncMenuTopDock(showBar);
       if (!showBar) {
         syncCategoryDock(null);
@@ -5331,8 +5475,13 @@
       }
       const chips = buildCategoryChips();
       const activeIdx = menuIdxFromCur(cur);
-      const onMenu = spreadKind(cur) === "menu";
+      const onMenu = kind === "menu";
+      const onDailyDish = kind === "daily-dish";
       bar.querySelectorAll(".cat-chip").forEach(btn => {
+        if (btn.dataset.kind === "daily-dish") {
+          btn.classList.toggle("active", onDailyDish);
+          return;
+        }
         const pi = Number(btn.dataset.pageIdx);
         const group = chips.find(c => c.kind === "menu" && c.pageIdx === pi);
         const inGroup = group && group.pages.indexOf(activeIdx) >= 0;
@@ -5750,18 +5899,14 @@
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
       const isCover = pf.classList.contains("book-cover");
-      const iosMenu = isIosGuestNoLogo() && !isCover;
-      /* iOS: reserve category-bar height so chips sit directly above the menu image. */
-      const catReserve = iosMenu ? iosCategoryReservePx() : 0;
-      const usableH = Math.max(1, ch - catReserve);
+      const usableH = ch;
       const scale = Math.min(cw / nw, usableH / nh);
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
       let oy;
       if (isCover) oy = (ch - dh) / 2;
-      else if (iosMenu) oy = catReserve; /* top of image = bottom of category bar */
-      else oy = ch - dh;
+      else oy = ch - dh; /* bottom-anchored: stable size on iPhone */
       return {
         ox, oy, dw, dh,
         wasteTop: Math.max(0, oy),
@@ -5992,6 +6137,7 @@
     }
     function layoutAllHotspots() {
       if (animating) return;
+      syncIosStableMenuLayout();
       document.querySelectorAll(".pf").forEach(pf => {
         layoutPfHotspots(pf);
       });
@@ -6296,6 +6442,7 @@
     }
     function buildMenuList() {
       const box = document.getElementById("menu-list");
+      if (!box) return;
       if (!menu.length) {
         box.innerHTML = '<div class="ml-empty">' + esc(guestT("menuLoading")) + '</div>';
         return;
@@ -6339,6 +6486,14 @@
       });
     }
 
+    function hideLoadScreen() {
+      const ls = document.getElementById("loadScreen");
+      if (ls) ls.style.display = "none";
+    }
+    function setLoadStatus(sub) {
+      const el = document.getElementById("i18n-load-sub");
+      if (el && sub) el.textContent = sub;
+    }
     function showErr(title, detail, withRetry) {
       const ls = document.getElementById("loadScreen");
       if (!ls) return;
@@ -6384,6 +6539,8 @@
           const edge = document.createElement("div");
           edge.className = "page-edge";
           pf.appendChild(edge);
+        } else if (spread.kind === "daily-dish") {
+          fillDailyDishPage(pf);
         } else {
           fillCoverPage(pf, spread.kind);
         }
@@ -6403,6 +6560,8 @@
         book.appendChild(pw);
       });
 
+      hideLoadScreen();
+
       const ts = document.getElementById("thumbs");
       ts.innerHTML = "";
       bookPages.forEach((imgUrl, i) => {
@@ -6419,7 +6578,7 @@
       document.documentElement.classList.toggle("single-page", menuPageCount <= 1);
       buildMenuList();
       renderPageDock();
-      document.getElementById("loadScreen").style.display = "none";
+      hideLoadScreen();
       if (!window.__hotspotRo) {
         window.__hotspotRo = new ResizeObserver(() => {
           scheduleHotspotRelayout();
@@ -6453,7 +6612,8 @@
       sync(false);
       if (typeof mountPageOverlays === "function") mountPageOverlays(entry);
       if (typeof layoutAllHotspots === "function") layoutAllHotspots();
-      return spreadKind(cur) === "menu";
+      const k = spreadKind(cur);
+      return k === "menu" || k === "daily-dish";
     }
     function finishGuestMenuEntry() {
       coachDone = true;
@@ -6481,12 +6641,9 @@
       });
     }
     function enterGuestMenu() {
-      if (coachDone && spreadKind(cur) === "menu" && !document.getElementById("dailyDishScreen")?.classList.contains("show")) return;
+      if (coachDone && (spreadKind(cur) === "menu" || spreadKind(cur) === "daily-dish")) return;
       if (!forceMenuPageVisible()) return;
       finishGuestMenuEntry();
-      if (!dailyDishSeen && hasDailyDishPackage()) {
-        renderDailyDishScreen();
-      }
     }
     function dismissCoach() { enterGuestMenu(); }
     window.__zekiqDismissCoach = dismissCoach;
@@ -6939,8 +7096,8 @@
         syncOrderListView(listEl);
       }
       syncCategoryBar();
+      refreshDailyDishPagesInBook();
     }
-    function openCartConfirm(e) {
       if (!coachDone) return;
       if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
       if (!cart.length) {
@@ -7645,13 +7802,15 @@
       document.title = shopName + " — " + guestT("table") + " " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
       document.getElementById("tblLabel").textContent = section + " · " + guestT("table") + " " + tableNum;
-      syncSceneHud();
       buildBook();
+      syncSceneHud();
       try { if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive(); } catch (_) {}
       } catch (e) {
         console.error("[guest/apply]", e);
-        if (document.getElementById("book")?.children.length) return;
-        showErr(guestT("menuNotReady"), guestT("menuNotReadyD"));
+        hideLoadScreen();
+        if (!document.getElementById("book")?.children.length) {
+          showErr(guestT("menuNotReady"), guestT("menuNotReadyD"));
+        }
       }
     }
 
@@ -7672,14 +7831,61 @@
       };
 
       const onGithub = /github\.io$/i.test(location.hostname);
-      const manifestBases = await Promise.race([loadManifestApis(), new Promise(r => setTimeout(() => r([]), 6000))]);
+      const onCellular = navigator.connection?.type === "cellular";
+      const skipPrivateBases = onGithub || onCellular;
+      const qBoot = readParams();
+      const apiParamBoot = (qBoot.get("api") || "").trim();
+      const instantBases = rankApiBases([
+        apiParamBoot,
+        onGithub ? "https://tonino.zekiqmenu.com" : "",
+        onGithub ? "https://shop.zekiqmenu.com" : "",
+      ].filter(Boolean));
+      const seen = new Set();
+      for (let b = 0; b < instantBases.length; b++) {
+        const base = instantBases[b];
+        if (!base || seen.has(base)) continue;
+        if (skipPrivateBases && isPrivateApi(base)) continue;
+        seen.add(base);
+        setLoadStatus(guestT("loadingSub"));
+        const r = handleMenuData(await fetchMenuFromBase(base));
+        if (r === true || r === "stop") return;
+      }
+      const manifestPromise = loadManifestApis();
+      const manifestBases = await Promise.race([
+        manifestPromise,
+        new Promise(r => setTimeout(() => r([]), 2500)),
+      ]);
       const localBases = rankApiBases(onGithub
         ? [...(Array.isArray(manifestBases) ? manifestBases : []), ...apiCandidates()]
         : [...apiCandidates(), ...(Array.isArray(manifestBases) ? manifestBases : [])]);
-      const seen = new Set();
       for (let b = 0; b < localBases.length; b++) {
         const base = localBases[b];
         if (!base || seen.has(base)) continue;
+        if (skipPrivateBases && isPrivateApi(base)) continue;
+        seen.add(base);
+        setLoadStatus(guestT("loadingSub"));
+        const r = handleMenuData(await fetchMenuFromBase(base));
+        if (r === true || r === "stop") return;
+      }
+      if (skipPrivateBases) {
+        for (let b = 0; b < localBases.length; b++) {
+          const base = localBases[b];
+          if (!base || seen.has(base) || !isPrivateApi(base)) continue;
+          seen.add(base);
+          setLoadStatus(guestT("loadingSub"));
+          const r = handleMenuData(await fetchMenuFromBase(base));
+          if (r === true || r === "stop") return;
+        }
+      }
+      const lateManifest = await Promise.race([
+        manifestPromise,
+        new Promise(r => setTimeout(() => r([]), 3500)),
+      ]);
+      const lateBases = rankApiBases(Array.isArray(lateManifest) ? lateManifest : []);
+      for (let b = 0; b < lateBases.length; b++) {
+        const base = lateBases[b];
+        if (!base || seen.has(base)) continue;
+        if (skipPrivateBases && isPrivateApi(base)) continue;
         seen.add(base);
         const r = handleMenuData(await fetchMenuFromBase(base));
         if (r === true || r === "stop") return;
