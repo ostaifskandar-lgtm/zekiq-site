@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v130: fix ice cream + spot filtered out on phone -->
+  <!-- guest-table-ui-v131: daily dish price + menu overlay -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -2506,18 +2506,17 @@
     }
     #dailyDishScreen{
       display:none;
-      position:fixed;inset:0;z-index:980;
-      align-items:center;justify-content:center;
-      padding:max(16px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom));
-      background:linear-gradient(165deg,#1a0e04 0%,#3d2410 42%,#1a0e04 100%);
-      overflow:auto;
+      position:fixed;inset:0;z-index:970;
+      align-items:flex-end;justify-content:center;
+      pointer-events:none;
+      padding:0 14px max(14px,env(safe-area-inset-bottom));
+      background:transparent;
     }
-    #dailyDishScreen.show{display:flex;}
-    html.daily-dish-open #menuStage,
-    html.daily-dish-open #menuTopDock,
-    html.daily-dish-open #pageSwipeBar,
-    html.daily-dish-open #nav,
-    html.daily-dish-open #sceneHud{visibility:hidden!important;pointer-events:none!important;}
+    #dailyDishScreen.show{
+      display:flex;
+      pointer-events:auto;
+      background:rgba(0,0,0,.38);
+    }
     .dd-card{
       width:min(420px,100%);
       border-radius:22px;
@@ -2560,6 +2559,40 @@
       padding-top:2px;
     }
     .dd-list .dd-val{flex:1;word-break:break-word;}
+    .dd-price{
+      margin:12px 0 0;
+      font-size:28px;font-weight:900;
+      color:#8a5a10;
+      line-height:1.1;
+    }
+    .dd-actions{
+      margin-top:14px;
+      display:flex;align-items:stretch;gap:10px;
+    }
+    .dd-order{
+      flex:1;
+      border:none;border-radius:14px;
+      padding:14px 12px;
+      font-size:15px;font-weight:900;
+      color:#1a0a00;
+      background:linear-gradient(145deg,#ffd54f,#f0b820);
+      box-shadow:0 4px 14px rgba(160,100,20,.35);
+      cursor:pointer;
+    }
+    .dd-order:active{transform:scale(.98);}
+    .dd-to-menu{
+      flex:0 0 auto;
+      min-width:52px;
+      border:2px solid rgba(160,100,20,.45);
+      border-radius:14px;
+      padding:14px 16px;
+      font-size:22px;font-weight:900;
+      line-height:1;
+      color:#8a5a10;
+      background:rgba(255,255,255,.85);
+      cursor:pointer;
+    }
+    .dd-to-menu:active{transform:scale(.96);}
     .dd-continue{
       margin-top:16px;width:100%;
       border:none;border-radius:14px;
@@ -3221,13 +3254,17 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v130</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v131</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
       <h1 class="dd-title" id="ddTitle">الطبق اليومي</h1>
       <ul class="dd-list" id="ddList"></ul>
-      <button type="button" class="dd-continue" id="ddContinue">تصفح المينو</button>
+      <p class="dd-price" id="ddPrice" hidden></p>
+      <div class="dd-actions">
+        <button type="button" class="dd-order" id="ddOrder">اختر هذا الطبق</button>
+        <button type="button" class="dd-to-menu" id="ddContinue" title="المينو">→</button>
+      </div>
     </div>
   </div>
 
@@ -3505,6 +3542,9 @@
       dailyDishDessert: "الحلو",
       dailyDishDrink: "المشروب",
       dailyDishToday: "اليوم",
+      dailyDishOrder: "اختر هذا الطبق",
+      dailyDishToMenu: "المينو الكامل",
+      dailyDishPriceLabel: "السعر",
       iceCreamChip: "بوظة",
       iceCreamTitle: "البوظة",
       iceCreamFlavor: "النكهة",
@@ -3646,6 +3686,9 @@
       dailyDishDessert: "Tatlı",
       dailyDishDrink: "İçecek",
       dailyDishToday: "Bugün",
+      dailyDishOrder: "Bu yemeği seç",
+      dailyDishToMenu: "Menüye geç",
+      dailyDishPriceLabel: "Fiyat",
       iceCreamChip: "Dondurma",
       iceCreamTitle: "Dondurma",
       iceCreamFlavor: "Çeşit",
@@ -3787,6 +3830,9 @@
       dailyDishDessert: "Dessert",
       dailyDishDrink: "Drink",
       dailyDishToday: "Today",
+      dailyDishOrder: "Choose this dish",
+      dailyDishToMenu: "Full menu",
+      dailyDishPriceLabel: "Price",
       iceCreamChip: "Ice cream",
       iceCreamTitle: "Ice cream",
       iceCreamFlavor: "Flavor",
@@ -4151,7 +4197,7 @@
       if (!el || !el.closest) return false;
       return !!el.closest(
         "#item-popup.show,#cart-panel,#cart-panel.open,#menu-panel,#menu-panel.open," +
-          "#line-note-sheet,#loadScreen.show,#okScreen.show,#ice-cream-sheet.show," +
+          "#line-note-sheet,#loadScreen.show,#okScreen.show,#ice-cream-sheet.show,#dailyDishScreen.show," +
           ".nav-arrow,.list-btn,.cart-btn,.scene-hud-btn,.cover-start-btn,#coachOk," +
           "#cart-items,#menu-list,#menuSearch,textarea,input,.ci-note,.note,#noteInp,#lineNoteInp"
       );
@@ -4887,6 +4933,7 @@
           sides: String(dish.sides || "").trim(),
           dessert: String(dish.dessert || "").trim(),
           drink: String(dish.drink || "").trim(),
+          price: String(dish.price || "").trim(),
         };
         if (!todayDailyDish.main && !todayDailyDish.soup) todayDailyDish = null;
       } else {
@@ -4915,11 +4962,29 @@
       const list = document.getElementById("ddList");
       const title = document.getElementById("ddTitle");
       const kicker = document.getElementById("ddKicker");
-      const btn = document.getElementById("ddContinue");
+      const orderBtn = document.getElementById("ddOrder");
+      const menuBtn = document.getElementById("ddContinue");
+      const priceEl = document.getElementById("ddPrice");
       if (!screen || !list || !todayDailyDish) return false;
       if (title) title.textContent = guestT("dailyDishTitle");
       if (kicker) kicker.textContent = guestT("dailyDishToday");
-      if (btn) btn.textContent = guestT("dailyDishContinue");
+      if (orderBtn) orderBtn.textContent = guestT("dailyDishOrder");
+      if (menuBtn) {
+        menuBtn.textContent = "→";
+        menuBtn.title = guestT("dailyDishToMenu");
+        menuBtn.setAttribute("aria-label", guestT("dailyDishToMenu"));
+      }
+      const rawPrice = String(todayDailyDish.price || "").trim();
+      const numPrice = Number(String(rawPrice).replace(",", "."));
+      if (priceEl) {
+        if (rawPrice && Number.isFinite(numPrice) && numPrice > 0) {
+          priceEl.hidden = false;
+          priceEl.textContent = Math.round(numPrice) + " ₺";
+        } else {
+          priceEl.hidden = true;
+          priceEl.textContent = "";
+        }
+      }
       const rows = [
         ["dailyDishMain", todayDailyDish.main],
         ["dailyDishSoup", todayDailyDish.soup],
@@ -4939,8 +5004,6 @@
       if (!list.children.length) return false;
       screen.hidden = false;
       screen.classList.add("show");
-      document.documentElement.classList.add("daily-dish-open");
-      document.documentElement.classList.remove("coach-locked");
       return true;
     }
     function hideDailyDishScreen() {
@@ -4949,13 +5012,35 @@
         screen.classList.remove("show");
         screen.hidden = true;
       }
-      document.documentElement.classList.remove("daily-dish-open");
+    }
+    function dailyDishCartNote() {
+      if (!todayDailyDish) return "";
+      return [
+        todayDailyDish.main,
+        todayDailyDish.soup,
+        todayDailyDish.sides,
+        todayDailyDish.dessert,
+        todayDailyDish.drink,
+      ].filter(Boolean).join(" · ");
+    }
+    function orderDailyDish() {
+      if (!todayDailyDish || !coachDone) return;
+      const rawPrice = String(todayDailyDish.price || "0").replace(",", ".");
+      const numPrice = Number(rawPrice);
+      const item = {
+        id: "guest-daily-dish",
+        itemId: "guest-daily-dish",
+        name: guestT("dailyDishTitle"),
+        price: String(Number.isFinite(numPrice) && numPrice > 0 ? Math.round(numPrice) : 0),
+        category: "Günün Yemeği",
+      };
+      addToCart(item, { flash: true, note: dailyDishCartNote() });
+      dailyDishSeen = true;
+      hideDailyDishScreen();
     }
     function continueFromDailyDish() {
       dailyDishSeen = true;
       hideDailyDishScreen();
-      if (!forceMenuPageVisible()) return;
-      finishGuestMenuEntry();
     }
     function menuIdxFromPf(pf) {
       const pw = pf?.closest(".pw");
@@ -6396,17 +6481,18 @@
       });
     }
     function enterGuestMenu() {
-      if (coachDone && spreadKind(cur) === "menu") return;
-      if (!dailyDishSeen && hasDailyDishPackage()) {
-        if (renderDailyDishScreen()) return;
-      }
+      if (coachDone && spreadKind(cur) === "menu" && !document.getElementById("dailyDishScreen")?.classList.contains("show")) return;
       if (!forceMenuPageVisible()) return;
       finishGuestMenuEntry();
+      if (!dailyDishSeen && hasDailyDishPackage()) {
+        renderDailyDishScreen();
+      }
     }
     function dismissCoach() { enterGuestMenu(); }
     window.__zekiqDismissCoach = dismissCoach;
     window.__zekiqEnterGuestMenu = enterGuestMenu;
     document.getElementById("ddContinue")?.addEventListener("click", continueFromDailyDish);
+    document.getElementById("ddOrder")?.addEventListener("click", orderDailyDish);
     function initCoverGate() {
       document.documentElement.classList.remove("guest-menu-active");
       document.documentElement.classList.remove("daily-dish-open");
