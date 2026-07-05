@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v129: ice cream + spot routes to sheet on phone -->
+  <!-- guest-table-ui-v130: fix ice cream + spot filtered out on phone -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -3221,7 +3221,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v129</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v130</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -5494,7 +5494,10 @@
     }
     function collectPagePins(pageIdx) {
       const manual = (manualSpots[String(pageIdx)] || manualSpots[pageIdx] || []).filter(function (s) {
-        return s && (s.kind === "ice-cream" || !isStandaloneIceCreamItem(s));
+        if (!s) return false;
+        /* Keep calibrated + / ice-cream buttons — do not drop Dondurma Top plus spot. */
+        if (s.kind === "plus" || s.kind === "ice-cream") return true;
+        return !isStandaloneIceCreamItem(s);
       });
       const iceManual = manual.filter(s => s && s.kind === "ice-cream");
       const hasPlusManual = manual.some(s => s && (s.kind === "plus" || plusButtonsAllPages));
