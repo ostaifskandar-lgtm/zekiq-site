@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v136: after coach → daily dish page first -->
+  <!-- guest-table-ui-v137: unlock coach then go daily dish first -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -3340,7 +3340,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v136</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v137</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -5499,7 +5499,7 @@
       const bar = document.getElementById("menuCategoryBar");
       if (!bar) return;
       const kind = spreadKind(cur);
-      const showBar = !navLocked() && kind === "menu" && menuPageCount > 1;
+      const showBar = !navLocked() && (kind === "menu" || kind === "daily-dish") && menuPageCount > 1;
       syncMenuTopDock(showBar);
       if (!showBar) {
         syncCategoryDock(null);
@@ -6632,22 +6632,6 @@
       refreshPageBrandBanners(bookCacheVer);
     }
 
-    function forceMenuPageVisible() {
-      if (bookSpread.length <= 1) return false;
-      animating = false;
-      const entry = defaultEntryMenuSpreadIdx();
-      cur = entry;
-      document.querySelectorAll(".pw").forEach(function (pw, i) {
-        pw.classList.toggle("page-current", i === entry);
-        pw.classList.remove("page-reveal", "page-flip-top", "turning", "turn-next", "turn-prev", "page-leave", "page-dragging");
-        pw.style.transform = "";
-      });
-      sync(false);
-      if (typeof mountPageOverlays === "function") mountPageOverlays(entry);
-      if (typeof layoutAllHotspots === "function") layoutAllHotspots();
-      const k = spreadKind(cur);
-      return k === "menu" || k === "daily-dish";
-    }
     function finishGuestMenuEntry() {
       coachDone = true;
       document.documentElement.classList.remove("coach-locked");
@@ -6675,7 +6659,16 @@
     }
     function enterGuestMenu() {
       if (coachDone && (spreadKind(cur) === "menu" || spreadKind(cur) === "daily-dish")) return;
-      if (!forceMenuPageVisible()) return;
+      if (bookSpread.length <= 1) return;
+      const target = defaultEntryMenuSpreadIdx();
+      const k = spreadKind(target);
+      if (k !== "menu" && k !== "daily-dish") return;
+      coachDone = true;
+      document.documentElement.classList.remove("coach-locked");
+      animating = false;
+      try { cancelDragRaf(); } catch (e) {}
+      dragFlip = null;
+      goToPage(target, true);
       finishGuestMenuEntry();
     }
     function dismissCoach() { enterGuestMenu(); }
