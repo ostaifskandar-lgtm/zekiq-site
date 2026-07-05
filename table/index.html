@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v134: fix openCartConfirm syntax — menu boot -->
+  <!-- guest-table-ui-v135: daily dish secondary page — logo, price, no groups -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -2614,49 +2614,67 @@
       cursor:pointer;
     }
     .dd-continue:active{transform:scale(.98);}
-    /* Daily dish — full book page (not overlay on another page) */
+    /* Daily dish — secondary book page (logo + price, no category groups) */
     .pf.book-daily-dish{
-      background:linear-gradient(180deg,#fff8e8 0%,#f5e0b0 48%,#ebe4d3 100%);
+      background:linear-gradient(180deg,#fff8e8 0%,#f5e0b0 42%,#ebe4d3 100%);
       color:#1a0a00;
     }
     .book-daily-dish-inner{
       width:100%;height:100%;box-sizing:border-box;
-      display:flex;flex-direction:column;align-items:stretch;
-      padding:clamp(14px,4vw,22px) clamp(14px,4.5vw,24px) clamp(16px,4vw,22px);
+      display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+      padding:clamp(12px,3.5vw,20px) clamp(16px,5vw,28px) clamp(14px,3.5vw,20px);
       overflow-y:auto;-webkit-overflow-scrolling:touch;
+      text-align:center;
+    }
+    .dd-page-logo{
+      flex:0 0 auto;width:min(92%,280px);margin:0 auto 10px;
+    }
+    .dd-page-logo img{
+      width:100%;height:auto;display:block;border-radius:10px;
+      box-shadow:0 6px 20px rgba(120,70,10,.22);
     }
     .dd-page-kicker{
-      margin:0 0 4px;text-align:center;
-      font-size:12px;font-weight:800;letter-spacing:.08em;
-      color:#8a5a10;opacity:.9;
+      margin:0 0 2px;
+      font-size:11px;font-weight:800;letter-spacing:.1em;
+      color:#8a5a10;opacity:.85;text-transform:uppercase;
     }
     .dd-page-title{
-      margin:0 0 14px;text-align:center;
-      font-size:clamp(22px,6vw,28px);font-weight:900;line-height:1.2;
+      margin:0 0 12px;
+      font-size:clamp(20px,5.5vw,26px);font-weight:900;line-height:1.15;
     }
-    .dd-page-list{
-      list-style:none;margin:0;padding:0;
-      display:flex;flex-direction:column;gap:8px;
-      flex:1 1 auto;min-height:0;
+    .dd-page-main{
+      margin:0 0 10px;max-width:340px;
+      font-size:clamp(15px,4.2vw,18px);font-weight:800;line-height:1.4;
+      color:#2a1808;
     }
-    .dd-page-list li{
-      display:flex;align-items:flex-start;gap:10px;
-      padding:12px 14px;border-radius:14px;
-      background:rgba(255,255,255,.78);
-      border:1px solid rgba(160,100,20,.22);
-      font-size:clamp(13px,3.6vw,15px);font-weight:800;line-height:1.35;
+    .dd-page-items{
+      list-style:none;margin:0 0 12px;padding:0;max-width:340px;width:100%;
+      display:flex;flex-direction:column;gap:6px;
     }
-    .dd-page-list .dd-label{
-      flex:0 0 auto;min-width:4.8em;
-      font-size:11px;font-weight:800;color:#8a5a10;opacity:.92;padding-top:2px;
+    .dd-page-items li{
+      padding:8px 12px;border-radius:12px;
+      background:rgba(255,255,255,.72);
+      border:1px solid rgba(160,100,20,.18);
+      font-size:clamp(13px,3.5vw,15px);font-weight:700;line-height:1.35;
+      text-align:center;
     }
-    .dd-page-list .dd-val{flex:1;word-break:break-word;text-align:start;}
-    .dd-page-price{
-      margin:14px 0 0;text-align:center;
-      font-size:clamp(26px,7vw,32px);font-weight:900;color:#8a5a10;line-height:1.1;
+    .dd-page-price-box{
+      flex:0 0 auto;width:100%;max-width:280px;margin:8px auto 14px;
+      padding:12px 16px;border-radius:16px;
+      background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(255,248,230,.88));
+      border:1.5px solid rgba(160,100,20,.35);
+      box-shadow:0 4px 16px rgba(120,70,10,.12);
+    }
+    .dd-page-price-label{
+      display:block;font-size:11px;font-weight:800;letter-spacing:.06em;
+      color:#8a5a10;opacity:.9;margin-bottom:4px;
+    }
+    .dd-page-price-val{
+      display:block;font-size:clamp(28px,8vw,36px);font-weight:900;
+      color:#8a5a10;line-height:1.05;
     }
     .dd-page-order{
-      margin-top:12px;width:100%;border:none;border-radius:14px;
+      width:100%;max-width:320px;border:none;border-radius:14px;
       padding:14px 12px;font-size:15px;font-weight:900;color:#1a0a00;
       background:linear-gradient(145deg,#ffd54f,#f0b820);
       box-shadow:0 4px 14px rgba(160,100,20,.35);
@@ -2666,6 +2684,11 @@
     .dd-page-order.in-cart{
       background:linear-gradient(145deg,#81c784,#43a047);
       color:#fff;
+    }
+    .dd-page-hint{
+      margin:10px 0 0;max-width:300px;
+      font-size:11px;font-weight:700;line-height:1.45;
+      color:#8a5a10;opacity:.75;
     }
     #ice-cream-sheet{z-index:1105;}
     #ice-cream-sheet .ice-sheet-card{
@@ -3317,7 +3340,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v134</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v135</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -5017,8 +5040,6 @@
       return h >= 12 && h < 16;
     }
     function defaultEntryMenuSpreadIdx() {
-      const dd = spreadIdxForKind("daily-dish");
-      if (dd >= 0) return dd;
       if (isLunchSpecialWindow()) {
         const soupPage = findSoupMenuPageIdx();
         if (soupPage >= 0) return spreadIdxForMenuPage(soupPage);
@@ -5057,40 +5078,51 @@
       refreshDailyDishPagesInBook();
       scheduleHotspotRelayout();
     }
-    function dailyDishRowHtml() {
-      if (!todayDailyDish) return "";
-      const rows = [
-        ["dailyDishMain", todayDailyDish.main],
-        ["dailyDishSoup", todayDailyDish.soup],
-        ["dailyDishSides", todayDailyDish.sides],
-        ["dailyDishDessert", todayDailyDish.dessert],
-        ["dailyDishDrink", todayDailyDish.drink],
-      ];
-      return rows.filter(r => r[1]).map(r =>
-        '<li><span class="dd-label">' + esc(guestT(r[0])) + '</span><span class="dd-val">' + esc(r[1]) + "</span></li>"
-      ).join("");
+    function dailyDishBodyHtml() {
+      if (!todayDailyDish) return { main: "", extras: "" };
+      const main = String(todayDailyDish.main || "").trim();
+      const extras = [
+        todayDailyDish.soup,
+        todayDailyDish.sides,
+        todayDailyDish.dessert,
+        todayDailyDish.drink,
+      ].map(s => String(s || "").trim()).filter(Boolean);
+      const extrasHtml = extras.length
+        ? '<ul class="dd-page-items">' + extras.map(t => "<li>" + esc(t) + "</li>").join("") + "</ul>"
+        : "";
+      return {
+        main: main ? '<p class="dd-page-main">' + esc(main) + "</p>" : "",
+        extras: extrasHtml,
+      };
     }
     function fillDailyDishPage(pf) {
       if (!pf || !todayDailyDish) return;
       pf.classList.add("book-daily-dish");
       pf.classList.remove("book-cover");
-      const rowsHtml = dailyDishRowHtml();
-      if (!rowsHtml) return;
+      const body = dailyDishBodyHtml();
+      if (!body.main && !body.extras) return;
       const rawPrice = String(todayDailyDish.price || "").trim();
       const numPrice = Number(String(rawPrice).replace(",", "."));
+      const logoSrc = coverLogoSrc();
       const priceHtml = rawPrice && Number.isFinite(numPrice) && numPrice > 0
-        ? '<p class="dd-page-price">' + esc(money(numPrice)) + "</p>"
+        ? '<div class="dd-page-price-box">' +
+          '<span class="dd-page-price-label">' + esc(guestT("dailyDishPriceLabel")) + "</span>" +
+          '<span class="dd-page-price-val">' + esc(money(numPrice)) + "</span></div>"
         : "";
       const inCart = cart.some(l => l.item && String(l.item.id) === "guest-daily-dish");
       pf.innerHTML =
         '<div class="book-daily-dish-inner">' +
+        '<div class="dd-page-logo" aria-hidden="true">' +
+        '<img class="guest-brand-banner-img" alt="Tonino" draggable="false" decoding="async" src="' + esc(logoSrc) + '" /></div>' +
         '<p class="dd-page-kicker">' + esc(guestT("dailyDishToday")) + "</p>" +
         '<h2 class="dd-page-title">' + esc(guestT("dailyDishTitle")) + "</h2>" +
-        '<ul class="dd-page-list">' + rowsHtml + "</ul>" +
+        body.main +
+        body.extras +
         priceHtml +
         '<button type="button" class="dd-page-order' + (inCart ? " in-cart" : "") + '" data-dd-order="1">' +
         esc(inCart ? ("✓ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
-        "</button></div>";
+        "</button>" +
+        '<p class="dd-page-hint">' + esc(guestT("dailyDishToMenu")) + "</p></div>";
       const btn = pf.querySelector("[data-dd-order]");
       if (btn) {
         btn.onclick = function (e) {
@@ -5465,8 +5497,7 @@
       const bar = document.getElementById("menuCategoryBar");
       if (!bar) return;
       const kind = spreadKind(cur);
-      const showBar = !navLocked() && (kind === "menu" || kind === "daily-dish") &&
-        (menuPageCount > 0 || hasDailyDishPackage());
+      const showBar = !navLocked() && kind === "menu" && menuPageCount > 1;
       syncMenuTopDock(showBar);
       if (!showBar) {
         syncCategoryDock(null);
