@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v137: unlock coach then go daily dish first -->
+  <!-- guest-table-ui-v140: daily dish always visible (no hour window) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
@@ -2633,6 +2633,14 @@
       width:100%;height:auto;display:block;border-radius:10px;
       box-shadow:0 6px 20px rgba(120,70,10,.22);
     }
+    .dd-page-photo{
+      flex:0 0 auto;width:min(92%,300px);margin:0 auto 12px;
+      border-radius:14px;overflow:hidden;
+      box-shadow:0 8px 24px rgba(80,50,10,.28);
+    }
+    .dd-page-photo img{
+      width:100%;max-height:min(42vw,200px);object-fit:cover;display:block;
+    }
     .dd-page-kicker{
       margin:0 0 2px;
       font-size:11px;font-weight:800;letter-spacing:.1em;
@@ -2691,7 +2699,8 @@
       color:#8a5a10;opacity:.75;
     }
     #ice-cream-sheet{z-index:1105;}
-    #ice-cream-sheet .ice-sheet-card{
+    #daily-dish-sheet{z-index:1104;}
+    #ice-cream-sheet .ice-sheet-card,#daily-dish-sheet .ice-sheet-card{
       width:min(420px,100vw);max-height:min(92dvh,720px);
       display:flex;flex-direction:column;
       background:linear-gradient(165deg,#2a1608,#4a2a12 45%,#1a0e04);
@@ -2701,7 +2710,7 @@
       box-shadow:0 -10px 50px rgba(200,134,10,.25);
       color:#fff8e8;pointer-events:auto;
     }
-    #ice-cream-sheet.show .ice-sheet-card{transform:translateY(0);}
+    #ice-cream-sheet.show .ice-sheet-card,#daily-dish-sheet.show .ice-sheet-card{transform:translateY(0);}
     .ice-sheet-title{
       text-align:center;font-size:20px;font-weight:900;color:#ffd54f;
       margin:0 0 10px;flex-shrink:0;
@@ -2892,11 +2901,11 @@
     .hotspot:active .add-pin{filter:brightness(.95);}
 
     .hotspot:active .price-cover{transform:scale(.93);filter:brightness(.95);}
-    #item-popup,#line-note-sheet,#ice-cream-sheet{
+    #item-popup,#line-note-sheet,#ice-cream-sheet,#daily-dish-sheet{
       position:fixed;inset:0;z-index:1000;display:flex;align-items:flex-end;justify-content:center;
       opacity:0;pointer-events:none;transition:opacity .25s;background:rgba(0,0,0,0);
     }
-    #item-popup.show,#line-note-sheet.show,#ice-cream-sheet.show{opacity:1;pointer-events:all;background:rgba(0,0,0,.65);}
+    #item-popup.show,#line-note-sheet.show,#ice-cream-sheet.show,#daily-dish-sheet.show{opacity:1;pointer-events:all;background:rgba(0,0,0,.65);}
     #line-note-sheet{z-index:1100;}
     #line-note-sheet .line-note-card{
       width:min(420px,100vw);background:linear-gradient(160deg,#1f0c00,#2d1400);
@@ -3340,7 +3349,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v137</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v140</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -3544,6 +3553,17 @@
     </div>
   </div>
 
+  <div id="daily-dish-sheet" aria-hidden="true">
+    <div class="ice-sheet-card">
+      <div class="ice-sheet-title" id="ddSheetTitle">الطبق اليومي</div>
+      <div class="ice-sheet-list" id="ddSheetList"></div>
+      <div class="popup-actions">
+        <button type="button" class="popup-close" id="ddSheetCancel">إلغاء</button>
+        <button type="button" class="popup-add" id="ddSheetConfirm">أضف للطلب</button>
+      </div>
+    </div>
+  </div>
+
   <div id="menu-panel">
     <div class="menu-hd">
       <div><div class="menu-title" id="i18n-menu-title">📋 قائمة الأطباق</div><div class="menu-sub" id="i18n-menu-sub">ابحث واطلب من أي صفحة</div></div>
@@ -3631,6 +3651,15 @@
       dailyDishOrder: "اختر هذا الطبق",
       dailyDishToMenu: "المينو الكامل",
       dailyDishPriceLabel: "السعر",
+      dailyDishPickTitle: "اختر تفاصيل الطبق",
+      dailyDishPickDessert: "اختر الحلو",
+      dailyDishPickDrink: "اختر المشروب",
+      dailyDishPickTea: "هل تريد الشاي؟",
+      dailyDishTeaYes: "نعم — شاي",
+      dailyDishTeaNo: "بدون شاي",
+      dailyDishTeaIncluded: "شاي ضمن العرض",
+      dailyDishPickRequired: "اختر كل الخيارات",
+      dailyDishAddToCart: "أضف للطلب",
       iceCreamChip: "بوظة",
       iceCreamTitle: "البوظة",
       iceCreamFlavor: "النكهة",
@@ -3775,6 +3804,15 @@
       dailyDishOrder: "Bu yemeği seç",
       dailyDishToMenu: "Menüye geç",
       dailyDishPriceLabel: "Fiyat",
+      dailyDishPickTitle: "Menü seçimleri",
+      dailyDishPickDessert: "Tatlı seçin",
+      dailyDishPickDrink: "İçecek seçin",
+      dailyDishPickTea: "Çay ister misiniz?",
+      dailyDishTeaYes: "Evet — çay",
+      dailyDishTeaNo: "Çaysız",
+      dailyDishTeaIncluded: "Çay ikram",
+      dailyDishPickRequired: "Tüm seçimleri yapın",
+      dailyDishAddToCart: "Siparişe ekle",
       iceCreamChip: "Dondurma",
       iceCreamTitle: "Dondurma",
       iceCreamFlavor: "Çeşit",
@@ -3919,6 +3957,15 @@
       dailyDishOrder: "Choose this dish",
       dailyDishToMenu: "Full menu",
       dailyDishPriceLabel: "Price",
+      dailyDishPickTitle: "Choose your options",
+      dailyDishPickDessert: "Choose dessert",
+      dailyDishPickDrink: "Choose drink",
+      dailyDishPickTea: "Would you like tea?",
+      dailyDishTeaYes: "Yes — tea",
+      dailyDishTeaNo: "No tea",
+      dailyDishTeaIncluded: "Tea included",
+      dailyDishPickRequired: "Please complete all choices",
+      dailyDishAddToCart: "Add to order",
       iceCreamChip: "Ice cream",
       iceCreamTitle: "Ice cream",
       iceCreamFlavor: "Flavor",
@@ -4995,6 +5042,9 @@
     let dailySoupLabelSpot = null;
     let todayDailyDish = null;
     let dailyDishSeen = false;
+    let dailyDishShowFrom = "12:00";
+    let dailyDishShowTo = "16:00";
+    let dailyDishGuestAlwaysVisible = true;
     function isSoupMenuItem(it) {
       const n = normName(it && it.name);
       return /gunun\s*corbasi|corbasi|corba|soup|شوربة|شوربه/.test(n);
@@ -5033,11 +5083,42 @@
         return new Date().getHours();
       }
     }
-    /** 12:00–15:59 → open starters / soup page first (when feature on). */
-    function isLunchSpecialWindow() {
+    function parseHmMinutes(hm, defH, defM) {
+      const s = String(hm || "").trim();
+      const m = /^(\d{1,2}):(\d{2})$/.exec(s);
+      if (!m) return defH * 60 + defM;
+      const h = Math.min(23, Math.max(0, Number(m[1])));
+      const min = Math.min(59, Math.max(0, Number(m[2])));
+      return h * 60 + min;
+    }
+    function istanbulMinutesNow() {
+      try {
+        const parts = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Europe/Istanbul",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: false,
+        }).formatToParts(new Date());
+        const h = Number(parts.find(p => p.type === "hour")?.value);
+        const min = Number(parts.find(p => p.type === "minute")?.value);
+        if (Number.isFinite(h) && Number.isFinite(min)) return h * 60 + min;
+      } catch (_) {}
+      const d = new Date();
+      return d.getHours() * 60 + d.getMinutes();
+    }
+    /** Guest daily dish — 24/7 when API says always visible (trial default). */
+    function isDailyDishGuestWindow() {
       if (!dailySoupFeatureOn) return false;
-      const h = istanbulHourNow();
-      return h >= 12 && h < 16;
+      if (dailyDishGuestAlwaysVisible !== false) return hasDailyDishPackage();
+      const start = parseHmMinutes(dailyDishShowFrom, 12, 0);
+      const end = parseHmMinutes(dailyDishShowTo, 16, 0);
+      const cur = istanbulMinutesNow();
+      if (start <= end) return cur >= start && cur < end;
+      return cur >= start || cur < end;
+    }
+    /** Lunch window → open soup/starter page when daily dish page is off. */
+    function isLunchSpecialWindow() {
+      return isDailyDishGuestWindow();
     }
     function defaultEntryMenuSpreadIdx() {
       const dd = spreadIdxForKind("daily-dish");
@@ -5057,8 +5138,12 @@
           soup: String(dish.soup || name || "").trim(),
           sides: String(dish.sides || "").trim(),
           dessert: String(dish.dessert || "").trim(),
+          dessert2: String(dish.dessert2 || "").trim(),
           drink: String(dish.drink || "").trim(),
+          drink2: String(dish.drink2 || "").trim(),
+          teaOffer: String(dish.teaOffer || "نعم").trim(),
           price: String(dish.price || "").trim(),
+          imageUrl: String(dish.imageUrl || "").trim(),
         };
         if (!todayDailyDish.main && !todayDailyDish.soup) todayDailyDish = null;
       } else {
@@ -5080,17 +5165,29 @@
       refreshDailyDishPagesInBook();
       scheduleHotspotRelayout();
     }
+    function dailyDishOptionList(primary, secondary) {
+      return [primary, secondary].map(function (s) { return String(s || "").trim(); }).filter(Boolean);
+    }
+    function formatDailyDishChoiceLine(label, opt1, opt2) {
+      const opts = dailyDishOptionList(opt1, opt2);
+      if (!opts.length) return "";
+      if (opts.length === 1) return label + ": " + opts[0];
+      return label + ": " + opts.join(" / ");
+    }
     function dailyDishBodyHtml() {
       if (!todayDailyDish) return { main: "", extras: "" };
       const main = String(todayDailyDish.main || "").trim();
       const extras = [
-        todayDailyDish.soup,
+        todayDailyDish.soup ? guestT("dailyDishSoup") + ": " + todayDailyDish.soup : "",
         todayDailyDish.sides,
-        todayDailyDish.dessert,
-        todayDailyDish.drink,
-      ].map(s => String(s || "").trim()).filter(Boolean);
-      const extrasHtml = extras.length
-        ? '<ul class="dd-page-items">' + extras.map(t => "<li>" + esc(t) + "</li>").join("") + "</ul>"
+        formatDailyDishChoiceLine(guestT("dailyDishDessert"), todayDailyDish.dessert, todayDailyDish.dessert2),
+        formatDailyDishChoiceLine(guestT("dailyDishDrink"), todayDailyDish.drink, todayDailyDish.drink2),
+      ];
+      const tea = String(todayDailyDish.teaOffer || "نعم").trim();
+      if (tea === "نعم") extras.push(guestT("dailyDishTeaIncluded"));
+      else if (tea === "اختياري") extras.push(guestT("dailyDishPickTea"));
+      const extrasHtml = extras.map(function (t) { return String(t || "").trim(); }).filter(Boolean).length
+        ? '<ul class="dd-page-items">' + extras.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>"
         : "";
       return {
         main: main ? '<p class="dd-page-main">' + esc(main) + "</p>" : "",
@@ -5106,6 +5203,11 @@
       const rawPrice = String(todayDailyDish.price || "").trim();
       const numPrice = Number(String(rawPrice).replace(",", "."));
       const logoSrc = coverLogoSrc();
+      const dishImg = String(todayDailyDish.imageUrl || "").trim();
+      const dishImgFixed = dishImg ? fixImgUrl(dishImg) : "";
+      const photoHtml = dishImgFixed
+        ? '<div class="dd-page-photo"><img alt="" draggable="false" decoding="async" src="' + esc(dishImgFixed) + '" /></div>'
+        : "";
       const priceHtml = rawPrice && Number.isFinite(numPrice) && numPrice > 0
         ? '<div class="dd-page-price-box">' +
           '<span class="dd-page-price-label">' + esc(guestT("dailyDishPriceLabel")) + "</span>" +
@@ -5118,6 +5220,7 @@
         '<img class="guest-brand-banner-img" alt="Tonino" draggable="false" decoding="async" src="' + esc(logoSrc) + '" /></div>' +
         '<p class="dd-page-kicker">' + esc(guestT("dailyDishToday")) + "</p>" +
         '<h2 class="dd-page-title">' + esc(guestT("dailyDishTitle")) + "</h2>" +
+        photoHtml +
         body.main +
         body.extras +
         priceHtml +
@@ -5153,18 +5256,135 @@
         screen.hidden = true;
       }
     }
-    function dailyDishCartNote() {
-      if (!todayDailyDish) return "";
-      return [
-        todayDailyDish.main,
-        todayDailyDish.soup,
-        todayDailyDish.sides,
-        todayDailyDish.dessert,
-        todayDailyDish.drink,
-      ].filter(Boolean).join(" · ");
+    let ddSheetPick = { dessert: "", drink: "", tea: null };
+    function defaultDailyDishPick() {
+      const desserts = dailyDishOptionList(todayDailyDish && todayDailyDish.dessert, todayDailyDish && todayDailyDish.dessert2);
+      const drinks = dailyDishOptionList(todayDailyDish && todayDailyDish.drink, todayDailyDish && todayDailyDish.drink2);
+      const tea = String((todayDailyDish && todayDailyDish.teaOffer) || "نعم").trim();
+      return {
+        dessert: desserts.length === 1 ? desserts[0] : "",
+        drink: drinks.length === 1 ? drinks[0] : "",
+        tea: tea === "نعم" ? true : tea === "لا" ? false : null,
+      };
     }
-    function orderDailyDish() {
+    function needsDailyDishSheet() {
+      if (!todayDailyDish) return false;
+      const desserts = dailyDishOptionList(todayDailyDish.dessert, todayDailyDish.dessert2);
+      const drinks = dailyDishOptionList(todayDailyDish.drink, todayDailyDish.drink2);
+      const tea = String(todayDailyDish.teaOffer || "نعم").trim();
+      return desserts.length > 1 || drinks.length > 1 || tea === "اختياري";
+    }
+    function dailyDishSheetValid(pick) {
+      if (!todayDailyDish || !pick) return false;
+      const desserts = dailyDishOptionList(todayDailyDish.dessert, todayDailyDish.dessert2);
+      const drinks = dailyDishOptionList(todayDailyDish.drink, todayDailyDish.drink2);
+      const tea = String(todayDailyDish.teaOffer || "نعم").trim();
+      if (desserts.length > 1 && !pick.dessert) return false;
+      if (drinks.length > 1 && !pick.drink) return false;
+      if (tea === "اختياري" && pick.tea !== true && pick.tea !== false) return false;
+      return true;
+    }
+    function buildDailyDishCartNote(pick) {
+      if (!todayDailyDish) return "";
+      const p = pick || defaultDailyDishPick();
+      const parts = [todayDailyDish.main, todayDailyDish.soup, todayDailyDish.sides];
+      const desserts = dailyDishOptionList(todayDailyDish.dessert, todayDailyDish.dessert2);
+      const drinks = dailyDishOptionList(todayDailyDish.drink, todayDailyDish.drink2);
+      const dessertVal = p.dessert || (desserts.length === 1 ? desserts[0] : "");
+      const drinkVal = p.drink || (drinks.length === 1 ? drinks[0] : "");
+      if (dessertVal) parts.push(guestT("dailyDishDessert") + ": " + dessertVal);
+      if (drinkVal) parts.push(guestT("dailyDishDrink") + ": " + drinkVal);
+      const tea = String(todayDailyDish.teaOffer || "نعم").trim();
+      if (tea === "نعم" || p.tea === true) parts.push(guestT("dailyDishTeaYes"));
+      else if (tea === "اختياري" && p.tea === false) parts.push(guestT("dailyDishTeaNo"));
+      return parts.filter(Boolean).join(" · ");
+    }
+    function closeDailyDishSheet() {
+      const sheet = document.getElementById("daily-dish-sheet");
+      if (sheet) {
+        sheet.classList.remove("show");
+        sheet.setAttribute("aria-hidden", "true");
+      }
+    }
+    function renderDailyDishSheet() {
+      const list = document.getElementById("ddSheetList");
+      const title = document.getElementById("ddSheetTitle");
+      const cancelBtn = document.getElementById("ddSheetCancel");
+      const confirmBtn = document.getElementById("ddSheetConfirm");
+      if (title) title.textContent = guestT("dailyDishPickTitle");
+      if (cancelBtn) cancelBtn.textContent = guestT("popupClose");
+      if (confirmBtn) {
+        confirmBtn.textContent = guestT("dailyDishAddToCart");
+        confirmBtn.disabled = !dailyDishSheetValid(ddSheetPick);
+      }
+      if (!list || !todayDailyDish) return;
+      list.innerHTML = "";
+      const desserts = dailyDishOptionList(todayDailyDish.dessert, todayDailyDish.dessert2);
+      const drinks = dailyDishOptionList(todayDailyDish.drink, todayDailyDish.drink2);
+      const tea = String(todayDailyDish.teaOffer || "نعم").trim();
+      function appendChipSection(label, opts, field) {
+        if (opts.length <= 1) return;
+        const sec = document.createElement("div");
+        sec.className = "ice-sec";
+        sec.innerHTML = '<div class="ice-sec-label">' + esc(label) + "</div><div class=\"ice-flavors\"></div>";
+        const wrap = sec.querySelector(".ice-flavors");
+        opts.forEach(function (opt) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "ice-chip" + (ddSheetPick[field] === opt ? " active" : "");
+          btn.textContent = opt;
+          btn.onclick = function (e) {
+            e.stopPropagation();
+            ddSheetPick[field] = opt;
+            renderDailyDishSheet();
+          };
+          wrap.appendChild(btn);
+        });
+        list.appendChild(sec);
+      }
+      appendChipSection(guestT("dailyDishPickDessert"), desserts, "dessert");
+      appendChipSection(guestT("dailyDishPickDrink"), drinks, "drink");
+      if (tea === "اختياري") {
+        const sec = document.createElement("div");
+        sec.className = "ice-sec";
+        sec.innerHTML = '<div class="ice-sec-label">' + esc(guestT("dailyDishPickTea")) + "</div><div class=\"ice-flavors\"></div>";
+        const wrap = sec.querySelector(".ice-flavors");
+        [
+          { val: true, label: guestT("dailyDishTeaYes") },
+          { val: false, label: guestT("dailyDishTeaNo") },
+        ].forEach(function (opt) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "ice-chip" + (ddSheetPick.tea === opt.val ? " active" : "");
+          btn.textContent = opt.label;
+          btn.onclick = function (e) {
+            e.stopPropagation();
+            ddSheetPick.tea = opt.val;
+            renderDailyDishSheet();
+          };
+          wrap.appendChild(btn);
+        });
+        list.appendChild(sec);
+      }
+    }
+    function openDailyDishSheet() {
+      if (!coachDone || !todayDailyDish) return;
+      ddSheetPick = defaultDailyDishPick();
+      renderDailyDishSheet();
+      const sheet = document.getElementById("daily-dish-sheet");
+      if (sheet) {
+        sheet.classList.add("show");
+        sheet.setAttribute("aria-hidden", "false");
+      }
+      if (navigator.vibrate) navigator.vibrate(12);
+    }
+    function confirmDailyDishAdd(pick) {
       if (!todayDailyDish || !coachDone) return;
+      const usePick = pick || ddSheetPick;
+      if (needsDailyDishSheet() && !dailyDishSheetValid(usePick)) {
+        showToast(guestT("dailyDishPickRequired"));
+        return;
+      }
       const rawPrice = String(todayDailyDish.price || "0").replace(",", ".");
       const numPrice = Number(rawPrice);
       const item = {
@@ -5174,10 +5394,22 @@
         price: String(Number.isFinite(numPrice) && numPrice > 0 ? Math.round(numPrice) : 0),
         category: "Günün Yemeği",
       };
-      addToCart(item, { flash: true, note: dailyDishCartNote() });
+      addToCart(item, { flash: true, note: buildDailyDishCartNote(usePick) });
       dailyDishSeen = true;
+      closeDailyDishSheet();
       hideDailyDishScreen();
       refreshDailyDishPagesInBook();
+    }
+    function dailyDishCartNote() {
+      return buildDailyDishCartNote(defaultDailyDishPick());
+    }
+    function orderDailyDish() {
+      if (!todayDailyDish || !coachDone) return;
+      if (needsDailyDishSheet()) {
+        openDailyDishSheet();
+        return;
+      }
+      confirmDailyDishAdd(defaultDailyDishPick());
     }
     function continueFromDailyDish() {
       dailyDishSeen = true;
@@ -7440,6 +7672,19 @@
       }
     })();
 
+    (function initDailyDishSheet() {
+      const sheet = document.getElementById("daily-dish-sheet");
+      const cancel = document.getElementById("ddSheetCancel");
+      const confirm = document.getElementById("ddSheetConfirm");
+      if (cancel) cancel.onclick = function (e) { e.stopPropagation(); closeDailyDishSheet(); };
+      if (confirm) confirm.onclick = function (e) { e.stopPropagation(); confirmDailyDishAdd(); };
+      if (sheet) {
+        sheet.addEventListener("click", function (e) {
+          if (e.target === sheet) closeDailyDishSheet();
+        });
+      }
+    })();
+
     function showToast(msg) {
       const t = document.getElementById("toast");
       t.textContent = msg;
@@ -7826,6 +8071,10 @@
         (data.book && data.book.dailySoupLabelSpot) || null,
         data.dailyDish || null
       );
+      if (data.dailyDishShowFrom) dailyDishShowFrom = String(data.dailyDishShowFrom);
+      if (data.dailyDishShowTo) dailyDishShowTo = String(data.dailyDishShowTo);
+      if (data.dailyDishGuestAlwaysVisible === false) dailyDishGuestAlwaysVisible = false;
+      else dailyDishGuestAlwaysVisible = true;
       document.title = shopName + " — " + guestT("table") + " " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
       document.getElementById("tblLabel").textContent = section + " · " + guestT("table") + " " + tableNum;
