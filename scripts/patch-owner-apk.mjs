@@ -39,6 +39,7 @@ const CDN_BASE = "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main
 
 const FILES = [
   ["js/owner-update-guard.js", "assets/public/owner-update-guard.js"],
+  ["js/owner-api-lan-force.js", "assets/public/owner-api-lan-force.js"],
   ["js/owner-tablet-clone.js", "assets/public/owner-tablet-clone.js"],
   ["js/owner-login-fix.js", "assets/public/owner-login-fix.js"],
   ["js/owner-connection-flex.js", "assets/public/owner-connection-flex.js"],

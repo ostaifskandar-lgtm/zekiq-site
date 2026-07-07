@@ -61,6 +61,10 @@
       localStorage.removeItem("tonino-owner-network-locked");
       localStorage.removeItem("tonino-owner-locked-host");
       localStorage.removeItem("tonino-owner-remote-shell");
+      var prevApi = (localStorage.getItem("tonino-owner-working-api") || "").trim();
+      if (prevApi.startsWith("https://")) {
+        localStorage.removeItem("tonino-owner-session-token");
+      }
       localStorage.setItem("tonino-owner-native-apk", "1");
       localStorage.setItem("tonino-owner-standalone-v1", "1");
       localStorage.setItem("zekiq-manager-native", "1");

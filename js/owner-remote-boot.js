@@ -6,6 +6,7 @@
   var CDN = "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/js/";
   var SCRIPTS = [
     "owner-update-guard.js",
+    "owner-api-lan-force.js",
     "owner-tablet-clone.js",
     "owner-login-fix.js",
     "owner-connection-flex.js",
@@ -17,7 +18,7 @@
   function next() {
     if (i >= SCRIPTS.length) return;
     var s = document.createElement("script");
-    s.src = CDN + SCRIPTS[i] + "?v=223";
+    s.src = CDN + SCRIPTS[i] + "?v=224";
     s.async = false;
     s.onload = s.onerror = function () {
       i += 1;
@@ -26,7 +27,7 @@
     (document.head || document.documentElement).appendChild(s);
   }
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.2.2";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.2.4";
 
   var LAN = "http://192.168.1.25:3000";
   var TUNNEL = "https://tonino.zekiqmenu.com";
@@ -46,6 +47,10 @@
       localStorage.setItem("tonino-owner-remote-base", TUNNEL);
       localStorage.setItem("tonino-owner-remote-for-ip", "192.168.1.25");
       localStorage.setItem("tonino-owner-shop-name", "Tonino");
+      var prev = (localStorage.getItem("tonino-owner-working-api") || "").trim();
+      if (prev.startsWith("https://")) {
+        localStorage.removeItem("tonino-owner-session-token");
+      }
       localStorage.setItem("tonino-owner-server-profiles", JSON.stringify([{
         id: "cashier", label: "Tonino", server: LAN, savedAt: Date.now()
       }]));

@@ -52,6 +52,22 @@
   function rewriteApiUrl(url) {
     var u = String(url || "");
     if (!u.startsWith("http")) return u;
+    if (lsGet("tonino-owner-lan-lock") === "1" || lsGet("tonino-owner-tablet-clone") === "1") {
+      if (window.__zekiqResolveOwnerLan && u.indexOf("/api/") >= 0) {
+        var lan = window.__zekiqResolveOwnerLan();
+        if (lan && !isPrivateLanUrl(u)) {
+          try {
+            var parsed = new URL(u);
+            var base = new URL(lan);
+            parsed.protocol = base.protocol;
+            parsed.hostname = base.hostname;
+            parsed.port = base.port;
+            return parsed.toString();
+          } catch (e) {}
+        }
+      }
+      return u;
+    }
     if (!shouldRewriteToTunnel()) return u;
     if (u.indexOf("/api/owner/login") < 0 &&
         u.indexOf("/api/owner/config") < 0 &&

@@ -3,7 +3,7 @@
 
   if (typeof window === "undefined") return;
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.0.3";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.2.4";
 
   function isOwnerApp() {
     try {
@@ -52,15 +52,38 @@
     try { return localStorage.getItem(SESSION_KEY) || ""; } catch (e) { return ""; }
   }
 
+  function isMirrorNative() {
+    try {
+      return localStorage.getItem("tonino-owner-tablet-clone") === "1" ||
+        localStorage.getItem("tonino-owner-lan-lock") === "1";
+    } catch (e) { return false; }
+  }
+
+  function isPrivateLanUrl(u) {
+    try {
+      var h = new URL(u).hostname;
+      return /^(192\.168\.|10\.|127\.|localhost$|172\.(1[6-9]|2\d|3[01])\.)/.test(h);
+    } catch (e) { return false; }
+  }
+
   function baseUrl() {
-    var keys = ["tonino-owner-working-api", "tonino-owner-remote-base", "tonino-owner-server"];
+    if (isMirrorNative() && window.__zekiqResolveOwnerLan) {
+      return window.__zekiqResolveOwnerLan();
+    }
+    var keys = isMirrorNative()
+      ? ["tonino-owner-working-api", "tonino-owner-active-api", "tonino-owner-server"]
+      : ["tonino-owner-working-api", "tonino-owner-remote-base", "tonino-owner-server"];
     for (var i = 0; i < keys.length; i++) {
       try {
         var v = (localStorage.getItem(keys[i]) || "").trim().replace(/\/+$/, "");
-        if (v.startsWith("http")) return v;
+        if (v.startsWith("http")) {
+          if (isMirrorNative() && v.startsWith("https://")) continue;
+          if (isMirrorNative() && !isPrivateLanUrl(v)) continue;
+          return v;
+        }
       } catch (e) {}
     }
-    return "https://tonino.zekiqmenu.com";
+    return isMirrorNative() ? "http://192.168.1.25:3000" : "https://tonino.zekiqmenu.com";
   }
 
   function money(n) {
@@ -508,6 +531,7 @@
   }
 
   function setButtonsVisible(show) {
+    if (isMirrorNative()) show = false;
     ["zekiq-tables-fab", "zekiq-tables-header-btn", "zekiq-tables-nav-btn"].forEach(function (id) {
       var el = document.getElementById(id);
       if (!el) return;
