@@ -16,26 +16,12 @@
 
   if (!isOwnerApp()) return;
 
-  var KEYS = {
-    server: "tonino-owner-server",
-    workingApi: "tonino-owner-working-api",
-    activeApi: "tonino-owner-active-api",
-    remoteBase: "tonino-owner-remote-base",
-    linkMode: "tonino-owner-link-mode",
-    workingVia: "tonino-owner-working-via",
-    manualTarget: "tonino-owner-manual-target"
-  };
-
   function trimUrl(u) {
     return String(u || "").trim().replace(/\/+$/, "");
   }
 
   function lsGet(k) {
     try { return localStorage.getItem(k) || ""; } catch (e) { return ""; }
-  }
-
-  function lsSet(k, v) {
-    try { localStorage.setItem(k, String(v).trim()); } catch (e) {}
   }
 
   function isPrivateLanUrl(u) {
@@ -46,50 +32,24 @@
   }
 
   function getTunnelUrl() {
-    var order = [KEYS.remoteBase, KEYS.workingApi, KEYS.activeApi, KEYS.server];
+    var order = ["tonino-owner-remote-base", "tonino-owner-working-api", "tonino-owner-active-api", "tonino-owner-server"];
     for (var i = 0; i < order.length; i++) {
       var v = trimUrl(lsGet(order[i]));
       if (v.startsWith("https://")) return v;
     }
-    try {
-      var profiles = JSON.parse(lsGet("tonino-owner-server-profiles") || "[]");
-      if (profiles[0] && profiles[0].server && String(profiles[0].server).startsWith("https://")) {
-        return trimUrl(profiles[0].server);
-      }
-    } catch (e) {}
     return "";
   }
 
-  function forceTunnelForLogin() {
-    var tunnel = getTunnelUrl();
-    if (!tunnel.startsWith("https://")) return false;
-    var server = trimUrl(lsGet(KEYS.server));
-    if (!isPrivateLanUrl(server) && server.startsWith("https://")) return false;
-    lsSet(KEYS.server, tunnel);
-    lsSet(KEYS.workingApi, tunnel);
-    lsSet(KEYS.activeApi, tunnel);
-    lsSet(KEYS.linkMode, "remote");
-    lsSet(KEYS.workingVia, "remote");
-    lsSet(KEYS.manualTarget, "1");
-    lsSet(KEYS.remoteBase, tunnel);
-    try {
-      var profiles = JSON.parse(lsGet("tonino-owner-server-profiles") || "[]");
-      if (!profiles.length) profiles = [{ id: "cashier", label: "Shop", server: tunnel, savedAt: Date.now() }];
-      else {
-        profiles[0].server = tunnel;
-        profiles[0].savedAt = Date.now();
-      }
-      lsSet("tonino-owner-server-profiles", JSON.stringify(profiles));
-      localStorage.removeItem("tonino-owner-network-locked");
-      localStorage.removeItem("tonino-owner-locked-host");
-    } catch (e) {}
-    window.dispatchEvent(new CustomEvent("tonino-owner-link-changed"));
-    return true;
+  function shouldRewriteToTunnel() {
+    var mode = lsGet("tonino-owner-link-mode");
+    if (mode === "wifi" || mode === "lan") return false;
+    return mode === "remote" || lsGet("tonino-owner-manual-target") === "1";
   }
 
   function rewriteApiUrl(url) {
     var u = String(url || "");
     if (!u.startsWith("http")) return u;
+    if (!shouldRewriteToTunnel()) return u;
     if (u.indexOf("/api/owner/login") < 0 &&
         u.indexOf("/api/owner/config") < 0 &&
         u.indexOf("/api/trpc/") < 0 &&
@@ -116,14 +76,22 @@
     window.__zekiqLoginFetchPatched = true;
     var orig = window.fetch.bind(window);
     window.fetch = function (input, init) {
-      forceTunnelForLogin();
       var url = typeof input === "string" ? input : (input && input.url) || "";
       var fixed = rewriteApiUrl(url);
       if (fixed !== url) {
         if (typeof input === "string") input = fixed;
         else input = new Request(fixed, input);
       }
-      return orig(input, init);
+      return orig(input, init).then(function (res) {
+        if (String(url).indexOf("/api/owner/login") >= 0 && res && res.ok) {
+          res.clone().json().then(function (j) {
+            if (j && j.sessionToken) {
+              try { localStorage.setItem("tonino-owner-session-token", j.sessionToken); } catch (e) {}
+            }
+          }).catch(function () {});
+        }
+        return res;
+      });
     };
   }
 
@@ -133,41 +101,19 @@
     var Orig = window.XMLHttpRequest;
     window.XMLHttpRequest = function () {
       var xhr = new Orig();
-      var _url = "";
       var _method = "GET";
       xhr.open = (function (open) {
         return function (method, url) {
           _method = method;
-          forceTunnelForLogin();
-          _url = rewriteApiUrl(String(url || ""));
-          return open.call(xhr, _method, _url);
+          url = rewriteApiUrl(String(url || ""));
+          return open.call(xhr, _method, url);
         };
       })(xhr.open);
       return xhr;
     };
   }
 
-  function onLoginScreen() {
-    return !!document.querySelector(".owner-login-compact");
-  }
-
-  function tick() {
-    if (!onLoginScreen()) return;
-    forceTunnelForLogin();
-  }
-
   patchFetch();
   patchXhr();
-  forceTunnelForLogin();
-  setInterval(tick, 800);
-  document.addEventListener("click", function (e) {
-    if (!onLoginScreen()) return;
-    var t = e.target;
-    if (t && (t.closest(".owner-login-compact") || t.closest("button"))) {
-      forceTunnelForLogin();
-    }
-  }, true);
-  document.addEventListener("touchstart", function () {
-    if (onLoginScreen()) forceTunnelForLogin();
-  }, true);
+  if (window.__zekiqRepairOwnerWifi) window.__zekiqRepairOwnerWifi();
 })();

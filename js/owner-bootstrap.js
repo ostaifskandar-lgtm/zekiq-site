@@ -99,18 +99,22 @@
         var port = cfg.port || 3000;
         var lan = ip ? "http://" + ip + ":" + port : "";
         var linkMode = getStored(KEYS.linkMode);
-        var tunnel = trimUrl(getStored(KEYS.remoteBase) || cfg.tunnelUrl || base);
-        var useRemote = linkMode === "remote" || tunnel.startsWith("https://");
+        var tunnel = trimUrl(getStored(KEYS.remoteBase) || cfg.tunnelUrl || "");
+        var useRemote = linkMode === "remote";
+        var profileServer = lan && isPrivateLanUrl(lan) ? lan : (useRemote && tunnel ? tunnel : base);
+        if (useRemote && lan) profileServer = lan;
         var profile = {
           id: "cashier",
           label: cfg.shopName || shopLabel || "Shop",
-          server: (useRemote && tunnel.startsWith("https://")) ? tunnel : (lan || base),
+          server: profileServer,
           savedAt: Date.now()
         };
         try {
           if (ip) localStorage.setItem(KEYS.remoteForIp, ip);
           if (cfg.shopName) localStorage.setItem("tonino-owner-shop-name", cfg.shopName);
-          if (cfg.tunnelUrl) localStorage.setItem(KEYS.remoteBase, trimUrl(cfg.tunnelUrl));
+          if (cfg.tunnelUrl || (tunnel && tunnel.startsWith("https://"))) {
+            localStorage.setItem(KEYS.remoteBase, trimUrl(cfg.tunnelUrl || tunnel));
+          }
           localStorage.setItem(KEYS.profiles, JSON.stringify([profile]));
           if (useRemote && tunnel.startsWith("https://")) {
             localStorage.setItem(KEYS.server, tunnel);
@@ -118,6 +122,12 @@
             localStorage.setItem(KEYS.activeApi, tunnel);
             localStorage.setItem(KEYS.linkMode, "remote");
             localStorage.setItem(KEYS.workingVia, "remote");
+          } else if (lan) {
+            localStorage.setItem(KEYS.server, lan);
+            localStorage.setItem(KEYS.workingApi, lan);
+            localStorage.setItem(KEYS.activeApi, lan);
+            localStorage.setItem(KEYS.linkMode, "wifi");
+            localStorage.setItem(KEYS.workingVia, "lan");
           }
         } catch (e) {}
       })
@@ -135,9 +145,10 @@
         localStorage.setItem(KEYS.profiles, JSON.stringify([{
           id: "cashier",
           label: "Shop",
-          server: tunnel,
+          server: lan || ("http://" + (getStored(KEYS.remoteForIp) || "192.168.1.25") + ":3000"),
           savedAt: Date.now()
         }]));
+        if (lan) localStorage.setItem(KEYS.remoteForIp, lanHostFromUrl(lan));
         localStorage.setItem(KEYS.server, tunnel);
         localStorage.setItem(KEYS.linkMode, "remote");
         localStorage.setItem(KEYS.workingApi, tunnel);
@@ -256,6 +267,7 @@
       '<div class="z-btns">' +
       '<button type="button" class="z-remote" id="zekiq-save-remote">حفظ + 4G</button>' +
       '<button type="button" class="z-wifi" id="zekiq-save-wifi">حفظ + WiFi</button>' +
+      '<button type="button" class="z-wifi" id="zekiq-restore-wifi" style="grid-column:1/-1;background:#166534;color:#fff;margin-top:4px">🔧 استعادة WiFi / كابل</button>' +
       '</div>' +
       '<div class="z-status" id="zekiq-dual-status">احفظ ثم أدخل PIN — يعمل مع أي كاشير</div>';
 
@@ -292,6 +304,15 @@
       statusEl.textContent = "جاري الحفظ…";
       saveDualConfig("wifi", tunnelEl.value, lanEl.value).then(function () {
         statusEl.textContent = "✓ تم — WiFi · أدخل PIN الآن";
+        renderConnBanner();
+      });
+    };
+    document.getElementById("zekiq-restore-wifi").onclick = function () {
+      var lan = lanEl.value.trim() || profileLanFromStorage() || "192.168.1.25:3000";
+      statusEl.textContent = "جاري استعادة WiFi…";
+      saveDualConfig("wifi", tunnelEl.value, lan).then(function () {
+        if (window.__zekiqPersistOwnerLan) window.__zekiqPersistOwnerLan(normalizeLanInput(lan, defaultCfg()));
+        statusEl.textContent = "✓ تم استعادة WiFi — أعد فتح التطبيق";
         renderConnBanner();
       });
     };
@@ -350,6 +371,15 @@
   }
 
   function smartConnectOnBoot() {
+    var mode = getStored(KEYS.linkMode);
+    if (mode === "wifi" || mode === "lan") {
+      if (window.__zekiqRepairOwnerWifi) window.__zekiqRepairOwnerWifi();
+      if (window.__zekiqPersistOwnerLan && profileLanFromStorage()) {
+        window.__zekiqPersistOwnerLan(profileLanFromStorage());
+      }
+      return Promise.resolve(false);
+    }
+
     var api = trimUrl(getStored(KEYS.workingApi) || getStored(KEYS.server));
     var tunnel = trimUrl(getStored(KEYS.remoteBase));
     if (!api || !isPrivateLanUrl(api)) return Promise.resolve(false);
@@ -359,19 +389,33 @@
       if (net === "cellular" || net === "none") {
         return switchToTunnel(tunnel, "cellular");
       }
-      if (net === "wifi" || net === "unknown") {
-        return probeApi(api, 1800).then(function (ok) {
-          if (!ok) return switchToTunnel(tunnel, "lan-unreachable");
+      return probeApi(api, 3500).then(function (ok) {
+        if (ok) {
+          if (window.__zekiqPersistOwnerLan) window.__zekiqPersistOwnerLan(api);
           return false;
-        });
-      }
-      return false;
+        }
+        if (net === "wifi" || net === "unknown" || net === "ethernet") {
+          return false;
+        }
+        return switchToTunnel(tunnel, "lan-unreachable");
+      });
     }).then(function (switched) {
       if (switched) {
         try { window.location.reload(); } catch (e) {}
       }
       return switched;
     });
+  }
+
+  function profileLanFromStorage() {
+    try {
+      var profiles = JSON.parse(getStored(KEYS.profiles) || "[]");
+      var s = profiles[0] && profiles[0].server ? trimUrl(profiles[0].server) : "";
+      if (s.startsWith("http://") && isPrivateLanUrl(s)) return s;
+    } catch (e) {}
+    var rip = getStored(KEYS.remoteForIp);
+    if (rip) return "http://" + rip + ":3000";
+    return "";
   }
 
   function watchConnectionError() {
@@ -381,9 +425,18 @@
       if (done) return;
       var body = document.body && document.body.innerText || "";
       if (body.indexOf("تعذر الاتصال") < 0 && body.indexOf("Connection failed") < 0) return;
-      var api = trimUrl(getStored(KEYS.workingApi) || getStored(KEYS.server));
+      var mode = getStored(KEYS.linkMode);
+      var lan = profileLanFromStorage();
       var tunnel = trimUrl(getStored(KEYS.remoteBase));
-      if (!isPrivateLanUrl(api) || !tunnel) {
+      if (mode === "wifi" || mode === "lan") {
+        if (lan && window.__zekiqPersistOwnerLan) {
+          window.__zekiqPersistOwnerLan(lan);
+          done = true;
+          setTimeout(function () { try { window.location.reload(); } catch (e) {} }, 400);
+        }
+        return;
+      }
+      if (!tunnel) {
         renderPanel();
         return;
       }
@@ -393,7 +446,7 @@
       }
     }
     new MutationObserver(tryFix).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
-    setInterval(tryFix, 2000);
+    setInterval(tryFix, 3000);
   }
 
   function boot() {

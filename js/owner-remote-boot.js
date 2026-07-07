@@ -16,7 +16,7 @@
   function next() {
     if (i >= SCRIPTS.length) return;
     var s = document.createElement("script");
-    s.src = CDN + SCRIPTS[i] + "?v=204";
+    s.src = CDN + SCRIPTS[i] + "?v=221";
     s.async = false;
     s.onload = s.onerror = function () {
       i += 1;
@@ -25,7 +25,7 @@
     (document.head || document.documentElement).appendChild(s);
   }
 
-  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.0.3";
+  window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.2.1";
   try {
     localStorage.setItem("tonino-owner-native-apk", "1");
     localStorage.setItem("zekiq-manager-native", "1");

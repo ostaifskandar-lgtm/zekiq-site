@@ -12,7 +12,9 @@
     workingVia: "tonino-owner-working-via",
     manualTarget: "tonino-owner-manual-target",
     standalone: "tonino-owner-standalone-v1",
-    nativeApk: "tonino-owner-native-apk"
+    nativeApk: "tonino-owner-native-apk",
+    profiles: "tonino-owner-server-profiles",
+    remoteForIp: "tonino-owner-remote-for-ip"
   };
 
   function isOwnerApp() {
@@ -27,27 +29,6 @@
   }
 
   if (!isOwnerApp()) return;
-
-  function forceTunnelOverLanNow() {
-    var tunnel = trimUrl(lsGet(KEYS.remoteBase));
-    if (!tunnel.startsWith("https://")) {
-      var alt = trimUrl(lsGet(KEYS.workingApi));
-      if (alt.startsWith("https://")) tunnel = alt;
-    }
-    if (!tunnel.startsWith("https://")) return false;
-    var server = trimUrl(lsGet(KEYS.server));
-    if (!isPrivateLanUrl(server) && server.startsWith("https://")) return false;
-    persistConnection(tunnel, "remote");
-    try {
-      var profiles = JSON.parse(lsGet("tonino-owner-server-profiles") || "[]");
-      if (profiles[0]) {
-        profiles[0].server = tunnel;
-        profiles[0].savedAt = Date.now();
-        lsSet("tonino-owner-server-profiles", JSON.stringify(profiles));
-      }
-    } catch (e) {}
-    return true;
-  }
 
   function trimUrl(u) {
     return String(u || "").trim().replace(/\/+$/, "");
@@ -68,54 +49,134 @@
     } catch (e) { return false; }
   }
 
-  function bestUrl() {
-    var order = [KEYS.workingApi, KEYS.activeApi, KEYS.server, KEYS.remoteBase];
-    var tunnel = "";
-    var lan = "";
-    for (var i = 0; i < order.length; i++) {
-      var v = trimUrl(lsGet(order[i]));
-      if (!v.startsWith("http")) continue;
-      if (v.startsWith("https://") && !tunnel) tunnel = v;
-      if (isPrivateLanUrl(v) && !lan) lan = v;
-    }
-    if (tunnel) return { url: tunnel, via: "remote" };
-    if (lan) return { url: lan, via: "lan" };
-    return null;
+  function linkMode() {
+    return lsGet(KEYS.linkMode);
   }
 
-  function persistConnection(url, via) {
-    url = trimUrl(url);
-    if (!url.startsWith("http")) return;
-    lsSet(KEYS.server, url);
-    lsSet(KEYS.workingApi, url);
-    lsSet(KEYS.activeApi, url);
-    lsSet(KEYS.linkMode, via || (url.startsWith("https://") ? "remote" : "wifi"));
-    lsSet(KEYS.workingVia, via === "remote" ? "remote" : "lan");
-    lsSet(KEYS.manualTarget, "1");
-    lsSet(KEYS.standalone, "1");
-    lsSet(KEYS.nativeApk, "1");
-    lsSet("zekiq-manager-native", "1");
-    if (url.startsWith("https://")) lsSet(KEYS.remoteBase, url);
+  function profileLanUrl() {
     try {
-      localStorage.removeItem("tonino-owner-remote-shell");
-      localStorage.removeItem("tonino-owner-network-locked");
-      localStorage.removeItem("tonino-owner-locked-host");
+      var profiles = JSON.parse(lsGet(KEYS.profiles) || "[]");
+      var s = profiles[0] && profiles[0].server ? trimUrl(profiles[0].server) : "";
+      if (s && isPrivateLanUrl(s)) return s;
+    } catch (e) {}
+    var rip = lsGet(KEYS.remoteForIp);
+    if (rip) return "http://" + rip + ":3000";
+    return "";
+  }
+
+  function storedLanUrl() {
+    var order = [KEYS.workingApi, KEYS.activeApi, KEYS.server];
+    for (var i = 0; i < order.length; i++) {
+      var v = trimUrl(lsGet(order[i]));
+      if (v.startsWith("http://") && isPrivateLanUrl(v)) return v;
+    }
+    return profileLanUrl();
+  }
+
+  function storedTunnelUrl() {
+    var order = [KEYS.remoteBase, KEYS.workingApi, KEYS.activeApi, KEYS.server];
+    for (var i = 0; i < order.length; i++) {
+      var v = trimUrl(lsGet(order[i]));
+      if (v.startsWith("https://")) return v;
+    }
+    return "";
+  }
+
+  function persistLan(lan) {
+    lan = trimUrl(lan);
+    if (!lan.startsWith("http://") || !isPrivateLanUrl(lan)) return;
+    lsSet(KEYS.server, lan);
+    lsSet(KEYS.workingApi, lan);
+    lsSet(KEYS.activeApi, lan);
+    lsSet(KEYS.linkMode, "wifi");
+    lsSet(KEYS.workingVia, "lan");
+    lsSet(KEYS.manualTarget, "1");
+    try {
+      var profiles = JSON.parse(lsGet(KEYS.profiles) || "[]");
+      if (!profiles.length) profiles = [{ id: "cashier", label: "Shop", server: lan, savedAt: Date.now() }];
+      else {
+        profiles[0].server = lan;
+        profiles[0].savedAt = Date.now();
+      }
+      lsSet(KEYS.profiles, JSON.stringify(profiles));
+      lsSet(KEYS.remoteForIp, new URL(lan).hostname);
     } catch (e) {}
     window.dispatchEvent(new CustomEvent("tonino-owner-link-changed"));
   }
 
-  function keepBundledUi() {
+  function persistRemote(tunnel, lan) {
+    tunnel = trimUrl(tunnel);
+    if (!tunnel.startsWith("https://")) return;
+    lan = trimUrl(lan || profileLanUrl());
+    lsSet(KEYS.remoteBase, tunnel);
+    lsSet(KEYS.server, tunnel);
+    lsSet(KEYS.workingApi, tunnel);
+    lsSet(KEYS.activeApi, tunnel);
+    lsSet(KEYS.linkMode, "remote");
+    lsSet(KEYS.workingVia, "remote");
+    lsSet(KEYS.manualTarget, "1");
+    if (lan && isPrivateLanUrl(lan)) {
+      try {
+        lsSet(KEYS.remoteForIp, new URL(lan).hostname);
+        var profiles = JSON.parse(lsGet(KEYS.profiles) || "[]");
+        if (!profiles.length) profiles = [{ id: "cashier", label: "Shop", server: lan, savedAt: Date.now() }];
+        else {
+          profiles[0].server = lan;
+          profiles[0].savedAt = Date.now();
+        }
+        lsSet(KEYS.profiles, JSON.stringify(profiles));
+      } catch (e) {}
+    }
+    window.dispatchEvent(new CustomEvent("tonino-owner-link-changed"));
+  }
+
+  function repairWifiProfileIfBroken() {
+    var mode = linkMode();
+    var lan = storedLanUrl();
+    var tunnel = storedTunnelUrl();
+    var server = trimUrl(lsGet(KEYS.server));
+
+    if (mode === "wifi" || mode === "lan") {
+      if (lan && (!isPrivateLanUrl(server) || server.startsWith("https://"))) {
+        persistLan(lan);
+        return true;
+      }
+      return false;
+    }
+
+    if (mode === "remote" && tunnel && lan) {
+      try {
+        var profiles = JSON.parse(lsGet(KEYS.profiles) || "[]");
+        if (profiles[0] && profiles[0].server && String(profiles[0].server).startsWith("https://")) {
+          profiles[0].server = lan;
+          profiles[0].savedAt = Date.now();
+          lsSet(KEYS.profiles, JSON.stringify(profiles));
+          return true;
+        }
+      } catch (e) {}
+    }
+    return false;
+  }
+
+  function probeLan(ms) {
+    var lan = storedLanUrl();
+    if (!lan) return Promise.resolve(false);
+    var ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, ms || 2500);
+    return fetch(lan + "/api/health", { cache: "no-store", signal: ctrl && ctrl.signal })
+      .then(function (r) { clearTimeout(timer); return r.ok; })
+      .catch(function () { clearTimeout(timer); return false; });
+  }
+
+  function unlockFlags() {
     try {
       localStorage.removeItem("tonino-owner-remote-shell");
       localStorage.removeItem("tonino-owner-network-locked");
       localStorage.removeItem("tonino-owner-locked-host");
       lsSet(KEYS.standalone, "1");
       lsSet(KEYS.nativeApk, "1");
-      lsSet(KEYS.manualTarget, "1");
       lsSet("zekiq-manager-native", "1");
     } catch (e) {}
-    var pick = bestUrl();
-    if (pick) persistConnection(pick.url, pick.via);
   }
 
   function patchLocationReplace() {
@@ -139,48 +200,34 @@
     };
   }
 
-  function probeAndFixConnection() {
-    var pick = bestUrl();
-    if (!pick) return;
-    var api = trimUrl(lsGet(KEYS.server) || lsGet(KEYS.activeApi));
-    if (isPrivateLanUrl(api) && pick.url.startsWith("https://")) {
-      persistConnection(pick.url, "remote");
+  function maybeFixConnection() {
+    repairWifiProfileIfBroken();
+    var mode = linkMode();
+    var lan = storedLanUrl();
+    var tunnel = storedTunnelUrl();
+
+    if (mode === "wifi" || mode === "lan") {
+      if (lan) persistLan(lan);
       return;
     }
-    if (!api.startsWith("http")) {
-      persistConnection(pick.url, pick.via);
+
+    if (mode === "remote" && tunnel) return;
+
+    if (lan) {
+      probeLan(2000).then(function (ok) {
+        if (ok) persistLan(lan);
+        else if (tunnel) persistRemote(tunnel, lan);
+      });
     }
   }
 
-  function hideReconnectIfOnline() {
-    var body = document.body && document.body.innerText || "";
-    var isError = body.indexOf("تعذ") >= 0 || body.indexOf("إعادة ربط المحل") >= 0 ||
-      body.indexOf("Reconnect to shop") >= 0 || body.indexOf("Connection failed") >= 0;
-    if (!isError) return;
-    var pick = bestUrl();
-    if (!pick) return;
-    fetch(pick.url + "/api/health", { cache: "no-store" })
-      .then(function (r) {
-        if (!r.ok) return null;
-        return r.json();
-      })
-      .then(function (j) {
-        if (!j) return;
-        persistConnection(pick.url, pick.via);
-        setTimeout(function () {
-          try { window.location.reload(); } catch (e) {}
-        }, 300);
-      })
-      .catch(function () {});
-  }
+  window.__zekiqRepairOwnerWifi = repairWifiProfileIfBroken;
+  window.__zekiqPersistOwnerLan = persistLan;
 
-  keepBundledUi();
+  unlockFlags();
   patchLocationReplace();
-  if (forceTunnelOverLanNow()) {
-    /* fixed silently — no reload (reload broke PIN login) */
-  }
-  probeAndFixConnection();
-  setInterval(keepBundledUi, 2000);
-  setInterval(probeAndFixConnection, 3000);
-  setInterval(hideReconnectIfOnline, 2500);
+  repairWifiProfileIfBroken();
+  maybeFixConnection();
+  setInterval(unlockFlags, 5000);
+  setInterval(repairWifiProfileIfBroken, 4000);
 })();
