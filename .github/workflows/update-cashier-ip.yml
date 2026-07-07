@@ -1,0 +1,35 @@
+name: Update cashier IP
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_ip:
+        description: "New cashier LAN IP (e.g. 192.168.1.49)"
+        required: true
+        type: string
+      old_ip:
+        description: "Old cashier IP to replace"
+        required: false
+        default: "192.168.1.25"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Migrate cashier IP across configs
+        run: node scripts/migrate-cashier-ip.mjs "${{ inputs.new_ip }}" "${{ inputs.old_ip }}"
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore(cashier): migrate Tonino LAN ${{ inputs.old_ip }} → ${{ inputs.new_ip }}"
+          git push

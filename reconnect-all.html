@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#7c2d12" />
+  <title>ZEKiQ — إعادة ربط كل الأجهزة</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,sans-serif;background:linear-gradient(165deg,#fff7ed,#fef3c7);color:#1c1917;padding:18px 14px 48px}
+    h1{font-size:1.2rem;color:#9a3412;text-align:center;margin:0 0 6px}
+    .sub{text-align:center;color:#78716c;font-size:.88rem;line-height:1.6;margin-bottom:14px}
+    .card{background:#fff;border:1px solid #fed7aa;border-radius:16px;padding:14px;margin-bottom:10px}
+    .card h2{font-size:.92rem;margin:0 0 8px;color:#c2410c}
+    .card p,.card li{font-size:.84rem;line-height:1.7;color:#44403c}
+    .card ol{padding-right:18px;margin:6px 0 0}
+    code,.mono{font-family:ui-monospace,monospace;background:#fff7ed;padding:2px 7px;border-radius:6px;direction:ltr}
+    .mono{display:block;padding:12px;margin:8px 0;text-align:center;font-size:1rem}
+    .status{padding:11px;border-radius:12px;font-size:.82rem;font-weight:700;text-align:center;margin-bottom:12px}
+    .ok{background:#dcfce7;color:#166534}.bad{background:#fee2e2;color:#b91c1c}.wait{background:#fef9c3;color:#854d0e}
+    label{font-size:.78rem;font-weight:700;display:block;margin:8px 0 4px}
+    input{width:100%;padding:12px;border-radius:10px;border:1px solid #fdba74;font-size:16px;direction:ltr}
+    button,.btn{display:block;width:100%;padding:14px;border:none;border-radius:12px;font-size:.95rem;font-weight:800;margin-top:8px;cursor:pointer;text-align:center;text-decoration:none}
+    .p{background:linear-gradient(135deg,#ea580c,#f97316);color:#fff}
+    .g{background:linear-gradient(135deg,#166534,#22c55e);color:#fff}
+    .b{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff}
+    .ghost{background:#f5f5f4;color:#44403c;border:1px solid #d6d3d1}
+    .checks{font-size:.82rem;line-height:2}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <h1>🔁 إعادة ربط كل الأجهزة → هذا الكاشير</h1>
+  <p class="sub">غيّر IP + أعد ربط المالك والغارسون والطاولات على <b>هذا الجهاز</b></p>
+
+  <div id="status" class="status wait">جاري اكتشاف الكاشير على هذا الجهاز…</div>
+
+  <div class="card">
+    <h2>① IP الكاشير (هذا الجهاز)</h2>
+    <div class="mono" id="ipShow">—</div>
+    <label>أو أدخل IP يدوياً</label>
+    <input id="ipIn" dir="ltr" placeholder="192.168.1.25" />
+    <button type="button" class="p" id="detectBtn">اكتشاف من ZEKiQ POS</button>
+  </div>
+
+  <div class="card">
+    <h2>② PIN المالك الجديد (اختياري)</h2>
+    <p>من <b>هذا الكمبيوتر</b> مع POS شغال — يمكن تغيير PIN المالك:</p>
+    <label>PIN المالك الجديد (4 أرقام)</label>
+    <input id="newPin" type="password" inputmode="numeric" maxlength="6" placeholder="****" />
+    <label>PIN الكاشير (للتأكيد — من POS)</label>
+    <input id="cashierPin" type="password" inputmode="numeric" maxlength="8" placeholder="****" />
+    <button type="button" class="g" id="pinBtn">تغيير PIN المالك على الكاشير</button>
+    <p id="pinMsg" style="font-size:.8rem;margin-top:8px"></p>
+    <p style="font-size:.78rem;color:#78716c">أو من POS: الإعدادات → المالك → تغيير PIN</p>
+  </div>
+
+  <div class="card">
+    <h2>③ ربط الأجهزة على هذا IP</h2>
+    <button type="button" class="g" id="applyAll">✓ تطبيق — إعادة رباط المالك (هذا المتصفح)</button>
+    <div id="checks" class="checks hidden"></div>
+    <a class="btn b" id="ownerLink" href="#">ربط تطبيق المالك (WiFi)</a>
+    <p><b>الغارسون:</b> الإعدادات ⚙️ → IP = <span class="mono" id="garsonIp" style="display:inline;padding:4px 8px">—</span></p>
+    <p><b>الطاولات QR:</b> تتبع نفس الكاشير تلقائياً بعد تحديث الموقع</p>
+  </div>
+
+  <div class="card">
+    <h2>④ على كل هاتف/تابلت</h2>
+    <ol>
+      <li>الغارسون: الإعدادات → IP الجديد → حفظ → PIN الغارسون</li>
+      <li>المالك: افتح الرابط أعلاه أو ZEKiQ Manager → PIN المالك الجديد</li>
+      <li>أغلق التطبيق وافتحه من جديد</li>
+    </ol>
+  </div>
+
+  <a class="btn ghost" href="cashier-replace.html">فحص الكاشير والنفق</a>
+
+  <script>
+    var IP = "";
+    var PORT = "3000";
+    var TUNNEL = "https://tonino.zekiqmenu.com";
+
+    function lan() { return "http://" + IP + ":" + PORT; }
+
+    function setStatus(cls, t) {
+      document.getElementById("status").className = "status " + cls;
+      document.getElementById("status").textContent = t;
+    }
+
+    function showIp(ip) {
+      IP = ip;
+      document.getElementById("ipShow").textContent = ip + ":" + PORT;
+      document.getElementById("ipIn").value = ip;
+      document.getElementById("garsonIp").textContent = ip + ":" + PORT;
+      document.getElementById("ownerLink").href = "tonino://owner?host=" + encodeURIComponent(ip) + "&port=" + PORT;
+    }
+
+    function probe(base) {
+      return fetch(base + "/api/health", { cache: "no-store" }).then(function (r) {
+        return r.ok ? r.json() : Promise.reject();
+      });
+    }
+
+    function detect() {
+      setStatus("wait", "جاري الاكتشاف…");
+      var bases = ["http://127.0.0.1:3000", "http://localhost:3000"];
+      var manual = document.getElementById("ipIn").value.trim().replace(/^https?:\/\//, "").split(":")[0];
+      if (manual) bases.push("http://" + manual + ":3000");
+
+      var i = 0;
+      function next() {
+        if (i >= bases.length) {
+          if (manual) showIp(manual);
+          setStatus("bad", "✗ شغّل ZEKiQ POS على هذا الجهاز أو أدخل IP");
+          return;
+        }
+        var base = bases[i++];
+        probe(base).then(function (j) {
+          return fetch(base + "/api/owner/config", { cache: "no-store" })
+            .then(function (r) { return r.ok ? r.json() : {}; })
+            .then(function (cfg) {
+              var ip = (cfg && cfg.ip) || base.replace(/^https?:\/\/([^:/]+).*/, "$1");
+              if (ip === "127.0.0.1" || ip === "localhost") {
+                return fetch("https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json")
+                  .then(function (r) { return r.json(); })
+                  .then(function (c) { showIp(c.lanHost || manual || "192.168.1.25"); })
+                  .catch(function () { showIp(manual || "192.168.1.25"); });
+              }
+              showIp(ip);
+              setStatus("ok", "✓ كاشير يعمل — " + ((j.shop && j.shop.shopName) || "Tonino"));
+            });
+        }).catch(next);
+      }
+      next();
+    }
+
+    function applyReconnect() {
+      var ip = document.getElementById("ipIn").value.trim().replace(/^https?:\/\//, "").split(":")[0];
+      if (!ip) { setStatus("bad", "أدخل IP"); return; }
+      showIp(ip);
+      var lanUrl = lan();
+      try {
+        localStorage.removeItem("tonino-owner-session-token");
+        localStorage.setItem("tonino-owner-lan-lock", "1");
+        localStorage.setItem("tonino-owner-tablet-clone", "1");
+        localStorage.setItem("tonino-owner-link-mode", "wifi");
+        localStorage.setItem("tonino-owner-working-via", "lan");
+        localStorage.setItem("tonino-owner-manual-target", "1");
+        localStorage.setItem("tonino-owner-server", lanUrl);
+        localStorage.setItem("tonino-owner-working-api", lanUrl);
+        localStorage.setItem("tonino-owner-active-api", lanUrl);
+        localStorage.setItem("tonino-owner-remote-base", TUNNEL);
+        localStorage.setItem("tonino-owner-remote-for-ip", ip);
+        localStorage.setItem("tonino-owner-server-profiles", JSON.stringify([{
+          id: "cashier", label: "Tonino", server: lanUrl, savedAt: Date.now()
+        }]));
+        localStorage.setItem("tonino-owner-native-apk", "1");
+        localStorage.setItem("zekiq-manager-native", "1");
+      } catch (e) {
+        setStatus("bad", "افتح من متصفح الجهاز أو داخل التطبيق");
+        return;
+      }
+
+      var box = document.getElementById("checks");
+      box.classList.remove("hidden");
+      probe(lanUrl).then(function () {
+        box.innerHTML = "✅ اتصال بالكاشير<br>✅ إعدادات المالك محفوظة<br>→ افتح ZEKiQ Manager وأدخل PIN";
+        setStatus("ok", "✓ تم — أعد فتح تطبيق المالك");
+      }).catch(function () {
+        box.innerHTML = "✅ إعدادات محفوظة<br>❌ لا اتصال بـ " + lanUrl + " — تحقق من POS والشبكة";
+        setStatus("bad", "الإعدادات حُفظت لكن الكاشير لا يستجيب على هذا IP");
+      });
+    }
+
+    function tryChangePin() {
+      var newPin = document.getElementById("newPin").value.trim();
+      var msg = document.getElementById("pinMsg");
+      if (!/^\d{4}$/.test(newPin)) { msg.textContent = "أدخل 4 أرقام"; return; }
+      var ip = document.getElementById("ipIn").value.trim().split(":")[0] || "127.0.0.1";
+      var base = ip === "127.0.0.1" || !ip ? "http://127.0.0.1:3000" : lan();
+      msg.textContent = "جاري المحاولة…";
+
+      var tries = [
+        { url: base + "/api/owner/set-pin", body: { pin: newPin } },
+        { url: base + "/api/owner/change-pin", body: { pin: newPin } },
+        { url: base + "/api/trpc/owner.setPin?batch=1", body: [{ json: { pin: newPin } }] }
+      ];
+
+      function attempt(i) {
+        if (i >= tries.length) {
+          msg.textContent = "غيّر PIN من POS: الإعدادات → المالك → PIN. ثم أعد الدخول في التطبيق.";
+          return;
+        }
+        var t = tries[i];
+        fetch(t.url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(t.body)
+        }).then(function (r) {
+          if (r.ok) {
+            msg.textContent = "✓ تم تغيير PIN — أدخل " + newPin + " في تطبيق المالك";
+            localStorage.removeItem("tonino-owner-session-token");
+          } else attempt(i + 1);
+        }).catch(function () { attempt(i + 1); });
+      }
+      attempt(0);
+    }
+
+    document.getElementById("detectBtn").onclick = detect;
+    document.getElementById("applyAll").onclick = applyReconnect;
+    document.getElementById("pinBtn").onclick = tryChangePin;
+    detect();
+  </script>
+</body>
+</html>
