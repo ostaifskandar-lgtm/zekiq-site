@@ -3,7 +3,7 @@
 
   if (typeof window === "undefined") return;
 
-  var LAN = "http://192.168.1.25:3000";
+  var LAN = (window.__zekiqToninoLan && window.__zekiqToninoLan()) || "http://192.168.1.25:3000";
 
   function isOwnerApp() {
     try {
@@ -38,6 +38,10 @@
   }
 
   function resolveLan() {
+    if (window.__zekiqToninoLan) {
+      var fromCfg = window.__zekiqToninoLan();
+      if (fromCfg) return fromCfg;
+    }
     var order = [
       "tonino-owner-working-api",
       "tonino-owner-active-api",

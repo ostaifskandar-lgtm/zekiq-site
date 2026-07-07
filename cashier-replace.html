@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1e3a5f" />
+  <title>ZEKiQ — استبدال كاشير Windows</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,sans-serif;background:linear-gradient(165deg,#eff6ff,#f8fafc);color:#1e293b;padding:20px 16px 48px}
+    h1{font-size:1.3rem;color:#1e3a5f;text-align:center;margin:0 0 8px}
+    .sub{text-align:center;color:#64748b;font-size:.9rem;line-height:1.65;margin-bottom:18px}
+    .card{background:#fff;border:1px solid #cbd5e1;border-radius:16px;padding:16px;margin-bottom:12px}
+    .card h2{font-size:.95rem;margin:0 0 8px;color:#1e40af}
+    .card p,.card li{font-size:.85rem;line-height:1.75;color:#475569}
+    .card ol{padding-right:18px;margin:8px 0 0}
+    code,.ip{font-family:ui-monospace,monospace;background:#f1f5f9;padding:3px 8px;border-radius:8px;direction:ltr;display:inline-block}
+    .ip{display:block;padding:12px;margin:10px 0;font-size:1rem;text-align:center;color:#0f172a}
+    button,.btn{display:block;width:100%;padding:15px;border:none;border-radius:12px;font-size:1rem;font-weight:800;text-align:center;text-decoration:none;margin-top:10px;cursor:pointer}
+    .primary{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff}
+    .green{background:linear-gradient(135deg,#166534,#22c55e);color:#fff}
+    .gold{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714}
+    .status{text-align:center;padding:12px;border-radius:12px;font-size:.85rem;font-weight:700;margin-bottom:12px}
+    .status.ok{background:#dcfce7;color:#166534}
+    .status.bad{background:#fee2e2;color:#b91c1c}
+    .status.wait{background:#fef9c3;color:#854d0e}
+    .hidden{display:none}
+    label{font-size:.8rem;font-weight:700;display:block;margin:8px 0 4px}
+    input{width:100%;padding:12px;border-radius:10px;border:1px solid #cbd5e1;font-size:16px;direction:ltr}
+  </style>
+</head>
+<body>
+  <h1>🖥️ استبدال كاشير Windows</h1>
+  <p class="sub">الغارسون والمالك والطاولات كلها تشير لـ IP الكاشير.<br>القديم كان <code>192.168.1.25</code> — يجب توجيههم للكاشير الجديد.</p>
+
+  <div id="status" class="status wait">جاري البحث عن ZEKiQ POS على هذا الجهاز…</div>
+
+  <div class="card" id="detectedCard" style="display:none">
+    <h2>✓ تم اكتشاف الكاشير على هذا الجهاز</h2>
+    <p>IP الحالي للكاشير الجديد:</p>
+    <div class="ip" id="detectedIp">—</div>
+    <p id="shopLine"></p>
+  </div>
+
+  <div class="card">
+    <h2>① الحل الأسرع (موصى به) — نفس IP القديم</h2>
+    <p>اجعل الكاشير <b>الجديد</b> يأخذ نفس عنوان القديم — كل التطبيقات تعمل بدون تغيير:</p>
+    <ol>
+      <li>أطفئ الكاشير القديم نهائياً</li>
+      <li>Windows → الإعدادات → الشبكة → Wi‑Fi/Ethernet → خصائص → IP يدوي</li>
+      <li>IP: <code>192.168.1.25</code> · البوابة: <code>192.168.1.1</code> · DNS تلقائي</li>
+      <li>شغّل <b>ZEKiQ POS</b> على هذا الجهاز</li>
+      <li>من داخل POS فعّل <b>النفق</b> (tonino.zekiqmenu.com)</li>
+    </ol>
+    <button type="button" class="green" id="testOldIp">اختبار 192.168.1.25:3000</button>
+  </div>
+
+  <div class="card">
+    <h2>② إذا بقي IP مختلفاً</h2>
+    <p>أدخل IP الكاشير الجديد — ستظهر روابط التحديث للغارسون والمالك:</p>
+    <label>IP الكاشير الجديد</label>
+    <input id="newIp" dir="ltr" placeholder="192.168.1.49" />
+    <button type="button" class="primary" id="applyLinks">توليد روابط الربط</button>
+    <div id="linksBox" class="hidden">
+      <p><b>الغارسون:</b> الإعدادات → IP = <span class="code" id="garsonIp"></span></p>
+      <p><b>المالك WiFi:</b></p>
+      <a class="btn gold" id="ownerLink" href="#">ربط تطبيق المالك</a>
+      <p><b>اختبار:</b></p>
+      <a class="btn primary" id="healthLink" href="#" target="_blank">فحص الكاشير</a>
+      <p style="font-size:.78rem;color:#64748b">يجب أيضاً تحديث الموقع (guest-api) — أرسل هذا IP للدعم أو شغّل سكربت migrate على المستودع.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>③ ماذا يجب أن يعمل؟</h2>
+    <ol>
+      <li><code>http://IP:3000/api/health</code> يرجع OK</li>
+      <li><code>https://tonino.zekiqmenu.com/api/health</code> يرجع OK (النفق من POS)</li>
+      <li>الغارسون والمالك على نفس الواي فاي</li>
+    </ol>
+  </div>
+
+  <a class="btn" style="background:#e2e8f0;color:#334155" href="manager.html">← تطبيق المالك / التابلت</a>
+
+  <script>
+    var detected = null;
+
+    function setStatus(cls, text) {
+      var el = document.getElementById("status");
+      el.className = "status " + cls;
+      el.textContent = text;
+    }
+
+    function probe(base) {
+      return fetch(base + "/api/health", { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(); });
+    }
+
+    function probeConfig(base) {
+      return fetch(base + "/api/owner/config", { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : {}; })
+        .catch(function () { return {}; });
+    }
+
+    function showDetected(ip, shop) {
+      detected = ip;
+      document.getElementById("detectedCard").style.display = "block";
+      document.getElementById("detectedIp").textContent = ip + ":3000";
+      document.getElementById("shopLine").textContent = shop ? "المحل: " + shop : "";
+      document.getElementById("newIp").value = ip;
+      setStatus("ok", "✓ ZEKiQ POS يعمل على هذا الجهاز");
+    }
+
+    function tryLocal() {
+      var bases = ["http://127.0.0.1:3000", "http://localhost:3000"];
+      var i = 0;
+      function next() {
+        if (i >= bases.length) {
+          setStatus("bad", "✗ لم يُعثر على POS — شغّل ZEKiQ POS أولاً أو أدخل IP يدوياً");
+          return;
+        }
+        var base = bases[i++];
+        probe(base).then(function (j) {
+          return probeConfig(base).then(function (cfg) {
+            var ip = (cfg && cfg.ip) || "127.0.0.1";
+            showDetected(ip, (j.shop && j.shop.shopName) || (cfg && cfg.shopName) || "");
+          });
+        }).catch(next);
+      }
+      next();
+    }
+
+    document.getElementById("testOldIp").onclick = function () {
+      probe("http://192.168.1.25:3000").then(function (j) {
+        setStatus("ok", "✓ الكاشير يستجيب على 192.168.1.25 — الغارسون والمالك سيعملون!");
+      }).catch(function () {
+        setStatus("bad", "✗ لا يوجد كاشير على .25 — اضبط IP ثابت أو حدّث التطبيقات للـ IP الجديد");
+      });
+    };
+
+    document.getElementById("applyLinks").onclick = function () {
+      var ip = document.getElementById("newIp").value.trim().replace(/^https?:\/\//, "").split(":")[0];
+      if (!ip) return;
+      document.getElementById("linksBox").classList.remove("hidden");
+      document.getElementById("garsonIp").textContent = ip + ":3000";
+      document.getElementById("ownerLink").href = "tonino://owner?host=" + encodeURIComponent(ip) + "&port=3000";
+      document.getElementById("healthLink").href = "http://" + ip + ":3000/api/health";
+      probe("http://" + ip + ":3000").then(function () {
+        setStatus("ok", "✓ الكاشير الجديد " + ip + " يعمل");
+      }).catch(function () {
+        setStatus("bad", "✗ لا اتصال بـ " + ip + " — تحقق من POS والشبكة");
+      });
+    };
+
+    tryLocal();
+  </script>
+</body>
+</html>
