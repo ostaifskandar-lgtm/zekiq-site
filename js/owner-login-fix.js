@@ -41,6 +41,9 @@
   }
 
   function shouldRewriteToTunnel() {
+    if (lsGet("tonino-owner-lan-lock") === "1" || lsGet("tonino-owner-tablet-clone") === "1") {
+      return false;
+    }
     var mode = lsGet("tonino-owner-link-mode");
     if (mode === "wifi" || mode === "lan") return false;
     return mode === "remote" || lsGet("tonino-owner-manual-target") === "1";

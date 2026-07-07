@@ -50,7 +50,14 @@
   }
 
   function linkMode() {
+    if (lsGet("tonino-owner-lan-lock") === "1" || lsGet("tonino-owner-tablet-clone") === "1") {
+      return "wifi";
+    }
     return lsGet(KEYS.linkMode);
+  }
+
+  function isLanLocked() {
+    return lsGet("tonino-owner-lan-lock") === "1" || lsGet("tonino-owner-tablet-clone") === "1";
   }
 
   function profileLanUrl() {
@@ -202,6 +209,12 @@
 
   function maybeFixConnection() {
     repairWifiProfileIfBroken();
+    if (isLanLocked()) {
+      var lockedLan = storedLanUrl();
+      if (lockedLan) persistLan(lockedLan);
+      return;
+    }
+
     var mode = linkMode();
     var lan = storedLanUrl();
     var tunnel = storedTunnelUrl();

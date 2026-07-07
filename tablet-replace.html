@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#166534" />
+  <title>ZEKiQ — استبدال التابلت القديم</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,sans-serif;background:linear-gradient(165deg,#f3ebe0,#ecfdf5);color:#1a1714;padding:20px 16px 40px}
+    h1{font-size:1.25rem;color:#166534;text-align:center;margin:0 0 6px}
+    .sub{text-align:center;color:#57534e;font-size:.88rem;line-height:1.6;margin-bottom:18px}
+    .card{background:#fff;border:1px solid #d8c6a0;border-radius:16px;padding:16px;margin-bottom:12px}
+    .card h2{font-size:.95rem;margin:0 0 8px;color:#8f6218}
+    .card p,.card li{font-size:.85rem;line-height:1.7;color:#44403c}
+    .card ol{padding-right:18px;margin:8px 0 0}
+    code, .code{font-family:ui-monospace,monospace;background:#f5efe3;padding:2px 6px;border-radius:6px;font-size:.8rem;direction:ltr}
+    .code{display:block;padding:10px;margin-top:8px;word-break:break-all}
+    button,.btnlink{display:block;width:100%;padding:15px;border:none;border-radius:12px;font-size:1rem;font-weight:800;text-align:center;text-decoration:none;margin-top:10px;cursor:pointer}
+    .primary{background:linear-gradient(135deg,#166534,#22c55e);color:#fff}
+    .gold{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714}
+    .blue{background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff}
+    .ok{display:none;margin-top:12px;padding:12px;border-radius:12px;background:#dcfce7;color:#166534;font-size:.88rem;line-height:1.6}
+    .status{text-align:center;padding:10px;border-radius:12px;font-size:.82rem;font-weight:700;margin-bottom:12px}
+    .status.okish{background:#dcfce7;color:#166534}
+    .status.bad{background:#fee2e2;color:#b91c1c}
+  </style>
+</head>
+<body>
+  <h1>📱 استبدال التابلت القديم</h1>
+  <p class="sub">هذا الجهاز يعمل <b>مكان التابلت القديم</b> — نفس IP الكاشير للمالك والغارسون والطاولات</p>
+
+  <div id="health" class="status">جاري فحص الكاشير…</div>
+
+  <div class="card">
+    <h2>① اضبط هذا الجهاز (تابلت المالك)</h2>
+    <p>IP الكاشير (مثل القديم):</p>
+    <div class="code" id="lanShow">http://192.168.1.25:3000</div>
+    <button type="button" class="primary" id="applyBtn">✓ تفعيل — نفس إعدادات التابلت القديم</button>
+    <div class="ok" id="applied">تم! الآن افتح <b>ZEKiQ Manager</b> → أدخل PIN المالك. لن يتحول لـ 4G تلقائياً.</div>
+    <a class="btnlink gold" id="openApp" href="tonino://owner?host=192.168.1.25&port=3000" style="display:none">▶ فتح ZEKiQ Manager الآن</a>
+  </div>
+
+  <div class="card">
+    <h2>② تطبيق المالك</h2>
+    <ol>
+      <li>ثبّت <b>ZEKiQ Manager</b> (بدون حذف القديم)</li>
+      <li>اضغط الزر أعلاه <b>أولاً</b> على هذا الجهاز</li>
+      <li>افتح ZEKiQ Manager → PIN المالك</li>
+      <li>الغارسون والطاولات يبقون على <span class="code">192.168.1.25</span></li>
+    </ol>
+    <a class="btnlink gold" href="manager.html">⬇️ تحميل ZEKiQ Manager</a>
+  </div>
+
+  <div class="card">
+    <h2>③ تطبيق الغارسون (الهواتف)</h2>
+    <p>لا تغيّر شيئاً — فقط تأكد أن IP الكاشير في إعدادات الغارسون:</p>
+    <div class="code">192.168.1.25:3000</div>
+    <p>نفس الواي فاي أو نفس الراوتر. لا حاجة لقطع الإنترنت.</p>
+    <a class="btnlink blue" href="garson.html">⬇️ تطبيق الغارسون</a>
+    <a class="btnlink blue" href="phone.html" style="background:linear-gradient(135deg,#4ade80,#16a34a)">📖 دليل ربط الغارسون</a>
+  </div>
+
+  <div class="card">
+    <h2>④ طاولات QR للزبائن</h2>
+    <p>تبقى كما هي — متصلة بنفس الكاشير <span class="code">192.168.1.25</span> أو النفق <span class="code">tonino.zekiqmenu.com</span></p>
+    <a class="btnlink blue" href="table/index.html">🍽️ قائمة الطاولات</a>
+  </div>
+
+  <script>
+    var LAN = "http://192.168.1.25:3000";
+    var TUNNEL = "https://tonino.zekiqmenu.com";
+
+    fetch("owner-config.json", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : {}; })
+      .then(function (cfg) {
+        if (cfg.lanUrl) {
+          LAN = cfg.lanUrl.replace(/\/+$/, "");
+          document.getElementById("lanShow").textContent = LAN;
+        }
+        if (cfg.tunnelUrl) TUNNEL = cfg.tunnelUrl.replace(/\/+$/, "");
+      })
+      .catch(function () {});
+
+    fetch(LAN + "/api/health", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (j) {
+        var el = document.getElementById("health");
+        el.className = "status okish";
+        el.textContent = "✓ الكاشير يعمل — " + (j.shop && j.shop.shopName ? j.shop.shopName : LAN);
+      })
+      .catch(function () {
+        document.getElementById("health").className = "status bad";
+        document.getElementById("health").textContent = "✗ لا اتصال بالكاشير — تحقق من الكابل/الواي فاي على نفس الراوتر";
+      });
+
+    function applyProfile() {
+      var host = LAN.replace(/^https?:\/\//, "").split(":")[0];
+      try {
+        localStorage.setItem("tonino-owner-lan-lock", "1");
+        localStorage.setItem("tonino-owner-tablet-clone", "1");
+        localStorage.setItem("tonino-owner-link-mode", "wifi");
+        localStorage.setItem("tonino-owner-working-via", "lan");
+        localStorage.setItem("tonino-owner-manual-target", "1");
+        localStorage.setItem("tonino-owner-server", LAN);
+        localStorage.setItem("tonino-owner-working-api", LAN);
+        localStorage.setItem("tonino-owner-active-api", LAN);
+        localStorage.setItem("tonino-owner-remote-base", TUNNEL);
+        localStorage.setItem("tonino-owner-remote-for-ip", host);
+        localStorage.setItem("tonino-owner-server-profiles", JSON.stringify([{
+          id: "cashier", label: "Tonino", server: LAN, savedAt: Date.now()
+        }]));
+        localStorage.setItem("tonino-owner-native-apk", "1");
+        localStorage.setItem("tonino-owner-standalone-v1", "1");
+        localStorage.setItem("zekiq-manager-native", "1");
+        localStorage.removeItem("tonino-owner-network-locked");
+        localStorage.removeItem("tonino-owner-locked-host");
+        document.getElementById("applied").style.display = "block";
+        document.getElementById("openApp").style.display = "block";
+      } catch (e) {
+        alert("افتح هذه الصفحة من متصفح الجهاز أو نفّذ الزر داخل ZEKiQ Manager");
+      }
+    }
+
+    document.getElementById("applyBtn").onclick = applyProfile;
+    try {
+      if (localStorage.getItem("tonino-owner-tablet-clone") === "1") {
+        document.getElementById("applied").style.display = "block";
+        document.getElementById("openApp").style.display = "block";
+      }
+    } catch (e) {}
+  </script>
+</body>
+</html>

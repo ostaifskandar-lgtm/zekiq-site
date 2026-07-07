@@ -371,6 +371,14 @@
   }
 
   function smartConnectOnBoot() {
+    if (getStored("tonino-owner-lan-lock") === "1" || getStored("tonino-owner-tablet-clone") === "1") {
+      if (window.__zekiqRepairOwnerWifi) window.__zekiqRepairOwnerWifi();
+      if (window.__zekiqPersistOwnerLan && profileLanFromStorage()) {
+        window.__zekiqPersistOwnerLan(profileLanFromStorage());
+      }
+      return Promise.resolve(false);
+    }
+
     var mode = getStored(KEYS.linkMode);
     if (mode === "wifi" || mode === "lan") {
       if (window.__zekiqRepairOwnerWifi) window.__zekiqRepairOwnerWifi();
@@ -453,10 +461,10 @@
     ensureStandalone();
     unlockNetwork();
     smartConnectOnBoot().then(function () {
-      if (!hasUserConfig()) {
+      if (!hasUserConfig() && getStored("tonino-owner-tablet-clone") !== "1") {
         fetchConfig().then(function (cfg) {
           if (cfg.tunnelUrl || cfg.lanUrl) {
-            saveDualConfig("remote", cfg.tunnelUrl || "", cfg.lanUrl || "");
+            saveDualConfig("wifi", cfg.tunnelUrl || "", cfg.lanUrl || "");
           }
         });
       }

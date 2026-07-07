@@ -15,13 +15,14 @@ const OUT = path.join(ROOT, "downloads", "ToninoOwner-patched.apk");
 const KEYSTORE = path.join(ROOT, "android", "owner-debug.keystore");
 const STORE_PASS = "android";
 const BOOT_TAG =
-  '<script src="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/js/owner-remote-boot.js?v=204"></script>';
+  '<script src="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/js/owner-remote-boot.js?v=222"></script>';
 
 const FILES = [
   ["js/owner-remote-boot.js", "assets/public/owner-remote-boot.js"],
   ["js/owner-update-guard.js", "assets/public/owner-update-guard.js"],
   ["js/owner-login-fix.js", "assets/public/owner-login-fix.js"],
   ["js/owner-connection-flex.js", "assets/public/owner-connection-flex.js"],
+  ["js/owner-tablet-clone.js", "assets/public/owner-tablet-clone.js"],
   ["js/owner-bootstrap.js", "assets/public/owner-bootstrap.js"],
   ["js/owner-tables-pro.js", "assets/public/owner-tables-pro.js"]
 ];

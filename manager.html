@@ -3,78 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#1a1714" />
-  <title>ZEKiQ مدير — تحميل التطبيق</title>
+  <meta name="theme-color" content="#166534" />
+  <title>ZEKiQ مدير — استبدال التابلت</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{min-height:100dvh;font-family:system-ui,-apple-system,sans-serif;background:linear-gradient(165deg,#1c1917,#0f172a 55%,#1a1714);color:#fff;padding:24px 16px 40px}
+    body{min-height:100dvh;font-family:system-ui,-apple-system,sans-serif;background:linear-gradient(165deg,#ecfdf5,#1c1917 45%,#0f172a);color:#fff;padding:24px 16px 40px}
     .wrap{max-width:440px;margin:0 auto}
-    .logo{width:80px;height:80px;border-radius:20px;background:#1a1714;border:2px solid rgba(245,158,11,.5);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;color:#fbbf24;margin:0 auto 16px}
-    h1{font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:8px}
-    .tag{text-align:center;color:#94a3b8;font-size:.9rem;line-height:1.6;margin-bottom:20px}
+    .logo{width:80px;height:80px;border-radius:20px;background:#166534;border:2px solid rgba(74,222,128,.5);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;color:#bbf7d0;margin:0 auto 16px}
+    h1{font-size:1.45rem;font-weight:800;text-align:center;margin-bottom:8px}
+    .tag{text-align:center;color:#86efac;font-size:.9rem;line-height:1.6;margin-bottom:20px}
     .btn{display:block;width:100%;padding:18px;border-radius:16px;font-size:1.05rem;font-weight:800;text-decoration:none;text-align:center;margin-bottom:12px}
-    .btn.tables{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;box-shadow:0 8px 28px rgba(168,85,247,.35);font-size:1.15rem}
-    .btn.cdn{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
-    .btn.patched{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714}
-    .btn.ghost{background:rgba(255,255,255,.07);color:#fde68a;border:1px solid rgba(245,158,11,.3);font-size:.88rem;padding:14px}
+    .btn.replace{background:linear-gradient(135deg,#166534,#22c55e);color:#fff;box-shadow:0 8px 28px rgba(34,197,94,.35);font-size:1.15rem}
+    .btn.cdn{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1714}
+    .btn.tables{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff}
+    .btn.ghost{background:rgba(255,255,255,.07);color:#bbf7d0;border:1px solid rgba(74,222,128,.35);font-size:.88rem;padding:14px}
     .box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;margin-bottom:14px;font-size:.85rem;color:#cbd5e1;line-height:1.7}
     .box b{color:#fff}
     .box ol{padding-right:20px;margin-top:8px}
     .box li{margin:6px 0}
+    .urgent{background:rgba(34,197,94,.12);border-color:rgba(74,222,128,.4)}
     .note{font-size:.78rem;color:#94a3b8;text-align:center;margin-top:16px;line-height:1.6}
     code{font-family:ui-monospace,monospace;font-size:.72rem;color:#fde68a;background:rgba(0,0,0,.3);padding:2px 6px;border-radius:6px;word-break:break-all}
-    .urgent{background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.45)}
-    .qr{text-align:center;padding:8px 0 4px}
-    .qr img{width:180px;height:180px;border-radius:14px;background:#fff;padding:8px}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="logo">Z</div>
     <h1>ZEKiQ مدير</h1>
-    <p class="tag"><b>v2.0.3</b> — إصلاح الطاولات</p>
+    <p class="tag"><b>v2.2.2</b> — هذا الجهاز يعمل مكان التابلت القديم<br>نفس الكاشير: <code dir="ltr">192.168.1.25:3000</code></p>
 
     <div class="box urgent">
-      <b style="color:#e9d5ff">🪑 لا تستطيع الدخول للطاولات؟</b>
+      <b style="color:#bbf7d0">📱 استبدال التابلت — 3 خطوات</b>
       <ol>
-        <li>التطبيق الحالي ي<b>عرض</b> الطاولات لكن لا يفتح التفاصيل عند الضغط</li>
-        <li><b>الحل الفوري (بدون إعادة تثبيت):</b></li>
+        <li>ثبّت <b>ZEKiQ Manager</b> (لا تحذف القديم إن لم ترد)</li>
+        <li>اضغط الزر الأخضر → <b>تفعيل</b> نفس إعدادات القديم</li>
+        <li>افتح ZEKiQ Manager → أدخل <b>PIN المالك</b></li>
       </ol>
     </div>
 
-    <a class="btn tables" href="owner-tables.html">🪑 فتح الطاولات الآن (متصفح)</a>
+    <a class="btn replace" href="tablet-replace.html">✓ تفعيل هذا الجهاز مكان التابلت القديم</a>
+
+    <a class="btn cdn" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@cursor/fix-wifi-lan-connection-3a3f/downloads/ZEKiQManager.apk?v=222">⬇️ تحميل ZEKiQ Manager</a>
 
     <div class="box">
-      <b>صفحة الطوارئ — 3 خطوات:</b>
+      <b>الغارسون والطاولات</b>
       <ol>
-        <li>اضغط الزر البنفسجي أعلاه</li>
-        <li>أدخل <code dir="ltr">tonino.zekiqmenu.com</code> + PIN المدير</li>
-        <li>اضغط <b>دخول</b> → ثم <b>🪑 الطاولات</b> → اضغط أي طاولة</li>
+        <li>الغارسون: IP يبقى <code dir="ltr">192.168.1.25:3000</code></li>
+        <li>نفس الواي فاي أو الكابل على الراوتر — لا تقطع الإنترنت</li>
+        <li>QR الطاولات للزبائن كما هي</li>
       </ol>
     </div>
 
-    <div class="box qr">
-      <b>📷 QR للطاولات</b><br><br>
-      <img src="owner-tables-qr.png" alt="QR tables" width="180" height="180" />
-    </div>
+    <a class="btn ghost" href="garson.html">👨‍🍳 تطبيق الغارسون</a>
+    <a class="btn ghost" href="owner-connect.html">⚙️ ربط 4G / WiFi يدوياً</a>
+    <a class="btn ghost" href="owner-wifi-fix.html">🔧 استعادة WiFi إن انقطع</a>
+    <a class="btn tables" href="owner-tables.html">🪑 الطاولات (متصفح)</a>
 
-    <div class="box">
-      <b>أو — تطبيق كامل مع الطاولات (يتطلب إعادة تثبيت):</b>
-      <ol>
-        <li>احذف التطبيق القديم (Kaldır)</li>
-        <li>حمّل <b>ToninoOwner-patched.apk</b> أدناه</li>
-        <li>Play Protect → <b>Yine de yükleyin</b></li>
-        <li>ستظهر شارة <b>v2.0.3</b> + زر 🪑 الطاولات</li>
-      </ol>
-    </div>
-
-    <a class="btn patched" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner-patched.apk?v=204">⬇️ ToninoOwner-patched v2.0.4 (PIN + طاولات)</a>
-
-    <a class="btn cdn" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=202">⬇️ ToninoOwner عادي (تثبيت فقط — بدون طاولات)</a>
-
-    <a class="btn ghost" href="owner-connect.html">⚙️ ربط النفق / 4G</a>
-
-    <p class="note">ToninoOwner-patched = uninstall ثم install · owner-tables.html = فوري بدون uninstall</p>
+    <p class="note">التطبيق يحمّل الإصلاحات تلقائياً من CDN · v2.2.2 يقفل LAN ويمنع التحويل لـ 4G</p>
   </div>
 </body>
 </html>
