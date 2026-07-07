@@ -42,11 +42,21 @@
     <p id="shopLine"></p>
   </div>
 
+  <div class="card" id="fullCheck">
+    <h2>🔍 فحص شامل (شغّل من كمبيوتر الكاشير)</h2>
+    <div id="checkList" style="font-size:.84rem;line-height:2"></div>
+    <button type="button" class="primary" id="runFullCheck">إعادة الفحص</button>
+  </div>
+
+  <div class="card" id="verdictCard" style="display:none">
+    <h2 id="verdictTitle">—</h2>
+    <p id="verdictText"></p>
+  </div>
+
   <div class="card">
-    <h2>① الحل الأسرع (موصى به) — نفس IP القديم</h2>
     <p>اجعل الكاشير <b>الجديد</b> يأخذ نفس عنوان القديم — كل التطبيقات تعمل بدون تغيير:</p>
     <ol>
-      <li>أطفئ الكاشير القديم نهائياً</li>
+      <li>بعد نجاح الفحص أعلاه — أطفئ الكاشير القديم</li>
       <li>Windows → الإعدادات → الشبكة → Wi‑Fi/Ethernet → خصائص → IP يدوي</li>
       <li>IP: <code>192.168.1.25</code> · البوابة: <code>192.168.1.1</code> · DNS تلقائي</li>
       <li>شغّل <b>ZEKiQ POS</b> على هذا الجهاز</li>
@@ -153,6 +163,67 @@
     };
 
     tryLocal();
+    runFullCheck();
+
+    function line(ok, text) {
+      return (ok ? "✅ " : "❌ ") + text + "<br>";
+    }
+
+    function runFullCheck() {
+      var box = document.getElementById("checkList");
+      var verdict = document.getElementById("verdictCard");
+      var vTitle = document.getElementById("verdictTitle");
+      var vText = document.getElementById("verdictText");
+      box.innerHTML = "جاري الفحص…";
+      var results = { local: false, lan25: false, tunnel: false, config: false };
+      var jobs = [];
+
+      jobs.push(probe("http://127.0.0.1:3000").then(function () {
+        results.local = true;
+      }).catch(function () {}));
+
+      jobs.push(probe("http://192.168.1.25:3000").then(function () {
+        results.lan25 = true;
+      }).catch(function () {}));
+
+      jobs.push(fetch("https://tonino.zekiqmenu.com/api/health", { cache: "no-store" })
+        .then(function (r) { if (r.ok) results.tunnel = true; })
+        .catch(function () {}));
+
+      jobs.push(fetch("https://ostaifskandar-lgtm.github.io/zekiq-site/owner-config.json", { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (c) { results.config = !!(c && c.lanUrl); })
+        .catch(function () {}));
+
+      Promise.all(jobs).then(function () {
+        var html = "";
+        html += line(results.local, "ZEKiQ POS على هذا الجهاز (localhost:3000)");
+        html += line(results.lan25, "الكاشير على 192.168.1.25:3000 (الشبكة المحلية)");
+        html += line(results.tunnel, "النفق tonino.zekiqmenu.com (4G + خارج المحل)");
+        html += line(results.config, "إعدادات الموقع (owner-config.json)");
+        box.innerHTML = html;
+        verdict.style.display = "block";
+
+        if (results.local && results.lan25 && results.tunnel) {
+          vTitle.textContent = "✅ كل شيء يعمل — آمن إطفاء القديم";
+          vText.textContent = "الكاشير الجديد جاهز. يمكنك إطفاء القديم. الغارسون والمالك سيتصلون تلقائياً.";
+        } else if (results.local && !results.lan25) {
+          vTitle.textContent = "⚠️ POS شغال لكن IP ليس .25";
+          vText.textContent = "إما اضبط IP ثابت 192.168.1.25 (بعد إطفاء القديم)، أو حدّث تطبيقات الغارسون للـ IP الجديد.";
+        } else if (!results.local && results.lan25) {
+          vTitle.textContent = "⚠️ كاشير يعمل على .25 — ربما القديم لا يزال شغالاً";
+          vText.textContent = "لا تطفئ القديم بعد. افتح POS على الجهاز الجديد أولاً واختبره بـ IP مختلف قبل التبديل.";
+        } else if (!results.local && !results.lan25) {
+          vTitle.textContent = "❌ لا يوجد كاشير شغال";
+          vText.textContent = "شغّل ZEKiQ POS على الجديد. النفق أيضاً متوقف (502) — فعّله من إعدادات POS.";
+        } else {
+          vTitle.textContent = "⚠️ يحتاج إصلاح";
+          vText.textContent = "شغّل POS وفعّل النفق. لا تطفئ القديم حتى ينجح الفحص كاملاً.";
+        }
+      });
+    }
+
+    document.getElementById("runFullCheck").onclick = runFullCheck;
   </script>
 </body>
 </html>
