@@ -15,7 +15,7 @@ const OUT = path.join(ROOT, "downloads", "ToninoOwner-patched.apk");
 const KEYSTORE = path.join(ROOT, "android", "owner-debug.keystore");
 const STORE_PASS = "android";
 const BOOT_TAG =
-  '<script src="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/js/owner-remote-boot.js?v=222"></script>';
+  '<script src="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/js/owner-remote-boot.js?v=223"></script>';
 
 const FILES = [
   ["js/owner-remote-boot.js", "assets/public/owner-remote-boot.js"],
