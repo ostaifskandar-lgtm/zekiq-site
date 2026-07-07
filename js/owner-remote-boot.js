@@ -17,7 +17,7 @@
   function next() {
     if (i >= SCRIPTS.length) return;
     var s = document.createElement("script");
-    s.src = CDN + SCRIPTS[i] + "?v=222";
+    s.src = CDN + SCRIPTS[i] + "?v=223";
     s.async = false;
     s.onload = s.onerror = function () {
       i += 1;
@@ -27,10 +27,35 @@
   }
 
   window.__ZEKIQ_OWNER_EXT_VERSION__ = "2.2.2";
-  try {
-    localStorage.setItem("tonino-owner-native-apk", "1");
-    localStorage.setItem("zekiq-manager-native", "1");
-  } catch (e) {}
+
+  var LAN = "http://192.168.1.25:3000";
+  var TUNNEL = "https://tonino.zekiqmenu.com";
+
+  function applyToninoTabletNow() {
+    try {
+      localStorage.setItem("tonino-owner-native-apk", "1");
+      localStorage.setItem("zekiq-manager-native", "1");
+      localStorage.setItem("tonino-owner-lan-lock", "1");
+      localStorage.setItem("tonino-owner-tablet-clone", "1");
+      localStorage.setItem("tonino-owner-link-mode", "wifi");
+      localStorage.setItem("tonino-owner-working-via", "lan");
+      localStorage.setItem("tonino-owner-manual-target", "1");
+      localStorage.setItem("tonino-owner-server", LAN);
+      localStorage.setItem("tonino-owner-working-api", LAN);
+      localStorage.setItem("tonino-owner-active-api", LAN);
+      localStorage.setItem("tonino-owner-remote-base", TUNNEL);
+      localStorage.setItem("tonino-owner-remote-for-ip", "192.168.1.25");
+      localStorage.setItem("tonino-owner-shop-name", "Tonino");
+      localStorage.setItem("tonino-owner-server-profiles", JSON.stringify([{
+        id: "cashier", label: "Tonino", server: LAN, savedAt: Date.now()
+      }]));
+      localStorage.removeItem("tonino-owner-network-locked");
+      localStorage.removeItem("tonino-owner-locked-host");
+      localStorage.removeItem("tonino-owner-remote-shell");
+    } catch (e) {}
+  }
+
+  applyToninoTabletNow();
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", next);
