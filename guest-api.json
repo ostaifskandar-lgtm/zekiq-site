@@ -1,12 +1,12 @@
 {
   "apiUrl": "https://tonino.zekiqmenu.com",
   "tunnelUrl": "https://tonino.zekiqmenu.com",
-  "updatedAt": "2026-07-08T11:52:28.885Z",
+  "updatedAt": "2026-07-08T11:52:34.197Z",
   "shops": {
     "tonino.zekiqmenu.com": {
       "tunnelUrl": "https://peripheral-pressing-transmitted-pearl.trycloudflare.com",
       "hostname": "tonino.zekiqmenu.com",
-      "updatedAt": "2026-07-08T11:52:28.885Z"
+      "updatedAt": "2026-07-08T11:52:34.197Z"
     },
     "zekiq-dev.zekiqmenu.com": {
       "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
