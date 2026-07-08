@@ -7946,6 +7946,19 @@
       add(j.lanUrl);
       add(j.api);
       if (Array.isArray(j.apis)) j.apis.forEach(add);
+      // Per-shop map (hostname or LAN key) — prefer stable tunnels over trycloudflare.
+      if (j.shops && typeof j.shops === "object") {
+        const prefer = [];
+        const rest = [];
+        for (const val of Object.values(j.shops)) {
+          const t = String(val && (val.tunnelUrl || val.apiUrl) || "").trim();
+          if (!t) continue;
+          if (/\.trycloudflare\.com$/i.test(t)) rest.push(t);
+          else prefer.push(t);
+        }
+        prefer.forEach(add);
+        rest.forEach(add);
+      }
     }
     function isEphemeralTunnel(u) {
       try { return /\.trycloudflare\.com$/i.test(new URL(u.includes("://") ? u : "https://" + u).hostname); } catch (_) { return false; }
