@@ -1,26 +1,17 @@
 {
   "apiUrl": "https://tonino.zekiqmenu.com",
   "tunnelUrl": "https://tonino.zekiqmenu.com",
-  "updatedAt": "2026-07-08T14:01:19.099Z",
+  "updatedAt": "2026-07-08T14:02:19.147Z",
   "shops": {
     "tonino.zekiqmenu.com": {
-      "tunnelUrl": "https://tonino.zekiqmenu.com",
-      "lanUrl": "http://192.168.1.25:3000",
-      "shopName": "Tonino",
+      "tunnelUrl": "https://peripheral-pressing-transmitted-pearl.trycloudflare.com",
       "hostname": "tonino.zekiqmenu.com",
       "updatedAt": "2026-07-08T11:58:29.763Z"
     },
     "zekiq-dev.zekiqmenu.com": {
       "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
       "hostname": "zekiq-dev.zekiqmenu.com",
-      "updatedAt": "2026-07-08T14:01:19.099Z"
-    },
-    "192.168.1.25": {
-      "tunnelUrl": "https://tonino.zekiqmenu.com",
-      "lanUrl": "http://192.168.1.25:3000",
-      "shopName": "Tonino",
-      "hostname": "tonino.zekiqmenu.com",
-      "updatedAt": "2026-07-08T14:01:48.135Z"
+      "updatedAt": "2026-07-08T14:02:19.147Z"
     }
   }
 }
