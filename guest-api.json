@@ -5,6 +5,8 @@
   "shops": {
     "tonino.zekiqmenu.com": {
       "tunnelUrl": "https://tonino.zekiqmenu.com",
+      "lanUrl": "http://192.168.1.25:3000",
+      "shopName": "Tonino",
       "hostname": "tonino.zekiqmenu.com",
       "updatedAt": "2026-07-08T13:31:32.733Z"
     },
@@ -12,6 +14,13 @@
       "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
       "hostname": "zekiq-dev.zekiqmenu.com",
       "updatedAt": "2026-07-08T13:32:19.272Z"
+    },
+    "192.168.1.25": {
+      "tunnelUrl": "https://tonino.zekiqmenu.com",
+      "lanUrl": "http://192.168.1.25:3000",
+      "shopName": "Tonino",
+      "hostname": "tonino.zekiqmenu.com",
+      "updatedAt": "2026-07-08T13:32:35.697Z"
     }
   }
 }
