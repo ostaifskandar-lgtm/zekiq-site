@@ -1,6 +1,6 @@
 {
-  "apiUrl": "https://tonino.zekiqmenu.com",
-  "tunnelUrl": "https://tonino.zekiqmenu.com",
+  "apiUrl": "https://zekiq-dev.zekiqmenu.com",
+  "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
   "updatedAt": "2026-07-08T12:50:51.748Z",
   "shops": {
     "tonino.zekiqmenu.com": {
