@@ -2,7 +2,7 @@
   "apiUrl": "https://zekiq-dev.zekiqmenu.com",
   "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
   "lanUrl": "http://192.168.1.84:3000",
-  "updatedAt": "2026-07-09T12:59:21.794Z",
+  "updatedAt": "2026-07-09T13:00:22.300Z",
   "shops": {
     "tonino.zekiqmenu.com": {
       "tunnelUrl": "https://peripheral-pressing-transmitted-pearl.trycloudflare.com",
@@ -14,14 +14,14 @@
       "lanUrl": "http://192.168.1.84:3000",
       "shopName": "ZEKiQ",
       "hostname": "zekiq-dev.zekiqmenu.com",
-      "updatedAt": "2026-07-09T12:59:21.794Z"
+      "updatedAt": "2026-07-09T13:00:22.300Z"
     },
     "192.168.1.84": {
       "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
       "lanUrl": "http://192.168.1.84:3000",
       "shopName": "ZEKiQ",
       "hostname": "zekiq-dev.zekiqmenu.com",
-      "updatedAt": "2026-07-09T12:59:21.794Z"
+      "updatedAt": "2026-07-09T13:00:22.300Z"
     }
   }
 }
