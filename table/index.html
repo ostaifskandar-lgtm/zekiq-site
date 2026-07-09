@@ -376,6 +376,7 @@
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
     :root{
       --app-h:100dvh;--app-w:100vw;--vv-top:0px;--vv-left:0px;--chrome-h:0px;--ios-safe-bottom:0px;
+      --guest-phone-top-inset:0px;--guest-phone-bottom-inset:0px;--guest-chip-scale:1;
       --guest-top:0px;--guest-guide:0px;--guest-nav:52px;
     }
     @supports not (height:100dvh){:root{--app-h:-webkit-fill-available;}}
@@ -646,6 +647,44 @@
     html.ios-standalone #iosCompactTip{display:none!important;}
     html.coach-locked #menuStage{padding-top:0!important;}
     html.coach-locked.ios-inbrowser:not(.ios-standalone) #menuBookWrap{padding-bottom:0!important;}
+    html.studio-preview,html.studio-preview body{
+      margin:0;padding:0;overflow:hidden;background:#ebe4d3;
+      height:100%;width:100%;
+    }
+    html.studio-preview #coach,
+    html.studio-preview #header,
+    html.studio-preview #sceneHud,
+    html.studio-preview #menuTopOrders,
+    html.studio-preview #menuOrderDock,
+    html.studio-preview #immersiveCartStrip,
+    html.studio-preview #fsHint,
+    html.studio-preview #pageDock,
+    html.studio-preview #orderStrip,
+    html.studio-preview #nav,
+    html.studio-preview #item-popup,
+    html.studio-preview #ice-cream-sheet,
+    html.studio-preview #line-note-sheet,
+    html.studio-preview #cart-panel,
+    html.studio-preview #overlay,
+    html.studio-preview #okScreen,
+    html.studio-preview .pf-overlay,
+    html.studio-preview .plus-hit,
+    html.studio-preview .plus-hotspot,
+    html.studio-preview .price-hotspot{display:none!important;}
+    html.studio-preview #loadScreen{display:none!important;}
+    html.studio-preview #scene,
+    html.studio-preview #menu-panel{
+      position:fixed;inset:0;height:100%!important;max-height:100%!important;
+    }
+    html.studio-preview #menuStage{
+      height:100%!important;padding:0!important;
+    }
+    html.studio-preview #menuBookWrap{
+      bottom:0!important;
+    }
+    html.studio-preview #pageSwipeBar{
+      display:flex!important;
+    }
     html{height:100dvh;overflow:hidden;}
     body{height:100dvh;overflow:hidden;}
     html,body{
@@ -1236,12 +1275,16 @@
       padding:4px 0 3px;
       margin:0;
       margin-top:var(--cat-bar-offset, 0px);
+      transform:scale(var(--guest-chip-scale, 1));
+      transform-origin:top center;
       background:linear-gradient(180deg,rgba(224,216,198,.98) 0%,rgba(235,228,211,.96) 100%);
       border-bottom:1px solid rgba(180,140,80,.28);
       pointer-events:auto;
       touch-action:pan-x;
     }
     #menuCategoryBar:not(.show){display:none;}
+    #menuCategoryBar.chrome-hidden{display:none!important;}
+    html.guest-manual-chrome #menuTopDock{overflow:visible;height:auto!important;min-height:0!important;}
     html.page-flipping #menuTopDock{
       visibility:visible!important;
       pointer-events:auto!important;
@@ -1528,7 +1571,7 @@
       overflow:hidden;
       background:#ebe4d3;
       perspective:2400px;
-      padding:0;
+      padding:calc(var(--guest-phone-top-inset,0px)) 0 calc(var(--guest-phone-bottom-inset,0px));
       cursor:pointer;
       touch-action:none;
     }
@@ -4161,6 +4204,13 @@
       } catch (_) { return ""; }
     }
     const params = readParams();
+    const STUDIO_MODE = params.get("studio") === "1";
+    const STUDIO_PLATFORM = (params.get("platform") || "android").toLowerCase() === "ios" ? "ios" : "android";
+    const STUDIO_PAGE = Math.max(0, parseInt(params.get("page") || "0", 10) || 0);
+    if (STUDIO_MODE) {
+      document.documentElement.classList.add("studio-preview", "studio-" + STUDIO_PLATFORM);
+      if (STUDIO_PLATFORM === "ios") document.documentElement.classList.add("ios-inbrowser");
+    }
     let TOKEN = (params.get("t") || params.get("token") || "").trim();
     let SHOP = (params.get("shop") || "").trim();
     if (!SHOP && TOKEN) SHOP = shopFromToken(TOKEN);
@@ -4169,6 +4219,7 @@
       return "zekiq_coach_done:" + (TOKEN || "x").slice(0, 48);
     }
     (function applyEarlyCoachGate() {
+      if (STUDIO_MODE) return;
       document.documentElement.classList.add("coach-locked");
     })();
     function clearGuestOverlays() {
@@ -4191,6 +4242,11 @@
     let plusButtonsAllPages = false;
     let bookCacheVer = "";
     let categoryBarOffsetPx = 0;
+    let pageViews = {};
+    let categoryBarView = null;
+    let logoView = null;
+    let hudView = null;
+    let chipLabelOverrides = {};
     let cur = 0, animating = false, popupItem = null, popupQty = 1, popupSugarChoice = null, sending = false, done = false;
     const FLIP_MS = 680;
     let dragFlip = null;
@@ -4573,6 +4629,12 @@
     function isIosGuestNoLogo() {
       const root = document.documentElement;
       return root.classList.contains("ios-inbrowser") && !root.classList.contains("ios-standalone");
+    }
+    function shouldShowGuestLogo() {
+      var chrome = activeGuestChrome();
+      if (chrome.logo && chrome.logo.visible === false) return false;
+      if (chrome.logo && chrome.logo.visible === true) return true;
+      return !isIosGuestNoLogo();
     }
     function isIosGuestHideFootBar() {
       return isIosGuestNoLogo();
@@ -4974,6 +5036,7 @@
       "Kokteyl", "İçecek",
     ];
     function categoryChipLabel(pageIdx) {
+      if (chipLabelOverrides[String(pageIdx)]) return chipLabelOverrides[String(pageIdx)];
       const file = bookPages[pageIdx] || "";
       if (file === "page-013.jpg") return "Çay";
       if (file === "page-014.jpg") return "Sıcak Kahve";
@@ -5462,12 +5525,140 @@
         tag.style.top = (y * rect.dh) + "px";
       });
     }
+    function getPageView(menuIdx) {
+      const key = String(menuIdx);
+      const v = pageViews[key];
+      if (!v) return { cropX: 0, cropY: 0, cropW: 1, cropH: 1, scale: 1, panX: 0, panY: 0 };
+      return {
+        cropX: Math.max(0, Math.min(1, Number(v.cropX) || 0)),
+        cropY: Math.max(0, Math.min(1, Number(v.cropY) || 0)),
+        cropW: Math.max(0.05, Math.min(1, Number(v.cropW) || 1)),
+        cropH: Math.max(0.05, Math.min(1, Number(v.cropH) || 1)),
+        scale: Math.max(0.5, Math.min(2.5, Number(v.scale) || 1)),
+        panX: Math.max(-400, Math.min(400, Number(v.panX) || 0)),
+        panY: Math.max(-400, Math.min(400, Number(v.panY) || 0)),
+      };
+    }
+    function pageViewIsDefault(v) {
+      return !v || (v.cropX < 0.01 && v.cropY < 0.01 && v.cropW > 0.99 && v.cropH > 0.99 && v.scale === 1 && !v.panX && !v.panY);
+    }
+    function activeGuestChrome() {
+      var isIos = STUDIO_MODE
+        ? STUDIO_PLATFORM === "ios"
+        : (typeof isIosDevice === "function" ? isIosDevice() : /iPhone|iPad|iPod/i.test(navigator.userAgent || ""));
+      var cat = categoryBarView && (isIos ? categoryBarView.ios : categoryBarView.android);
+      var logo = logoView && (isIos ? logoView.ios : logoView.android);
+      var hud = hudView && (isIos ? hudView.ios : hudView.android);
+      return { isIos: isIos, cat: cat || null, logo: logo || null, hud: hud || null };
+    }
+    function isManualCategoryChrome(cat) {
+      if (!cat || cat.visible === false) return true;
+      return (Number(cat.x) !== 0.5 && Number.isFinite(Number(cat.x))) || Number(cat.y) > 0.01;
+    }
+    function applyManualGuestChrome() {
+      var chrome = activeGuestChrome();
+      var cat = chrome.cat;
+      var logo = chrome.logo;
+      var view = document.getElementById("menuViewport");
+      var dock = document.getElementById("menuTopDock");
+      var bar = document.getElementById("menuCategoryBar");
+      var root = document.documentElement;
+      var manual = !!(cat && isManualCategoryChrome(cat)) || !!(logo && (logo.visible === false || logo.y > 0.01 || logo.x !== 0.5 || logo.scale !== 1 || logo.cropTop > 0));
+      root.classList.toggle("guest-manual-chrome", manual);
+      if (bar && cat) {
+        bar.classList.toggle("chrome-hidden", cat.visible === false);
+        if (cat.visible !== false && isManualCategoryChrome(cat)) {
+          bar.style.position = "absolute";
+          bar.style.left = (Math.max(0, Math.min(1, Number(cat.x) || 0.5)) * 100) + "%";
+          bar.style.top = (Math.max(0, Math.min(1, Number(cat.y) || 0.08)) * 100) + "%";
+          bar.style.right = "auto";
+          bar.style.marginTop = "0";
+          bar.style.transform = "translate(-50%, 0) scale(" + (Number(cat.scale) || 1) + ")";
+          bar.style.transformOrigin = "top center";
+          bar.style.zIndex = "12";
+          if (dock) {
+            dock.style.position = "static";
+            dock.style.height = "0";
+            dock.style.overflow = "visible";
+          }
+        } else if (cat.visible !== false) {
+          bar.style.position = "";
+          bar.style.left = "";
+          bar.style.top = "";
+          bar.style.right = "";
+          bar.style.zIndex = "";
+          if (dock) {
+            dock.style.position = "";
+            dock.style.height = "";
+            dock.style.overflow = "";
+          }
+        }
+      }
+      if (view && logo) {
+        view.style.setProperty("--guest-logo-crop", String(Math.max(0, Math.min(0.55, Number(logo.cropTop) || 0))));
+      }
+      lastCategoryDockKey = "";
+    }
+    function applyManualHudView() {
+      var chrome = activeGuestChrome();
+      var hud = chrome.hud;
+      var sceneHud = document.getElementById("sceneHud");
+      if (!sceneHud) return;
+      if (hud && hud.visible === false) {
+        sceneHud.style.display = "none";
+        return;
+      }
+      sceneHud.style.display = "";
+      var x = Math.max(0.05, Math.min(0.95, Number(hud && hud.x) || 0.5));
+      var y = Math.max(0, Math.min(0.35, Number(hud && hud.y) || 0.05));
+      var scale = Math.max(0.75, Math.min(1.35, Number(hud && hud.scale) || 1));
+      var offsetX = Math.round((x - 0.5) * 240);
+      var offsetY = Math.round(y * 180);
+      sceneHud.style.left = "50%";
+      sceneHud.style.right = "auto";
+      sceneHud.style.width = "min(92vw,420px)";
+      sceneHud.style.top = "calc(env(safe-area-inset-top,0px) + " + offsetY + "px)";
+      sceneHud.style.transform = "translateX(-50%) translateX(" + offsetX + "px) scale(" + scale + ")";
+      sceneHud.style.transformOrigin = "top center";
+    }
     function applyCategoryBarOffset(px) {
       if (isIosGuestNoLogo()) px = 0;
-      categoryBarOffsetPx = Math.max(0, Math.min(120, Math.round(Number(px) || 0)));
+      categoryBarOffsetPx = Math.max(0, Math.min(140, Math.round(Number(px) || 0)));
       const bar = document.getElementById("menuCategoryBar");
       if (bar) bar.style.setProperty("--cat-bar-offset", categoryBarOffsetPx + "px");
       lastCategoryDockKey = "";
+    }
+    function applyPhonePlatformLayout(phoneLayout) {
+      var root = document.documentElement;
+      var isIos = typeof isIosDevice === "function" ? isIosDevice() : /iPhone|iPad|iPod/i.test(navigator.userAgent || "");
+      var plat = phoneLayout && (isIos ? phoneLayout.ios : phoneLayout.android);
+      var catView = categoryBarView && (isIos ? categoryBarView.ios : categoryBarView.android);
+      if (!plat) {
+        applyCategoryBarOffset(categoryBarOffsetPx);
+        return;
+      }
+      var cat = Number(plat.categoryBarOffsetPx);
+      if (!Number.isFinite(cat)) cat = categoryBarOffsetPx;
+      if (catView && catView.y > 0) {
+        cat = Math.round(catView.y * 140);
+      }
+      applyCategoryBarOffset(cat);
+      var topInset = Math.max(0, Math.min(80, Math.round(Number(plat.topInsetPx) || 0)));
+      var bottomInset = Math.max(0, Math.min(100, Math.round(Number(plat.bottomInsetPx) || 0)));
+      var chipScale = Number(plat.chipScale);
+      if (catView && Number.isFinite(catView.scale) && catView.scale > 0) chipScale = catView.scale;
+      if (!Number.isFinite(chipScale) || chipScale <= 0) chipScale = 1;
+      chipScale = Math.max(0.7, Math.min(1.5, chipScale));
+      root.style.setProperty("--guest-phone-top-inset", topInset + "px");
+      root.style.setProperty("--guest-phone-bottom-inset", bottomInset + "px");
+      root.style.setProperty("--guest-chip-scale", String(chipScale));
+      var bar = document.getElementById("menuCategoryBar");
+      if (bar) {
+        bar.style.transform = chipScale === 1 ? "" : "scale(" + chipScale + ")";
+        bar.style.transformOrigin = "top center";
+      }
+      applyManualGuestChrome();
+      applyManualHudView();
     }
     function logoStripHeight(rect) {
       if (document.documentElement.classList.contains("ios-inbrowser") &&
@@ -5512,8 +5703,15 @@
     }
     function layoutPfBrandStrip(pf, rect) {
       const strip = pf?.querySelector(".pf-brand-strip");
+      const chrome = activeGuestChrome();
+      const logo = chrome.logo;
+      if (logo && logo.visible === false) {
+        if (strip) strip.style.display = "none";
+        return;
+      }
       if (document.documentElement.classList.contains("ios-inbrowser") &&
-          !document.documentElement.classList.contains("ios-standalone")) {
+          !document.documentElement.classList.contains("ios-standalone") &&
+          !shouldShowGuestLogo()) {
         if (strip) strip.style.display = "none";
         return;
       }
@@ -5522,20 +5720,34 @@
         return;
       }
       const bar = document.getElementById("menuCategoryBar");
-      const catH = bar && bar.classList.contains("show") ? Math.round(bar.offsetHeight) : 0;
-      const logoH = logoStripHeight(rect);
+      const catH = bar && bar.classList.contains("show") && !(chrome.cat && chrome.cat.visible === false) ? Math.round(bar.offsetHeight) : 0;
+      const logoH = logoStripHeight(rect) * (logo ? Number(logo.scale) || 1 : 1);
       strip.style.display = "";
-      strip.style.left = rect.ox + "px";
-      strip.style.width = rect.dw + "px";
-      strip.style.top = Math.max(0, rect.oy - logoH - catH) + "px";
-      strip.style.height = logoH + "px";
+      if (logo && (logo.y > 0.01 || logo.x !== 0.5 || logo.scale !== 1)) {
+        const view = document.getElementById("menuViewport");
+        const vh = view ? view.clientHeight : 0;
+        const vw = view ? view.clientWidth : 0;
+        const topPx = logo.y > 0.01 ? Math.round(logo.y * vh) : Math.max(0, rect.oy - logoH - catH);
+        const wPx = Math.round(rect.dw * (Number(logo.scale) || 1));
+        strip.style.left = Math.round((Number(logo.x) || 0.5) * vw - wPx / 2) + "px";
+        strip.style.width = wPx + "px";
+        strip.style.top = topPx + "px";
+        strip.style.height = logoH + "px";
+      } else {
+        strip.style.left = rect.ox + "px";
+        strip.style.width = rect.dw + "px";
+        strip.style.top = Math.max(0, rect.oy - logoH - catH) + "px";
+        strip.style.height = logoH + "px";
+      }
       strip.style.maxHeight = logoH + "px";
       const img = strip.querySelector(".guest-brand-banner-img");
       if (img) {
         img.style.width = "100%";
         img.style.height = logoH + "px";
         img.style.objectFit = "cover";
-        img.style.objectPosition = "center bottom";
+        const crop = logo ? Math.max(0, Math.min(0.55, Number(logo.cropTop) || 0)) : 0;
+        img.style.objectPosition = crop > 0 ? ("center " + Math.round(crop * 100) + "%") : "center bottom";
+        img.style.clipPath = crop > 0 ? ("inset(" + Math.round(crop * 100) + "% 0 0 0)") : "";
       }
     }
     function syncMenuTopDock(show) {
@@ -5680,6 +5892,11 @@
       }
     }
     function syncCategoryDock(pf) {
+      const chrome = activeGuestChrome();
+      if (chrome.cat && isManualCategoryChrome(chrome.cat)) {
+        applyManualGuestChrome();
+        return;
+      }
       const view = document.getElementById("menuViewport");
       const dock = document.getElementById("menuTopDock");
       const bar = document.getElementById("menuCategoryBar");
@@ -6202,8 +6419,14 @@
       const img = pf.querySelector(".pf-bg");
       if (!img || !rect) return;
       const isCover = pf.classList.contains("book-cover");
+      const menuIdx = pf.dataset.menuIdx != null ? Number(pf.dataset.menuIdx) : menuIdxFromPf(pf);
+      const view = menuIdx >= 0 ? getPageView(menuIdx) : null;
+      const nw = Number(pf.dataset.nw) || 0;
+      const nh = Number(pf.dataset.nh) || 0;
+      const useView = !isCover && view && nw > 0 && nh > 0 && !pageViewIsDefault(view);
       const layoutKey = Math.round(rect.ox) + "|" + Math.round(rect.oy) + "|" +
-        Math.round(rect.dw) + "|" + Math.round(rect.dh) + "|" + (isCover ? "c" : "m");
+        Math.round(rect.dw) + "|" + Math.round(rect.dh) + "|" + (isCover ? "c" : "m") + "|" +
+        (useView ? [view.cropX, view.cropY, view.cropW, view.cropH, view.scale, view.panX, view.panY].join(",") : "d");
       if (pf.dataset.layoutKey === layoutKey) return;
       pf.dataset.layoutKey = layoutKey;
       img.style.clipPath = "";
@@ -6218,6 +6441,26 @@
         img.style.objectFit = "contain";
         img.style.objectPosition = "center";
         img.style.transform = "translateZ(0)";
+      } else if (useView) {
+        const cropW = view.cropW * nw;
+        const cropH = view.cropH * nh;
+        const cropX = view.cropX * nw;
+        const cropY = view.cropY * nh;
+        const fitScale = Math.min(rect.dw / cropW, rect.dh / cropH);
+        const scale = fitScale * view.scale;
+        const dispW = nw * scale;
+        const dispH = nh * scale;
+        const left = rect.ox - cropX * scale + (rect.dw - cropW * scale) / 2 + view.panX;
+        const top = rect.oy - cropY * scale + (rect.dh - cropH * scale) / 2 + view.panY;
+        img.style.position = "absolute";
+        img.style.left = left + "px";
+        img.style.top = top + "px";
+        img.style.width = dispW + "px";
+        img.style.height = dispH + "px";
+        img.style.objectFit = "fill";
+        img.style.objectPosition = "center";
+        img.style.transform = "translateZ(0)";
+        pf.style.overflow = "hidden";
       } else {
         img.style.position = "absolute";
         img.style.left = rect.ox + "px";
@@ -6789,9 +7032,10 @@
         const pf = document.createElement("div");
         pf.className = "pf";
         if (spread.kind === "menu") {
+          pf.dataset.menuIdx = String(spread.menuIdx);
           const pageSrc = fixImgUrl(spread.imgUrl) + (String(spread.imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
           primePageBg(pf, pageSrc);
-          if (!isIosGuestNoLogo()) {
+          if (shouldShowGuestLogo()) {
             const brandStrip = document.createElement("div");
             brandStrip.className = "pf-brand-strip";
             brandStrip.setAttribute("aria-hidden", "true");
@@ -7289,6 +7533,7 @@
       refreshCoverTitles();
       if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
       syncTableFootBadge();
+      applyManualHudView();
       if (!coachDone || document.documentElement.classList.contains("coach-locked")) {
         if (stageEl) stageEl.classList.remove("orders-overlay");
         if (ordersWrap) ordersWrap.classList.remove("show", "guest-hint-only");
@@ -7981,7 +8226,9 @@
       // GitHub QR without api= — load known shop manifests (Tonino cashier .25)
       if (siteRoot && /github\.io$/i.test(location.hostname)) {
         jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-tonino.json", 5000).then(j => ingestManifest(j, add)));
+        jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-dev.json", 5000).then(j => ingestManifest(j, add)).catch(() => {}));
         add("https://tonino.zekiqmenu.com");
+        add("https://zekiq-dev.zekiqmenu.com");
         add("https://shop.zekiqmenu.com");
       }
       jobs.push(fetchJson("https://shop.zekiqmenu.com/guest-api.json", 5000).then(j => ingestManifest(j, add)));
@@ -8075,7 +8322,13 @@
       }
       if (plusButtonsAllPages) singlePagePlusOnly = false;
       bookCacheVer = String((data.book && (data.book.updatedAt || data.book.version)) || "").replace(/[:.]/g, "");
+      pageViews = (data.book && data.book.pageViews) || {};
+      categoryBarView = (data.book && data.book.categoryBarView) || null;
+      logoView = (data.book && data.book.logoView) || null;
+      hudView = (data.book && data.book.hudView) || null;
+      chipLabelOverrides = (data.book && data.book.chipLabelOverrides) || {};
       applyCategoryBarOffset(data.book && data.book.categoryBarOffsetPx);
+      applyPhonePlatformLayout(data.book && data.book.phoneLayout);
       refreshPageBrandBanners(bookCacheVer);
       if (data.guestLanguage && window.applyGuestLanguage) window.applyGuestLanguage(data.guestLanguage);
       applyDailySoupBanner(
@@ -8093,6 +8346,14 @@
       document.getElementById("tblLabel").textContent = section + " · " + guestT("table") + " " + tableNum;
       buildBook();
       syncSceneHud();
+      if (STUDIO_MODE) {
+        coachDone = true;
+        try { sessionStorage.setItem(coachDoneKey(), "1"); } catch (_) {}
+        const spreadIdx = spreadIdxForMenuPage(STUDIO_PAGE);
+        if (bookSpread.length) goToPage(Math.min(Math.max(0, spreadIdx), bookSpread.length - 1), true);
+        if (typeof layoutAllHotspots === "function") layoutAllHotspots();
+        if (typeof window.__zekiqRelayout === "function") window.__zekiqRelayout();
+      }
       try { if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive(); } catch (_) {}
       } catch (e) {
         console.error("[guest/apply]", e);
@@ -8103,8 +8364,28 @@
       }
     }
 
+    async function fetchMenuStudio() {
+      apiBase = location.origin.replace(/\/+$/, "");
+      const res = await fetch(apiBase + "/api/guest/v1/menu-studio", { cache: "no-store", credentials: "include" });
+      return await res.json();
+    }
+
     async function boot() {
       initSwipeHint();
+      if (STUDIO_MODE) {
+        setLoadStatus(guestT("loadingSub"));
+        try {
+          const data = await fetchMenuStudio();
+          if (data && data.ok) {
+            applyMenuData(data);
+            return;
+          }
+          showErr(guestT("menuNotReady"), data && data.error === "forbidden" ? "سجّل دخول المدير في الكاشير أولاً." : guestT("menuNotReadyD"));
+        } catch (_) {
+          showErr(guestT("menuNotReady"), guestT("menuNotReadyD"));
+        }
+        return;
+      }
       if (!TOKEN) { showErr(guestT("errScanQr"), guestT("errScanQrD")); return; }
       if (!SHOP) { showErr(guestT("errOldQr"), guestT("errOldQrD")); return; }
 
@@ -8127,6 +8408,7 @@
       const instantBases = rankApiBases([
         apiParamBoot,
         onGithub ? "https://tonino.zekiqmenu.com" : "",
+        onGithub ? "https://zekiq-dev.zekiqmenu.com" : "",
         onGithub ? "https://shop.zekiqmenu.com" : "",
       ].filter(Boolean));
       const seen = new Set();
