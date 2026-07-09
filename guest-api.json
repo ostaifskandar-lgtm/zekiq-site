@@ -1,12 +1,10 @@
 {
   "apiUrl": "https://tonino.zekiqmenu.com",
   "tunnelUrl": "https://tonino.zekiqmenu.com",
-  "updatedAt": "2026-07-09T15:00:34.083Z",
+  "updatedAt": "2026-07-09T15:01:04.133Z",
   "shops": {
     "tonino.zekiqmenu.com": {
       "tunnelUrl": "https://tonino.zekiqmenu.com",
-      "lanUrl": "http://192.168.1.25:3000",
-      "shopName": "Tonino",
       "hostname": "tonino.zekiqmenu.com",
       "updatedAt": "2026-07-09T14:55:19.829Z"
     },
@@ -18,14 +16,7 @@
     "radiation-las-sperm-throat.trycloudflare.com": {
       "tunnelUrl": "https://radiation-las-sperm-throat.trycloudflare.com",
       "hostname": "radiation-las-sperm-throat.trycloudflare.com",
-      "updatedAt": "2026-07-09T15:00:34.083Z"
-    },
-    "192.168.1.25": {
-      "tunnelUrl": "https://tonino.zekiqmenu.com",
-      "lanUrl": "http://192.168.1.25:3000",
-      "shopName": "Tonino",
-      "hostname": "tonino.zekiqmenu.com",
-      "updatedAt": "2026-07-09T15:00:50.686Z"
+      "updatedAt": "2026-07-09T15:01:04.133Z"
     }
   }
 }
