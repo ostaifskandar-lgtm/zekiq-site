@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v150: no duplicate logo on page flip -->
+  <!-- guest-table-ui-v151: fixed categories; orders cover logo -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1130,13 +1130,6 @@
       visibility:visible!important;
       pointer-events:auto!important;
     }
-    html.orders-cover-logo #menuBrandDock{
-      max-height:0!important;
-      opacity:0!important;
-      overflow:hidden;
-      pointer-events:none!important;
-      transition:max-height .28s ease,opacity .22s ease;
-    }
     /* Brand is only #menuBrandDock — never revive per-page .pf-brand-strip on flip */
     html.page-flipping .pf-brand-strip{
       display:none!important;
@@ -1267,22 +1260,29 @@
       left:0;
       right:0;
       z-index:880;
-      top:max(0px,calc(var(--menu-img-top, 0px) - var(--menu-top-dock-h, 88px)));
+      /* Categories only — logo sits above via #menuBrandDock and does not move this dock */
+      top:max(0px,calc(var(--menu-img-top, 0px) - var(--menu-top-dock-h, 44px)));
       display:none;
       margin:0;
       padding:0;
       pointer-events:auto;
       touch-action:pan-x;
+      overflow:visible;
     }
     #menuTopDock.show{display:block;}
     #menuBrandDock{
       display:none;
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:100%;
       line-height:0;
       overflow:hidden;
       width:100%;
       margin:0;
       padding:0;
       pointer-events:none;
+      z-index:0;
     }
     #menuTopDock.has-brand-dock #menuBrandDock{display:block;}
     #menuBrandDock .menu-dock-brand-img{
@@ -1295,6 +1295,13 @@
       user-select:none;
       -webkit-user-drag:none;
       -webkit-touch-callout:none;
+    }
+    html.orders-cover-logo #menuBrandDock{
+      max-height:0!important;
+      opacity:0!important;
+      overflow:hidden;
+      pointer-events:none!important;
+      transition:max-height .22s ease,opacity .18s ease;
     }
     #menuCategoryBar{
       position:relative;
@@ -3619,7 +3626,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v150</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v151</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -6380,7 +6387,8 @@
         scheduleHotspotRelayout();
         return;
       }
-      const dockH = catH + logoH;
+      /* Dock height = categories only. Logo floats above via bottom:100% and is covered by orders. */
+      const dockH = catH;
       const dockKey = oy + "|" + dockH + "|" + logoH;
       if (lastCategoryDockKey === dockKey) return;
       lastCategoryDockKey = dockKey;
