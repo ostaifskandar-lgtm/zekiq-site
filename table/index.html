@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v151: fixed categories; orders cover logo -->
+  <!-- guest-table-ui-v152: logo flips with page; folds after 5 order lines -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1130,14 +1130,7 @@
       visibility:visible!important;
       pointer-events:auto!important;
     }
-    /* Brand is only #menuBrandDock — never revive per-page .pf-brand-strip on flip */
-    html.page-flipping .pf-brand-strip{
-      display:none!important;
-      opacity:0!important;
-      visibility:hidden!important;
-      max-height:0!important;
-      pointer-events:none!important;
-    }
+    /* Brand flips with the page — do not force-hide on flip */
     html.page-flipping .pw{
       transition:none!important;
     }
@@ -1260,7 +1253,7 @@
       left:0;
       right:0;
       z-index:880;
-      /* Categories only — logo sits above via #menuBrandDock and does not move this dock */
+      /* Categories only — page logo flips with .pf-brand-strip above this dock */
       top:max(0px,calc(var(--menu-img-top, 0px) - var(--menu-top-dock-h, 44px)));
       display:none;
       margin:0;
@@ -1270,39 +1263,7 @@
       overflow:visible;
     }
     #menuTopDock.show{display:block;}
-    #menuBrandDock{
-      display:none;
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:100%;
-      line-height:0;
-      overflow:hidden;
-      width:100%;
-      margin:0;
-      padding:0;
-      pointer-events:none;
-      z-index:0;
-    }
-    #menuTopDock.has-brand-dock #menuBrandDock{display:block;}
-    #menuBrandDock .menu-dock-brand-img{
-      display:block;
-      width:100%;
-      height:var(--logo-strip-h, 48px);
-      object-fit:cover;
-      object-position:center bottom;
-      pointer-events:none;
-      user-select:none;
-      -webkit-user-drag:none;
-      -webkit-touch-callout:none;
-    }
-    html.orders-cover-logo #menuBrandDock{
-      max-height:0!important;
-      opacity:0!important;
-      overflow:hidden;
-      pointer-events:none!important;
-      transition:max-height .22s ease,opacity .18s ease;
-    }
+    #menuBrandDock{display:none!important;} /* logo lives on each page face for flip */
     #menuCategoryBar{
       position:relative;
       left:auto;
@@ -1329,7 +1290,6 @@
     }
     html.page-flipping .pf-overlay{visibility:hidden!important;}
     .pf-cat-strip{display:none!important;}
-    .pf-brand-strip{display:none!important;} /* brand is #menuBrandDock above category chips */
     .pf-brand-strip{
       position:absolute;
       left:0;
@@ -1340,8 +1300,33 @@
       z-index:8;
       backface-visibility:hidden;
       -webkit-backface-visibility:hidden;
-      transform:translateZ(2px);
+      transform:translateZ(2px) scaleY(1);
+      transform-origin:bottom center;
       overflow:hidden;
+      opacity:1;
+      max-height:120px;
+      transition:max-height .38s cubic-bezier(.4,0,.2,1),opacity .28s ease,transform .38s cubic-bezier(.4,0,.2,1);
+    }
+    /* After 5 order lines — fold logo away; categories stay fixed */
+    html.orders-cover-logo .pw .pf-brand-strip{
+      max-height:0!important;
+      opacity:0!important;
+      transform:translateZ(2px) scaleY(0)!important;
+      pointer-events:none!important;
+    }
+    /* Keep logo on the turning page for flip beauty (unless folded by orders) */
+    html.page-flipping:not(.orders-cover-logo) .pw.turning .pf-brand-strip,
+    html.page-flipping:not(.orders-cover-logo) .pw.turn-next .pf-brand-strip,
+    html.page-flipping:not(.orders-cover-logo) .pw.turn-prev .pf-brand-strip,
+    html.page-flipping:not(.orders-cover-logo) .pw.page-reveal .pf-brand-strip,
+    html.page-flipping:not(.orders-cover-logo) .pw.page-current .pf-brand-strip{
+      opacity:1!important;
+      max-height:120px!important;
+      visibility:visible!important;
+      display:block!important;
+      transform:translateZ(2px) scaleY(1)!important;
+      transition:none!important;
+      pointer-events:none!important;
     }
     .guest-brand-banner-img{
       display:block;
@@ -3626,7 +3611,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v151</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v152</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -4915,11 +4900,9 @@
       if (chrome.logo && chrome.logo.visible === true) return true;
       return !isIosGuestNoLogo();
     }
-    /** Always pin brand banner in #menuBrandDock (directly above category chips). */
-    function usesDockBrandLogo(logo) {
-      if (!shouldShowGuestLogo()) return false;
-      if (logo && logo.visible === false) return false;
-      return true;
+    /** Page-face logo (flips with turn). Dock brand unused. */
+    function usesDockBrandLogo() {
+      return false;
     }
     function isIosGuestHideFootBar() {
       return isIosGuestNoLogo();
@@ -6169,38 +6152,50 @@
         };
       });
     }
-    function layoutPfBrandStrip(pf) {
-      /* Brand lives in #menuBrandDock above category chips — never float at screen top. */
+    function layoutPfBrandStrip(pf, rect) {
       const strip = pf?.querySelector(".pf-brand-strip");
-      if (strip) strip.style.display = "none";
+      if (!strip) return;
+      if (!shouldShowGuestLogo() || !rect || pf.classList.contains("book-cover")) {
+        strip.style.display = "none";
+        return;
+      }
+      const chrome = activeGuestChrome();
+      const logo = chrome.logo;
+      const bar = document.getElementById("menuCategoryBar");
+      const catH = bar && bar.classList.contains("show") && !(chrome.cat && chrome.cat.visible === false)
+        ? Math.round(bar.offsetHeight) : 0;
+      const logoH = Math.max(28, Math.round(logoStripHeight(rect) * (logo ? Number(logo.scale) || 1 : 1)));
+      strip.style.display = "";
+      strip.style.left = rect.ox + "px";
+      strip.style.width = rect.dw + "px";
+      /* Sit just above category dock zone so logo flips with the page face */
+      strip.style.top = Math.max(0, rect.oy - logoH - catH) + "px";
+      strip.style.height = logoH + "px";
+      strip.style.maxHeight = logoH + "px";
+      const img = strip.querySelector(".guest-brand-banner-img");
+      if (img) {
+        img.style.width = "100%";
+        img.style.height = logoH + "px";
+        img.style.objectFit = "cover";
+        const crop = logo ? Math.max(0, Math.min(0.55, Number(logo.cropTop) || 0)) : 0;
+        img.style.objectPosition = crop > 0 ? ("center " + Math.round(crop * 100) + "%") : "center bottom";
+        img.style.clipPath = crop > 0 ? ("inset(" + Math.round(crop * 100) + "% 0 0 0)") : "";
+      }
     }
-    function syncMenuBrandDock(rect, catH) {
+    function syncMenuBrandDock(rect) {
       const topDock = document.getElementById("menuTopDock");
       const brandDock = document.getElementById("menuBrandDock");
       const view = document.getElementById("menuViewport");
-      const chrome = activeGuestChrome();
-      const logo = chrome.logo;
-      const dockMode = usesDockBrandLogo(logo);
-      topDock?.classList.toggle("has-brand-dock", dockMode);
-      if (!dockMode || !rect) {
-        if (brandDock) brandDock.style.display = "none";
+      topDock?.classList.remove("has-brand-dock");
+      if (brandDock) brandDock.style.display = "none";
+      if (!shouldShowGuestLogo() || !rect) {
         if (view) view.style.removeProperty("--logo-strip-h");
         return 0;
       }
+      const chrome = activeGuestChrome();
+      const logo = chrome.logo;
       const logoH = Math.max(28, Math.round(logoStripHeight(rect) * (logo ? Number(logo.scale) || 1 : 1)));
       if (view) view.style.setProperty("--logo-strip-h", logoH + "px");
-      if (brandDock) {
-        brandDock.style.display = "";
-        const img = brandDock.querySelector(".menu-dock-brand-img");
-        if (img) {
-          img.style.height = logoH + "px";
-          img.style.objectFit = "cover";
-          const crop = logo ? Math.max(0, Math.min(0.55, Number(logo.cropTop) || 0)) : 0;
-          img.style.objectPosition = crop > 0 ? ("center " + Math.round(crop * 100) + "%") : "center bottom";
-          img.style.clipPath = crop > 0 ? ("inset(" + Math.round(crop * 100) + "% 0 0 0)") : "";
-        }
-      }
-      document.querySelectorAll(".pf-brand-strip").forEach(strip => { strip.style.display = "none"; });
       return logoH;
     }
     function syncMenuTopDock(show) {
@@ -6332,7 +6327,7 @@
       const listEl = document.getElementById("sceneOrderList");
       const liveOverflow = orderListOverflows(listEl);
       const coverLogo =
-        lineCount > 2 || liveOverflow || overflows ||
+        lineCount >= 5 || liveOverflow || overflows ||
         (chip && chip.classList.contains("orders-expanded"));
       if (!document.documentElement.classList.contains("page-flipping")) {
         dock.classList.toggle("orders-cover-logo", !!coverLogo);
@@ -6387,16 +6382,19 @@
         scheduleHotspotRelayout();
         return;
       }
-      /* Dock height = categories only. Logo floats above via bottom:100% and is covered by orders. */
+      /* Dock height = categories only. Logo is on the page face (flips) and folds after 5 lines. */
       const dockH = catH;
       const dockKey = oy + "|" + dockH + "|" + logoH;
-      if (lastCategoryDockKey === dockKey) return;
+      if (lastCategoryDockKey === dockKey) {
+        layoutPfBrandStrip(pf, rect);
+        return;
+      }
       lastCategoryDockKey = dockKey;
       view.style.setProperty("--menu-img-top", oy + "px");
       view.style.setProperty("--cat-bar-h", catH + "px");
       view.style.setProperty("--logo-strip-h", logoH + "px");
       view.style.setProperty("--menu-top-dock-h", dockH + "px");
-      layoutPfBrandStrip(pf);
+      layoutPfBrandStrip(pf, rect);
       syncOrdersListHeight();
     }
     function syncCategoryBar() {
@@ -7537,6 +7535,13 @@
           pf.dataset.menuIdx = String(spread.menuIdx);
           const pageSrc = fixImgUrl(spread.imgUrl) + (String(spread.imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
           primePageBg(pf, pageSrc);
+          if (shouldShowGuestLogo()) {
+            const brandStrip = document.createElement("div");
+            brandStrip.className = "pf-brand-strip";
+            brandStrip.setAttribute("aria-hidden", "true");
+            brandStrip.innerHTML = '<img class="guest-brand-banner-img" alt="Tonino" draggable="false" src="assets/tonino-brand-banner.jpg" />';
+            pf.appendChild(brandStrip);
+          }
           const shade = document.createElement("div");
           shade.className = "page-shade";
           pf.appendChild(shade);
