@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v145: daily dish order sheet — options + note always -->
+  <!-- guest-table-ui-v146: swipe finger hint on welcome + daily dish -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1680,6 +1680,10 @@
       min-width:0;
       width:100%;
     }
+    .swipe-hint-mid .swipe-hand{
+      font-size:clamp(24px,6.5vw,30px);
+      margin-bottom:1px;
+    }
     .swipe-hint-block{
       display:flex;
       flex-direction:column;
@@ -2226,6 +2230,54 @@
       color:#8b6914;
       animation:coverArrowPulse 2.4s ease-in-out infinite;
     }
+    .page-swipe-finger-hint{
+      position:relative;z-index:2;
+      width:100%;max-width:420px;margin:clamp(6px,1.8vw,10px) auto 0;
+      padding:10px 14px 9px;
+      border-radius:16px;
+      border:1px solid rgba(180,150,100,.38);
+      background:rgba(255,255,255,.78);
+      box-shadow:0 6px 18px rgba(90,56,36,.1);
+      flex-shrink:0;
+      pointer-events:none;
+    }
+    .page-swipe-finger-row{
+      display:flex;align-items:center;justify-content:center;gap:10px;
+    }
+    .page-swipe-finger-emoji,.swipe-hand{
+      flex:0 0 auto;
+      font-size:clamp(30px,8.5vw,38px);
+      line-height:1;
+      display:inline-block;
+      animation:swipeFingerMove 1.55s ease-in-out infinite;
+      filter:drop-shadow(0 2px 8px rgba(120,80,20,.28));
+      transform-origin:center bottom;
+    }
+    .page-swipe-finger-copy{
+      flex:1;min-width:0;
+      display:flex;flex-direction:column;align-items:center;gap:4px;
+    }
+    .page-swipe-finger-text,.swipe-foot-finger-text{
+      margin:0;
+      font-size:clamp(11px,3.1vw,13px);
+      font-weight:900;
+      color:#4a3208;
+      text-align:center;
+      line-height:1.3;
+      letter-spacing:.02em;
+    }
+    .page-swipe-finger-hint .swipe-arrow-track{
+      width:min(100%,148px);height:22px;
+    }
+    .pf.book-daily-dish .page-swipe-finger-hint{
+      max-width:340px;margin:0 auto 8px;
+      background:rgba(255,252,240,.9);
+      border-color:rgba(160,100,20,.28);
+    }
+    @keyframes swipeFingerMove{
+      0%,100%{transform:translateX(-12px) rotate(-10deg);}
+      50%{transform:translateX(12px) rotate(10deg);}
+    }
     .book-cover-start .cover-arrow-next{animation-delay:0s;}
     .book-cover-start .cover-arrow-prev{opacity:.35;animation-delay:1.2s;}
     html.coach-locked #menuTopDock,
@@ -2753,6 +2805,9 @@
       margin:10px 0 0;max-width:300px;
       font-size:11px;font-weight:700;line-height:1.45;
       color:#8a5a10;opacity:.75;
+    }
+    .dd-page-hint .page-swipe-finger-hint{
+      margin:0 auto;opacity:1;
     }
     /* Daily dish — stack: words on top, poster image bottom (mobile-safe) */
     .pf.book-daily-dish.book-daily-poster{
@@ -3545,7 +3600,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v145</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v146</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -3650,7 +3705,10 @@
           </div>
           <div class="swipe-hint">
             <div class="swipe-hint-block">
-              <p class="swipe-hint-text" id="i18n-swipeHint">اسحب لقلب الشاشة</p>
+              <div class="swipe-hint-mid">
+                <span class="swipe-hand" aria-hidden="true">👆</span>
+                <p class="swipe-hint-text" id="i18n-swipeHint">اسحب لقلب الشاشة</p>
+              </div>
               <div class="swipe-arrow-track" aria-hidden="true">
                 <div class="swipe-track-slide">
                   <span class="swipe-track-chev lit left">‹</span>
@@ -3861,6 +3919,8 @@
       dailyDishToday: "اليوم",
       dailyDishOrder: "اختر هذا الطبق",
       dailyDishToMenu: "المينو الكامل",
+      dailyDishSwipeHint: "اسحب يميناً أو يساراً للمينو",
+      coverSwipeHint: "اسحب يميناً أو يساراً لقلب الصفحات",
       dailyDishPriceLabel: "السعر",
       dailyDishPickTitle: "اختر تفاصيل الطبق",
       dailyDishPickDessert: "اختر الحلو",
@@ -4020,6 +4080,8 @@
       dailyDishToday: "Bugün",
       dailyDishOrder: "Bu yemeği seç",
       dailyDishToMenu: "Menüye geç",
+      dailyDishSwipeHint: "Menü için sağa veya sola kaydırın",
+      coverSwipeHint: "Sayfaları çevirmek için sağa veya sola kaydırın",
       dailyDishPriceLabel: "Fiyat",
       dailyDishPickTitle: "Menü seçimleri",
       dailyDishPickDessert: "Tatlı seçin",
@@ -4179,6 +4241,8 @@
       dailyDishToday: "Today",
       dailyDishOrder: "Choose this dish",
       dailyDishToMenu: "Full menu",
+      dailyDishSwipeHint: "Swipe left or right for the menu",
+      coverSwipeHint: "Swipe left or right to turn pages",
       dailyDishPriceLabel: "Price",
       dailyDishPickTitle: "Choose your options",
       dailyDishPickDessert: "Choose dessert",
@@ -5089,6 +5153,11 @@
         startBtn.addEventListener("touchend", onCoverStart, { passive: false });
         guide.appendChild(startBtn);
 
+        const swipeHint = document.createElement("div");
+        swipeHint.innerHTML = swipeFingerHintHtml("coverSwipeHint");
+        swipeHint.firstElementChild?.setAttribute("data-swipe-kind", "coverSwipeHint");
+        body.appendChild(swipeHint.firstElementChild || swipeHint);
+
         panel.appendChild(banner);
         if (section && tableNum) body.appendChild(tableLine);
         body.appendChild(guide);
@@ -5124,6 +5193,7 @@
       document.querySelectorAll(".book-cover-swipe-hint span:not(.cover-arrow)").forEach(el => {
         el.textContent = guestT("coverStartSub");
       });
+      refreshSwipeFingerHints();
       document.querySelectorAll(".cover-banner-img,.cover-brand-banner .guest-brand-banner-img").forEach(el => {
         el.src = coverLogoSrc();
         el.alt = shopName || guestT("coverStartTitle");
@@ -5487,6 +5557,10 @@
           '<button type="button" class="dd-poster-order' + (inCart ? " in-cart" : "") + '" data-dd-order="1">' +
           esc(inCart ? ("✓ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
           "</button>";
+        const swipeHintHtml = swipeFingerHintHtml("dailyDishSwipeHint").replace(
+          'data-swipe-finger="1"',
+          'data-swipe-finger="1" data-swipe-kind="dailyDishSwipeHint"'
+        );
         const posterSrc = dishImgFixed + (dishImgFixed.indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=dd1"));
         const stack = document.createElement("div");
         stack.className = "book-daily-poster-stack";
@@ -5499,7 +5573,7 @@
           priceHead +
           "</div>" +
           '<div class="dd-poster-img"><img alt="" draggable="false" decoding="async" src="' + esc(posterSrc) + '" /></div>' +
-          '<div class="dd-poster-actions">' + actionsHtml + "</div>";
+          '<div class="dd-poster-actions">' + swipeHintHtml + actionsHtml + "</div>";
         pf.appendChild(stack);
         bindDailyDishOrderBtn(stack.querySelector("[data-dd-order]"));
         const weekBtn = stack.querySelector("[data-dd-week]");
@@ -5536,7 +5610,12 @@
           ? '<button type="button" class="dd-poster-week-btn" style="max-width:320px;margin-top:8px" data-dd-week="1">' +
             esc(guestT("dailyDishWeekBrowse")) + "</button>"
           : "") +
-        '<p class="dd-page-hint">' + esc(guestT("dailyDishToMenu")) + "</p></div>";
+        '<div class="dd-page-hint">' +
+        swipeFingerHintHtml("dailyDishSwipeHint").replace(
+          'data-swipe-finger="1"',
+          'data-swipe-finger="1" data-swipe-kind="dailyDishSwipeHint"'
+        ) +
+        "</div></div>";
       bindDailyDishOrderBtn(pf.querySelector("[data-dd-order]"));
       const weekBtn = pf.querySelector("[data-dd-week]");
       if (weekBtn) {
@@ -6839,6 +6918,23 @@
         '<span class="swipe-track-chev lit right delay-3">›</span>' +
         "</div></div>";
     }
+    function swipeFingerHintHtml(hintKey) {
+      const label = guestT(hintKey || "swipeHint");
+      return '<div class="page-swipe-finger-hint" data-swipe-finger="1">' +
+        '<div class="page-swipe-finger-row">' +
+        '<span class="page-swipe-finger-emoji swipe-hand" aria-hidden="true">👆</span>' +
+        '<div class="page-swipe-finger-copy">' +
+        '<p class="page-swipe-finger-text">' + esc(label) + "</p>" +
+        swipeArrowTrackHtml() +
+        "</div></div></div>";
+    }
+    function refreshSwipeFingerHints() {
+      document.querySelectorAll(".page-swipe-finger-hint[data-swipe-kind]").forEach(function (el) {
+        const key = el.getAttribute("data-swipe-kind") || "swipeHint";
+        const txt = el.querySelector(".page-swipe-finger-text");
+        if (txt) txt.textContent = guestT(key);
+      });
+    }
     function swipeHintBlockHtml(pageNumText) {
       let html =
         '<div class="swipe-hint-block">' +
@@ -6918,7 +7014,7 @@
       if (pgEl && menuIdx >= 0) pgEl.textContent = (menuIdx + 1) + " / " + menuPageCount;
       if (!bar) return;
       if (isIosGuestHideFootBar()) bar.style.display = "none";
-      else bar.style.display = bookSpread.length <= 1 ? "none" : "";
+      else bar.style.display = bookSpread.length <= 1 || document.documentElement.classList.contains("coach-locked") ? "none" : "";
       syncFootLayout();
     }
     function primePageBg(pf, src, onReady) {
