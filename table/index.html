@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v149: logo always docked above category chips -->
+  <!-- guest-table-ui-v150: no duplicate logo on page flip -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1130,7 +1130,6 @@
       visibility:visible!important;
       pointer-events:auto!important;
     }
-    html.orders-cover-logo .pw.page-current:not(.turning):not(.turn-next):not(.turn-prev) .pf-brand-strip,
     html.orders-cover-logo #menuBrandDock{
       max-height:0!important;
       opacity:0!important;
@@ -1138,16 +1137,12 @@
       pointer-events:none!important;
       transition:max-height .28s ease,opacity .22s ease;
     }
-    html.page-flipping .pw.turning .pf-brand-strip,
-    html.page-flipping .pw.turn-next .pf-brand-strip,
-    html.page-flipping .pw.turn-prev .pf-brand-strip,
-    html.page-flipping .pw.page-reveal .pf-brand-strip,
-    html.page-flipping .pw.page-current .pf-brand-strip{
-      opacity:1!important;
-      max-height:none!important;
-      visibility:visible!important;
-      display:block!important;
-      transition:none!important;
+    /* Brand is only #menuBrandDock — never revive per-page .pf-brand-strip on flip */
+    html.page-flipping .pf-brand-strip{
+      display:none!important;
+      opacity:0!important;
+      visibility:hidden!important;
+      max-height:0!important;
       pointer-events:none!important;
     }
     html.page-flipping .pw{
@@ -3624,7 +3619,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v149</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v150</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -7534,13 +7529,6 @@
           pf.dataset.menuIdx = String(spread.menuIdx);
           const pageSrc = fixImgUrl(spread.imgUrl) + (String(spread.imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
           primePageBg(pf, pageSrc);
-          if (shouldShowGuestLogo()) {
-            const brandStrip = document.createElement("div");
-            brandStrip.className = "pf-brand-strip";
-            brandStrip.setAttribute("aria-hidden", "true");
-            brandStrip.innerHTML = '<img class="guest-brand-banner-img" alt="Tonino" draggable="false" src="assets/tonino-brand-banner.jpg" />';
-            pf.appendChild(brandStrip);
-          }
           const shade = document.createElement("div");
           shade.className = "page-shade";
           pf.appendChild(shade);
