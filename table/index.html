@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v146: swipe finger hint on welcome + daily dish -->
+  <!-- guest-table-ui-v147: cached tunnel + friendly closed message -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -3600,7 +3600,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v146</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v147</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -4020,8 +4020,8 @@
       errOldQrD: "حدّث الرموز من إعدادات الكاشير.",
       errDisabled: "طلبات QR معطّلة",
       errDisabledD: "فعّلها من إعدادات الكاشير.",
-      errConn: "تعذّر الاتصال",
-      errConnD: "تأكد أن ZEKiQ POS شغّال — من الإعدادات: QR → إعادة النفق أو Token Cloudflare.",
+      errConn: "عذراً، البرنامج مقفل مؤقتاً",
+      errConnD: "يرجى المحاولة مرة أخرى بعد قليل.",
       retry: "إعادة المحاولة",
       errTable: "الطاولة غير مفتوحة على الكاشير.\nافتح الطاولة من ZEKiQ POS ثم أعد الإرسال.",
       errToken: "رمز QR قديم — اطبع QR جديد من إعدادات الكاشير.",
@@ -4181,8 +4181,8 @@
       errOldQrD: "Kasiyer ayarlarından QR kodlarını güncelleyin.",
       errDisabled: "QR sipariş kapalı",
       errDisabledD: "Kasiyer ayarlarından etkinleştirin.",
-      errConn: "Bağlantı hatası",
-      errConnD: "ZEKiQ POS açık mı ve internet bağlantısı var mı kontrol edin.",
+      errConn: "Üzgünüz, sistem geçici olarak kapalı",
+      errConnD: "Lütfen biraz sonra tekrar deneyin.",
       retry: "Tekrar dene",
       errTable: "Masa kasada açık değil.\nZEKiQ POS'tan masayı açın ve tekrar deneyin.",
       errToken: "Eski QR — kasiyerden yeni QR yazdırın.",
@@ -4342,8 +4342,8 @@
       errOldQrD: "Update QR codes from cashier settings.",
       errDisabled: "QR orders disabled",
       errDisabledD: "Enable in cashier settings.",
-      errConn: "Connection failed",
-      errConnD: "Check ZEKiQ POS is running and online.",
+      errConn: "Sorry, we're temporarily closed",
+      errConnD: "Please try again in a little while.",
       retry: "Try again",
       errTable: "Table not open on cashier.\nOpen the table in ZEKiQ POS and try again.",
       errToken: "Old QR — print a new one from cashier.",
@@ -8760,6 +8760,31 @@
       return out;
     }
 
+    function guestApiCacheKey() {
+      const q = readParams();
+      const apiParam = (q.get("api") || "").trim();
+      let host = "default";
+      try {
+        if (apiParam) host = new URL(apiParam.includes("://") ? apiParam : "https://" + apiParam).hostname || host;
+      } catch (_) {}
+      return "zekiq_guest_api_ok:" + (SHOP || "shop") + ":" + host;
+    }
+    function readCachedApiBase() {
+      try {
+        const v = sessionStorage.getItem(guestApiCacheKey());
+        const base = String(v || "").trim().replace(/\/+$/, "");
+        return base && isSafeApiUrl(base) ? base : "";
+      } catch (_) { return ""; }
+    }
+    function rememberApiBase(base) {
+      const b = String(base || "").trim().replace(/\/+$/, "");
+      if (!b || !isSafeApiUrl(b)) return;
+      try { sessionStorage.setItem(guestApiCacheKey(), b); } catch (_) {}
+    }
+    function forgetCachedApiBase() {
+      try { sessionStorage.removeItem(guestApiCacheKey()); } catch (_) {}
+    }
+
     async function fetchMenuFromBase(base) {
       apiBase = base;
       const ctrl = new AbortController();
@@ -8795,6 +8820,7 @@
 
     function applyMenuData(data) {
       try {
+      if (apiBase) rememberApiBase(apiBase);
       shopName = guestDisplayShopName(data.shopName || "Tonino Coffee");
       section = data.section;
       tableNum = data.tableNum;
@@ -8909,7 +8935,9 @@
       const skipPrivateBases = onGithub || onCellular;
       const qBoot = readParams();
       const apiParamBoot = (qBoot.get("api") || "").trim();
+      const cachedApiBoot = readCachedApiBase();
       const instantBases = rankApiBases([
+        cachedApiBoot,
         apiParamBoot,
         onGithub ? "https://tonino.zekiqmenu.com" : "",
         onGithub ? "https://zekiq-dev.zekiqmenu.com" : "",
@@ -8924,12 +8952,15 @@
         setLoadStatus(guestT("loadingSub"));
         const r = handleMenuData(await fetchMenuFromBase(base));
         if (!bootAlive(gen)) return;
-        if (r === true || r === "stop") return;
+        if (r === true) return;
+        if (r === "stop") return;
+        if (base === cachedApiBoot) forgetCachedApiBase();
       }
+      const manifestRaceMs = cachedApiBoot ? 900 : 2500;
       const manifestPromise = loadManifestApis();
       const manifestBases = await Promise.race([
         manifestPromise,
-        new Promise(r => setTimeout(() => r([]), 2500)),
+        new Promise(r => setTimeout(() => r([]), manifestRaceMs)),
       ]);
       if (!bootAlive(gen)) return;
       const localBases = rankApiBases(onGithub
@@ -8987,6 +9018,12 @@
     window.addEventListener("pageshow", function (e) {
       if (!e.persisted) return;
       clearGuestOverlays();
+      const ls = document.getElementById("loadScreen");
+      if (ls && !ls.classList.contains("gone") && document.getElementById("guestRetryBtn")) {
+        ls.classList.remove("gone");
+        ls.innerHTML = '<div><p class="title">' + esc(guestT("loadingTitle")) + '</p><p>' + esc(guestT("loadingSub")) + "</p></div>";
+        boot();
+      }
     });
 
     boot();
