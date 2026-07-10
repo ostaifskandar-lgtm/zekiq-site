@@ -19,10 +19,10 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v140: daily dish always visible (no hour window) -->
+  <!-- guest-table-ui-v143: daily poster hero + weekly dish gallery -->
   <script>
     (function immersiveBoot(){
-      var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0;
+      var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
       function isIosDevice(){
         var ua=navigator.userAgent||"";
         return /iPhone|iPad|iPod/i.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
@@ -45,7 +45,7 @@
         if(isIosInBrowser()) root.classList.add("ios-inbrowser","ios-safe-layout");
       if(isIosInAppBrowser()) root.classList.add("ios-inapp");
       if(isStandalone()) root.classList.add("ios-standalone");
-      function fitViewport(){
+      function fitViewportNow(){
         var vv=window.visualViewport;
         if(vv&&vv.scale&&vv.scale>1.02) return;
         var w=vv?vv.width:window.innerWidth;
@@ -57,7 +57,6 @@
           w=Math.round(vv.width);
           top=Math.round(vv.offsetTop);
           left=Math.round(vv.offsetLeft);
-          /* visualViewport.height already excludes Safari bars — do not pad again */
           root.style.setProperty("--chrome-h","0px");
           root.style.setProperty("--ios-safe-bottom","0px");
         } else if(isIosInBrowser()){
@@ -66,6 +65,9 @@
           root.style.setProperty("--chrome-h","0px");
           root.style.setProperty("--ios-safe-bottom","0px");
         }
+        var key=Math.round(w)+","+Math.round(h)+","+Math.round(top)+","+Math.round(left);
+        if(key===lastFitKey) return;
+        lastFitKey=key;
         root.style.setProperty("--app-h",Math.round(h)+"px");
         root.style.setProperty("--app-w",Math.round(w)+"px");
         root.style.setProperty("--vv-top",Math.round(top)+"px");
@@ -73,6 +75,13 @@
         if(typeof updateIosCompactTip==="function") updateIosCompactTip();
         if(typeof window.__zekiqResetIosMenuPane==="function") window.__zekiqResetIosMenuPane();
         scheduleRelayout();
+      }
+      function fitViewport(){
+        if(fitRaf) return;
+        fitRaf=requestAnimationFrame(function(){
+          fitRaf=0;
+          fitViewportNow();
+        });
       }
       function hideSafariChrome(){
         if(isIosInBrowser()) return;
@@ -94,16 +103,17 @@
         setTimeout(hideSafariChrome,1100);
       }
       function scheduleRelayout(){
+        var now=Date.now();
+        if(now-lastRelayoutAt<120) return;
         clearTimeout(relayoutTimer);
         relayoutTimer=setTimeout(function(){
+          lastRelayoutAt=Date.now();
           if(typeof window.__zekiqRelayout==="function") window.__zekiqRelayout();
-        }, 40);
+        }, 80);
       }
       function burstRelayout(){
         scheduleRelayout();
-        setTimeout(scheduleRelayout, 100);
-        setTimeout(scheduleRelayout, 320);
-        setTimeout(scheduleRelayout, 700);
+        setTimeout(scheduleRelayout, 280);
       }
       function isFullscreen(){
         return !!(document.fullscreenElement||document.webkitFullscreenElement);
@@ -310,12 +320,14 @@
       window.addEventListener("resize",fitViewport);
       window.addEventListener("orientationchange",function(){setTimeout(function(){engage(false);updateOrientLock();},300);});
       if(window.matchMedia) window.matchMedia("(orientation: landscape)").addEventListener("change",updateOrientLock);
-      window.addEventListener("pageshow",function(){engage(false);});
+      window.addEventListener("pageshow",function(e){
+        if(!e.persisted) return;
+        fitViewport();
+      });
       document.addEventListener("fullscreenchange",onFsChange);
       document.addEventListener("webkitfullscreenchange",onFsChange);
       if(window.visualViewport){
         visualViewport.addEventListener("resize",fitViewport);
-        visualViewport.addEventListener("scroll",fitViewport);
       }
       document.addEventListener("DOMContentLoaded",function(){
         bindSceneFullscreen();
@@ -685,7 +697,7 @@
     html.studio-preview #pageSwipeBar{
       display:flex!important;
     }
-    html{height:100dvh;overflow:hidden;}
+    html.guest-menu-active,html.guest-menu-active body{background:#ebe4d3;}
     body{height:100dvh;overflow:hidden;}
     html,body{
       position:fixed;inset:0;
@@ -728,6 +740,7 @@
       background:radial-gradient(ellipse at center,#1a0800 0%,#0d0500 100%);
       text-align:center;padding:24px;
     }
+    #loadScreen.gone{display:none!important;}
     #loadScreen p{color:rgba(200,134,10,.75);font-size:15px;line-height:1.6;}
     #loadScreen .title{color:#f0a820;font-size:20px;font-weight:800;margin-bottom:10px;}
 
@@ -2741,6 +2754,97 @@
       font-size:11px;font-weight:700;line-height:1.45;
       color:#8a5a10;opacity:.75;
     }
+    /* Daily dish — full poster (image speaks; price + order overlay) */
+    .pf.book-daily-dish.book-daily-poster{
+      padding:0;overflow:hidden;
+      background:#ebe4d3;
+    }
+    .pf.book-daily-poster .pf-bg{
+      object-fit:cover;
+      object-position:center center;
+    }
+    .dd-poster-overlay{
+      position:absolute;left:0;right:0;bottom:0;z-index:20;
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+      padding:clamp(14px,4vw,22px) clamp(16px,5vw,28px) clamp(18px,4.5vw,26px);
+      background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.42) 48%,transparent 100%);
+      pointer-events:none;
+    }
+    .dd-poster-overlay > *{pointer-events:auto;}
+    .dd-poster-price{
+      font-size:clamp(30px,8.5vw,42px);font-weight:900;line-height:1;
+      color:#ffd54f;text-shadow:0 2px 10px rgba(0,0,0,.55);
+      letter-spacing:.02em;
+    }
+    .dd-poster-order{
+      width:min(100%,340px);border:none;border-radius:16px;
+      padding:15px 14px;font-size:16px;font-weight:900;color:#1a0a00;
+      background:linear-gradient(145deg,#ffd54f,#f0b820);
+      box-shadow:0 6px 20px rgba(0,0,0,.35);
+      cursor:pointer;touch-action:manipulation;
+    }
+    .dd-poster-order:active{transform:scale(.98);}
+    .dd-poster-order.in-cart{
+      background:linear-gradient(145deg,#81c784,#43a047);
+      color:#fff;
+    }
+    .dd-poster-week-btn{
+      width:min(100%,340px);border:1.5px solid rgba(255,213,79,.55);border-radius:14px;
+      padding:11px 12px;font-size:13px;font-weight:800;color:#fff8e8;
+      background:rgba(0,0,0,.35);backdrop-filter:blur(6px);
+      cursor:pointer;touch-action:manipulation;
+    }
+    .dd-poster-week-btn:active{transform:scale(.98);}
+    #dd-week-sheet{z-index:1103;}
+    #dd-week-sheet .ice-sheet-card{
+      width:min(440px,100vw);max-height:min(92dvh,760px);
+      display:flex;flex-direction:column;
+      background:linear-gradient(165deg,#fff8e8,#f5e0b0 42%,#ebe4d3);
+      border:1.5px solid #c8860a;border-radius:24px 24px 0 0;
+      padding:18px 14px calc(16px + env(safe-area-inset-bottom,0px));
+      transform:translateY(100%);transition:transform .32s cubic-bezier(.34,1.2,.64,1);
+      box-shadow:0 -10px 50px rgba(120,70,10,.22);
+      color:#1a0a00;pointer-events:auto;
+    }
+    #dd-week-sheet.show .ice-sheet-card{transform:translateY(0);}
+    .dd-week-sub{
+      text-align:center;font-size:11px;font-weight:700;color:#8a5a10;
+      opacity:.85;margin:-4px 0 12px;line-height:1.4;
+    }
+    .dd-week-list{
+      flex:1;overflow-y:auto;min-height:0;
+      display:flex;flex-direction:column;gap:10px;padding:0 2px 8px;
+    }
+    .dd-week-card{
+      display:grid;grid-template-columns:5.5rem 1fr;gap:10px;align-items:stretch;
+      border-radius:14px;border:1.5px solid rgba(160,100,20,.22);
+      background:rgba(255,255,255,.82);overflow:hidden;text-align:start;
+    }
+    .dd-week-card.is-today{
+      border-color:#c8860a;box-shadow:0 0 0 2px rgba(200,134,10,.25);
+    }
+    .dd-week-thumb{
+      width:100%;min-height:5.5rem;background:#e8dcc8;
+      display:flex;align-items:center;justify-content:center;overflow:hidden;
+    }
+    .dd-week-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+    .dd-week-thumb-ph{font-size:22px;opacity:.35;}
+    .dd-week-body{padding:8px 10px 8px 0;display:flex;flex-direction:column;gap:4px;min-width:0;}
+    .dd-week-day-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+    .dd-week-day{font-size:11px;font-weight:900;letter-spacing:.04em;color:#8a5a10;text-transform:uppercase;}
+    .dd-week-badge{
+      font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;
+      background:linear-gradient(145deg,#ffd54f,#f0b820);color:#1a0a00;
+    }
+    .dd-week-main{font-size:14px;font-weight:900;line-height:1.25;color:#1a0a00;}
+    .dd-week-meta{font-size:11px;font-weight:700;color:#5a4020;opacity:.88;line-height:1.35;}
+    .dd-week-price{font-size:15px;font-weight:900;color:#8a5a10;margin-top:auto;}
+    .dd-week-order{
+      margin-top:6px;align-self:flex-start;border:none;border-radius:10px;
+      padding:7px 12px;font-size:12px;font-weight:900;color:#1a0a00;
+      background:linear-gradient(145deg,#ffd54f,#f0b820);cursor:pointer;
+    }
+    .dd-week-order.in-cart{background:linear-gradient(145deg,#81c784,#43a047);color:#fff;}
     #ice-cream-sheet{z-index:1105;}
     #daily-dish-sheet{z-index:1104;}
     #ice-cream-sheet .ice-sheet-card,#daily-dish-sheet .ice-sheet-card{
@@ -2944,11 +3048,11 @@
     .hotspot:active .add-pin{filter:brightness(.95);}
 
     .hotspot:active .price-cover{transform:scale(.93);filter:brightness(.95);}
-    #item-popup,#line-note-sheet,#ice-cream-sheet,#daily-dish-sheet{
+    #item-popup,#line-note-sheet,#ice-cream-sheet,#daily-dish-sheet,#dd-week-sheet{
       position:fixed;inset:0;z-index:1000;display:flex;align-items:flex-end;justify-content:center;
       opacity:0;pointer-events:none;transition:opacity .25s;background:rgba(0,0,0,0);
     }
-    #item-popup.show,#line-note-sheet.show,#ice-cream-sheet.show,#daily-dish-sheet.show{opacity:1;pointer-events:all;background:rgba(0,0,0,.65);}
+    #item-popup.show,#line-note-sheet.show,#ice-cream-sheet.show,#daily-dish-sheet.show,#dd-week-sheet.show{opacity:1;pointer-events:all;background:rgba(0,0,0,.65);}
     #line-note-sheet{z-index:1100;}
     #line-note-sheet .line-note-card{
       width:min(420px,100vw);background:linear-gradient(160deg,#1f0c00,#2d1400);
@@ -3392,7 +3496,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v140</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v143</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -3607,6 +3711,17 @@
     </div>
   </div>
 
+  <div id="dd-week-sheet" aria-hidden="true">
+    <div class="ice-sheet-card">
+      <div class="ice-sheet-title" id="ddWeekTitle">أطباق هذا الأسبوع</div>
+      <p class="dd-week-sub" id="ddWeekSub"></p>
+      <div class="dd-week-list" id="ddWeekList"></div>
+      <div class="popup-actions">
+        <button type="button" class="popup-close" id="ddWeekClose">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
   <div id="menu-panel">
     <div class="menu-hd">
       <div><div class="menu-title" id="i18n-menu-title">📋 قائمة الأطباق</div><div class="menu-sub" id="i18n-menu-sub">ابحث واطلب من أي صفحة</div></div>
@@ -3703,7 +3818,11 @@
       dailyDishTeaIncluded: "شاي ضمن العرض",
       dailyDishPickRequired: "اختر كل الخيارات",
       dailyDishAddToCart: "أضف للطلب",
-      iceCreamChip: "بوظة",
+      dailyDishWeekBrowse: "قائمة هذا الأسبوع",
+      dailyDishWeekTitle: "أطباق هذا الأسبوع",
+      dailyDishWeekHint: "الطلب متاح لطبق اليوم فقط",
+      dailyDishWeekToday: "اليوم",
+      dailyDishWeekClose: "إغلاق",
       iceCreamTitle: "البوظة",
       iceCreamFlavor: "النكهة",
       iceCreamScoops: "عدد الطابات",
@@ -3856,7 +3975,11 @@
       dailyDishTeaIncluded: "Çay ikram",
       dailyDishPickRequired: "Tüm seçimleri yapın",
       dailyDishAddToCart: "Siparişe ekle",
-      iceCreamChip: "Dondurma",
+      dailyDishWeekBrowse: "Bu haftanın menüsü",
+      dailyDishWeekTitle: "Bu haftanın yemekleri",
+      dailyDishWeekHint: "Sipariş sadece bugünün yemeği için",
+      dailyDishWeekToday: "Bugün",
+      dailyDishWeekClose: "Kapat",
       iceCreamTitle: "Dondurma",
       iceCreamFlavor: "Çeşit",
       iceCreamScoops: "Top adedi",
@@ -4009,7 +4132,11 @@
       dailyDishTeaIncluded: "Tea included",
       dailyDishPickRequired: "Please complete all choices",
       dailyDishAddToCart: "Add to order",
-      iceCreamChip: "Ice cream",
+      dailyDishWeekBrowse: "This week's menu",
+      dailyDishWeekTitle: "Dishes this week",
+      dailyDishWeekHint: "Order is only available for today's dish",
+      dailyDishWeekToday: "Today",
+      dailyDishWeekClose: "Close",
       iceCreamTitle: "Ice cream",
       iceCreamFlavor: "Flavor",
       iceCreamScoops: "Scoops",
@@ -5104,6 +5231,8 @@
     let dailySoupFeatureOn = false;
     let dailySoupLabelSpot = null;
     let todayDailyDish = null;
+    let weeklyDishes = [];
+    let dailyDishWeekLabel = "";
     let dailyDishSeen = false;
     let dailyDishShowFrom = "12:00";
     let dailyDishShowTo = "16:00";
@@ -5206,7 +5335,7 @@
           drink2: String(dish.drink2 || "").trim(),
           teaOffer: String(dish.teaOffer || "نعم").trim(),
           price: String(dish.price || "").trim(),
-          imageUrl: String(dish.imageUrl || "").trim(),
+          imageUrl: fixImgUrl(String(dish.imageUrl || "").trim()),
         };
         if (!todayDailyDish.main && !todayDailyDish.soup) todayDailyDish = null;
       } else {
@@ -5257,47 +5386,95 @@
         extras: extrasHtml,
       };
     }
+    function bindDailyDishOrderBtn(btn) {
+      if (!btn) return;
+      btn.onclick = function (e) {
+        e.stopPropagation();
+        orderDailyDish();
+        btn.classList.add("in-cart");
+        btn.textContent = "✓ " + guestT("dailyDishOrder");
+      };
+    }
     function fillDailyDishPage(pf) {
       if (!pf || !todayDailyDish) return;
       pf.classList.add("book-daily-dish");
-      pf.classList.remove("book-cover");
-      const body = dailyDishBodyHtml();
-      if (!body.main && !body.extras) return;
+      pf.classList.remove("book-cover", "book-daily-poster");
       const rawPrice = String(todayDailyDish.price || "").trim();
       const numPrice = Number(String(rawPrice).replace(",", "."));
-      const logoSrc = coverLogoSrc();
       const dishImg = String(todayDailyDish.imageUrl || "").trim();
       const dishImgFixed = dishImg ? fixImgUrl(dishImg) : "";
-      const photoHtml = dishImgFixed
-        ? '<div class="dd-page-photo"><img alt="" draggable="false" decoding="async" src="' + esc(dishImgFixed) + '" /></div>'
-        : "";
+      const inCart = cart.some(l => l.item && String(l.item.id) === "guest-daily-dish");
+      if (dishImgFixed) {
+        pf.classList.add("book-daily-poster");
+        pf.querySelectorAll(".book-daily-dish-inner, .dd-poster-overlay, .page-shade, .page-edge").forEach(el => el.remove());
+        const shade = document.createElement("div");
+        shade.className = "page-shade";
+        pf.appendChild(shade);
+        const edge = document.createElement("div");
+        edge.className = "page-edge";
+        pf.appendChild(edge);
+        const overlay = document.createElement("div");
+        overlay.className = "dd-poster-overlay";
+        let overlayHtml = "";
+        if (rawPrice && Number.isFinite(numPrice) && numPrice > 0) {
+          overlayHtml += '<div class="dd-poster-price">' + esc(money(numPrice)) + "</div>";
+        }
+        if (weeklyDishes.length > 1) {
+          overlayHtml +=
+            '<button type="button" class="dd-poster-week-btn" data-dd-week="1">' +
+            esc(guestT("dailyDishWeekBrowse")) +
+            "</button>";
+        }
+        overlayHtml +=
+          '<button type="button" class="dd-poster-order' + (inCart ? " in-cart" : "") + '" data-dd-order="1">' +
+          esc(inCart ? ("✓ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
+          "</button>";
+        overlay.innerHTML = overlayHtml;
+        pf.appendChild(overlay);
+        bindDailyDishOrderBtn(overlay.querySelector("[data-dd-order]"));
+        const weekBtn = overlay.querySelector("[data-dd-week]");
+        if (weekBtn) {
+          weekBtn.onclick = function (e) {
+            e.stopPropagation();
+            openWeeklyDishSheet();
+          };
+        }
+        const posterSrc = dishImgFixed + (dishImgFixed.indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=dd1"));
+        primePageBg(pf, posterSrc);
+        return;
+      }
+      const body = dailyDishBodyHtml();
+      if (!body.main && !body.extras) return;
+      pf.querySelectorAll(".pf-bg, .dd-poster-overlay, .page-shade, .page-edge").forEach(el => el.remove());
+      const logoSrc = coverLogoSrc();
       const priceHtml = rawPrice && Number.isFinite(numPrice) && numPrice > 0
         ? '<div class="dd-page-price-box">' +
           '<span class="dd-page-price-label">' + esc(guestT("dailyDishPriceLabel")) + "</span>" +
           '<span class="dd-page-price-val">' + esc(money(numPrice)) + "</span></div>"
         : "";
-      const inCart = cart.some(l => l.item && String(l.item.id) === "guest-daily-dish");
       pf.innerHTML =
         '<div class="book-daily-dish-inner">' +
         '<div class="dd-page-logo" aria-hidden="true">' +
         '<img class="guest-brand-banner-img" alt="Tonino" draggable="false" decoding="async" src="' + esc(logoSrc) + '" /></div>' +
         '<p class="dd-page-kicker">' + esc(guestT("dailyDishToday")) + "</p>" +
         '<h2 class="dd-page-title">' + esc(guestT("dailyDishTitle")) + "</h2>" +
-        photoHtml +
         body.main +
         body.extras +
         priceHtml +
         '<button type="button" class="dd-page-order' + (inCart ? " in-cart" : "") + '" data-dd-order="1">' +
         esc(inCart ? ("✓ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
         "</button>" +
+        (weeklyDishes.length > 1
+          ? '<button type="button" class="dd-poster-week-btn" style="max-width:320px;margin-top:8px" data-dd-week="1">' +
+            esc(guestT("dailyDishWeekBrowse")) + "</button>"
+          : "") +
         '<p class="dd-page-hint">' + esc(guestT("dailyDishToMenu")) + "</p></div>";
-      const btn = pf.querySelector("[data-dd-order]");
-      if (btn) {
-        btn.onclick = function (e) {
+      bindDailyDishOrderBtn(pf.querySelector("[data-dd-order]"));
+      const weekBtn = pf.querySelector("[data-dd-week]");
+      if (weekBtn) {
+        weekBtn.onclick = function (e) {
           e.stopPropagation();
-          orderDailyDish();
-          btn.classList.add("in-cart");
-          btn.textContent = "✓ " + guestT("dailyDishOrder");
+          openWeeklyDishSheet();
         };
       }
     }
@@ -5368,6 +5545,81 @@
         sheet.classList.remove("show");
         sheet.setAttribute("aria-hidden", "true");
       }
+    }
+    function closeWeeklyDishSheet() {
+      const sheet = document.getElementById("dd-week-sheet");
+      if (sheet) {
+        sheet.classList.remove("show");
+        sheet.setAttribute("aria-hidden", "true");
+      }
+    }
+    function openWeeklyDishSheet() {
+      if (!weeklyDishes.length) return;
+      renderWeeklyDishSheet();
+      const sheet = document.getElementById("dd-week-sheet");
+      if (sheet) {
+        sheet.classList.add("show");
+        sheet.setAttribute("aria-hidden", "false");
+      }
+    }
+    function renderWeeklyDishSheet() {
+      const list = document.getElementById("ddWeekList");
+      const title = document.getElementById("ddWeekTitle");
+      const sub = document.getElementById("ddWeekSub");
+      const closeBtn = document.getElementById("ddWeekClose");
+      if (title) title.textContent = dailyDishWeekLabel ? (dailyDishWeekLabel + " — " + guestT("dailyDishWeekTitle")) : guestT("dailyDishWeekTitle");
+      if (sub) sub.textContent = guestT("dailyDishWeekHint");
+      if (closeBtn) closeBtn.textContent = guestT("dailyDishWeekClose");
+      if (!list) return;
+      list.innerHTML = "";
+      const inCart = cart.some(l => l.item && String(l.item.id) === "guest-daily-dish");
+      weeklyDishes.forEach(function (row) {
+        const card = document.createElement("div");
+        card.className = "dd-week-card" + (row.isToday ? " is-today" : "");
+        const imgSrc = row.imageUrl ? fixImgUrl(row.imageUrl) : "";
+        const thumb = imgSrc
+          ? '<img alt="" draggable="false" decoding="async" src="' + esc(imgSrc) + '" />'
+          : '<span class="dd-week-thumb-ph" aria-hidden="true">🍽</span>';
+        const meta = [row.soup, row.sides].map(function (t) { return String(t || "").trim(); }).filter(Boolean).join(" · ");
+        const priceNum = Number(String(row.price || "").replace(",", "."));
+        const priceHtml = row.price && Number.isFinite(priceNum) && priceNum > 0
+          ? '<div class="dd-week-price">' + esc(money(priceNum)) + "</div>"
+          : "";
+        let actions = "";
+        if (row.orderable) {
+          actions =
+            '<button type="button" class="dd-week-order' + (inCart ? " in-cart" : "") + '" data-dd-week-order="1">' +
+            esc(inCart ? ("✓ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
+            "</button>";
+        }
+        card.innerHTML =
+          '<div class="dd-week-thumb">' + thumb + "</div>" +
+          '<div class="dd-week-body">' +
+          '<div class="dd-week-day-row">' +
+          '<span class="dd-week-day">' + esc(row.day) + "</span>" +
+          (row.isToday ? '<span class="dd-week-badge">' + esc(guestT("dailyDishWeekToday")) + "</span>" : "") +
+          "</div>" +
+          '<div class="dd-week-main">' + esc(row.main || row.soup || "—") + "</div>" +
+          (meta ? '<div class="dd-week-meta">' + esc(meta) + "</div>" : "") +
+          priceHtml +
+          actions +
+          "</div>";
+        const orderBtn = card.querySelector("[data-dd-week-order]");
+        if (orderBtn) {
+          orderBtn.onclick = function (e) {
+            e.stopPropagation();
+            orderDailyDish();
+            orderBtn.classList.add("in-cart");
+            orderBtn.textContent = "✓ " + guestT("dailyDishOrder");
+            document.querySelectorAll(".dd-poster-order, .dd-page-order, .dd-week-order").forEach(function (b) {
+              b.classList.add("in-cart");
+              if (b.classList.contains("dd-week-order")) b.textContent = "✓ " + guestT("dailyDishOrder");
+              else b.textContent = "✓ " + guestT("dailyDishOrder");
+            });
+          };
+        }
+        list.appendChild(card);
+      });
     }
     function renderDailyDishSheet() {
       const list = document.getElementById("ddSheetList");
@@ -6996,7 +7248,37 @@
 
     function hideLoadScreen() {
       const ls = document.getElementById("loadScreen");
-      if (ls) ls.style.display = "none";
+      if (ls) ls.classList.add("gone");
+    }
+    function waitFirstPagePaintThenHide() {
+      const spread = bookSpread[0];
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        hideLoadScreen();
+      };
+      if (!spread) {
+        finish();
+        return;
+      }
+      if (spread.kind === "daily-dish") {
+        finish();
+        return;
+      }
+      if (spread.kind !== "menu") {
+        setTimeout(finish, 120);
+        return;
+      }
+      const src =
+        fixImgUrl(spread.imgUrl) +
+        (String(spread.imgUrl).indexOf("?") >= 0 ? "" : bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1");
+      const probe = new Image();
+      probe.decoding = "async";
+      probe.onload = finish;
+      probe.onerror = finish;
+      probe.src = src;
+      setTimeout(finish, 10000);
     }
     function setLoadStatus(sub) {
       const el = document.getElementById("i18n-load-sub");
@@ -7010,9 +7292,9 @@
         : "";
       ls.innerHTML =
         '<div style="max-width:320px"><p class="title">' + esc(title) + '</p><p>' + esc(detail) + '</p>' + retry + "</div>";
-      ls.style.display = "flex";
+      ls.classList.remove("gone");
       const btn = document.getElementById("guestRetryBtn");
-      if (btn) btn.onclick = () => { ls.style.display = "flex"; ls.innerHTML = '<div><p class="title">' + esc(guestT("loadingTitle")) + '</p><p>' + esc(guestT("loadingSub")) + "</p></div>"; boot(); };
+      if (btn) btn.onclick = () => { ls.classList.remove("gone"); ls.innerHTML = '<div><p class="title">' + esc(guestT("loadingTitle")) + '</p><p>' + esc(guestT("loadingSub")) + "</p></div>"; boot(); };
     }
 
     function buildBook() {
@@ -7087,7 +7369,7 @@
       document.documentElement.classList.toggle("single-page", menuPageCount <= 1);
       buildMenuList();
       renderPageDock();
-      hideLoadScreen();
+      waitFirstPagePaintThenHide();
       if (!window.__hotspotRo) {
         window.__hotspotRo = new ResizeObserver(() => {
           scheduleHotspotRelayout();
@@ -7116,9 +7398,8 @@
       syncSceneHud();
       const pfEntry = document.querySelector("#pw" + cur + " .pf");
       if (pfEntry) syncCategoryDock(pfEntry);
-      if (window.__zekiqEngage) window.__zekiqEngage(true);
+      if (window.__zekiqEngage) window.__zekiqEngage(false);
       else {
-        if (window.__zekiqTryFullscreen) window.__zekiqTryFullscreen();
         if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
       }
       if (window.__zekiqBurstHideSafariChrome && !document.documentElement.classList.contains("ios-inbrowser")) window.__zekiqBurstHideSafariChrome();
@@ -7930,6 +8211,17 @@
       }
     })();
 
+    (function initWeeklyDishSheet() {
+      const sheet = document.getElementById("dd-week-sheet");
+      const closeBtn = document.getElementById("ddWeekClose");
+      if (closeBtn) closeBtn.onclick = function (e) { e.stopPropagation(); closeWeeklyDishSheet(); };
+      if (sheet) {
+        sheet.addEventListener("click", function (e) {
+          if (e.target === sheet) closeWeeklyDishSheet();
+        });
+      }
+    })();
+
     function showToast(msg) {
       const t = document.getElementById("toast");
       t.textContent = msg;
@@ -8337,6 +8629,15 @@
         (data.book && data.book.dailySoupLabelSpot) || null,
         data.dailyDish || null
       );
+      weeklyDishes = Array.isArray(data.weeklyDishes)
+        ? data.weeklyDishes.map(function (w) {
+            return {
+              ...w,
+              imageUrl: w.imageUrl ? fixImgUrl(w.imageUrl) : "",
+            };
+          })
+        : [];
+      dailyDishWeekLabel = String(data.dailyDishWeekLabel || "").trim();
       if (data.dailyDishShowFrom) dailyDishShowFrom = String(data.dailyDishShowFrom);
       if (data.dailyDishShowTo) dailyDishShowTo = String(data.dailyDishShowTo);
       if (data.dailyDishGuestAlwaysVisible === false) dailyDishGuestAlwaysVisible = false;
@@ -8370,18 +8671,23 @@
       return await res.json();
     }
 
+    let bootGen = 0;
+    function bootAlive(gen) { return gen === bootGen; }
     async function boot() {
+      const gen = ++bootGen;
       initSwipeHint();
       if (STUDIO_MODE) {
         setLoadStatus(guestT("loadingSub"));
         try {
           const data = await fetchMenuStudio();
+          if (!bootAlive(gen)) return;
           if (data && data.ok) {
             applyMenuData(data);
             return;
           }
           showErr(guestT("menuNotReady"), data && data.error === "forbidden" ? "سجّل دخول المدير في الكاشير أولاً." : guestT("menuNotReadyD"));
         } catch (_) {
+          if (!bootAlive(gen)) return;
           showErr(guestT("menuNotReady"), guestT("menuNotReadyD"));
         }
         return;
@@ -8419,6 +8725,7 @@
         seen.add(base);
         setLoadStatus(guestT("loadingSub"));
         const r = handleMenuData(await fetchMenuFromBase(base));
+        if (!bootAlive(gen)) return;
         if (r === true || r === "stop") return;
       }
       const manifestPromise = loadManifestApis();
@@ -8426,6 +8733,7 @@
         manifestPromise,
         new Promise(r => setTimeout(() => r([]), 2500)),
       ]);
+      if (!bootAlive(gen)) return;
       const localBases = rankApiBases(onGithub
         ? [...(Array.isArray(manifestBases) ? manifestBases : []), ...apiCandidates()]
         : [...apiCandidates(), ...(Array.isArray(manifestBases) ? manifestBases : [])]);
@@ -8436,6 +8744,7 @@
         seen.add(base);
         setLoadStatus(guestT("loadingSub"));
         const r = handleMenuData(await fetchMenuFromBase(base));
+        if (!bootAlive(gen)) return;
         if (r === true || r === "stop") return;
       }
       if (skipPrivateBases) {
@@ -8445,6 +8754,7 @@
           seen.add(base);
           setLoadStatus(guestT("loadingSub"));
           const r = handleMenuData(await fetchMenuFromBase(base));
+          if (!bootAlive(gen)) return;
           if (r === true || r === "stop") return;
         }
       }
@@ -8452,6 +8762,7 @@
         manifestPromise,
         new Promise(r => setTimeout(() => r([]), 3500)),
       ]);
+      if (!bootAlive(gen)) return;
       const lateBases = rankApiBases(Array.isArray(lateManifest) ? lateManifest : []);
       for (let b = 0; b < lateBases.length; b++) {
         const base = lateBases[b];
@@ -8459,15 +8770,18 @@
         if (skipPrivateBases && isPrivateApi(base)) continue;
         seen.add(base);
         const r = handleMenuData(await fetchMenuFromBase(base));
+        if (!bootAlive(gen)) return;
         if (r === true || r === "stop") return;
       }
       if (sawInvalidToken) {
         const manifestLan = (Array.isArray(manifestBases) ? manifestBases : []).find(isPrivateApi);
         if (manifestLan && !seen.has(manifestLan)) {
           const r = handleMenuData(await fetchMenuFromBase(manifestLan));
+          if (!bootAlive(gen)) return;
           if (r === true || r === "stop") return;
         }
       }
+      if (!bootAlive(gen)) return;
       if (sawInvalidToken) showErr(guestT("errOldQr"), guestT("errToken"));
       else showErr(guestT("errConn"), guestT("errConnD"));
     }
