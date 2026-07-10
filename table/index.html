@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v152: logo flips with page; folds after 5 order lines -->
+  <!-- guest-table-ui-v153: daily dish photo up, explain panel bottom -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -2741,12 +2741,12 @@
     .book-daily-dish-inner{
       width:100%;height:100%;box-sizing:border-box;
       display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-      padding:clamp(12px,3.5vw,20px) clamp(16px,5vw,28px) clamp(14px,3.5vw,20px);
+      padding:clamp(8px,2.5vw,14px) clamp(16px,5vw,28px) clamp(10px,3vw,16px);
       overflow-y:auto;-webkit-overflow-scrolling:touch;
       text-align:center;
     }
     .dd-page-logo{
-      flex:0 0 auto;width:min(92%,280px);margin:0 auto 10px;
+      flex:0 0 auto;width:min(88%,240px);margin:0 auto 6px;
     }
     .dd-page-logo img{
       width:100%;height:auto;display:block;border-radius:10px;
@@ -2820,64 +2820,103 @@
     .dd-page-hint .page-swipe-finger-hint{
       margin:0 auto;opacity:1;
     }
-    /* Daily dish — stack: words on top, poster image bottom (mobile-safe) */
+    /* Daily dish — photo raised; explanation + CTA in bottom panel */
     .pf.book-daily-dish.book-daily-poster{
       padding:0;overflow:hidden;
-      background:linear-gradient(180deg,#fff8e8 0%,#ebe4d3 100%);
+      background:linear-gradient(180deg,#1a1208 0%,#2a1a0c 100%);
       display:flex;flex-direction:column;
     }
     .book-daily-poster-stack{
       width:100%;height:100%;min-height:0;box-sizing:border-box;
       display:flex;flex-direction:column;position:relative;z-index:8;
     }
-    .dd-poster-head{
-      flex:0 0 auto;
-      padding:clamp(10px,3.2vw,16px) clamp(14px,4.5vw,22px) clamp(8px,2.5vw,12px);
-      text-align:center;
-      background:linear-gradient(180deg,#fff8e8 0%,rgba(255,248,232,.95) 100%);
-      border-bottom:1px solid rgba(160,100,20,.14);
-    }
-    .dd-poster-kicker{
-      margin:0 0 2px;font-size:10px;font-weight:800;letter-spacing:.12em;
-      color:#8a5a10;opacity:.88;text-transform:uppercase;
-    }
-    .dd-poster-title{
-      margin:0 0 6px;font-size:clamp(17px,4.8vw,22px);font-weight:900;line-height:1.15;
-      color:#1a0a00;
-    }
-    .dd-poster-main{
-      margin:0 0 6px;font-size:clamp(14px,4vw,17px);font-weight:800;line-height:1.35;
-      color:#2a1808;
-    }
-    .dd-poster-head .dd-page-items{
-      margin:0 0 8px;max-width:100%;
-    }
-    .dd-poster-head-price{
-      font-size:clamp(26px,7.5vw,34px);font-weight:900;line-height:1;
-      color:#8a5a10;margin-top:4px;
-    }
     .dd-poster-img{
-      flex:1 1 auto;min-height:min(38vh,280px);width:100%;
-      position:relative;overflow:hidden;background:#e0d6c4;
+      flex:1 1 auto;min-height:0;width:100%;
+      position:relative;overflow:hidden;background:#1a1208;
     }
     .dd-poster-img img{
       position:absolute;inset:0;width:100%;height:100%;
-      object-fit:cover;object-position:center center;
+      object-fit:cover;object-position:center 28%;
       display:block;pointer-events:none;user-select:none;
       -webkit-user-drag:none;
     }
-    .dd-poster-actions{
+    .dd-poster-img::after{
+      content:"";position:absolute;left:0;right:0;bottom:0;height:42%;
+      background:linear-gradient(180deg,transparent 0%,rgba(18,10,4,.55) 45%,rgba(18,10,4,.92) 100%);
+      pointer-events:none;z-index:1;
+    }
+    .dd-poster-badge{
+      position:absolute;top:max(10px,env(safe-area-inset-top,0px));left:50%;
+      transform:translateX(-50%);z-index:2;
+      padding:5px 14px;border-radius:999px;
+      background:rgba(255,248,232,.92);backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      border:1px solid rgba(200,134,10,.35);
+      box-shadow:0 4px 16px rgba(0,0,0,.22);
+      font-size:11px;font-weight:900;letter-spacing:.08em;
+      color:#8a5a10;text-transform:uppercase;white-space:nowrap;
+    }
+    .dd-poster-explain{
       flex:0 0 auto;
-      padding:10px clamp(14px,4.5vw,22px) calc(12px + env(safe-area-inset-bottom,0px));
+      position:relative;z-index:3;
+      margin-top:-28px;
+      padding:16px clamp(14px,4.5vw,22px) calc(12px + env(safe-area-inset-bottom,0px));
       display:flex;flex-direction:column;align-items:center;gap:8px;
-      background:linear-gradient(180deg,rgba(235,228,211,.55),#ebe4d3);
-      border-top:1px solid rgba(160,100,20,.12);
+      text-align:center;
+      background:linear-gradient(180deg,#fff8e8 0%,#f3e4c4 55%,#ebe4d3 100%);
+      border-radius:22px 22px 0 0;
+      border-top:1px solid rgba(200,134,10,.28);
+      box-shadow:0 -10px 28px rgba(0,0,0,.28);
+    }
+    .dd-poster-explain .dd-poster-title{
+      margin:0;font-size:clamp(18px,5vw,24px);font-weight:900;line-height:1.15;
+      color:#1a0a00;
+    }
+    .dd-poster-explain .dd-poster-main{
+      margin:0;font-size:clamp(14px,4vw,17px);font-weight:800;line-height:1.35;
+      color:#2a1808;max-width:340px;
+    }
+    .dd-poster-explain .dd-page-items{
+      margin:2px 0 0;max-width:100%;width:100%;
+      display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:6px;
+    }
+    .dd-poster-explain .dd-page-items li{
+      padding:6px 10px;border-radius:999px;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(160,100,20,.2);
+      font-size:clamp(11px,3.2vw,13px);font-weight:700;line-height:1.25;
+      text-align:center;flex:0 1 auto;
+    }
+    .dd-poster-head-price{
+      font-size:clamp(28px,8vw,36px);font-weight:900;line-height:1;
+      color:#8a5a10;margin:2px 0 4px;
+      text-shadow:0 1px 0 rgba(255,255,255,.5);
+    }
+    .dd-poster-guide{
+      width:min(100%,340px);margin:2px 0 0;padding:8px 12px;
+      border-radius:14px;
+      background:rgba(200,134,10,.1);
+      border:1px dashed rgba(160,100,20,.32);
+      display:flex;flex-direction:column;align-items:center;gap:4px;
+    }
+    .dd-poster-guide .page-swipe-finger-hint{
+      margin:0;max-width:100%;
+      background:transparent;border:none;box-shadow:none;padding:2px 0;
+    }
+    .dd-poster-guide-txt{
+      margin:0;font-size:11px;font-weight:700;line-height:1.4;
+      color:#6a4510;opacity:.9;
+    }
+    .dd-poster-actions{
+      width:100%;max-width:340px;
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      margin-top:2px;
     }
     .dd-poster-order{
-      width:min(100%,340px);border:none;border-radius:16px;
+      width:100%;border:none;border-radius:16px;
       padding:15px 14px;font-size:16px;font-weight:900;color:#1a0a00;
       background:linear-gradient(145deg,#ffd54f,#f0b820);
-      box-shadow:0 6px 20px rgba(0,0,0,.35);
+      box-shadow:0 6px 20px rgba(160,100,20,.35);
       cursor:pointer;touch-action:manipulation;
     }
     .dd-poster-order:active{transform:scale(.98);}
@@ -2886,12 +2925,15 @@
       color:#fff;
     }
     .dd-poster-week-btn{
-      width:min(100%,340px);border:1.5px solid rgba(255,213,79,.55);border-radius:14px;
-      padding:11px 12px;font-size:13px;font-weight:800;color:#fff8e8;
-      background:rgba(0,0,0,.35);backdrop-filter:blur(6px);
+      width:100%;border:1.5px solid rgba(160,100,20,.35);border-radius:14px;
+      padding:11px 12px;font-size:13px;font-weight:800;color:#5a3d08;
+      background:rgba(255,255,255,.65);
       cursor:pointer;touch-action:manipulation;
     }
     .dd-poster-week-btn:active{transform:scale(.98);}
+    /* legacy head (unused in new stack) */
+    .dd-poster-head{display:none;}
+    .dd-poster-kicker{display:none;}
     #dd-week-sheet{z-index:1103;}
     #dd-week-sheet .ice-sheet-card{
       width:min(440px,100vw);max-height:min(92dvh,760px);
@@ -3611,7 +3653,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v152</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v153</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -3934,6 +3976,7 @@
       dailyDishOrder: "اختر هذا الطبق",
       dailyDishToMenu: "المينو الكامل",
       dailyDishSwipeHint: "اسحب يميناً أو يساراً للمينو",
+      dailyDishGuide: "اختر الطبق من الزر الذهبي · ثم اسحب لتصفح المينو",
       coverSwipeHint: "اسحب يميناً أو يساراً لقلب الصفحات",
       dailyDishPriceLabel: "السعر",
       dailyDishPickTitle: "اختر تفاصيل الطبق",
@@ -4095,6 +4138,7 @@
       dailyDishOrder: "Bu yemeği seç",
       dailyDishToMenu: "Menüye geç",
       dailyDishSwipeHint: "Menü için sağa veya sola kaydırın",
+      dailyDishGuide: "Altın düğmeden yemeği seçin · menü için kaydırın",
       coverSwipeHint: "Sayfaları çevirmek için sağa veya sola kaydırın",
       dailyDishPriceLabel: "Fiyat",
       dailyDishPickTitle: "Menü seçimleri",
@@ -4256,6 +4300,7 @@
       dailyDishOrder: "Choose this dish",
       dailyDishToMenu: "Full menu",
       dailyDishSwipeHint: "Swipe left or right for the menu",
+      dailyDishGuide: "Pick the dish with the gold button · then swipe for the menu",
       coverSwipeHint: "Swipe left or right to turn pages",
       dailyDishPriceLabel: "Price",
       dailyDishPickTitle: "Choose your options",
@@ -5583,15 +5628,20 @@
         const stack = document.createElement("div");
         stack.className = "book-daily-poster-stack";
         stack.innerHTML =
-          '<div class="dd-poster-head">' +
-          '<p class="dd-poster-kicker">' + esc(guestT("dailyDishToday")) + "</p>" +
+          '<div class="dd-poster-img">' +
+          '<span class="dd-poster-badge">' + esc(guestT("dailyDishToday")) + " · " + esc(guestT("dailyDishTitle")) + "</span>" +
+          '<img alt="" draggable="false" decoding="async" src="' + esc(posterSrc) + '" />' +
+          "</div>" +
+          '<div class="dd-poster-explain">' +
           '<h2 class="dd-poster-title">' + esc(guestT("dailyDishTitle")) + "</h2>" +
           body.main.replace("dd-page-main", "dd-poster-main") +
           body.extras +
           priceHead +
-          "</div>" +
-          '<div class="dd-poster-img"><img alt="" draggable="false" decoding="async" src="' + esc(posterSrc) + '" /></div>' +
-          '<div class="dd-poster-actions">' + swipeHintHtml + actionsHtml + "</div>";
+          '<div class="dd-poster-actions">' + actionsHtml + "</div>" +
+          '<div class="dd-poster-guide">' +
+          swipeHintHtml +
+          '<p class="dd-poster-guide-txt">' + esc(guestT("dailyDishGuide")) + "</p>" +
+          "</div></div>";
         pf.appendChild(stack);
         bindDailyDishOrderBtn(stack.querySelector("[data-dd-order]"));
         const weekBtn = stack.querySelector("[data-dd-week]");
