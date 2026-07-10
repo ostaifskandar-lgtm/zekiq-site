@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v148: logo dock above category chips -->
+  <!-- guest-table-ui-v149: logo always docked above category chips -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1327,6 +1327,7 @@
     }
     html.page-flipping .pf-overlay{visibility:hidden!important;}
     .pf-cat-strip{display:none!important;}
+    .pf-brand-strip{display:none!important;} /* brand is #menuBrandDock above category chips */
     .pf-brand-strip{
       position:absolute;
       left:0;
@@ -3623,7 +3624,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v148</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v149</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -4912,10 +4913,11 @@
       if (chrome.logo && chrome.logo.visible === true) return true;
       return !isIosGuestNoLogo();
     }
+    /** Always pin brand banner in #menuBrandDock (directly above category chips). */
     function usesDockBrandLogo(logo) {
       if (!shouldShowGuestLogo()) return false;
-      if (!logo) return true;
-      return !(logo.y > 0.01 || logo.x !== 0.5 || logo.scale !== 1 || logo.cropTop > 0);
+      if (logo && logo.visible === false) return false;
+      return true;
     }
     function isIosGuestHideFootBar() {
       return isIosGuestNoLogo();
@@ -6027,7 +6029,7 @@
       var dock = document.getElementById("menuTopDock");
       var bar = document.getElementById("menuCategoryBar");
       var root = document.documentElement;
-      var manual = !!(cat && isManualCategoryChrome(cat)) || !!(logo && (logo.visible === false || logo.y > 0.01 || logo.x !== 0.5 || logo.scale !== 1 || logo.cropTop > 0));
+      var manual = !!(cat && isManualCategoryChrome(cat));
       root.classList.toggle("guest-manual-chrome", manual);
       if (bar && cat) {
         bar.classList.toggle("chrome-hidden", cat.visible === false);
@@ -6165,58 +6167,10 @@
         };
       });
     }
-    function layoutPfBrandStrip(pf, rect) {
+    function layoutPfBrandStrip(pf) {
+      /* Brand lives in #menuBrandDock above category chips — never float at screen top. */
       const strip = pf?.querySelector(".pf-brand-strip");
-      const chrome = activeGuestChrome();
-      const logo = chrome.logo;
-      if (usesDockBrandLogo(logo)) {
-        if (strip) strip.style.display = "none";
-        return;
-      }
-      if (logo && logo.visible === false) {
-        if (strip) strip.style.display = "none";
-        return;
-      }
-      if (document.documentElement.classList.contains("ios-inbrowser") &&
-          !document.documentElement.classList.contains("ios-standalone") &&
-          !shouldShowGuestLogo()) {
-        if (strip) strip.style.display = "none";
-        return;
-      }
-      if (!strip || !rect || pf.classList.contains("book-cover")) {
-        if (strip) strip.style.display = "none";
-        return;
-      }
-      const bar = document.getElementById("menuCategoryBar");
-      const catH = bar && bar.classList.contains("show") && !(chrome.cat && chrome.cat.visible === false) ? Math.round(bar.offsetHeight) : 0;
-      const logoH = logoStripHeight(rect) * (logo ? Number(logo.scale) || 1 : 1);
-      strip.style.display = "";
-      if (logo && (logo.y > 0.01 || logo.x !== 0.5 || logo.scale !== 1)) {
-        const view = document.getElementById("menuViewport");
-        const vh = view ? view.clientHeight : 0;
-        const vw = view ? view.clientWidth : 0;
-        const topPx = logo.y > 0.01 ? Math.round(logo.y * vh) : Math.max(0, rect.oy - logoH - catH);
-        const wPx = Math.round(rect.dw * (Number(logo.scale) || 1));
-        strip.style.left = Math.round((Number(logo.x) || 0.5) * vw - wPx / 2) + "px";
-        strip.style.width = wPx + "px";
-        strip.style.top = topPx + "px";
-        strip.style.height = logoH + "px";
-      } else {
-        strip.style.left = rect.ox + "px";
-        strip.style.width = rect.dw + "px";
-        strip.style.top = Math.max(0, rect.oy - logoH - catH) + "px";
-        strip.style.height = logoH + "px";
-      }
-      strip.style.maxHeight = logoH + "px";
-      const img = strip.querySelector(".guest-brand-banner-img");
-      if (img) {
-        img.style.width = "100%";
-        img.style.height = logoH + "px";
-        img.style.objectFit = "cover";
-        const crop = logo ? Math.max(0, Math.min(0.55, Number(logo.cropTop) || 0)) : 0;
-        img.style.objectPosition = crop > 0 ? ("center " + Math.round(crop * 100) + "%") : "center bottom";
-        img.style.clipPath = crop > 0 ? ("inset(" + Math.round(crop * 100) + "% 0 0 0)") : "";
-      }
+      if (strip) strip.style.display = "none";
     }
     function syncMenuBrandDock(rect, catH) {
       const topDock = document.getElementById("menuTopDock");
@@ -6439,7 +6393,7 @@
       view.style.setProperty("--cat-bar-h", catH + "px");
       view.style.setProperty("--logo-strip-h", logoH + "px");
       view.style.setProperty("--menu-top-dock-h", dockH + "px");
-      if (!usesDockBrandLogo(chrome.logo)) layoutPfBrandStrip(pf, rect);
+      layoutPfBrandStrip(pf);
       syncOrdersListHeight();
     }
     function syncCategoryBar() {
