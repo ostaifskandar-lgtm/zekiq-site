@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v144: daily dish stack — words top, poster image bottom -->
+  <!-- guest-table-ui-v145: daily dish order sheet — options + note always -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -2876,6 +2876,24 @@
       background:linear-gradient(145deg,#ffd54f,#f0b820);cursor:pointer;
     }
     .dd-week-order.in-cart{background:linear-gradient(145deg,#81c784,#43a047);color:#fff;}
+    .dd-sheet-summary{
+      border:1.5px solid rgba(255,213,79,.28);border-radius:12px;padding:10px 12px;
+      background:rgba(0,0,0,.16);font-size:12px;font-weight:700;line-height:1.45;
+      color:rgba(255,248,232,.92);margin-bottom:4px;
+    }
+    .dd-sheet-note-wrap{margin-top:4px;}
+    .dd-sheet-note-label{
+      display:block;font-size:11px;font-weight:800;color:#ffd54f;
+      margin:0 0 6px;letter-spacing:.03em;
+    }
+  #ddSheetNote,.dd-sheet-note{
+      width:100%;box-sizing:border-box;border-radius:12px;border:1.5px solid rgba(255,213,79,.35);
+      background:rgba(255,255,255,.94);color:#1a0a00;font-size:14px;font-weight:600;
+      padding:10px 12px;resize:none;min-height:3.2rem;font-family:inherit;
+    }
+    #ddSheetNote::placeholder{color:rgba(74,44,0,.5);font-weight:500;}
+    #ddSheetNote:focus{outline:none;border-color:#ffd54f;box-shadow:0 0 0 3px rgba(255,213,79,.22);}
+    .ice-chip.ice-chip-fixed{opacity:.95;cursor:default;}
     #ice-cream-sheet{z-index:1105;}
     #daily-dish-sheet{z-index:1104;}
     #ice-cream-sheet .ice-sheet-card,#daily-dish-sheet .ice-sheet-card{
@@ -3527,7 +3545,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v144</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v145</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -3735,6 +3753,10 @@
     <div class="ice-sheet-card">
       <div class="ice-sheet-title" id="ddSheetTitle">الطبق اليومي</div>
       <div class="ice-sheet-list" id="ddSheetList"></div>
+      <div class="dd-sheet-note-wrap">
+        <label class="dd-sheet-note-label" id="ddSheetNoteLabel" for="ddSheetNote">ملاحظة للطبق</label>
+        <textarea id="ddSheetNote" class="dd-sheet-note" rows="2" maxlength="120" placeholder="مثال: بدون سلطة، زيادة أرز…"></textarea>
+      </div>
       <div class="popup-actions">
         <button type="button" class="popup-close" id="ddSheetCancel">إلغاء</button>
         <button type="button" class="popup-add" id="ddSheetConfirm">أضف للطلب</button>
@@ -3849,6 +3871,8 @@
       dailyDishTeaIncluded: "شاي ضمن العرض",
       dailyDishPickRequired: "اختر كل الخيارات",
       dailyDishAddToCart: "أضف للطلب",
+      dailyDishNoteLabel: "ملاحظة للطبق",
+      dailyDishNotePlaceholder: "مثال: بدون سلطة، زيادة أرز…",
       dailyDishWeekBrowse: "قائمة هذا الأسبوع",
       dailyDishWeekTitle: "أطباق هذا الأسبوع",
       dailyDishWeekHint: "الطلب متاح لطبق اليوم فقط",
@@ -4006,6 +4030,8 @@
       dailyDishTeaIncluded: "Çay ikram",
       dailyDishPickRequired: "Tüm seçimleri yapın",
       dailyDishAddToCart: "Siparişe ekle",
+      dailyDishNoteLabel: "Yemek notu",
+      dailyDishNotePlaceholder: "Örn: salatasız, ekstra pilav…",
       dailyDishWeekBrowse: "Bu haftanın menüsü",
       dailyDishWeekTitle: "Bu haftanın yemekleri",
       dailyDishWeekHint: "Sipariş sadece bugünün yemeği için",
@@ -4163,6 +4189,8 @@
       dailyDishTeaIncluded: "Tea included",
       dailyDishPickRequired: "Please complete all choices",
       dailyDishAddToCart: "Add to order",
+      dailyDishNoteLabel: "Dish note",
+      dailyDishNotePlaceholder: "e.g. no salad, extra rice…",
       dailyDishWeekBrowse: "This week's menu",
       dailyDishWeekTitle: "Dishes this week",
       dailyDishWeekHint: "Order is only available for today's dish",
@@ -5536,7 +5564,7 @@
         screen.hidden = true;
       }
     }
-    let ddSheetPick = { dessert: "", drink: "", tea: null };
+    let ddSheetPick = { dessert: "", drink: "", tea: null, note: "" };
     function defaultDailyDishPick() {
       const desserts = dailyDishOptionList(todayDailyDish && todayDailyDish.dessert, todayDailyDish && todayDailyDish.dessert2);
       const drinks = dailyDishOptionList(todayDailyDish && todayDailyDish.drink, todayDailyDish && todayDailyDish.drink2);
@@ -5545,6 +5573,7 @@
         dessert: desserts.length === 1 ? desserts[0] : "",
         drink: drinks.length === 1 ? drinks[0] : "",
         tea: tea === "نعم" ? true : tea === "لا" ? false : null,
+        note: "",
       };
     }
     function needsDailyDishSheet() {
@@ -5577,6 +5606,8 @@
       const tea = String(todayDailyDish.teaOffer || "نعم").trim();
       if (tea === "نعم" || p.tea === true) parts.push(guestT("dailyDishTeaYes"));
       else if (tea === "اختياري" && p.tea === false) parts.push(guestT("dailyDishTeaNo"));
+      const customNote = String((p && p.note) || "").trim();
+      if (customNote) parts.push(customNote);
       return parts.filter(Boolean).join(" · ");
     }
     function closeDailyDishSheet() {
@@ -5666,19 +5697,39 @@
       const title = document.getElementById("ddSheetTitle");
       const cancelBtn = document.getElementById("ddSheetCancel");
       const confirmBtn = document.getElementById("ddSheetConfirm");
+      const noteLabel = document.getElementById("ddSheetNoteLabel");
+      const noteInp = document.getElementById("ddSheetNote");
       if (title) title.textContent = guestT("dailyDishPickTitle");
       if (cancelBtn) cancelBtn.textContent = guestT("popupClose");
+      if (noteLabel) noteLabel.textContent = guestT("dailyDishNoteLabel");
+      if (noteInp) {
+        noteInp.placeholder = guestT("dailyDishNotePlaceholder");
+        noteInp.value = ddSheetPick.note || "";
+        noteInp.oninput = function () {
+          ddSheetPick.note = String(noteInp.value || "").trim();
+        };
+      }
       if (confirmBtn) {
         confirmBtn.textContent = guestT("dailyDishAddToCart");
         confirmBtn.disabled = !dailyDishSheetValid(ddSheetPick);
       }
       if (!list || !todayDailyDish) return;
       list.innerHTML = "";
+      const summaryParts = [todayDailyDish.main, todayDailyDish.soup, todayDailyDish.sides]
+        .map(function (t) { return String(t || "").trim(); })
+        .filter(Boolean);
+      if (summaryParts.length) {
+        const sum = document.createElement("div");
+        sum.className = "dd-sheet-summary";
+        sum.textContent = summaryParts.join(" · ");
+        list.appendChild(sum);
+      }
       const desserts = dailyDishOptionList(todayDailyDish.dessert, todayDailyDish.dessert2);
       const drinks = dailyDishOptionList(todayDailyDish.drink, todayDailyDish.drink2);
       const tea = String(todayDailyDish.teaOffer || "نعم").trim();
       function appendChipSection(label, opts, field) {
-        if (opts.length <= 1) return;
+        if (!opts.length) return;
+        if (opts.length === 1) ddSheetPick[field] = opts[0];
         const sec = document.createElement("div");
         sec.className = "ice-sec";
         sec.innerHTML = '<div class="ice-sec-label">' + esc(label) + "</div><div class=\"ice-flavors\"></div>";
@@ -5686,13 +5737,18 @@
         opts.forEach(function (opt) {
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "ice-chip" + (ddSheetPick[field] === opt ? " active" : "");
+          const selected = ddSheetPick[field] === opt;
+          btn.className = "ice-chip" + (selected ? " active" : "") + (opts.length === 1 ? " ice-chip-fixed" : "");
           btn.textContent = opt;
-          btn.onclick = function (e) {
-            e.stopPropagation();
+          if (opts.length > 1) {
+            btn.onclick = function (e) {
+              e.stopPropagation();
+              ddSheetPick[field] = opt;
+              renderDailyDishSheet();
+            };
+          } else {
             ddSheetPick[field] = opt;
-            renderDailyDishSheet();
-          };
+          }
           wrap.appendChild(btn);
         });
         list.appendChild(sec);
@@ -5720,6 +5776,14 @@
           wrap.appendChild(btn);
         });
         list.appendChild(sec);
+      } else if (tea === "نعم") {
+        const sec = document.createElement("div");
+        sec.className = "ice-sec";
+        sec.innerHTML =
+          '<div class="ice-sec-label">' + esc(guestT("dailyDishPickTea")) + "</div>" +
+          '<div class="ice-flavors"><button type="button" class="ice-chip active ice-chip-fixed">' +
+          esc(guestT("dailyDishTeaIncluded")) + "</button></div>";
+        list.appendChild(sec);
       }
     }
     function openDailyDishSheet() {
@@ -5735,8 +5799,10 @@
     }
     function confirmDailyDishAdd(pick) {
       if (!todayDailyDish || !coachDone) return;
+      const noteInp = document.getElementById("ddSheetNote");
+      if (noteInp) ddSheetPick.note = String(noteInp.value || "").trim();
       const usePick = pick || ddSheetPick;
-      if (needsDailyDishSheet() && !dailyDishSheetValid(usePick)) {
+      if (!dailyDishSheetValid(usePick)) {
         showToast(guestT("dailyDishPickRequired"));
         return;
       }
@@ -5760,11 +5826,7 @@
     }
     function orderDailyDish() {
       if (!todayDailyDish || !coachDone) return;
-      if (needsDailyDishSheet()) {
-        openDailyDishSheet();
-        return;
-      }
-      confirmDailyDishAdd(defaultDailyDishPick());
+      openDailyDishSheet();
     }
     function continueFromDailyDish() {
       dailyDishSeen = true;
