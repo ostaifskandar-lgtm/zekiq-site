@@ -1,8 +1,8 @@
 {
-  "apiUrl": "https://tonino.zekiqmenu.com",
-  "tunnelUrl": "https://tonino.zekiqmenu.com",
-  "lanUrl": "http://192.168.1.25:3000",
-  "updatedAt": "2026-07-10T18:51:19.948Z",
+  "apiUrl": "https://pct-ever-newark-softball.trycloudflare.com",
+  "tunnelUrl": "https://pct-ever-newark-softball.trycloudflare.com",
+  "lanUrl": "http://192.168.1.84:3000",
+  "updatedAt": "2026-07-10T18:51:50.176Z",
   "shops": {
     "zekiq-dev.zekiqmenu.com": {
       "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
@@ -12,25 +12,9 @@
       "updatedAt": "2026-07-10T18:51:19.948Z"
     },
     "192.168.1.84": {
-      "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
+      "tunnelUrl": "https://pct-ever-newark-softball.trycloudflare.com",
       "lanUrl": "http://192.168.1.84:3000",
-      "shopName": "zekiq-dev",
-      "hostname": "zekiq-dev.zekiqmenu.com",
-      "updatedAt": "2026-07-10T18:51:19.948Z"
-    },
-    "192.168.1.25": {
-      "tunnelUrl": "https://tonino.zekiqmenu.com",
-      "lanUrl": "http://192.168.1.25:3000",
-      "shopName": "Tonino",
-      "hostname": "tonino.zekiqmenu.com",
-      "updatedAt": "2026-07-10T18:51:36.903Z"
-    },
-    "tonino.zekiqmenu.com": {
-      "tunnelUrl": "https://tonino.zekiqmenu.com",
-      "lanUrl": "http://192.168.1.25:3000",
-      "shopName": "Tonino",
-      "hostname": "tonino.zekiqmenu.com",
-      "updatedAt": "2026-07-10T18:51:36.903Z"
+      "updatedAt": "2026-07-10T18:51:50.176Z"
     }
   }
 }
