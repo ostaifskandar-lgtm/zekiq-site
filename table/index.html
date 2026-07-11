@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v171: fix plus buttons const crash -->
+  <!-- guest-table-ui-v172: logo glued above category chips; studio controls work -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1282,7 +1282,7 @@
       z-index:0;
       min-height:var(--logo-strip-h, 48px);
       background-color:#1a120c;
-      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg??v=171");
+      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=172");
       background-repeat:no-repeat;
       background-position:center center;
       background-size:contain;
@@ -1328,7 +1328,15 @@
     }
     #menuCategoryBar:not(.show){display:none;}
     #menuCategoryBar.chrome-hidden{display:none!important;}
-    html.guest-manual-chrome #menuTopDock{overflow:visible;height:auto!important;min-height:0!important;}
+    /* Logo strip must sit flush on the chips — no gap from --cat-bar-offset. */
+    #menuTopDock.has-brand-dock #menuCategoryBar{margin-top:0!important;}
+    html.guest-manual-chrome #menuTopDock{
+      overflow:visible;
+      height:auto!important;
+      min-height:0!important;
+    }
+    html.guest-manual-chrome #menuTopDock.has-brand-dock #menuBrandDock{display:block!important;}
+    html.guest-manual-chrome #menuCategoryBar{margin-top:0!important;}
     html.page-flipping #menuTopDock{
       visibility:visible!important;
       pointer-events:auto!important;
@@ -3772,7 +3780,7 @@
       <div id="menuViewport">
       <div id="menuTopDock">
       <div id="menuBrandDock" aria-hidden="true">
-        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg??v=171" />
+        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=172" />
       </div>
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -6117,30 +6125,51 @@
       root.classList.toggle("guest-manual-chrome", manual);
       if (bar && cat) {
         bar.classList.toggle("chrome-hidden", cat.visible === false);
+        /* Keep logo + chips as one stack — never float the bar alone / collapse the dock. */
         if (cat.visible !== false && isManualCategoryChrome(cat)) {
-          bar.style.position = "absolute";
-          bar.style.left = (Math.max(0, Math.min(1, Number(cat.x) || 0.5)) * 100) + "%";
-          bar.style.top = (Math.max(0, Math.min(1, Number(cat.y) || 0.08)) * 100) + "%";
-          bar.style.right = "auto";
-          bar.style.marginTop = "0";
-          bar.style.transform = "translate(-50%, 0) scale(" + (Number(cat.scale) || 1) + ")";
-          bar.style.transformOrigin = "top center";
-          bar.style.zIndex = "12";
+          var x = Math.max(0.05, Math.min(0.95, Number(cat.x) || 0.5));
+          var y = Math.max(0.02, Math.min(0.85, Number(cat.y) || 0.08));
+          var scale = Math.max(0.7, Math.min(1.5, Number(cat.scale) || 1));
+          var nudgeX = Math.round((x - 0.5) * (view?.clientWidth || window.innerWidth || 360));
           if (dock) {
-            dock.style.position = "static";
-            dock.style.height = "0";
+            dock.style.position = "absolute";
+            dock.style.left = "0";
+            dock.style.right = "0";
+            dock.style.top = (y * 100) + "%";
+            dock.style.height = "auto";
             dock.style.overflow = "visible";
+            dock.style.zIndex = "12";
+            dock.style.transform = nudgeX ? ("translateX(" + nudgeX + "px)") : "";
+            dock.style.transformOrigin = "top center";
           }
+          bar.style.position = "";
+          bar.style.left = "";
+          bar.style.top = "";
+          bar.style.right = "";
+          bar.style.zIndex = "";
+          bar.style.marginTop = "0";
+          bar.style.setProperty("--cat-bar-offset", "0px");
+          bar.style.transform = scale === 1 ? "" : ("scale(" + scale + ")");
+          bar.style.transformOrigin = "top center";
         } else if (cat.visible !== false) {
           bar.style.position = "";
           bar.style.left = "";
           bar.style.top = "";
           bar.style.right = "";
           bar.style.zIndex = "";
+          bar.style.marginTop = "";
+          bar.style.transform = "";
+          bar.style.transformOrigin = "";
           if (dock) {
             dock.style.position = "";
+            dock.style.left = "";
+            dock.style.right = "";
+            dock.style.top = "";
             dock.style.height = "";
             dock.style.overflow = "";
+            dock.style.transform = "";
+            dock.style.transformOrigin = "";
+            dock.style.zIndex = "";
           }
         }
       }
@@ -6173,6 +6202,8 @@
     }
     function applyCategoryBarOffset(px) {
       if (isIosGuestNoLogo()) px = 0;
+      /* With dock logo, chips sit flush under the brand — no spacer gap. */
+      if (typeof usesDockBrandLogo === "function" && usesDockBrandLogo()) px = 0;
       categoryBarOffsetPx = Math.max(0, Math.min(140, Math.round(Number(px) || 0)));
       const bar = document.getElementById("menuCategoryBar");
       if (bar) bar.style.setProperty("--cat-bar-offset", categoryBarOffsetPx + "px");
@@ -6189,9 +6220,7 @@
       }
       var cat = Number(plat.categoryBarOffsetPx);
       if (!Number.isFinite(cat)) cat = categoryBarOffsetPx;
-      if (catView && catView.y > 0) {
-        cat = Math.round(catView.y * 140);
-      }
+      /* catView.y positions the whole dock (logo+cats) via applyManualGuestChrome — not a spacer. */
       applyCategoryBarOffset(cat);
       var topInset = Math.max(0, Math.min(80, Math.round(Number(plat.topInsetPx) || 0)));
       var bottomInset = Math.max(0, Math.min(100, Math.round(Number(plat.bottomInsetPx) || 0)));
@@ -6270,19 +6299,39 @@
       }
       const chrome = activeGuestChrome();
       const logo = chrome.logo;
-      const logoH = Math.max(28, Math.round(logoStripHeight(rect) * (logo ? Number(logo.scale) || 1 : 1)));
-      if (view) view.style.setProperty("--logo-strip-h", logoH + "px");
+      const logoScale = logo ? Math.max(0.5, Math.min(2, Number(logo.scale) || 1)) : 1;
+      const cropTop = logo ? Math.max(0, Math.min(0.55, Number(logo.cropTop) || 0)) : 0;
+      const logoH = Math.max(28, Math.round(logoStripHeight(rect) * logoScale));
+      if (view) {
+        view.style.setProperty("--logo-strip-h", logoH + "px");
+        view.style.setProperty("--guest-logo-crop", String(cropTop));
+      }
       if (brandDock) {
         brandDock.style.display = "";
         brandDock.style.maxHeight = folded ? "0px" : "";
         brandDock.style.opacity = "";
-        brandDock.style.transform = "";
+        /* Don't fight orders fold (scaleY) or manual dock translateX — only set when not folded. */
+        if (!folded && !document.documentElement.classList.contains("guest-manual-chrome")) {
+          const lx = logo ? Math.max(0.05, Math.min(0.95, Number(logo.x) || 0.5)) : 0.5;
+          const logoNudge = Math.round((lx - 0.5) * (rect.dw || 300) * 0.35);
+          brandDock.style.transform = logoNudge ? ("translateX(" + logoNudge + "px)") : "";
+        } else if (!folded) {
+          brandDock.style.transform = "";
+        }
+        brandDock.style.minHeight = logoH + "px";
         const img = brandDock.querySelector(".menu-dock-brand-img");
         if (img) {
           img.style.height = logoH + "px";
           img.style.objectFit = "contain";
-          img.style.objectPosition = "center center";
-          img.style.clipPath = "";
+          img.style.objectPosition = cropTop > 0 ? ("center " + (cropTop * 100) + "%") : "center center";
+          img.style.clipPath = cropTop > 0 ? ("inset(" + (cropTop * 100) + "% 0 0 0)") : "";
+        }
+        if (cropTop > 0) {
+          brandDock.style.backgroundPosition = "center " + (cropTop * 100) + "%";
+          brandDock.style.clipPath = "inset(" + (cropTop * 100) + "% 0 0 0)";
+        } else {
+          brandDock.style.backgroundPosition = "center center";
+          brandDock.style.clipPath = "";
         }
       }
       /* Folded logo must not reserve dock height */
