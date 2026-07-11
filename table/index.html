@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v169: stable logo on flip (no flash) -->
+  <!-- guest-table-ui-v170: daily dish poster fallback -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1282,7 +1282,7 @@
       z-index:0;
       min-height:var(--logo-strip-h, 48px);
       background-color:#1a120c;
-      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=169");
+      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg??v=170");
       background-repeat:no-repeat;
       background-position:center center;
       background-size:contain;
@@ -3681,7 +3681,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v169</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v170</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -3772,7 +3772,7 @@
       <div id="menuViewport">
       <div id="menuTopDock">
       <div id="menuBrandDock" aria-hidden="true">
-        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=169" />
+        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg??v=170" />
       </div>
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -4995,7 +4995,7 @@
       listEl.scrollLeft = 0;
     }
     function coverLogoSrc() {
-      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=169";
+      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "??v=170";
       /* Always GitHub Pages asset — tunnel /table/assets falls through to SPA HTML (broken img). */
       return "https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg" + bv;
     }
@@ -5630,7 +5630,7 @@
       const dishImg = String(todayDailyDish.imageUrl || "").trim();
       const dishImgFixed = dishImg ? fixImgUrl(dishImg) : "";
       const inCart = cart.some(l => l.item && String(l.item.id) === "guest-daily-dish");
-      if (dishImgFixed) {
+      if (dishImgFixed && !pf.dataset.ddImgFailed) {
         pf.classList.add("book-daily-poster");
         pf.querySelectorAll(".book-daily-dish-inner, .book-daily-poster-stack, .dd-poster-overlay, .pf-bg, .page-shade, .page-edge").forEach(el => el.remove());
         const shade = document.createElement("div");
@@ -5677,6 +5677,20 @@
           '<p class="dd-poster-guide-txt">' + esc(guestT("dailyDishGuide")) + "</p>" +
           "</div></div>";
         pf.appendChild(stack);
+        const posterImg = stack.querySelector(".dd-poster-img img");
+        const failPoster = () => {
+          if (pf.dataset.ddImgFailed === "1") return;
+          pf.dataset.ddImgFailed = "1";
+          fillDailyDishPage(pf);
+          try { syncCategoryDock(pf); } catch (_) {}
+        };
+        if (posterImg) {
+          posterImg.onerror = failPoster;
+          posterImg.onload = function () {
+            if (!posterImg.naturalWidth) failPoster();
+          };
+          if (posterImg.complete && !posterImg.naturalWidth) failPoster();
+        }
         bindDailyDishOrderBtn(stack.querySelector("[data-dd-order]"));
         const weekBtn = stack.querySelector("[data-dd-week]");
         if (weekBtn) {
@@ -5687,9 +5701,10 @@
         }
         return;
       }
+      delete pf.dataset.ddImgFailed;
       const body = dailyDishBodyHtml();
       if (!body.main && !body.extras) return;
-      pf.querySelectorAll(".pf-bg, .dd-poster-overlay, .page-shade, .page-edge").forEach(el => el.remove());
+      pf.querySelectorAll(".pf-bg, .dd-poster-overlay, .page-shade, .page-edge, .book-daily-poster-stack").forEach(el => el.remove());
       const logoSrc = coverLogoSrc();
       const priceHtml = rawPrice && Number.isFinite(numPrice) && numPrice > 0
         ? '<div class="dd-page-price-box">' +
@@ -6428,7 +6443,8 @@
       const bar = document.getElementById("menuCategoryBar");
       if (!view || !dock) return;
       const show = dock.classList.contains("show");
-      const onMenu = pf && !pf.classList.contains("book-cover") && menuIdxFromCur(cur) >= 0;
+      const onDailyDish = spreadKind(cur) === "daily-dish";
+      const onMenu = pf && !pf.classList.contains("book-cover") && (menuIdxFromCur(cur) >= 0 || onDailyDish);
       if (!show || !onMenu || !pf) {
         if (lastCategoryDockKey) {
           lastCategoryDockKey = "";
@@ -6441,14 +6457,23 @@
         }
         return;
       }
-      let rect = imageOverlayRect(pf, { measureOnly: true });
-      /* Page image may 404/lag — still show logo+cats using viewport width. */
+      const isDdPoster = onDailyDish && pf.classList.contains("book-daily-poster");
+      let rect = onDailyDish ? null : imageOverlayRect(pf, { measureOnly: true });
+      /* Daily dish / missing page image — dock under HUD; poster hides brand strip. */
       if (!rect) {
         const dw = Math.max(280, Math.round(pf.clientWidth || view.clientWidth || window.innerWidth || 360));
         const catH0 = Math.round(bar?.offsetHeight || 40);
-        const logoH0 = syncMenuBrandDock({ ox: 0, oy: 0, dw, dh: 1 });
+        const logoH0 = isDdPoster ? 0 : syncMenuBrandDock({ ox: 0, oy: 0, dw, dh: 1 });
+        if (isDdPoster) {
+          const brandDock = document.getElementById("menuBrandDock");
+          if (brandDock) brandDock.style.display = "none";
+          view.style.setProperty("--logo-strip-h", "0px");
+        }
         const chromeTop0 = menuChromeTopPx();
         const dockH0 = catH0 + logoH0;
+        const dockKey0 = "dd|" + (isDdPoster ? "p" : "t") + "|" + chromeTop0 + "|" + dockH0;
+        if (lastCategoryDockKey === dockKey0) return;
+        lastCategoryDockKey = dockKey0;
         view.style.setProperty("--menu-chrome-top", chromeTop0 + "px");
         view.style.setProperty("--cat-bar-h", catH0 + "px");
         view.style.setProperty("--logo-strip-h", logoH0 + "px");
