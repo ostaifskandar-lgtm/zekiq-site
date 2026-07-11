@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v173: logo flips with page (no dock shimmer) -->
+  <!-- guest-table-ui-v175: fix WiFi/4G API pick — tonino only, skip dead LAN/dev -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1309,6 +1309,12 @@
     #menuCategoryBar:not(.show){display:none;}
     #menuCategoryBar.chrome-hidden{display:none!important;}
     #menuTopDock.show #menuCategoryBar{margin-top:0!important;}
+    /* Letterbox / iPhone-style: chips flush above page, empty band stays on top. */
+    html.letterbox-chrome #menuCategoryBar{
+      margin-top:0!important;
+      background:linear-gradient(180deg,#ebe4d3 0%,rgba(235,228,211,.98) 92%,rgba(235,228,211,.9) 100%);
+    }
+    html.letterbox-chrome .pf-brand-strip{display:none!important;}
     html.guest-manual-chrome #menuTopDock{
       overflow:visible;
       height:auto!important;
@@ -3770,7 +3776,7 @@
       <div id="menuViewport">
       <div id="menuTopDock">
       <div id="menuBrandDock" aria-hidden="true">
-        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=173" />
+        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=175" />
       </div>
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -4976,13 +4982,22 @@
     function usesDockBrandLogo() {
       return false;
     }
-    function pageFaceLogoHeight(rect) {
-      if (!shouldShowGuestLogo()) return 0;
-      if (document.documentElement.classList.contains("orders-cover-logo")) return 0;
+    function guestLogoScale() {
       var chrome = activeGuestChrome();
       var logo = chrome.logo;
-      var scale = logo ? Math.max(0.5, Math.min(2, Number(logo.scale) || 1)) : 1;
-      return Math.max(28, Math.round(logoStripHeight(rect || { dw: 360 }) * scale));
+      return logo ? Math.max(0.5, Math.min(2, Number(logo.scale) || 1)) : 1;
+    }
+    /** When the menu page does not fill the screen, use iPhone chrome: no page logo, chips glued above image, empty band on top. */
+    function isLetterboxMenuLayout(pf) {
+      if (isIosGuestNoLogo()) return true;
+      return !!(pf && pf.dataset && pf.dataset.letterboxChrome === "1");
+    }
+    function pageFaceLogoHeight(rect, pf) {
+      if (!shouldShowGuestLogo()) return 0;
+      if (document.documentElement.classList.contains("orders-cover-logo")) return 0;
+      if (isIosGuestNoLogo()) return 0;
+      if (pf && isLetterboxMenuLayout(pf)) return 0;
+      return Math.max(28, Math.round(logoStripHeight(rect || { dw: 360 }) * guestLogoScale()));
     }
     function isIosGuestHideFootBar() {
       return isIosGuestNoLogo();
@@ -4997,7 +5012,7 @@
       listEl.scrollLeft = 0;
     }
     function coverLogoSrc() {
-      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=173";
+      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=175";
       /* Always GitHub Pages asset — tunnel /table/assets falls through to SPA HTML (broken img). */
       return "https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg" + bv;
     }
@@ -6276,7 +6291,7 @@
     function layoutPfBrandStrip(pf, rect) {
       const strip = pf?.querySelector(".pf-brand-strip");
       if (!strip || !rect) return;
-      const logoH = pageFaceLogoHeight(rect);
+      const logoH = pageFaceLogoHeight(rect, pf);
       if (logoH <= 0) {
         strip.style.display = "none";
         return;
@@ -6557,8 +6572,8 @@
       const catH = Math.round(bar?.offsetHeight || 0);
       const oy = Math.round(rect.oy);
       syncMenuBrandDock(rect); /* keeps #menuBrandDock hidden */
-      const logoH = pageFaceLogoHeight(rect);
-      /* Dock = categories only; logo sits on the page face just above the image and flips with it. */
+      const logoH = pageFaceLogoHeight(rect, pf);
+      /* Dock = categories only; logo sits on the page face (when page fills) and flips with it. */
       const dockH = catH;
       const stackH = catH + logoH;
       const chromeTop = menuChromeTopPx();
@@ -7027,23 +7042,37 @@
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
       const isCover = pf.classList.contains("book-cover");
-      /* Pack chrome (HUD + logo + cats) at the top — image fills the rest. */
       let chromeTop = 0;
       let chromeBody = 0;
+      let logoH = 0;
+      const bar = document.getElementById("menuCategoryBar");
+      const catH = (!isCover && bar && bar.classList.contains("show"))
+        ? Math.max(36, Math.round(bar.offsetHeight || 40))
+        : (!isCover ? 40 : 0);
       if (!isCover) {
         chromeTop = menuChromeTopPx();
-        const bar = document.getElementById("menuCategoryBar");
-        const catH = (bar && bar.classList.contains("show")) ? Math.max(36, Math.round(bar.offsetHeight || 40)) : 40;
-        const logoH = pageFaceLogoHeight({ dw: cw });
-        if (logoH > 0) {
+        /* Size like iPhone first (cats only). Keep flipping logo only when the page fills the screen. */
+        chromeBody = catH;
+        const usableProbe = Math.max(1, ch - chromeTop - chromeBody);
+        const scaleProbe = Math.min(cw / nw, usableProbe / nh);
+        const dhProbe = nh * scaleProbe;
+        const fillsScreen = (dhProbe / Math.max(1, ch)) >= 0.92;
+        const canLogo = shouldShowGuestLogo()
+          && !document.documentElement.classList.contains("orders-cover-logo")
+          && !isIosGuestNoLogo();
+        if (canLogo && fillsScreen) {
+          logoH = Math.max(28, Math.round(logoStripHeight({ dw: cw }) * guestLogoScale()));
           chromeBody = logoH + catH;
-        } else if (!isIosGuestNoLogo() || (bar && bar.classList.contains("show"))) {
-          chromeBody = catH;
+        } else {
+          logoH = 0;
         }
+        pf.dataset.letterboxChrome = logoH > 0 ? "0" : "1";
+        document.documentElement.classList.toggle("letterbox-chrome", logoH <= 0);
+      } else if (pf && pf.dataset) {
+        pf.dataset.letterboxChrome = "0";
       }
       const reserveTop = chromeTop + chromeBody;
       const usableH = Math.max(1, ch - reserveTop);
-      /* Contain (no crop) — same size as before. */
       const scale = Math.min(cw / nw, usableH / nh);
       let dw = nw * scale;
       let dh = nh * scale;
@@ -7051,24 +7080,24 @@
       let oy;
       if (isCover) oy = (ch - dh) / 2;
       else {
-        /* Bottom-align the page: leftover beige/white sits ABOVE (under HUD), not below. */
+        /* Like iPhone: leftover beige sits ABOVE the chips+page stack, not below. */
         oy = ch - dh;
         if (oy < reserveTop) oy = reserveTop;
-        /* Snap micro-jitter (rounding) so the page slot doesn't dance on every turn. */
         if (
           stableMenuFrame &&
           stableMenuFrame.cw === cw &&
           stableMenuFrame.ch === ch &&
           Math.abs(stableMenuFrame.dh - dh) <= 2 &&
           Math.abs(stableMenuFrame.dw - dw) <= 2 &&
-          Math.abs(stableMenuFrame.oy - oy) <= 2
+          Math.abs(stableMenuFrame.oy - oy) <= 2 &&
+          stableMenuFrame.logoH === logoH
         ) {
           dw = stableMenuFrame.dw;
           dh = stableMenuFrame.dh;
           ox = stableMenuFrame.ox;
           oy = stableMenuFrame.oy;
         } else {
-          stableMenuFrame = { cw, ch, dw, dh, ox, oy };
+          stableMenuFrame = { cw, ch, dw, dh, ox, oy, logoH };
         }
       }
       return {
@@ -8936,21 +8965,31 @@
       if (!j) return;
       add(j.apiUrl);
       add(j.tunnelUrl);
-      add(j.lanUrl);
       add(j.api);
       if (Array.isArray(j.apis)) j.apis.forEach(add);
-      // Per-shop map (hostname or LAN key) — prefer stable tunnels over trycloudflare.
+      /* Prefer stable shop tunnels; never prefer laptop/dev LAN (.84) over tonino. */
       if (j.shops && typeof j.shops === "object") {
         const prefer = [];
         const rest = [];
-        for (const val of Object.values(j.shops)) {
+        for (const [key, val] of Object.entries(j.shops)) {
           const t = String(val && (val.tunnelUrl || val.apiUrl) || "").trim();
           if (!t) continue;
+          if (/zekiq-dev\./i.test(t) || /zekiq-dev\./i.test(key)) {
+            rest.push(t);
+            continue;
+          }
           if (/\.trycloudflare\.com$/i.test(t)) rest.push(t);
           else prefer.push(t);
         }
         prefer.forEach(add);
         rest.forEach(add);
+      }
+      /* LAN last — and only useful when page itself is http://cashier (not GitHub https). */
+      if (location.protocol !== "https:" || !/github\.io$/i.test(location.hostname)) {
+        add(j.lanUrl);
+        if (j.shops && typeof j.shops === "object") {
+          for (const val of Object.values(j.shops)) add(val && val.lanUrl);
+        }
       }
     }
     function isEphemeralTunnel(u) {
@@ -8971,12 +9010,10 @@
       if (siteRoot && shopSlug && shopSlug !== "shop") {
         jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-" + shopSlug + ".json", 5000).then(j => ingestManifest(j, add)));
       }
-      // GitHub QR without api= — load known shop manifests (Tonino cashier .25)
+      // GitHub QR — Tonino shop first. Do NOT probe zekiq-dev here (530 / wrong shop).
       if (siteRoot && /github\.io$/i.test(location.hostname)) {
         jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-tonino.json", 5000).then(j => ingestManifest(j, add)));
-        jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-dev.json", 5000).then(j => ingestManifest(j, add)).catch(() => {}));
         add("https://tonino.zekiqmenu.com");
-        add("https://zekiq-dev.zekiqmenu.com");
         add("https://shop.zekiqmenu.com");
       }
       jobs.push(fetchJson("https://shop.zekiqmenu.com/guest-api.json", 5000).then(j => ingestManifest(j, add)));
@@ -9057,16 +9094,20 @@
 
     function rankApiBases(bases) {
       const onHttps = location.protocol === "https:";
-      const scored = bases.map((base, i) => {
+      const scored = [];
+      bases.forEach((base, i) => {
         let score = 1000 - i;
         try {
           const u = new URL(base.includes("://") ? base : "http://" + base);
+          /* GitHub https page cannot call http://192.168.x — skip (was causing WiFi hang). */
+          if (onHttps && u.protocol === "http:" && isPrivateApi(base)) return;
+          if (/zekiq-dev\./i.test(u.hostname)) score -= 600;
           if (u.protocol === "https:") score += 500;
-          if (/zekiqmenu\.com$/i.test(u.hostname)) score += 200;
-          if (onHttps && u.protocol === "http:" && isPrivateApi(base)) score -= 800;
+          if (/^tonino\.zekiqmenu\.com$/i.test(u.hostname)) score += 400;
+          else if (/zekiqmenu\.com$/i.test(u.hostname)) score += 200;
           if (/212\.156\.209\.82|trycloudflare\.com|loca\.lt/i.test(u.hostname)) score -= 400;
-        } catch (_) {}
-        return { base, score };
+        } catch (_) { return; }
+        scored.push({ base, score });
       });
       scored.sort((a, b) => b.score - a.score);
       const out = [];
