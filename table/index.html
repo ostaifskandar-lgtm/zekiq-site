@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v167: fill menu under chrome + compact logo -->
+  <!-- guest-table-ui-v168: letterbox on top + bottom-align page -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1253,7 +1253,7 @@
       left:0;
       right:0;
       z-index:880;
-      /* Pack logo+cats under HUD — no empty letterbox above the banner */
+      /* Logo+cats sit on the page; leftover letterbox stays above the stack */
       top:var(--menu-chrome-top, max(0px, calc(var(--menu-img-top, 0px) - var(--menu-top-dock-h, 44px))));
       display:none;
       flex-direction:column;
@@ -1282,7 +1282,7 @@
       z-index:0;
       min-height:var(--logo-strip-h, 48px);
       background-color:#1a120c;
-      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=167");
+      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=168");
       background-repeat:no-repeat;
       background-position:center center;
       background-size:contain;
@@ -3703,7 +3703,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v167</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v168</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -3794,7 +3794,7 @@
       <div id="menuViewport">
       <div id="menuTopDock">
       <div id="menuBrandDock" aria-hidden="true">
-        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=167" />
+        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=168" />
       </div>
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -5016,7 +5016,7 @@
       listEl.scrollLeft = 0;
     }
     function coverLogoSrc() {
-      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=167";
+      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=168";
       /* Always GitHub Pages asset — tunnel /table/assets falls through to SPA HTML (broken img). */
       return "https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg" + bv;
     }
@@ -6219,9 +6219,7 @@
     function logoStripHeight(rect) {
       if (document.documentElement.classList.contains("ios-inbrowser") &&
           !document.documentElement.classList.contains("ios-standalone")) return 0;
-      /* Compact strip — full aspect wasted too much screen and pushed the book up. */
-      const natural = Math.round((Number(rect && rect.dw) || 360) * 205 / 945);
-      return Math.max(32, Math.min(50, Math.round(natural * 0.62)));
+      return Math.max(28, Math.round(rect.dw * 205 / 945));
     }
     function refreshPageBrandBanners(cacheVer) {
       const src = coverLogoSrc();
@@ -6525,13 +6523,15 @@
       /* Dock height = logo strip (in-flow) + categories. Logo folds after 5 order lines. */
       const dockH = catH + logoH;
       const chromeTop = menuChromeTopPx();
-      const dockKey = oy + "|" + dockH + "|" + logoH + "|" + chromeTop;
+      /* Sit logo+cats directly on the page top so letterbox stays above the whole stack. */
+      const dockTop = Math.max(chromeTop, oy - dockH);
+      const dockKey = oy + "|" + dockH + "|" + logoH + "|" + dockTop;
       if (lastCategoryDockKey === dockKey) {
         layoutPfBrandStrip(pf, rect);
         return;
       }
       lastCategoryDockKey = dockKey;
-      view.style.setProperty("--menu-chrome-top", chromeTop + "px");
+      view.style.setProperty("--menu-chrome-top", dockTop + "px");
       view.style.setProperty("--menu-img-top", oy + "px");
       view.style.setProperty("--cat-bar-h", catH + "px");
       view.style.setProperty("--logo-strip-h", logoH + "px");
@@ -7005,18 +7005,17 @@
       }
       const reserveTop = chromeTop + chromeBody;
       const usableH = Math.max(1, ch - reserveTop);
-      /* Menu pages: fill the slot under chrome (cover-fit) so the book isn't tiny with beige below. */
-      const scaleFit = Math.min(cw / nw, usableH / nh);
-      const scaleFill = Math.max(cw / nw, usableH / nh);
-      const scale = isCover ? scaleFit : scaleFill;
+      /* Contain (no crop) — same size as before. */
+      const scale = Math.min(cw / nw, usableH / nh);
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
       let oy;
       if (isCover) oy = (ch - dh) / 2;
       else {
-        /* Pin under logo+cats; side/bottom crop if needed — no empty beige band. */
-        oy = reserveTop;
+        /* Bottom-align the page: leftover beige/white sits ABOVE (under HUD), not below. */
+        oy = ch - dh;
+        if (oy < reserveTop) oy = reserveTop;
       }
       return {
         ox, oy, dw, dh,
