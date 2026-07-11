@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v154: logo docked above cats; flips only while turning -->
+  <!-- guest-table-ui-v155: logo in-flow above cats; reserve letterbox so it never clips -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -611,7 +611,7 @@
       display:none!important;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuTopDock.show{
-      display:block!important;
+      display:flex!important;
     }
     html.ios-inbrowser:not(.ios-standalone) #menuCategoryBar{
       margin-top:0!important;
@@ -1253,29 +1253,34 @@
       left:0;
       right:0;
       z-index:880;
-      /* Categories only — page logo flips with .pf-brand-strip above this dock */
+      /* Logo (in-flow) + categories sit just above the menu image */
       top:max(0px,calc(var(--menu-img-top, 0px) - var(--menu-top-dock-h, 44px)));
       display:none;
+      flex-direction:column;
+      align-items:stretch;
       margin:0;
       padding:0;
       pointer-events:auto;
       touch-action:pan-x;
       overflow:visible;
+      box-sizing:border-box;
     }
-    #menuTopDock.show{display:block;}
+    #menuTopDock.show{display:flex;}
     #menuBrandDock{
       display:none;
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:100%;
+      position:relative;
+      left:auto;
+      right:auto;
+      bottom:auto;
       line-height:0;
       overflow:hidden;
       width:100%;
+      flex:0 0 auto;
       margin:0;
       padding:0;
       pointer-events:none;
       z-index:0;
+      background:#1a120c;
       transform-origin:bottom center;
       transition:max-height .38s cubic-bezier(.4,0,.2,1),opacity .28s ease,transform .38s cubic-bezier(.4,0,.2,1);
     }
@@ -1284,8 +1289,8 @@
       display:block;
       width:100%;
       height:var(--logo-strip-h, 48px);
-      object-fit:cover;
-      object-position:center bottom;
+      object-fit:contain;
+      object-position:center center;
       pointer-events:none;
       user-select:none;
       -webkit-user-drag:none;
@@ -1370,8 +1375,8 @@
       width:100%;
       height:auto;
       aspect-ratio:945 / 205;
-      object-fit:cover;
-      object-position:center bottom;
+      object-fit:contain;
+      object-position:center center;
       pointer-events:none;
       user-select:none;
       -webkit-user-drag:none;
@@ -3693,7 +3698,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v154</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v155</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -6268,10 +6273,9 @@
       if (img) {
         img.style.width = "100%";
         img.style.height = logoH + "px";
-        img.style.objectFit = "cover";
-        const crop = logo ? Math.max(0, Math.min(0.55, Number(logo.cropTop) || 0)) : 0;
-        img.style.objectPosition = crop > 0 ? ("center " + Math.round(crop * 100) + "%") : "center bottom";
-        img.style.clipPath = crop > 0 ? ("inset(" + Math.round(crop * 100) + "% 0 0 0)") : "";
+        img.style.objectFit = "contain";
+        img.style.objectPosition = "center center";
+        img.style.clipPath = "";
       }
     }
     function syncMenuBrandDock(rect) {
@@ -6279,6 +6283,7 @@
       const brandDock = document.getElementById("menuBrandDock");
       const view = document.getElementById("menuViewport");
       const dockMode = usesDockBrandLogo();
+      const folded = document.documentElement.classList.contains("orders-cover-logo");
       topDock?.classList.toggle("has-brand-dock", dockMode);
       if (!dockMode || !rect) {
         if (brandDock) brandDock.style.display = "none";
@@ -6291,19 +6296,19 @@
       if (view) view.style.setProperty("--logo-strip-h", logoH + "px");
       if (brandDock) {
         brandDock.style.display = "";
-        brandDock.style.maxHeight = "";
+        brandDock.style.maxHeight = folded ? "0px" : "";
         brandDock.style.opacity = "";
         brandDock.style.transform = "";
         const img = brandDock.querySelector(".menu-dock-brand-img");
         if (img) {
           img.style.height = logoH + "px";
-          img.style.objectFit = "cover";
-          const crop = logo ? Math.max(0, Math.min(0.55, Number(logo.cropTop) || 0)) : 0;
-          img.style.objectPosition = crop > 0 ? ("center " + Math.round(crop * 100) + "%") : "center bottom";
-          img.style.clipPath = crop > 0 ? ("inset(" + Math.round(crop * 100) + "% 0 0 0)") : "";
+          img.style.objectFit = "contain";
+          img.style.objectPosition = "center center";
+          img.style.clipPath = "";
         }
       }
-      return logoH;
+      /* Folded logo must not reserve dock height */
+      return folded ? 0 : logoH;
     }
     function syncMenuTopDock(show) {
       const dock = document.getElementById("menuTopDock");
@@ -6489,8 +6494,8 @@
         scheduleHotspotRelayout();
         return;
       }
-      /* Dock height = categories only. Logo is on the page face (flips) and folds after 5 lines. */
-      const dockH = catH;
+      /* Dock height = logo strip (in-flow) + categories. Logo folds after 5 order lines. */
+      const dockH = catH + logoH;
       const dockKey = oy + "|" + dockH + "|" + logoH;
       if (lastCategoryDockKey === dockKey) {
         layoutPfBrandStrip(pf, rect);
@@ -6941,14 +6946,29 @@
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
       const isCover = pf.classList.contains("book-cover");
-      const usableH = ch;
+      /* Reserve room above the image for logo + category chips so the banner never clips. */
+      let reserveTop = 0;
+      if (!isCover) {
+        const bar = document.getElementById("menuCategoryBar");
+        const catH = (bar && bar.classList.contains("show")) ? Math.max(36, Math.round(bar.offsetHeight || 40)) : 40;
+        if (usesDockBrandLogo() && !document.documentElement.classList.contains("orders-cover-logo")) {
+          const logoH = Math.max(28, Math.round(cw * 205 / 945));
+          reserveTop = logoH + catH;
+        } else if (!isIosGuestNoLogo() || (bar && bar.classList.contains("show"))) {
+          reserveTop = catH;
+        }
+      }
+      const usableH = Math.max(1, ch - reserveTop);
       const scale = Math.min(cw / nw, usableH / nh);
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
       let oy;
       if (isCover) oy = (ch - dh) / 2;
-      else oy = ch - dh; /* bottom-anchored: stable size on iPhone */
+      else {
+        oy = ch - dh; /* bottom-anchored */
+        if (reserveTop > 0 && oy < reserveTop) oy = reserveTop;
+      }
       return {
         ox, oy, dw, dh,
         wasteTop: Math.max(0, oy),
