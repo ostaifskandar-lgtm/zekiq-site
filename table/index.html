@@ -19,8 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v161: fixImgUrl tunnel pages + logo without rect -->
-  <script>
+  <!-- guest-table-ui-v162: same-origin logo (no jsDelivr)<script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
       function isIosDevice(){
@@ -1282,7 +1281,7 @@
       z-index:0;
       min-height:var(--logo-strip-h, 48px);
       background-color:#1a120c;
-      background-image:url("https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/table/assets/tonino-brand.jpg?v=158");
+      background-image:url("assets/tonino-brand.jpg?v=162");
       background-repeat:no-repeat;
       background-position:center center;
       background-size:contain;
@@ -3703,7 +3702,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v161</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v162</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -3794,7 +3793,7 @@
       <div id="menuViewport">
       <div id="menuTopDock">
       <div id="menuBrandDock" aria-hidden="true">
-        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/table/assets/tonino-brand.jpg?v=159" />
+        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="assets/tonino-brand.jpg?v=162" />
       </div>
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -5016,8 +5015,19 @@
       listEl.scrollLeft = 0;
     }
     function coverLogoSrc() {
-      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=159";
-      return "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/table/assets/tonino-brand.jpg" + bv;
+      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=162";
+      /* Same-origin as the guest page — jsDelivr is often blocked on mobile 4G. */
+      try {
+        if (/github\.io$/i.test(location.hostname)) {
+          return new URL("assets/tonino-brand.jpg" + bv, location.href).href;
+        }
+      } catch (_) {}
+      if (apiBase) {
+        try {
+          return String(apiBase).replace(/\/+$/, "") + "/table/assets/tonino-brand.jpg" + bv;
+        } catch (_) {}
+      }
+      return "https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg" + bv;
     }
     let iceSheetServings = [];
     function newIceServing() {
@@ -5206,7 +5216,7 @@
         const logo = document.createElement("img");
         logo.className = "cover-banner-img guest-brand-banner-img";
         logo.src = coverLogoSrc();
-        logo.alt = shopName || guestT("coverStartTitle");
+        logo.alt = "";
         logo.draggable = false;
         logo.decoding = "async";
         banner.appendChild(logo);
@@ -5313,7 +5323,7 @@
       refreshSwipeFingerHints();
       document.querySelectorAll(".cover-banner-img,.cover-brand-banner .guest-brand-banner-img").forEach(el => {
         el.src = coverLogoSrc();
-        el.alt = shopName || guestT("coverStartTitle");
+        el.alt = "";
       });
       document.querySelectorAll(".cover-welcome-greet").forEach(el => {
         el.textContent = guestT("coverWelcomeGreet");
