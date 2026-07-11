@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v153: daily dish photo up, explain panel bottom -->
+  <!-- guest-table-ui-v154: logo docked above cats; flips only while turning -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1263,7 +1263,46 @@
       overflow:visible;
     }
     #menuTopDock.show{display:block;}
-    #menuBrandDock{display:none!important;} /* logo lives on each page face for flip */
+    #menuBrandDock{
+      display:none;
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:100%;
+      line-height:0;
+      overflow:hidden;
+      width:100%;
+      margin:0;
+      padding:0;
+      pointer-events:none;
+      z-index:0;
+      transform-origin:bottom center;
+      transition:max-height .38s cubic-bezier(.4,0,.2,1),opacity .28s ease,transform .38s cubic-bezier(.4,0,.2,1);
+    }
+    #menuTopDock.has-brand-dock #menuBrandDock{display:block;}
+    #menuBrandDock .menu-dock-brand-img{
+      display:block;
+      width:100%;
+      height:var(--logo-strip-h, 48px);
+      object-fit:cover;
+      object-position:center bottom;
+      pointer-events:none;
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+    /* Orders fold the dock logo — categories stay put */
+    html.orders-cover-logo #menuBrandDock{
+      max-height:0!important;
+      opacity:0!important;
+      transform:scaleY(0);
+      pointer-events:none!important;
+    }
+    /* During flip: hide dock logo, show page-face logo so it turns with the page */
+    html.page-flipping:not(.orders-cover-logo) #menuBrandDock{
+      opacity:0!important;
+      visibility:hidden!important;
+      pointer-events:none!important;
+    }
     #menuCategoryBar{
       position:relative;
       left:auto;
@@ -1290,7 +1329,9 @@
     }
     html.page-flipping .pf-overlay{visibility:hidden!important;}
     .pf-cat-strip{display:none!important;}
+    /* Page logo only while flipping — static logo is #menuBrandDock above categories */
     .pf-brand-strip{
+      display:none;
       position:absolute;
       left:0;
       line-height:0;
@@ -1300,31 +1341,27 @@
       z-index:8;
       backface-visibility:hidden;
       -webkit-backface-visibility:hidden;
-      transform:translateZ(2px) scaleY(1);
-      transform-origin:bottom center;
+      transform:translateZ(2px);
       overflow:hidden;
       opacity:1;
       max-height:120px;
-      transition:max-height .38s cubic-bezier(.4,0,.2,1),opacity .28s ease,transform .38s cubic-bezier(.4,0,.2,1);
     }
-    /* After 5 order lines — fold logo away; categories stay fixed */
     html.orders-cover-logo .pw .pf-brand-strip{
+      display:none!important;
       max-height:0!important;
       opacity:0!important;
-      transform:translateZ(2px) scaleY(0)!important;
       pointer-events:none!important;
     }
-    /* Keep logo on the turning page for flip beauty (unless folded by orders) */
     html.page-flipping:not(.orders-cover-logo) .pw.turning .pf-brand-strip,
     html.page-flipping:not(.orders-cover-logo) .pw.turn-next .pf-brand-strip,
     html.page-flipping:not(.orders-cover-logo) .pw.turn-prev .pf-brand-strip,
     html.page-flipping:not(.orders-cover-logo) .pw.page-reveal .pf-brand-strip,
     html.page-flipping:not(.orders-cover-logo) .pw.page-current .pf-brand-strip{
+      display:block!important;
       opacity:1!important;
       max-height:120px!important;
       visibility:visible!important;
-      display:block!important;
-      transform:translateZ(2px) scaleY(1)!important;
+      transform:translateZ(2px)!important;
       transition:none!important;
       pointer-events:none!important;
     }
@@ -3656,7 +3693,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v153</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v154</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -4948,9 +4985,9 @@
       if (chrome.logo && chrome.logo.visible === true) return true;
       return !isIosGuestNoLogo();
     }
-    /** Page-face logo (flips with turn). Dock brand unused. */
+    /** Static logo sits in #menuBrandDock (directly above category chips). */
     function usesDockBrandLogo() {
-      return false;
+      return shouldShowGuestLogo();
     }
     function isIosGuestHideFootBar() {
       return isIosGuestNoLogo();
@@ -6208,7 +6245,10 @@
     function layoutPfBrandStrip(pf, rect) {
       const strip = pf?.querySelector(".pf-brand-strip");
       if (!strip) return;
-      if (!shouldShowGuestLogo() || !rect || pf.classList.contains("book-cover")) {
+      const flipping = document.documentElement.classList.contains("page-flipping");
+      /* Static: dock logo only. Page strip only while flipping (turns with the page). */
+      if (!shouldShowGuestLogo() || !rect || pf.classList.contains("book-cover") ||
+          !flipping || document.documentElement.classList.contains("orders-cover-logo")) {
         strip.style.display = "none";
         return;
       }
@@ -6218,10 +6258,9 @@
       const catH = bar && bar.classList.contains("show") && !(chrome.cat && chrome.cat.visible === false)
         ? Math.round(bar.offsetHeight) : 0;
       const logoH = Math.max(28, Math.round(logoStripHeight(rect) * (logo ? Number(logo.scale) || 1 : 1)));
-      strip.style.display = "";
+      strip.style.display = "block";
       strip.style.left = rect.ox + "px";
       strip.style.width = rect.dw + "px";
-      /* Sit just above category dock zone so logo flips with the page face */
       strip.style.top = Math.max(0, rect.oy - logoH - catH) + "px";
       strip.style.height = logoH + "px";
       strip.style.maxHeight = logoH + "px";
@@ -6239,9 +6278,10 @@
       const topDock = document.getElementById("menuTopDock");
       const brandDock = document.getElementById("menuBrandDock");
       const view = document.getElementById("menuViewport");
-      topDock?.classList.remove("has-brand-dock");
-      if (brandDock) brandDock.style.display = "none";
-      if (!shouldShowGuestLogo() || !rect) {
+      const dockMode = usesDockBrandLogo();
+      topDock?.classList.toggle("has-brand-dock", dockMode);
+      if (!dockMode || !rect) {
+        if (brandDock) brandDock.style.display = "none";
         if (view) view.style.removeProperty("--logo-strip-h");
         return 0;
       }
@@ -6249,6 +6289,20 @@
       const logo = chrome.logo;
       const logoH = Math.max(28, Math.round(logoStripHeight(rect) * (logo ? Number(logo.scale) || 1 : 1)));
       if (view) view.style.setProperty("--logo-strip-h", logoH + "px");
+      if (brandDock) {
+        brandDock.style.display = "";
+        brandDock.style.maxHeight = "";
+        brandDock.style.opacity = "";
+        brandDock.style.transform = "";
+        const img = brandDock.querySelector(".menu-dock-brand-img");
+        if (img) {
+          img.style.height = logoH + "px";
+          img.style.objectFit = "cover";
+          const crop = logo ? Math.max(0, Math.min(0.55, Number(logo.cropTop) || 0)) : 0;
+          img.style.objectPosition = crop > 0 ? ("center " + Math.round(crop * 100) + "%") : "center bottom";
+          img.style.clipPath = crop > 0 ? ("inset(" + Math.round(crop * 100) + "% 0 0 0)") : "";
+        }
+      }
       return logoH;
     }
     function syncMenuTopDock(show) {
@@ -7735,6 +7789,14 @@
 
     function setPageFlipping(on) {
       document.documentElement.classList.toggle("page-flipping", !!on);
+      if (on) {
+        document.querySelectorAll(".pf").forEach(function (pf) {
+          const rect = imageOverlayRect(pf, { measureOnly: true });
+          if (rect) layoutPfBrandStrip(pf, rect);
+        });
+      } else {
+        document.querySelectorAll(".pf-brand-strip").forEach(function (s) { s.style.display = "none"; });
+      }
     }
 
     function endPageTurn(pw) {
