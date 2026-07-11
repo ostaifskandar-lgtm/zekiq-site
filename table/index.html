@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v168: letterbox on top + bottom-align page -->
+  <!-- guest-table-ui-v169: stable logo on flip (no flash) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1282,12 +1282,13 @@
       z-index:0;
       min-height:var(--logo-strip-h, 48px);
       background-color:#1a120c;
-      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=168");
+      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=169");
       background-repeat:no-repeat;
       background-position:center center;
       background-size:contain;
       transform-origin:bottom center;
-      transition:max-height .38s cubic-bezier(.4,0,.2,1),opacity .28s ease,transform .38s cubic-bezier(.4,0,.2,1);
+      /* opacity only when folding for orders — not on every page turn */
+      transition:max-height .38s cubic-bezier(.4,0,.2,1),transform .38s cubic-bezier(.4,0,.2,1);
     }
     #menuTopDock.has-brand-dock #menuBrandDock{display:block;}
     #menuBrandDock .menu-dock-brand-img{
@@ -1307,12 +1308,7 @@
       transform:scaleY(0);
       pointer-events:none!important;
     }
-    /* During flip: hide dock logo, show page-face logo so it turns with the page */
-    html.page-flipping:not(.orders-cover-logo) #menuBrandDock{
-      opacity:0!important;
-      visibility:hidden!important;
-      pointer-events:none!important;
-    }
+    /* Keep #menuBrandDock visible during flips — swapping to .pf-brand-strip made the logo flash. */
     #menuCategoryBar{
       position:relative;
       left:auto;
@@ -1339,9 +1335,9 @@
     }
     html.page-flipping .pf-overlay{visibility:hidden!important;}
     .pf-cat-strip{display:none!important;}
-    /* Page logo only while flipping — static logo is #menuBrandDock above categories */
+    /* Page-face logo strip retired — static #menuBrandDock stays put (no flash on flip). */
     .pf-brand-strip{
-      display:none;
+      display:none!important;
       position:absolute;
       left:0;
       line-height:0;
@@ -1349,31 +1345,13 @@
       padding:0;
       pointer-events:none;
       z-index:8;
-      backface-visibility:hidden;
-      -webkit-backface-visibility:hidden;
-      transform:translateZ(2px);
       overflow:hidden;
-      opacity:1;
-      max-height:120px;
+      opacity:0;
+      max-height:0;
+      visibility:hidden;
     }
     html.orders-cover-logo .pw .pf-brand-strip{
       display:none!important;
-      max-height:0!important;
-      opacity:0!important;
-      pointer-events:none!important;
-    }
-    html.page-flipping:not(.orders-cover-logo) .pw.turning .pf-brand-strip,
-    html.page-flipping:not(.orders-cover-logo) .pw.turn-next .pf-brand-strip,
-    html.page-flipping:not(.orders-cover-logo) .pw.turn-prev .pf-brand-strip,
-    html.page-flipping:not(.orders-cover-logo) .pw.page-reveal .pf-brand-strip,
-    html.page-flipping:not(.orders-cover-logo) .pw.page-current .pf-brand-strip{
-      display:block!important;
-      opacity:1!important;
-      max-height:120px!important;
-      visibility:visible!important;
-      transform:translateZ(2px)!important;
-      transition:none!important;
-      pointer-events:none!important;
     }
     .guest-brand-banner-img{
       display:block;
@@ -3703,7 +3681,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v168</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v169</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -3794,7 +3772,7 @@
       <div id="menuViewport">
       <div id="menuTopDock">
       <div id="menuBrandDock" aria-hidden="true">
-        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=168" />
+        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=169" />
       </div>
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -4607,6 +4585,7 @@
     let hudView = null;
     let chipLabelOverrides = {};
     let cur = 0, animating = false, popupItem = null, popupQty = 1, popupSugarChoice = null, sending = false, done = false;
+    let stableMenuFrame = null; /* lock page slot across flips so images don't jump */
     const FLIP_MS = 680;
     let dragFlip = null;
     let dragRaf = 0;
@@ -5016,7 +4995,7 @@
       listEl.scrollLeft = 0;
     }
     function coverLogoSrc() {
-      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=168";
+      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=169";
       /* Always GitHub Pages asset — tunnel /table/assets falls through to SPA HTML (broken img). */
       return "https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg" + bv;
     }
@@ -6259,33 +6238,8 @@
     function layoutPfBrandStrip(pf, rect) {
       const strip = pf?.querySelector(".pf-brand-strip");
       if (!strip) return;
-      const flipping = document.documentElement.classList.contains("page-flipping");
-      /* Static: dock logo only. Page strip only while flipping (turns with the page). */
-      if (!shouldShowGuestLogo() || !rect || pf.classList.contains("book-cover") ||
-          !flipping || document.documentElement.classList.contains("orders-cover-logo")) {
-        strip.style.display = "none";
-        return;
-      }
-      const chrome = activeGuestChrome();
-      const logo = chrome.logo;
-      const bar = document.getElementById("menuCategoryBar");
-      const catH = bar && bar.classList.contains("show") && !(chrome.cat && chrome.cat.visible === false)
-        ? Math.round(bar.offsetHeight) : 0;
-      const logoH = Math.max(28, Math.round(logoStripHeight(rect) * (logo ? Number(logo.scale) || 1 : 1)));
-      strip.style.display = "block";
-      strip.style.left = rect.ox + "px";
-      strip.style.width = rect.dw + "px";
-      strip.style.top = Math.max(0, rect.oy - logoH - catH) + "px";
-      strip.style.height = logoH + "px";
-      strip.style.maxHeight = logoH + "px";
-      const img = strip.querySelector(".guest-brand-banner-img");
-      if (img) {
-        img.style.width = "100%";
-        img.style.height = logoH + "px";
-        img.style.objectFit = "contain";
-        img.style.objectPosition = "center center";
-        img.style.clipPath = "";
-      }
+      /* Always hidden — dock logo stays fixed; strip caused shimmer on every flip. */
+      strip.style.display = "none";
     }
     function syncMenuBrandDock(rect) {
       const topDock = document.getElementById("menuTopDock");
@@ -7016,6 +6970,22 @@
         /* Bottom-align the page: leftover beige/white sits ABOVE (under HUD), not below. */
         oy = ch - dh;
         if (oy < reserveTop) oy = reserveTop;
+        /* Snap micro-jitter (rounding) so the page slot doesn't dance on every turn. */
+        if (
+          stableMenuFrame &&
+          stableMenuFrame.cw === cw &&
+          stableMenuFrame.ch === ch &&
+          Math.abs(stableMenuFrame.dh - dh) <= 2 &&
+          Math.abs(stableMenuFrame.dw - dw) <= 2 &&
+          Math.abs(stableMenuFrame.oy - oy) <= 2
+        ) {
+          dw = stableMenuFrame.dw;
+          dh = stableMenuFrame.dh;
+          ox = stableMenuFrame.ox;
+          oy = stableMenuFrame.oy;
+        } else {
+          stableMenuFrame = { cw, ch, dw, dh, ox, oy };
+        }
       }
       return {
         ox, oy, dw, dh,
@@ -7871,12 +7841,8 @@
 
     function setPageFlipping(on) {
       document.documentElement.classList.toggle("page-flipping", !!on);
-      if (on) {
-        document.querySelectorAll(".pf").forEach(function (pf) {
-          const rect = imageOverlayRect(pf, { measureOnly: true });
-          if (rect) layoutPfBrandStrip(pf, rect);
-        });
-      } else {
+      /* Do not swap dock logo ↔ page strip — that made the logo flash after every turn. */
+      if (!on) {
         document.querySelectorAll(".pf-brand-strip").forEach(function (s) { s.style.display = "none"; });
       }
     }
@@ -8020,8 +7986,10 @@
     function sync(duringFlip) {
       if (cur !== lastSyncCur) {
         lastSyncCur = cur;
-        lastCategoryDockKey = "";
-        lastCategoryScrollPi = -1;
+        if (!duringFlip) {
+          lastCategoryDockKey = "";
+          lastCategoryScrollPi = -1;
+        }
       }
       const pgText = formatPageLabel();
       const pg = document.getElementById("pgnum");
@@ -8051,14 +8019,6 @@
         if (!duringFlip && activeMenuIdx === i) t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       });
       renderPageDock();
-      if (duringFlip) {
-        document.querySelectorAll(".pw.turning,.pw.turn-next,.pw.turn-prev,.pw.page-reveal,.pw.page-current").forEach(pw => {
-          const pf = pw.querySelector(".pf");
-          if (!pf || pf.classList.contains("book-cover")) return;
-          const rect = imageOverlayRect(pf, { measureOnly: true });
-          if (rect) layoutPfBrandStrip(pf, rect);
-        });
-      }
       if (!duringFlip) {
         mountPageOverlays(cur);
         scheduleHotspotRelayout();
