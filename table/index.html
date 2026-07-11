@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v160: dock logo always on Android -->
+  <!-- guest-table-ui-v161: fixImgUrl tunnel pages + logo without rect -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -3703,7 +3703,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v160</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v161</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -6463,6 +6463,9 @@
       const chrome = activeGuestChrome();
       if (chrome.cat && isManualCategoryChrome(chrome.cat)) {
         applyManualGuestChrome();
+        const viewM = document.getElementById("menuViewport");
+        const dwM = Math.max(280, Math.round((viewM?.clientWidth || pf?.clientWidth || window.innerWidth || 360)));
+        syncMenuBrandDock({ ox: 0, oy: 0, dw: dwM, dh: 1 });
         return;
       }
       const view = document.getElementById("menuViewport");
@@ -6483,8 +6486,21 @@
         }
         return;
       }
-      const rect = imageOverlayRect(pf, { measureOnly: true });
-      if (!rect) return;
+      let rect = imageOverlayRect(pf, { measureOnly: true });
+      /* Page image may 404/lag — still show logo+cats using viewport width. */
+      if (!rect) {
+        const dw = Math.max(280, Math.round(pf.clientWidth || view.clientWidth || window.innerWidth || 360));
+        const catH0 = Math.round(bar?.offsetHeight || 40);
+        const logoH0 = syncMenuBrandDock({ ox: 0, oy: 0, dw, dh: 1 });
+        const chromeTop0 = menuChromeTopPx();
+        const dockH0 = catH0 + logoH0;
+        view.style.setProperty("--menu-chrome-top", chromeTop0 + "px");
+        view.style.setProperty("--cat-bar-h", catH0 + "px");
+        view.style.setProperty("--logo-strip-h", logoH0 + "px");
+        view.style.setProperty("--menu-top-dock-h", dockH0 + "px");
+        view.style.setProperty("--menu-img-top", (chromeTop0 + dockH0) + "px");
+        return;
+      }
       const catH = Math.round(bar?.offsetHeight || 0);
       const oy = Math.round(rect.oy);
       const logoH = syncMenuBrandDock(rect, catH);
@@ -7531,8 +7547,10 @@
     function fixImgUrl(url) {
       if (!url) return url;
       try {
-        const base = (apiBase || location.origin).replace(/\/+$/, "");
-        const u = new URL(url, base);
+        const raw = String(url).trim();
+        const baseRaw = (apiBase || location.origin).replace(/\/+$/, "");
+        const absBase = /^https?:\/\//i.test(baseRaw) ? baseRaw : ("https://" + baseRaw);
+        const u = new URL(raw, absBase);
         if (isPrivateHost(u.hostname)) {
           let pub = apiBase;
           try {
@@ -7541,9 +7559,14 @@
           if (pub) return pub.replace(/\/+$/, "") + u.pathname + u.search;
           if (u.protocol === "https:") return "http://" + u.host + u.pathname + u.search;
         }
-        if (u.hostname === "127.0.0.1" || u.hostname === "localhost") {
-          return base + u.pathname + u.search;
+        /* GitHub Pages: relative /guest-menu-pages/... must hit the tunnel, not github.io (404). */
+        if (apiBase && !/^https?:\/\//i.test(raw)) {
+          return absBase.replace(/\/+$/, "") + u.pathname + u.search;
         }
+        if (u.hostname === "127.0.0.1" || u.hostname === "localhost") {
+          return absBase.replace(/\/+$/, "") + u.pathname + u.search;
+        }
+        return u.href;
       } catch (_) {}
       return url;
     }
