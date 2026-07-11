@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v166: github logo + rtl inset fix -->
+  <!-- guest-table-ui-v167: fill menu under chrome + compact logo -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1282,7 +1282,7 @@
       z-index:0;
       min-height:var(--logo-strip-h, 48px);
       background-color:#1a120c;
-      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=166");
+      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=167");
       background-repeat:no-repeat;
       background-position:center center;
       background-size:contain;
@@ -3703,7 +3703,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v166</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v167</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -3794,7 +3794,7 @@
       <div id="menuViewport">
       <div id="menuTopDock">
       <div id="menuBrandDock" aria-hidden="true">
-        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=166" />
+        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=167" />
       </div>
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -5016,7 +5016,7 @@
       listEl.scrollLeft = 0;
     }
     function coverLogoSrc() {
-      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=166";
+      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=167";
       /* Always GitHub Pages asset — tunnel /table/assets falls through to SPA HTML (broken img). */
       return "https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg" + bv;
     }
@@ -6219,7 +6219,9 @@
     function logoStripHeight(rect) {
       if (document.documentElement.classList.contains("ios-inbrowser") &&
           !document.documentElement.classList.contains("ios-standalone")) return 0;
-      return Math.max(28, Math.round(rect.dw * 205 / 945));
+      /* Compact strip — full aspect wasted too much screen and pushed the book up. */
+      const natural = Math.round((Number(rect && rect.dw) || 360) * 205 / 945);
+      return Math.max(32, Math.min(50, Math.round(natural * 0.62)));
     }
     function refreshPageBrandBanners(cacheVer) {
       const src = coverLogoSrc();
@@ -6995,7 +6997,7 @@
         const bar = document.getElementById("menuCategoryBar");
         const catH = (bar && bar.classList.contains("show")) ? Math.max(36, Math.round(bar.offsetHeight || 40)) : 40;
         if (usesDockBrandLogo() && !document.documentElement.classList.contains("orders-cover-logo")) {
-          const logoH = Math.max(28, Math.round(cw * 205 / 945));
+          const logoH = logoStripHeight({ dw: cw });
           chromeBody = logoH + catH;
         } else if (!isIosGuestNoLogo() || (bar && bar.classList.contains("show"))) {
           chromeBody = catH;
@@ -7003,16 +7005,18 @@
       }
       const reserveTop = chromeTop + chromeBody;
       const usableH = Math.max(1, ch - reserveTop);
-      const scale = Math.min(cw / nw, usableH / nh);
+      /* Menu pages: fill the slot under chrome (cover-fit) so the book isn't tiny with beige below. */
+      const scaleFit = Math.min(cw / nw, usableH / nh);
+      const scaleFill = Math.max(cw / nw, usableH / nh);
+      const scale = isCover ? scaleFit : scaleFill;
       const dw = nw * scale;
       const dh = nh * scale;
       const ox = (cw - dw) / 2;
       let oy;
       if (isCover) oy = (ch - dh) / 2;
       else {
-        /* Image starts immediately under logo+cats (no beige gap above the banner). */
+        /* Pin under logo+cats; side/bottom crop if needed — no empty beige band. */
         oy = reserveTop;
-        if (oy + dh > ch) oy = Math.max(reserveTop, ch - dh);
       }
       return {
         ox, oy, dw, dh,
@@ -7101,6 +7105,7 @@
         img.style.objectFit = "fill";
         img.style.objectPosition = "center";
         img.style.transform = "translateZ(0)";
+        pf.style.overflow = "hidden";
       }
     }
     function layoutBackImage(pw, rect) {
