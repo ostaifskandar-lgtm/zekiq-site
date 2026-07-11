@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -18,7 +18,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
-  <title>Ø·Ù„Ø¨ Ù…Ù† Ø§Ù„Ø·Ø§ÙˆÙ„Ø© â€” ZEKiQ</title>
+  <title>طلب من الطاولة — ZEKiQ</title>
   <!-- guest-table-ui-v159: CDN brand + fixed strip HTML -->
   <script>
     (function immersiveBoot(){
@@ -397,7 +397,7 @@
       --ios-safe-bottom:env(safe-area-inset-bottom,0px);
     }
     html.ios-standalone{--app-h:100dvh;--ios-safe-bottom:env(safe-area-inset-bottom,0px);}
-    /* iPhone Safari â€” ØªØ±Ø­ÙŠØ¨ Ù…Ø«Ù„ Ø£Ù†Ø¯Ø±ÙˆÙŠØ¯Ø› Ø¥Ø®ÙØ§Ø¡ Ø§Ù„Ù„ÙˆØºÙˆ ÙÙ‚Ø· Ø¯Ø§Ø®Ù„ ØµÙØ­Ø§Øª Ø§Ù„Ù…ÙŠÙ†Ùˆ */
+    /* iPhone Safari — ترحيب مثل أندرويد؛ إخفاء اللوغو فقط داخل صفحات المينو */
     html.ios-inbrowser:not(.ios-standalone) .pf-brand-strip,
     html.ios-inbrowser:not(.ios-standalone) #header .logo{display:none!important;}
     html.ios-inbrowser:not(.ios-standalone):not(.coach-locked) .cover-brand-banner,
@@ -1028,13 +1028,13 @@
     .guest-empty-hint-txt strong{color:#2e7d32;font-weight:900;}
     html.coach-locked .guest-empty-hint,
     html.orders-active .guest-empty-hint{display:none!important;}
-    /* Android/Samsung: swipe + tap hints already on bottom bar â€” hide top banner */
+    /* Android/Samsung: swipe + tap hints already on bottom bar — hide top banner */
     html:not(.ios-inbrowser) #guestEmptyHint,
     html:not(.ios-inbrowser) .guest-empty-hint,
     html:not(.ios-inbrowser) #menuTopOrders.guest-hint-only{
       display:none!important;
     }
-    /* Android/Samsung: selected orders â€” 2 items per row, grow to 6 rows / category bar */
+    /* Android/Samsung: selected orders — 2 items per row, grow to 6 rows / category bar */
     html:not(.ios-inbrowser) #menuTopOrders .order-chip-list{
       --order-line-h:32px;
       --orders-rows-cap:6;
@@ -1130,7 +1130,7 @@
       visibility:visible!important;
       pointer-events:auto!important;
     }
-    /* Brand flips with the page â€” do not force-hide on flip */
+    /* Brand flips with the page — do not force-hide on flip */
     html.page-flipping .pw{
       transition:none!important;
     }
@@ -1253,7 +1253,7 @@
       left:0;
       right:0;
       z-index:880;
-      /* Pack logo+cats under HUD â€” no empty letterbox above the banner */
+      /* Pack logo+cats under HUD — no empty letterbox above the banner */
       top:var(--menu-chrome-top, max(0px, calc(var(--menu-img-top, 0px) - var(--menu-top-dock-h, 44px))));
       display:none;
       flex-direction:column;
@@ -1282,7 +1282,7 @@
       z-index:0;
       min-height:var(--logo-strip-h, 48px);
       background-color:#1a120c;
-      background-image:url("https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/table/assets/tonino-brand.jpg?v=159");
+      background-image:url("https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/table/assets/tonino-brand.jpg?v=158");
       background-repeat:no-repeat;
       background-position:center center;
       background-size:contain;
@@ -1300,7 +1300,7 @@
       user-select:none;
       -webkit-user-drag:none;
     }
-    /* Orders fold the dock logo â€” categories stay put */
+    /* Orders fold the dock logo — categories stay put */
     html.orders-cover-logo #menuBrandDock{
       max-height:0!important;
       opacity:0!important;
@@ -1339,7 +1339,7 @@
     }
     html.page-flipping .pf-overlay{visibility:hidden!important;}
     .pf-cat-strip{display:none!important;}
-    /* Page logo only while flipping â€” static logo is #menuBrandDock above categories */
+    /* Page logo only while flipping — static logo is #menuBrandDock above categories */
     .pf-brand-strip{
       display:none;
       position:absolute;
@@ -1500,12 +1500,12 @@
     }
     #guestOrderChip.orders-folded .order-chip-list{display:none;}
     #guestOrderChip.orders-folded .order-chip-head-btn::after{
-      content:" â–¾";
+      content:" ▾";
       color:#c8860a;
       font-weight:900;
     }
     #guestOrderChip.orders-expanded .order-chip-head-btn::after{
-      content:" â–´";
+      content:" ▴";
       color:#c8860a;
       font-weight:900;
     }
@@ -2464,7 +2464,7 @@
       color:#4a3420;
     }
     .cover-welcome-pitches li::before{
-      content:"âœ¦";
+      content:"✦";
       position:absolute;
       inset-inline-start:0;top:0;
       color:#b87200;font-size:11px;
@@ -2667,7 +2667,7 @@
       color:#1a0a00;
       text-align:center;
       line-height:1.15;
-      /* Same anchor as editor marker â€” center of placed point */
+      /* Same anchor as editor marker — center of placed point */
       transform:translate(-50%,-50%);
     }
     .daily-soup-tag.is-empty{
@@ -2780,7 +2780,7 @@
       cursor:pointer;
     }
     .dd-continue:active{transform:scale(.98);}
-    /* Daily dish â€” secondary book page (logo + price, no category groups) */
+    /* Daily dish — secondary book page (logo + price, no category groups) */
     .pf.book-daily-dish{
       background:linear-gradient(180deg,#fff8e8 0%,#f5e0b0 42%,#ebe4d3 100%);
       color:#1a0a00;
@@ -2870,7 +2870,7 @@
     .dd-page-hint .page-swipe-finger-hint{
       margin:0 auto;opacity:1;
     }
-    /* Daily dish â€” photo raised; explanation + CTA in bottom panel */
+    /* Daily dish — photo raised; explanation + CTA in bottom panel */
     .pf.book-daily-dish.book-daily-poster{
       padding:0;overflow:hidden;
       background:linear-gradient(180deg,#1a1208 0%,#2a1a0c 100%);
@@ -3280,7 +3280,7 @@
     #lineNoteInp::placeholder{color:rgba(74,44,0,.55);font-weight:500;}
     #lineNoteInp:focus{outline:none;border-color:#c8860a;box-shadow:0 0 0 3px rgba(200,134,10,.2);}
     .order-chip-line.has-note .order-chip-name::after{
-      content:" âœ";
+      content:" ✎";
       color:#8a5a08;
       font-size:.9em;
     }
@@ -3684,35 +3684,35 @@
 </head>
 <body>
   <div id="orientLock" aria-hidden="true">
-    <div style="font-size:42px;line-height:1" aria-hidden="true">ğŸ“±</div>
-    <p id="i18n-orientLock">Ø£Ø¨Ù‚Ù Ø§Ù„Ù‡Ø§ØªÙ Ø¹Ù…ÙˆØ¯ÙŠØ§Ù‹ Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù…ÙŠÙ†Ùˆ</p>
+    <div style="font-size:42px;line-height:1" aria-hidden="true">📱</div>
+    <p id="i18n-orientLock">أبقِ الهاتف عمودياً لاستخدام المينو</p>
   </div>
 
   <div id="iosInstallSheet" aria-hidden="true" role="dialog" aria-labelledby="i18n-iosInstallTitle">
     <div class="ios-install-card ios-install-simple">
-      <div class="ios-install-badge">ğŸ“² iPhone</div>
-      <h2 class="ios-install-title" id="i18n-iosInstallTitle">Ù„ØªØ¬Ø±Ø¨Ø© Ø£ÙØ¶Ù„ Ø¹Ù„Ù‰ iPhone</h2>
-      <p class="ios-install-simple-txt" id="i18n-iosInstallSimple">Ø§Ø¶ØºØ· â–¡â†‘ Ø«Ù… Â«Add to Home Screen / Ø£Ø¶Ù Ø¥Ù„Ù‰ Ø§Ù„Ø´Ø§Ø´Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©Â»</p>
-      <p class="ios-install-note" id="i18n-iosInstallNote">Ù…Ø±Ø© ÙˆØ§Ø­Ø¯Ø© ÙÙ‚Ø· â€” Ø«Ù… Ø§ÙØªØ­ Ø§Ù„Ù…ÙŠÙ†Ùˆ Ù…Ù† Ø§Ù„Ø£ÙŠÙ‚ÙˆÙ†Ø© Ø¨Ø´Ø§Ø´Ø© ÙƒØ§Ù…Ù„Ø©.</p>
+      <div class="ios-install-badge">📲 iPhone</div>
+      <h2 class="ios-install-title" id="i18n-iosInstallTitle">لتجربة أفضل على iPhone</h2>
+      <p class="ios-install-simple-txt" id="i18n-iosInstallSimple">اضغط □↑ ثم «Add to Home Screen / أضف إلى الشاشة الرئيسية»</p>
+      <p class="ios-install-note" id="i18n-iosInstallNote">مرة واحدة فقط — ثم افتح المينو من الأيقونة بشاشة كاملة.</p>
       <div class="ios-install-actions">
-        <button type="button" class="ios-install-primary" id="iosInstallContinue">Tamam â€” menÃ¼ye geÃ§</button>
-        <button type="button" class="ios-install-secondary" id="iosInstallLater">Atla â€” menÃ¼ye geÃ§</button>
+        <button type="button" class="ios-install-primary" id="iosInstallContinue">Tamam — menüye geç</button>
+        <button type="button" class="ios-install-secondary" id="iosInstallLater">Atla — menüye geç</button>
       </div>
     </div>
   </div>
 
-  <button type="button" id="iosCompactTip" aria-hidden="true">â–¡â†‘ PaylaÅŸ â†’ Ana Ekrana Ekle (tam ekran)</button>
+  <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">Ø¬Ø§Ø±ÙŠ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù…ÙŠÙ†Ùˆâ€¦</p><p id="i18n-load-sub">ØµÙØ­Ø§Øª Ø§Ù„ÙƒØªØ§Ø¨ Ø§Ù„Ø­Ù‚ÙŠÙ‚ÙŠ</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v158</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v159</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
-      <p class="dd-kicker" id="ddKicker">Ø§Ù„ÙŠÙˆÙ…</p>
-      <h1 class="dd-title" id="ddTitle">Ø§Ù„Ø·Ø¨Ù‚ Ø§Ù„ÙŠÙˆÙ…ÙŠ</h1>
+      <p class="dd-kicker" id="ddKicker">اليوم</p>
+      <h1 class="dd-title" id="ddTitle">الطبق اليومي</h1>
       <ul class="dd-list" id="ddList"></ul>
       <p class="dd-price" id="ddPrice" hidden></p>
       <div class="dd-actions">
-        <button type="button" class="dd-order" id="ddOrder">Ø§Ø®ØªØ± Ù‡Ø°Ø§ Ø§Ù„Ø·Ø¨Ù‚</button>
-        <button type="button" class="dd-to-menu" id="ddContinue" title="Ø§Ù„Ù…ÙŠÙ†Ùˆ">â†’</button>
+        <button type="button" class="dd-order" id="ddOrder">اختر هذا الطبق</button>
+        <button type="button" class="dd-to-menu" id="ddContinue" title="المينو">→</button>
       </div>
     </div>
   </div>
@@ -3720,28 +3720,28 @@
   <div id="okScreen">
     <div>
       <div class="ok-ring"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c8860a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h2 style="font-size:19px;margin-bottom:8px" id="i18n-ok-title">Ø´ÙƒØ±Ø§Ù‹! âœ“</h2>
+      <h2 style="font-size:19px;margin-bottom:8px" id="i18n-ok-title">شكراً! ✓</h2>
       <p id="okDetail" style="font-size:13px;color:rgba(200,134,10,.65);line-height:1.6"></p>
       <div class="ok-feedback" id="okFeedbackBox">
-        <p class="ok-feedback-text" id="i18n-ok-feedback">Ø±Ø£ÙŠÙƒ ÙŠÙ‡Ù…Ù‘Ù†Ø§ â€” Ø¥Ù† ÙƒØ§Ù† Ù„Ø¯ÙŠÙƒ Ù…Ù„Ø§Ø­Ø¸Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø®Ø¯Ù…Ø© Ø£Ùˆ Ø´ÙƒÙˆÙ‰ØŒ Ø³Ø§Ø¹Ø¯Ù†Ø§ Ù„Ù†Ø­Ø³Ù‘Ù† Ø£Ø¯Ø§Ø¡ Ø§Ù„Ù…Ø·Ø¹Ù….</p>
-        <button type="button" class="ok-feedback-btn" id="okFeedbackOpen">Ø´Ø§Ø±ÙƒÙ†Ø§ Ø±Ø£ÙŠÙƒ</button>
+        <p class="ok-feedback-text" id="i18n-ok-feedback">رأيك يهمّنا — إن كان لديك ملاحظة على الخدمة أو شكوى، ساعدنا لنحسّن أداء المطعم.</p>
+        <button type="button" class="ok-feedback-btn" id="okFeedbackOpen">شاركنا رأيك</button>
         <div class="ok-feedback-form" id="okFeedbackForm">
-          <div class="ok-feedback-stars" id="okFeedbackStars" aria-label="ØªÙ‚ÙŠÙŠÙ…">
-            <button type="button" data-star="1" aria-label="1">â˜…</button>
-            <button type="button" data-star="2" aria-label="2">â˜…</button>
-            <button type="button" data-star="3" aria-label="3">â˜…</button>
-            <button type="button" data-star="4" aria-label="4">â˜…</button>
-            <button type="button" data-star="5" aria-label="5">â˜…</button>
+          <div class="ok-feedback-stars" id="okFeedbackStars" aria-label="تقييم">
+            <button type="button" data-star="1" aria-label="1">★</button>
+            <button type="button" data-star="2" aria-label="2">★</button>
+            <button type="button" data-star="3" aria-label="3">★</button>
+            <button type="button" data-star="4" aria-label="4">★</button>
+            <button type="button" data-star="5" aria-label="5">★</button>
           </div>
-          <textarea id="okFeedbackMsg" rows="3" maxlength="500" placeholder="Ø§ÙƒØªØ¨ Ù…Ù„Ø§Ø­Ø¸ØªÙƒ Ø£Ùˆ Ø´ÙƒÙˆØ§Ùƒ Ù‡Ù†Ø§â€¦"></textarea>
-          <button type="button" class="ok-feedback-send" id="okFeedbackSend">Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…</button>
-          <p class="ok-feedback-thanks" id="okFeedbackThanks">Ø´ÙƒØ±Ø§Ù‹ Ù„Ù…Ø³Ø§Ø¹Ø¯ØªÙƒ â€” ÙˆØµÙ„Ù†Ø§ Ø±Ø£ÙŠÙƒ.</p>
+          <textarea id="okFeedbackMsg" rows="3" maxlength="500" placeholder="اكتب ملاحظتك أو شكواك هنا…"></textarea>
+          <button type="button" class="ok-feedback-send" id="okFeedbackSend">إرسال التقييم</button>
+          <p class="ok-feedback-thanks" id="okFeedbackThanks">شكراً لمساعدتك — وصلنا رأيك.</p>
         </div>
       </div>
-      <p id="i18n-ok-ask" style="font-size:14px;color:rgba(240,168,32,.85);margin-top:14px;font-weight:700">Ù‡Ù„ Ù„Ø¯ÙŠÙƒ Ø·Ù„Ø¨ Ø¥Ø¶Ø§ÙÙŠØŸ</p>
+      <p id="i18n-ok-ask" style="font-size:14px;color:rgba(240,168,32,.85);margin-top:14px;font-weight:700">هل لديك طلب إضافي؟</p>
       <div class="ok-actions">
-        <button type="button" class="order-btn" id="againBtn">Ø·Ù„Ø¨ Ø¥Ø¶Ø§ÙÙŠ</button>
-        <button type="button" class="order-btn ok-btn-exit" id="exitBtn">Ø®Ø±ÙˆØ¬</button>
+        <button type="button" class="order-btn" id="againBtn">طلب إضافي</button>
+        <button type="button" class="order-btn ok-btn-exit" id="exitBtn">خروج</button>
       </div>
     </div>
   </div>
@@ -3749,27 +3749,27 @@
   <div id="header">
     <div class="logo"><span id="shopLabel">ZEKiQ</span><span class="tbl" id="tblLabel"></span></div>
     <div class="pg-num"><bdi id="pgnum" dir="ltr">1 / 1</bdi></div>
-    <button type="button" class="list-btn" id="menuListBtn">ğŸ“‹ Ù‚Ø§Ø¦Ù…Ø©</button>
-    <button type="button" class="cart-btn" id="cartBtn">ğŸ›’ <span class="cbadge" id="cbadge">0</span><span class="cart-sum" id="cartSum"></span></button>
+    <button type="button" class="list-btn" id="menuListBtn">📋 قائمة</button>
+    <button type="button" class="cart-btn" id="cartBtn">🛒 <span class="cbadge" id="cbadge">0</span><span class="cart-sum" id="cartSum"></span></button>
   </div>
   <div id="immersiveCartStrip" aria-live="polite"></div>
 
   <div id="scene">
     <div id="sceneHud">
       <div class="hud-row">
-        <button type="button" class="scene-hud-btn scene-hud-list" id="sceneMenuBtn" onclick="return window.__zekiqOpenMenu&&window.__zekiqOpenMenu(event)"><span id="i18n-sceneMenuBtn">ğŸ“‹ Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©</span></button>
-        <button type="button" class="scene-hud-btn scene-hud-ios" id="sceneIosInstallBtn" title="Ù…Ù„Ø¡ Ø§Ù„Ø´Ø§Ø´Ø©" onclick="window.__zekiqShowIosInstall&&window.__zekiqShowIosInstall(true);return false;">ğŸ“²</button>
+        <button type="button" class="scene-hud-btn scene-hud-list" id="sceneMenuBtn" onclick="return window.__zekiqOpenMenu&&window.__zekiqOpenMenu(event)"><span id="i18n-sceneMenuBtn">📋 القائمة</span></button>
+        <button type="button" class="scene-hud-btn scene-hud-ios" id="sceneIosInstallBtn" title="ملء الشاشة" onclick="window.__zekiqShowIosInstall&&window.__zekiqShowIosInstall(true);return false;">📲</button>
         <div class="scene-hud-center">
           <div class="scene-hud-shop" id="sceneHudShop">ZEKiQ</div>
-          <div class="scene-hud-table" id="sceneHudTable">ğŸª‘ Ø·Ø§ÙˆÙ„Ø© â€”</div>
+          <div class="scene-hud-table" id="sceneHudTable">🪑 طاولة —</div>
         </div>
-        <button type="button" class="scene-hud-send is-empty" id="sceneSendBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneSendBtn">Ø¥Ø±Ø³Ø§Ù„ âœ“</span><span class="send-badge" id="sceneSendBadge" hidden>0</span></button>
+        <button type="button" class="scene-hud-send is-empty" id="sceneSendBtn" onclick="return window.__zekiqOpenCart&&window.__zekiqOpenCart(event)"><span id="i18n-sceneSendBtn">إرسال ✓</span><span class="send-badge" id="sceneSendBadge" hidden>0</span></button>
       </div>
     </div>
     <div id="menuStage">
       <div id="menuTopOrders">
         <div id="guestEmptyHint" class="guest-empty-hint" aria-live="polite">
-          <span class="guest-empty-finger" aria-hidden="true">ğŸ‘†</span>
+          <span class="guest-empty-finger" aria-hidden="true">👆</span>
           <span class="guest-empty-hint-txt" id="i18n-tapPlusHint"></span>
         </div>
         <div id="guestOrderChip">
@@ -3778,7 +3778,7 @@
               <button type="button" class="order-chip-head-btn" id="sceneOrderBtn">
                 <div class="order-chip-head" id="sceneOrderSummary"></div>
               </button>
-              <button type="button" class="order-chip-send is-empty" id="topOrderSendBtn"><span id="i18n-topOrderSend">Ø¥Ø±Ø³Ø§Ù„ âœ“</span></button>
+              <button type="button" class="order-chip-send is-empty" id="topOrderSendBtn"><span id="i18n-topOrderSend">إرسال ✓</span></button>
             </div>
             <div class="order-chip-list" id="sceneOrderList"></div>
           </div>
@@ -3786,8 +3786,8 @@
       </div>
       <div id="menuOrderDock">
         <div id="guestGuide" class="guest-guide">
-          <div class="guide-step" id="i18n-guide1"><span class="guide-n">1</span> Ø§Ø¶ØºØ· <strong>+</strong> Ø§Ù„Ø£Ø®Ø¶Ø± Ø¹Ù„Ù‰ Ø§Ù„ØµÙˆØ±Ø©</div>
-          <div class="guide-step" id="i18n-guide2"><span class="guide-n">2</span> Ø«Ù… <strong>Ø¥Ø±Ø³Ø§Ù„</strong> Ù„Ù„ØªØ£ÙƒÙŠØ¯</div>
+          <div class="guide-step" id="i18n-guide1"><span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة</div>
+          <div class="guide-step" id="i18n-guide2"><span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد</div>
         </div>
       </div>
       <div id="menuBookWrap">
@@ -3796,34 +3796,34 @@
       <div id="menuBrandDock" aria-hidden="true">
         <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/table/assets/tonino-brand.jpg?v=159" />
       </div>
-      <div id="menuCategoryBar" aria-label="Ø£Ù‚Ø³Ø§Ù… Ø§Ù„Ù…ÙŠÙ†Ùˆ">
+      <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
       </div>
       </div>
       <div id="book"></div>
       </div>
-      <div id="pageSwipeBar" aria-live="polite" aria-label="Ø§Ø³Ø­Ø¨ Ù„Ù‚Ù„Ø¨ Ø§Ù„ØµÙØ­Ø©">
+      <div id="pageSwipeBar" aria-live="polite" aria-label="اسحب لقلب الصفحة">
         <div class="swipe-foot-panel">
           <div id="tableFootBadge" aria-live="polite" hidden>
             <span class="table-foot-section" id="tableFootSection"></span>
-            <span class="table-foot-label" id="tableFootLabel">Ø·Ø§ÙˆÙ„Ø©</span>
-            <bdi class="table-foot-num" id="tableFootNum" dir="ltr">â€”</bdi>
+            <span class="table-foot-label" id="tableFootLabel">طاولة</span>
+            <bdi class="table-foot-num" id="tableFootNum" dir="ltr">—</bdi>
           </div>
           <div class="swipe-hint">
             <div class="swipe-hint-block">
               <div class="swipe-hint-mid">
-                <span class="swipe-hand" aria-hidden="true">ğŸ‘†</span>
-                <p class="swipe-hint-text" id="i18n-swipeHint">Ø§Ø³Ø­Ø¨ Ù„Ù‚Ù„Ø¨ Ø§Ù„Ø´Ø§Ø´Ø©</p>
+                <span class="swipe-hand" aria-hidden="true">👆</span>
+                <p class="swipe-hint-text" id="i18n-swipeHint">اسحب لقلب الشاشة</p>
               </div>
               <div class="swipe-arrow-track" aria-hidden="true">
                 <div class="swipe-track-slide">
-                  <span class="swipe-track-chev lit left">â€¹</span>
-                  <span class="swipe-track-chev lit left delay-1">â€¹</span>
-                  <span class="swipe-track-chev lit right delay-2">â€º</span>
-                  <span class="swipe-track-chev lit right delay-3">â€º</span>
+                  <span class="swipe-track-chev lit left">‹</span>
+                  <span class="swipe-track-chev lit left delay-1">‹</span>
+                  <span class="swipe-track-chev lit right delay-2">›</span>
+                  <span class="swipe-track-chev lit right delay-3">›</span>
                 </div>
               </div>
-              <p class="swipe-order-hint" id="i18n-railOrderHint">Ø§Ø¶ØºØ· + Ø§Ù„Ø£Ø®Ø¶Ø± Ø¹Ù„Ù‰ Ø§Ù„ØµÙˆØ±Ø© Ù„Ù„Ø·Ù„Ø¨</p>
+              <p class="swipe-order-hint" id="i18n-railOrderHint">اضغط + الأخضر على الصورة للطلب</p>
               <bdi class="swipe-page-num" id="swipePgnum" dir="ltr">1 / 1</bdi>
             </div>
           </div>
@@ -3832,17 +3832,17 @@
       </div>
     </div>
     <div id="nav" hidden aria-hidden="true">
-      <button type="button" class="nav-arrow" id="prevBtn" tabindex="-1"><span class="nav-label" id="i18n-prev">â—€ Ø§Ù„Ø³Ø§Ø¨Ù‚</span></button>
+      <button type="button" class="nav-arrow" id="prevBtn" tabindex="-1"><span class="nav-label" id="i18n-prev">◀ السابق</span></button>
       <div class="nav-pg"><bdi id="navPgnum" dir="ltr">1 / 1</bdi></div>
-      <button type="button" class="nav-arrow" id="nextBtn" tabindex="-1"><span class="nav-label" id="i18n-next">Ø§Ù„ØªØ§Ù„ÙŠ â–¶</span></button>
+      <button type="button" class="nav-arrow" id="nextBtn" tabindex="-1"><span class="nav-label" id="i18n-next">التالي ▶</span></button>
       <div id="thumbs" aria-hidden="true"></div>
     </div>
   </div>
-  <div id="fsHint" aria-hidden="true"><span id="i18n-fsHint">ğŸ‘† Ø§Ø¶ØºØ· Ø¹Ù„Ù‰ Ø§Ù„Ù…ÙŠÙ†Ùˆ Ù„Ù…Ù„Ø¡ Ø§Ù„Ø´Ø§Ø´Ø©</span></div>
+  <div id="fsHint" aria-hidden="true"><span id="i18n-fsHint">👆 اضغط على المينو لملء الشاشة</span></div>
 
   <div id="pageDock">
     <div class="dock-head">
-      <div class="dock-title"><span id="dockTitle">Ø§Ø·Ù„Ø¨ Ù…Ù† Ù‡Ø°Ù‡ Ø§Ù„ØµÙØ­Ø©</span><div class="dock-sub" id="dockSub">Ø§Ù„Ø³Ø¹Ø± Ø§Ù„ØªÙØ§Ø¹Ù„ÙŠ Ø§Ù„Ø°Ù‡Ø¨ÙŠ Â· Ø§Ø¶ØºØ· Ù„Ù„Ø·Ù„Ø¨</div></div>
+      <div class="dock-title"><span id="dockTitle">اطلب من هذه الصفحة</span><div class="dock-sub" id="dockSub">السعر التفاعلي الذهبي · اضغط للطلب</div></div>
       <span class="dock-badge" id="dockCount">0</span>
     </div>
     <div id="dockList"></div>
@@ -3852,111 +3852,111 @@
 
   <div id="coach">
     <div id="coach-card">
-      <h2 id="i18n-coach-title">ÙƒÙŠÙ ØªØ·Ù„Ø¨ØŸ</h2>
-      <div class="coach-step"><span class="coach-num">1</span><span id="i18n-coach-1">ØªØµÙÙ‘Ø­ <strong>Ø§Ù„Ù…ÙŠÙ†Ùˆ</strong> â€” Ø§Ø³Ø­Ø¨ ÙŠÙ…ÙŠÙ†Ø§Ù‹ Ø£Ùˆ ÙŠØ³Ø§Ø±Ø§Ù‹ Ø¹Ù„Ù‰ Ø§Ù„ØµÙˆØ±Ø© Ù„Ù‚Ù„Ø¨ Ø§Ù„ØµÙØ­Ø©</span></div>
-      <div class="coach-step"><span class="coach-num">2</span><span id="i18n-coach-2">Ø§Ø¶ØºØ· <strong>+ Ø§Ù„Ø£Ø®Ø¶Ø±</strong> Ø¹Ù„Ù‰ Ø§Ù„ØµÙˆØ±Ø© Ù„Ø¥Ø¶Ø§ÙØ© Ø·Ø¹Ø§Ù…</span></div>
-      <div class="coach-step"><span class="coach-num">3</span><span id="i18n-coach-3">Ø§Ø¶ØºØ· <strong>Ø¥Ø±Ø³Ø§Ù„</strong> ÙÙŠ Ø§Ù„Ø£Ø¹Ù„Ù‰ â†’ Ø±Ø§Ø¬Ø¹ Ø§Ù„Ø³Ù„Ø© â†’ <strong>ØªØ£ÙƒÙŠØ¯ ÙˆØ¥Ø±Ø³Ø§Ù„</strong></span></div>
-      <div class="coach-step"><span class="coach-num">4</span><span id="i18n-coach-4">ÙÙŠ Ø§Ù„Ø³Ù„Ø© ÙŠÙ…ÙƒÙ†Ùƒ ÙƒØªØ§Ø¨Ø© <strong>Ù…Ù„Ø§Ø­Ø¸Ø© ÙˆØ§Ø¶Ø­Ø©</strong> ØªØ­Øª ÙƒÙ„ ØµÙ†Ù Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ø±Ø³Ø§Ù„</span></div>
-      <button type="button" id="coachOk">ÙÙ‡Ù…Øª â€” Ø§Ø¨Ø¯Ø£ Ø§Ù„Ø·Ù„Ø¨ âœ“</button>
+      <h2 id="i18n-coach-title">كيف تطلب؟</h2>
+      <div class="coach-step"><span class="coach-num">1</span><span id="i18n-coach-1">تصفّح <strong>المينو</strong> — اسحب يميناً أو يساراً على الصورة لقلب الصفحة</span></div>
+      <div class="coach-step"><span class="coach-num">2</span><span id="i18n-coach-2">اضغط <strong>+ الأخضر</strong> على الصورة لإضافة طعام</span></div>
+      <div class="coach-step"><span class="coach-num">3</span><span id="i18n-coach-3">اضغط <strong>إرسال</strong> في الأعلى → راجع السلة → <strong>تأكيد وإرسال</strong></span></div>
+      <div class="coach-step"><span class="coach-num">4</span><span id="i18n-coach-4">في السلة يمكنك كتابة <strong>ملاحظة واضحة</strong> تحت كل صنف قبل الإرسال</span></div>
+      <button type="button" id="coachOk">فهمت — ابدأ الطلب ✓</button>
     </div>
   </div>
 
 
   <div id="item-popup">
     <div id="popup-card">
-      <span class="popup-emoji" id="p-emoji">ğŸ½</span>
+      <span class="popup-emoji" id="p-emoji">🍽</span>
       <div class="popup-name" id="p-name"></div>
       <div class="popup-cat" id="p-cat"></div>
       <div class="popup-price" id="p-price"></div>
       <div id="popup-sugar" hidden>
-        <div class="popup-sugar-title" id="popupSugarTitle">Ø§Ø®ØªØ± Ù…Ø³ØªÙˆÙ‰ Ø§Ù„Ø³ÙƒØ±</div>
+        <div class="popup-sugar-title" id="popupSugarTitle">اختر مستوى السكر</div>
         <div class="popup-sugar-opts">
-          <button type="button" class="sugar-opt" data-sugar="sade">Ø³Ø§Ø¯Ø©</button>
-          <button type="button" class="sugar-opt" data-sugar="orta">ÙˆØ³Ø· Ø³ÙƒØ±</button>
-          <button type="button" class="sugar-opt" data-sugar="sekerli">Ø³ÙƒØ± ÙƒØ§Ù…Ù„</button>
+          <button type="button" class="sugar-opt" data-sugar="sade">سادة</button>
+          <button type="button" class="sugar-opt" data-sugar="orta">وسط سكر</button>
+          <button type="button" class="sugar-opt" data-sugar="sekerli">سكر كامل</button>
         </div>
       </div>
       <div class="popup-qty">
-        <button type="button" class="qty-btn" id="pqDec">âˆ’</button>
+        <button type="button" class="qty-btn" id="pqDec">−</button>
         <span class="qty-num" id="p-qty">1</span>
         <button type="button" class="qty-btn" id="pqInc">+</button>
       </div>
       <div class="popup-actions">
-        <button type="button" class="popup-close" id="popupClose">Ø¥Ù„ØºØ§Ø¡</button>
-        <button type="button" class="popup-add" id="popupAdd">Ø£Ø¶Ù Ù„Ù„Ø³Ù„Ø©</button>
+        <button type="button" class="popup-close" id="popupClose">إلغاء</button>
+        <button type="button" class="popup-add" id="popupAdd">أضف للسلة</button>
       </div>
     </div>
   </div>
 
   <div id="line-note-sheet" aria-hidden="true">
     <div class="line-note-card">
-      <div class="line-note-title" id="lineNoteTitle">Ù…Ù„Ø§Ø­Ø¸Ø© Ù„Ù„ØµÙ†Ù</div>
+      <div class="line-note-title" id="lineNoteTitle">ملاحظة للصنف</div>
       <div class="line-note-sub" id="lineNoteItemName"></div>
-      <textarea id="lineNoteInp" rows="3" maxlength="120" placeholder="Ù…Ù„Ø§Ø­Ø¸Ø© Ù„Ù‡Ø°Ø§ Ø§Ù„ØµÙ†Ù (Ø¨Ø¯ÙˆÙ† Ø¨ØµÙ„ØŒ Ù†ØµÙ Ù…Ø­Ù…Øµâ€¦)"></textarea>
+      <textarea id="lineNoteInp" rows="3" maxlength="120" placeholder="ملاحظة لهذا الصنف (بدون بصل، نصف محمص…)"></textarea>
       <div class="popup-actions">
-        <button type="button" class="popup-close" id="lineNoteCancel">Ø¥Ù„ØºØ§Ø¡</button>
-        <button type="button" class="popup-add" id="lineNoteSave">ØªÙ…</button>
+        <button type="button" class="popup-close" id="lineNoteCancel">إلغاء</button>
+        <button type="button" class="popup-add" id="lineNoteSave">تم</button>
       </div>
     </div>
   </div>
 
   <div id="ice-cream-sheet" aria-hidden="true">
     <div class="ice-sheet-card">
-      <div class="ice-sheet-title" id="iceSheetTitle">Ø§Ù„Ø¨ÙˆØ¸Ø©</div>
+      <div class="ice-sheet-title" id="iceSheetTitle">البوظة</div>
       <div class="ice-sheet-list" id="iceSheetList"></div>
-      <button type="button" class="ice-sheet-add-serving" id="iceAddServingBtn">+ Ø£Ø¶Ù ÙƒØ§Ø³Ø© Ø£Ø®Ø±Ù‰</button>
+      <button type="button" class="ice-sheet-add-serving" id="iceAddServingBtn">+ أضف كاسة أخرى</button>
       <div class="ice-sheet-total" id="iceSheetTotal"></div>
       <div class="popup-actions">
-        <button type="button" class="popup-close" id="iceSheetCancel">Ø¥Ù„ØºØ§Ø¡</button>
-        <button type="button" class="popup-add" id="iceSheetConfirm">Ø£Ø¶Ù Ù„Ù„Ø·Ù„Ø¨</button>
+        <button type="button" class="popup-close" id="iceSheetCancel">إلغاء</button>
+        <button type="button" class="popup-add" id="iceSheetConfirm">أضف للطلب</button>
       </div>
     </div>
   </div>
 
   <div id="daily-dish-sheet" aria-hidden="true">
     <div class="ice-sheet-card">
-      <div class="ice-sheet-title" id="ddSheetTitle">Ø§Ù„Ø·Ø¨Ù‚ Ø§Ù„ÙŠÙˆÙ…ÙŠ</div>
+      <div class="ice-sheet-title" id="ddSheetTitle">الطبق اليومي</div>
       <div class="ice-sheet-list" id="ddSheetList"></div>
       <div class="dd-sheet-note-wrap">
-        <label class="dd-sheet-note-label" id="ddSheetNoteLabel" for="ddSheetNote">Ù…Ù„Ø§Ø­Ø¸Ø© Ù„Ù„Ø·Ø¨Ù‚</label>
-        <textarea id="ddSheetNote" class="dd-sheet-note" rows="2" maxlength="120" placeholder="Ù…Ø«Ø§Ù„: Ø¨Ø¯ÙˆÙ† Ø³Ù„Ø·Ø©ØŒ Ø²ÙŠØ§Ø¯Ø© Ø£Ø±Ø²â€¦"></textarea>
+        <label class="dd-sheet-note-label" id="ddSheetNoteLabel" for="ddSheetNote">ملاحظة للطبق</label>
+        <textarea id="ddSheetNote" class="dd-sheet-note" rows="2" maxlength="120" placeholder="مثال: بدون سلطة، زيادة أرز…"></textarea>
       </div>
       <div class="popup-actions">
-        <button type="button" class="popup-close" id="ddSheetCancel">Ø¥Ù„ØºØ§Ø¡</button>
-        <button type="button" class="popup-add" id="ddSheetConfirm">Ø£Ø¶Ù Ù„Ù„Ø·Ù„Ø¨</button>
+        <button type="button" class="popup-close" id="ddSheetCancel">إلغاء</button>
+        <button type="button" class="popup-add" id="ddSheetConfirm">أضف للطلب</button>
       </div>
     </div>
   </div>
 
   <div id="dd-week-sheet" aria-hidden="true">
     <div class="ice-sheet-card">
-      <div class="ice-sheet-title" id="ddWeekTitle">Ø£Ø·Ø¨Ø§Ù‚ Ù‡Ø°Ø§ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹</div>
+      <div class="ice-sheet-title" id="ddWeekTitle">أطباق هذا الأسبوع</div>
       <p class="dd-week-sub" id="ddWeekSub"></p>
       <div class="dd-week-list" id="ddWeekList"></div>
       <div class="popup-actions">
-        <button type="button" class="popup-close" id="ddWeekClose">Ø¥ØºÙ„Ø§Ù‚</button>
+        <button type="button" class="popup-close" id="ddWeekClose">إغلاق</button>
       </div>
     </div>
   </div>
 
   <div id="menu-panel">
     <div class="menu-hd">
-      <div><div class="menu-title" id="i18n-menu-title">ğŸ“‹ Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø£Ø·Ø¨Ø§Ù‚</div><div class="menu-sub" id="i18n-menu-sub">Ø§Ø¨Ø­Ø« ÙˆØ§Ø·Ù„Ø¨ Ù…Ù† Ø£ÙŠ ØµÙØ­Ø©</div></div>
-      <button type="button" class="close-c" id="closeMenuList">Ã—</button>
+      <div><div class="menu-title" id="i18n-menu-title">📋 قائمة الأطباق</div><div class="menu-sub" id="i18n-menu-sub">ابحث واطلب من أي صفحة</div></div>
+      <button type="button" class="close-c" id="closeMenuList">×</button>
     </div>
-    <input type="search" id="menuSearch" placeholder="Ø§Ø¨Ø­Ø«â€¦ TÃ¼rk kahve, menemen, pastaâ€¦" autocomplete="off" enterkeyhint="search" />
+    <input type="search" id="menuSearch" placeholder="ابحث… Türk kahve, menemen, pasta…" autocomplete="off" enterkeyhint="search" />
     <div id="menu-list"></div>
   </div>
 
   <div id="cart-panel">
     <div class="cart-hd">
-      <div><div class="cart-title" id="i18n-cart-title">Ø±Ø§Ø¬Ø¹ Ø·Ù„Ø¨Ùƒ</div><div class="menu-sub" style="margin-top:2px" id="i18n-cart-sub">Ø¹Ø¯Ù‘Ù„ Ø§Ù„ÙƒÙ…ÙŠØ© ÙˆØ£Ø¶Ù Ù…Ù„Ø§Ø­Ø¸Ø© ØªØ­Øª ÙƒÙ„ ØµÙ†Ù</div></div>
-      <button type="button" class="close-c" id="closeCart">Ã—</button>
+      <div><div class="cart-title" id="i18n-cart-title">راجع طلبك</div><div class="menu-sub" style="margin-top:2px" id="i18n-cart-sub">عدّل الكمية وأضف ملاحظة تحت كل صنف</div></div>
+      <button type="button" class="close-c" id="closeCart">×</button>
     </div>
     <div id="cart-items"></div>
     <div class="cart-ft">
-      <div class="total-row"><span id="i18n-cart-total-label">Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹</span><span class="tv" id="total">0 â‚º</span></div>
-      <button type="button" class="order-btn" id="sendBtn">âœ“ ØªØ£ÙƒÙŠØ¯ ÙˆØ¥Ø±Ø³Ø§Ù„ Ù„Ù„Ù…Ø·Ø¨Ø®</button>
+      <div class="total-row"><span id="i18n-cart-total-label">المجموع</span><span class="tv" id="total">0 ₺</span></div>
+      <button type="button" class="order-btn" id="sendBtn">✓ تأكيد وإرسال للمطبخ</button>
     </div>
   </div>
   <div id="overlay"></div>
@@ -3972,370 +3972,370 @@
   </script>
   <script>
 /**
- * Customer QR table page â€” UI strings (ar / tr / en).
+ * Customer QR table page — UI strings (ar / tr / en).
  * Loaded inline in index.html; language from API guestLanguage.
  */
 (function (global) {
   var PACK = {
     ar: {
-      pageTitle: "Ø·Ù„Ø¨ Ù…Ù† Ø§Ù„Ø·Ø§ÙˆÙ„Ø© â€” ZEKiQ",
-      loadingTitle: "Ø¬Ø§Ø±ÙŠ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù…ÙŠÙ†Ùˆâ€¦",
-      loadingSub: "ØµÙØ­Ø§Øª Ø§Ù„ÙƒØªØ§Ø¨ Ø§Ù„Ø­Ù‚ÙŠÙ‚ÙŠ",
-      menuList: "ğŸ“‹ Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©",
-      send: "Ø¥Ø±Ø³Ø§Ù„ âœ“",
-      guide1: '<span class="guide-n">1</span> Ø§Ø¶ØºØ· <strong>+</strong> Ø§Ù„Ø£Ø®Ø¶Ø± Ø¹Ù„Ù‰ Ø§Ù„ØµÙˆØ±Ø©',
-      guide2: '<span class="guide-n">2</span> Ø«Ù… <strong>Ø¥Ø±Ø³Ø§Ù„</strong> Ù„Ù„ØªØ£ÙƒÙŠØ¯',
-      coachTitle: "ÙƒÙŠÙ ØªØ·Ù„Ø¨ Ø¨Ù†ÙØ³ÙƒØŸ",
-      coverWelcomeGreet: "Ø£Ù‡Ù„Ø§Ù‹ Ø¨Ùƒ",
-      coverWelcomeSub: "Ø­Ø±ØµØ§Ù‹ Ø¹Ù„Ù‰ Ø±Ø§Ø­ØªÙƒ â€” Ù„Ø£Ù† Ø±Ø§Ø­ØªÙƒ ØªÙ‡Ù…Ù†Ø§",
-      coverOrderHead: "Ø§Ø·Ù„Ø¨ Ø¨Ù†ÙØ³Ùƒ Ø¨Ø³Ù‡ÙˆÙ„Ø© â€” ÙˆØ§Ù„Ø·Ù„Ø¨ Ø³ÙŠØµÙ„ Ø¥Ù„Ù‰ Ø·Ø§ÙˆÙ„ØªÙƒ",
-      coverOrderLead: "Ù¤ Ø®Ø·ÙˆØ§Øª Ø¨Ø³ÙŠØ·Ø© Ù…Ù† Ù‡Ø§ØªÙÙƒ Ø¥Ù„Ù‰ Ø·Ø§ÙˆÙ„ØªÙƒ",
-      coverWelcomeHead: "Ø£Ù‡Ù„Ø§Ù‹ Ø¨Ùƒ",
-      coverWelcomeLead: "Ø­Ø±ØµØ§Ù‹ Ø¹Ù„Ù‰ Ø±Ø§Ø­ØªÙƒ â€” Ù„Ø£Ù† Ø±Ø§Ø­ØªÙƒ ØªÙ‡Ù…Ù†Ø§",
-      coverPitch1: "Ù†Ù‚Ø¯Ù‘Ù… Ø¨ÙŠÙ† ÙŠØ¯ÙŠÙƒ ØªØ­ÙƒÙ‘Ù…Ø§Ù‹ ÙƒØ§Ù…Ù„Ø§Ù‹ Ø¨Ø·Ù„Ø¨Ø§ØªÙƒ",
-      coverPitch2: "ØªØµÙÙ‘Ø­ Ø§Ù„Ù…ÙŠÙ†Ùˆ Ø¨Ø­Ø±ÙŠØ© ÙˆØ£Ø±Ø³Ù„ Ø·Ù„Ø¨Ùƒ Ù…Ø¨Ø§Ø´Ø±Ø© Ù„Ù„Ù…Ø·Ø¨Ø®",
-      coverPitch3: "Ø£Ø¶Ù Ù…Ù„Ø§Ø­Ø¸Ø§ØªÙƒ Ù„ÙƒÙ„ ØµÙ†Ù â€” ÙƒÙ…Ø§ ØªØ­Ø¨ Ø¨Ø§Ù„Ø¶Ø¨Ø·",
-      coach1: "Ø§Ø³Ø­Ø¨ ÙŠÙ…ÙŠÙ†Ø§Ù‹ Ø£Ùˆ ÙŠØ³Ø§Ø±Ø§Ù‹ Ù„Ù‚Ù„Ø¨ ØµÙØ­Ø§Øª Ø§Ù„Ù…ÙŠÙ†Ùˆ",
-      coach2: 'Ø§Ø¶ØºØ· <strong>+ Ø§Ù„Ø£Ø®Ø¶Ø±</strong> Ø¹Ù„Ù‰ Ø§Ù„Ø·Ø¨Ù‚ Ø§Ù„Ø°ÙŠ ØªØ±ÙŠØ¯Ù‡',
-      coach3: 'Ø§Ø¶ØºØ· <strong>Ø¥Ø±Ø³Ø§Ù„ â†‘</strong> ÙÙŠ Ø§Ù„Ø£Ø¹Ù„Ù‰ Ø«Ù… Ø£ÙƒÙ‘Ø¯ Ø·Ù„Ø¨Ùƒ',
-      coach4: 'Ø¶Ø¹ <strong>Ù…Ù„Ø§Ø­Ø¸ØªÙƒ</strong> Ø¹Ù„Ù‰ Ø§Ù„Ø·Ù„Ø¨ â€” Ù…Ø«Ù„Ø§Ù‹ Ø¥Ø°Ø§ Ø±ØºØ¨Øª ÙÙŠ Ø¥Ø²Ø§Ù„Ø© Ø£Ùˆ Ø¥Ø¶Ø§ÙØ© Ø´ÙŠØ¡',
-      coachOk: "ÙÙ‡Ù…Øª â€” Ø§Ø¨Ø¯Ø£ Ø§Ù„Ø·Ù„Ø¨ Ø§Ù„Ø¢Ù† âœ“",
-      coverStartBadge: "Ø§Ù„ØºÙ„Ø§Ù",
+      pageTitle: "طلب من الطاولة — ZEKiQ",
+      loadingTitle: "جاري تحميل المينو…",
+      loadingSub: "صفحات الكتاب الحقيقي",
+      menuList: "📋 القائمة",
+      send: "إرسال ✓",
+      guide1: '<span class="guide-n">1</span> اضغط <strong>+</strong> الأخضر على الصورة',
+      guide2: '<span class="guide-n">2</span> ثم <strong>إرسال</strong> للتأكيد',
+      coachTitle: "كيف تطلب بنفسك؟",
+      coverWelcomeGreet: "أهلاً بك",
+      coverWelcomeSub: "حرصاً على راحتك — لأن راحتك تهمنا",
+      coverOrderHead: "اطلب بنفسك بسهولة — والطلب سيصل إلى طاولتك",
+      coverOrderLead: "٤ خطوات بسيطة من هاتفك إلى طاولتك",
+      coverWelcomeHead: "أهلاً بك",
+      coverWelcomeLead: "حرصاً على راحتك — لأن راحتك تهمنا",
+      coverPitch1: "نقدّم بين يديك تحكّماً كاملاً بطلباتك",
+      coverPitch2: "تصفّح المينو بحرية وأرسل طلبك مباشرة للمطبخ",
+      coverPitch3: "أضف ملاحظاتك لكل صنف — كما تحب بالضبط",
+      coach1: "اسحب يميناً أو يساراً لقلب صفحات المينو",
+      coach2: 'اضغط <strong>+ الأخضر</strong> على الطبق الذي تريده',
+      coach3: 'اضغط <strong>إرسال ↑</strong> في الأعلى ثم أكّد طلبك',
+      coach4: 'ضع <strong>ملاحظتك</strong> على الطلب — مثلاً إذا رغبت في إزالة أو إضافة شيء',
+      coachOk: "فهمت — ابدأ الطلب الآن ✓",
+      coverStartBadge: "الغلاف",
       coverStartTitle: "Tonino Coffee",
       coverStartKicker: "MENU",
-      coverDigitalMenu: "Ø§Ù„Ù…ÙŠÙ†Ùˆ Ø§Ù„Ø±Ù‚Ù…ÙŠ",
-      coverBrandSub: "Coffee Â· Restaurant",
-      coverTagline: "Kahve Â· Yemek Â· Hayat",
-      coverStartSub: "Ø§Ø¶ØºØ· Â«ÙÙ‡Ù…ØªÂ» Ù„Ø¨Ø¯Ø¡ Ø§Ù„Ø·Ù„Ø¨",
-      coverEndBadge: "Ù†Ù‡Ø§ÙŠØ© Ø§Ù„Ù…ÙŠÙ†Ùˆ",
-      coverEndTitle: "Ø§Ù†ØªÙ‡Ù‰ Ø§Ù„Ù…ÙŠÙ†Ùˆ",
-      coverEndSub: "Ø§Ø³Ø­Ø¨ Ù„Ù„Ø®Ù„Ù Ø£Ùˆ Ø£Ø±Ø³Ù„ Ø·Ù„Ø¨Ùƒ Ù…Ù† Ø§Ù„Ø£Ø¹Ù„Ù‰",
-      prev: "â—€ Ø§Ù„Ø³Ø§Ø¨Ù‚",
-      next: "Ø§Ù„ØªØ§Ù„ÙŠ â–¶",
-      orientLock: "Ø£Ø¨Ù‚Ù Ø§Ù„Ù‡Ø§ØªÙ Ø¹Ù…ÙˆØ¯ÙŠØ§Ù‹ Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù…ÙŠÙ†Ùˆ",
-      dailySoupBanner: "Ø´ÙˆØ±Ø¨Ø© Ø§Ù„ÙŠÙˆÙ…",
-      dailySoupPhoto: "ØµÙˆØ±Ø© Ø§Ù„Ø´ÙˆØ±Ø¨Ø©",
-      dailyDishTitle: "Ø§Ù„Ø·Ø¨Ù‚ Ø§Ù„ÙŠÙˆÙ…ÙŠ",
-      dailyDishContinue: "ØªØµÙØ­ Ø§Ù„Ù…ÙŠÙ†Ùˆ",
-      dailyDishMain: "Ø§Ù„Ø·Ø¨Ù‚",
-      dailyDishSoup: "Ø§Ù„Ø´ÙˆØ±Ø¨Ø©",
-      dailyDishSides: "Ø§Ù„Ù…Ø±Ø§ÙÙ‚Ø§Øª",
-      dailyDishDessert: "Ø§Ù„Ø­Ù„Ùˆ",
-      dailyDishDrink: "Ø§Ù„Ù…Ø´Ø±ÙˆØ¨",
-      dailyDishToday: "Ø§Ù„ÙŠÙˆÙ…",
-      dailyDishOrder: "Ø§Ø®ØªØ± Ù‡Ø°Ø§ Ø§Ù„Ø·Ø¨Ù‚",
-      dailyDishToMenu: "Ø§Ù„Ù…ÙŠÙ†Ùˆ Ø§Ù„ÙƒØ§Ù…Ù„",
-      dailyDishSwipeHint: "Ø§Ø³Ø­Ø¨ ÙŠÙ…ÙŠÙ†Ø§Ù‹ Ø£Ùˆ ÙŠØ³Ø§Ø±Ø§Ù‹ Ù„Ù„Ù…ÙŠÙ†Ùˆ",
-      dailyDishGuide: "Ø§Ø®ØªØ± Ø§Ù„Ø·Ø¨Ù‚ Ù…Ù† Ø§Ù„Ø²Ø± Ø§Ù„Ø°Ù‡Ø¨ÙŠ Â· Ø«Ù… Ø§Ø³Ø­Ø¨ Ù„ØªØµÙØ­ Ø§Ù„Ù…ÙŠÙ†Ùˆ",
-      coverSwipeHint: "Ø§Ø³Ø­Ø¨ ÙŠÙ…ÙŠÙ†Ø§Ù‹ Ø£Ùˆ ÙŠØ³Ø§Ø±Ø§Ù‹ Ù„Ù‚Ù„Ø¨ Ø§Ù„ØµÙØ­Ø§Øª",
-      dailyDishPriceLabel: "Ø§Ù„Ø³Ø¹Ø±",
-      dailyDishPickTitle: "Ø§Ø®ØªØ± ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø·Ø¨Ù‚",
-      dailyDishPickDessert: "Ø§Ø®ØªØ± Ø§Ù„Ø­Ù„Ùˆ",
-      dailyDishPickDrink: "Ø§Ø®ØªØ± Ø§Ù„Ù…Ø´Ø±ÙˆØ¨",
-      dailyDishPickTea: "Ù‡Ù„ ØªØ±ÙŠØ¯ Ø§Ù„Ø´Ø§ÙŠØŸ",
-      dailyDishTeaYes: "Ù†Ø¹Ù… â€” Ø´Ø§ÙŠ",
-      dailyDishTeaNo: "Ø¨Ø¯ÙˆÙ† Ø´Ø§ÙŠ",
-      dailyDishTeaIncluded: "Ø´Ø§ÙŠ Ø¶Ù…Ù† Ø§Ù„Ø¹Ø±Ø¶",
-      dailyDishPickRequired: "Ø§Ø®ØªØ± ÙƒÙ„ Ø§Ù„Ø®ÙŠØ§Ø±Ø§Øª",
-      dailyDishAddToCart: "Ø£Ø¶Ù Ù„Ù„Ø·Ù„Ø¨",
-      dailyDishNoteLabel: "Ù…Ù„Ø§Ø­Ø¸Ø© Ù„Ù„Ø·Ø¨Ù‚",
-      dailyDishNotePlaceholder: "Ù…Ø«Ø§Ù„: Ø¨Ø¯ÙˆÙ† Ø³Ù„Ø·Ø©ØŒ Ø²ÙŠØ§Ø¯Ø© Ø£Ø±Ø²â€¦",
-      dailyDishWeekBrowse: "Ù‚Ø§Ø¦Ù…Ø© Ù‡Ø°Ø§ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹",
-      dailyDishWeekTitle: "Ø£Ø·Ø¨Ø§Ù‚ Ù‡Ø°Ø§ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹",
-      dailyDishWeekHint: "Ø§Ù„Ø·Ù„Ø¨ Ù…ØªØ§Ø­ Ù„Ø·Ø¨Ù‚ Ø§Ù„ÙŠÙˆÙ… ÙÙ‚Ø·",
-      dailyDishWeekToday: "Ø§Ù„ÙŠÙˆÙ…",
-      dailyDishWeekClose: "Ø¥ØºÙ„Ø§Ù‚",
-      iceCreamTitle: "Ø§Ù„Ø¨ÙˆØ¸Ø©",
-      iceCreamFlavor: "Ø§Ù„Ù†ÙƒÙ‡Ø©",
-      iceCreamScoops: "Ø¹Ø¯Ø¯ Ø§Ù„Ø·Ø§Ø¨Ø§Øª",
-      iceCreamVessel: "Ø§Ù„ØªÙ‚Ø¯ÙŠÙ…",
-      iceCreamCup: "ÙƒØ§Ø³Ø©",
-      iceCreamCone: "Ù‚Ø±ØµØ§Ø³ Ø¨Ø³ÙƒÙˆÙŠØª",
-      iceCreamAdd: "Ø£Ø¶Ù Ù„Ù„Ø·Ù„Ø¨",
-      iceCreamTotal: "Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹",
-      iceCreamScoopUnit: "Ø·Ø§Ø¨Ø©",
-      iceCreamServing: "ÙƒØ§Ø³Ø©",
-      iceCreamScoopN: "Ø·Ø§Ø¨Ø©",
-      iceCreamAddServing: "+ Ø£Ø¶Ù ÙƒØ§Ø³Ø© Ø£Ø®Ø±Ù‰",
-      iceCreamAddAll: "Ø£Ø¶Ù Ø§Ù„ÙƒÙ„ Ù„Ù„Ø·Ù„Ø¨",
-      iceCreamRemoveServing: "Ø­Ø°Ù",
-      swipeHint: "Ø§Ø³Ø­Ø¨ Ù„Ù‚Ù„Ø¨ Ø§Ù„Ø´Ø§Ø´Ø©",
-      railOrderHint: "Ø§Ø¶ØºØ· + Ø§Ù„Ø£Ø®Ø¶Ø± Ø¹Ù„Ù‰ Ø§Ù„ØµÙˆØ±Ø© Ù„Ù„Ø·Ù„Ø¨",
-      tapPlusHint: 'Ø§Ø¶ØºØ· Ø§Ù„Ø²Ø± <strong>+ Ø§Ù„Ø£Ø®Ø¶Ø±</strong> Ø¹Ù„Ù‰ Ø§Ù„Ø·Ø¨Ù‚ ÙÙŠ Ø§Ù„ØµÙˆØ±Ø©',
-      tapPlusNudge: 'Ø§Ø¶ØºØ· <strong>+</strong> Ø§Ù„Ø£Ø®Ø¶Ø± Ø¹Ù„Ù‰ Ø§Ù„ØµÙˆØ±Ø©',
-      fsHint: "ğŸ‘† Ø§Ø¶ØºØ· Ø¹Ù„Ù‰ Ø§Ù„Ù…ÙŠÙ†Ùˆ Ù„Ù…Ù„Ø¡ Ø§Ù„Ø´Ø§Ø´Ø©",
-      fsHintIos: "â†‘ Ø§Ø³Ø­Ø¨ Ù„Ù„Ø£Ø¹Ù„Ù‰ Ù‚Ù„ÙŠÙ„Ø§Ù‹ Ù„Ø¥Ø®ÙØ§Ø¡ Ø´Ø±ÙŠØ· Safari ÙˆÙ…Ù„Ø¡ Ø§Ù„Ø´Ø§Ø´Ø©",
-      coverIosTip: "ğŸ“± iPhone: Ø§Ø³Ø­Ø¨ Ù„Ù„Ø£Ø¹Ù„Ù‰ Ù„Ø¥Ø®ÙØ§Ø¡ Ø´Ø±ÙŠØ· Safari â€” Ø£Ùˆ Â«Ù…Ø´Ø§Ø±ÙƒØ© â†’ Ø¥Ø¶Ø§ÙØ© Ø¥Ù„Ù‰ Ø§Ù„Ø´Ø§Ø´Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©Â» Ù„Ù…Ù„Ø¡ Ø§Ù„Ø´Ø§Ø´Ø© Ø¯Ø§Ø¦Ù…Ø§Ù‹",
-      iosInstallTitle: "Ù„ØªØ¬Ø±Ø¨Ø© Ø£ÙØ¶Ù„ Ø¹Ù„Ù‰ iPhone",
-      iosInstallSimple: "Ù„Ø§ ÙŠÙˆØ¬Ø¯ ØªÙ†Ø²ÙŠÙ„ ØªÙ„Ù‚Ø§Ø¦ÙŠ. Ù…Ù† Safari: â–¡â†‘ Ù…Ø´Ø§Ø±ÙƒØ© â†’ Â«Add to Home Screen / Ø£Ø¶Ù Ø¥Ù„Ù‰ Ø§Ù„Ø´Ø§Ø´Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©Â»",
-      iosInstallNote: "Ù„ÙŠØ³ Ø²Ø± ØªÙ†Ø²ÙŠÙ„ â€” Ø®Ø·ÙˆØªØ§Ù† ÙŠØ¯ÙˆÙŠØªØ§Ù†. Ø¨Ø¹Ø¯Ù‡Ø§ Ø§ÙØªØ­ Ù…Ù† Ø§Ù„Ø£ÙŠÙ‚ÙˆÙ†Ø© Ø¨Ø´Ø§Ø´Ø© ÙƒØ§Ù…Ù„Ø©.",
-      iosInstallContinue: "Ø­Ø³Ù†Ø§Ù‹ â€” Ø§ÙØªØ­ Ø§Ù„Ù…ÙŠÙ†Ùˆ",
-      iosInstallLater: "ØªØ®Ø·Ù‘ÙŠ â€” Ø§ÙØªØ­ Ø§Ù„Ù…ÙŠÙ†Ùˆ",
-      iosInAppTitle: "Ø§ÙØªØ­ ÙÙŠ Safari Ø£ÙˆÙ„Ø§Ù‹",
-      iosInAppSimple: "Ù…Ù† WhatsApp Ø£Ùˆ ØªØ·Ø¨ÙŠÙ‚ Ø¢Ø®Ø± Ù„Ø§ ÙŠØ¹Ù…Ù„ Â«Ø¥Ø¶Ø§ÙØ© Ù„Ù„Ø´Ø§Ø´Ø©Â». Ø§Ø¶ØºØ· â‹¯ Ø«Ù… Â«ÙØªØ­ ÙÙŠ SafariÂ».",
-      iosInAppNote: "Ø¨Ø¹Ø¯ Safari: â–¡â†‘ â†’ Add to Home Screen. Ø£Ùˆ ØªØ§Ø¨Ø¹ Ø§Ù„Ø·Ù„Ø¨ Ù…Ù† Safari Ù…Ø¨Ø§Ø´Ø±Ø©.",
-      iosInAppContinue: "ÙÙ‡Ù…Øª",
-      iosInAppLater: "Ø¥ØºÙ„Ø§Ù‚",
-      iosInstallCoverBtn: "ğŸ“² Ù…Ù„Ø¡ Ø§Ù„Ø´Ø§Ø´Ø© â€” ØªØ«Ø¨ÙŠØª Ø¹Ù„Ù‰ iPhone",
-      iosCompactTip: "â–¡â†‘ Ù…Ø´Ø§Ø±ÙƒØ© â†’ Ø¥Ø¶Ø§ÙØ© Ø¥Ù„Ù‰ Ø§Ù„Ø´Ø§Ø´Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© (Ù…Ù„Ø¡ Ø§Ù„Ø´Ø§Ø´Ø©)",
-      menuTitle: "ğŸ“‹ Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø£Ø·Ø¨Ø§Ù‚",
-      menuSub: "Ø§Ø¨Ø­Ø« ÙˆØ§Ø·Ù„Ø¨ Ù…Ù† Ø£ÙŠ ØµÙØ­Ø©",
-      menuSearch: "Ø§Ø¨Ø­Ø«â€¦ TÃ¼rk kahve, menemen, pastaâ€¦",
-      cartTitle: "Ø±Ø§Ø¬Ø¹ Ø·Ù„Ø¨Ùƒ",
-      cartSub: "Ø¹Ø¯Ù‘Ù„ Ø§Ù„ÙƒÙ…ÙŠØ© ÙˆØ£Ø¶Ù Ù…Ù„Ø§Ø­Ø¸Ø© Ù„ÙƒÙ„ ØµÙ†Ù Ø¥Ù† Ø±ØºØ¨Øª",
-      cartTotal: "Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹",
-      cartSend: "âœ“ ØªØ£ÙƒÙŠØ¯ ÙˆØ¥Ø±Ø³Ø§Ù„ Ù„Ù„Ù…Ø·Ø¨Ø®",
-      cartClearAll: "Ù…Ø³Ø­ Ø§Ù„Ø³Ù„Ø© Ø¨Ø§Ù„ÙƒØ§Ù…Ù„",
-      noteDone: "ØªÙ…",
-      cartDelete: "Ø­Ø°Ù",
-      toastCleared: "ØªÙ… Ù…Ø³Ø­ Ø§Ù„Ø³Ù„Ø©",
-      notePh: "Ù…Ù„Ø§Ø­Ø¸Ø© Ø¹Ø§Ù…Ø© Ù„Ù„Ø·Ù„Ø¨ (Ø§Ø®ØªÙŠØ§Ø±ÙŠ)â€¦",
-      itemNotePh: "Ù…Ù„Ø§Ø­Ø¸Ø© Ù„Ù‡Ø°Ø§ Ø§Ù„ØµÙ†Ù (Ø¨Ø¯ÙˆÙ† Ø¨ØµÙ„ØŒ Ù†ØµÙ Ù…Ø­Ù…Øµâ€¦)",
-      lineNoteTitle: "Ù…Ù„Ø§Ø­Ø¸Ø© Ù„Ù„ØµÙ†Ù",
-      lineNoteSave: "ØªÙ…",
-      popupClose: "Ø¥Ù„ØºØ§Ø¡",
-      popupAdd: "Ø£Ø¶Ù Ù„Ù„Ø³Ù„Ø©",
-      sugarChoose: "Ø§Ø®ØªØ± Ù…Ø³ØªÙˆÙ‰ Ø§Ù„Ø³ÙƒØ±",
-      sugarSade: "Ø³Ø§Ø¯Ø©",
-      sugarOrta: "ÙˆØ³Ø· Ø³ÙƒØ±",
-      sugarSekerli: "Ø³ÙƒØ± ÙƒØ§Ù…Ù„",
-      sugarRequired: "Ø§Ø®ØªØ± Ù…Ø³ØªÙˆÙ‰ Ø§Ù„Ø³ÙƒØ± Ø£ÙˆÙ„Ø§Ù‹",
-      okTitle: "Ø´ÙƒØ±Ø§Ù‹! âœ“",
-      okAsk: "Ù‡Ù„ Ù„Ø¯ÙŠÙƒ Ø·Ù„Ø¨ Ø¥Ø¶Ø§ÙÙŠØŸ",
-      againBtn: "Ø·Ù„Ø¨ Ø¥Ø¶Ø§ÙÙŠ",
-      exitBtn: "Ø®Ø±ÙˆØ¬",
-      exitDone: "Ø´ÙƒØ±Ø§Ù‹ Ù„Ø²ÙŠØ§Ø±ØªÙƒ â€” ØªÙ… Ø¥Ù†Ù‡Ø§Ø¡ Ø§Ù„Ø·Ù„Ø¨",
-      exitHomeBtn: "Ø§Ù„Ø¹ÙˆØ¯Ø© Ù„Ø´Ø§Ø´Ø© Ø§Ù„Ù‡Ø§ØªÙ",
-      exitHomeHint: "Ø§Ø¶ØºØ· Ø§Ù„Ø²Ø± Ø£Ø¯Ù†Ø§Ù‡ØŒ Ø£Ùˆ Ø²Ø± Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© ÙÙŠ Ù‡Ø§ØªÙÙƒ",
+      coverDigitalMenu: "المينو الرقمي",
+      coverBrandSub: "Coffee · Restaurant",
+      coverTagline: "Kahve · Yemek · Hayat",
+      coverStartSub: "اضغط «فهمت» لبدء الطلب",
+      coverEndBadge: "نهاية المينو",
+      coverEndTitle: "انتهى المينو",
+      coverEndSub: "اسحب للخلف أو أرسل طلبك من الأعلى",
+      prev: "◀ السابق",
+      next: "التالي ▶",
+      orientLock: "أبقِ الهاتف عمودياً لاستخدام المينو",
+      dailySoupBanner: "شوربة اليوم",
+      dailySoupPhoto: "صورة الشوربة",
+      dailyDishTitle: "الطبق اليومي",
+      dailyDishContinue: "تصفح المينو",
+      dailyDishMain: "الطبق",
+      dailyDishSoup: "الشوربة",
+      dailyDishSides: "المرافقات",
+      dailyDishDessert: "الحلو",
+      dailyDishDrink: "المشروب",
+      dailyDishToday: "اليوم",
+      dailyDishOrder: "اختر هذا الطبق",
+      dailyDishToMenu: "المينو الكامل",
+      dailyDishSwipeHint: "اسحب يميناً أو يساراً للمينو",
+      dailyDishGuide: "اختر الطبق من الزر الذهبي · ثم اسحب لتصفح المينو",
+      coverSwipeHint: "اسحب يميناً أو يساراً لقلب الصفحات",
+      dailyDishPriceLabel: "السعر",
+      dailyDishPickTitle: "اختر تفاصيل الطبق",
+      dailyDishPickDessert: "اختر الحلو",
+      dailyDishPickDrink: "اختر المشروب",
+      dailyDishPickTea: "هل تريد الشاي؟",
+      dailyDishTeaYes: "نعم — شاي",
+      dailyDishTeaNo: "بدون شاي",
+      dailyDishTeaIncluded: "شاي ضمن العرض",
+      dailyDishPickRequired: "اختر كل الخيارات",
+      dailyDishAddToCart: "أضف للطلب",
+      dailyDishNoteLabel: "ملاحظة للطبق",
+      dailyDishNotePlaceholder: "مثال: بدون سلطة، زيادة أرز…",
+      dailyDishWeekBrowse: "قائمة هذا الأسبوع",
+      dailyDishWeekTitle: "أطباق هذا الأسبوع",
+      dailyDishWeekHint: "الطلب متاح لطبق اليوم فقط",
+      dailyDishWeekToday: "اليوم",
+      dailyDishWeekClose: "إغلاق",
+      iceCreamTitle: "البوظة",
+      iceCreamFlavor: "النكهة",
+      iceCreamScoops: "عدد الطابات",
+      iceCreamVessel: "التقديم",
+      iceCreamCup: "كاسة",
+      iceCreamCone: "قرصاس بسكويت",
+      iceCreamAdd: "أضف للطلب",
+      iceCreamTotal: "المجموع",
+      iceCreamScoopUnit: "طابة",
+      iceCreamServing: "كاسة",
+      iceCreamScoopN: "طابة",
+      iceCreamAddServing: "+ أضف كاسة أخرى",
+      iceCreamAddAll: "أضف الكل للطلب",
+      iceCreamRemoveServing: "حذف",
+      swipeHint: "اسحب لقلب الشاشة",
+      railOrderHint: "اضغط + الأخضر على الصورة للطلب",
+      tapPlusHint: 'اضغط الزر <strong>+ الأخضر</strong> على الطبق في الصورة',
+      tapPlusNudge: 'اضغط <strong>+</strong> الأخضر على الصورة',
+      fsHint: "👆 اضغط على المينو لملء الشاشة",
+      fsHintIos: "↑ اسحب للأعلى قليلاً لإخفاء شريط Safari وملء الشاشة",
+      coverIosTip: "📱 iPhone: اسحب للأعلى لإخفاء شريط Safari — أو «مشاركة → إضافة إلى الشاشة الرئيسية» لملء الشاشة دائماً",
+      iosInstallTitle: "لتجربة أفضل على iPhone",
+      iosInstallSimple: "لا يوجد تنزيل تلقائي. من Safari: □↑ مشاركة → «Add to Home Screen / أضف إلى الشاشة الرئيسية»",
+      iosInstallNote: "ليس زر تنزيل — خطوتان يدويتان. بعدها افتح من الأيقونة بشاشة كاملة.",
+      iosInstallContinue: "حسناً — افتح المينو",
+      iosInstallLater: "تخطّي — افتح المينو",
+      iosInAppTitle: "افتح في Safari أولاً",
+      iosInAppSimple: "من WhatsApp أو تطبيق آخر لا يعمل «إضافة للشاشة». اضغط ⋯ ثم «فتح في Safari».",
+      iosInAppNote: "بعد Safari: □↑ → Add to Home Screen. أو تابع الطلب من Safari مباشرة.",
+      iosInAppContinue: "فهمت",
+      iosInAppLater: "إغلاق",
+      iosInstallCoverBtn: "📲 ملء الشاشة — تثبيت على iPhone",
+      iosCompactTip: "□↑ مشاركة → إضافة إلى الشاشة الرئيسية (ملء الشاشة)",
+      menuTitle: "📋 قائمة الأطباق",
+      menuSub: "ابحث واطلب من أي صفحة",
+      menuSearch: "ابحث… Türk kahve, menemen, pasta…",
+      cartTitle: "راجع طلبك",
+      cartSub: "عدّل الكمية وأضف ملاحظة لكل صنف إن رغبت",
+      cartTotal: "المجموع",
+      cartSend: "✓ تأكيد وإرسال للمطبخ",
+      cartClearAll: "مسح السلة بالكامل",
+      noteDone: "تم",
+      cartDelete: "حذف",
+      toastCleared: "تم مسح السلة",
+      notePh: "ملاحظة عامة للطلب (اختياري)…",
+      itemNotePh: "ملاحظة لهذا الصنف (بدون بصل، نصف محمص…)",
+      lineNoteTitle: "ملاحظة للصنف",
+      lineNoteSave: "تم",
+      popupClose: "إلغاء",
+      popupAdd: "أضف للسلة",
+      sugarChoose: "اختر مستوى السكر",
+      sugarSade: "سادة",
+      sugarOrta: "وسط سكر",
+      sugarSekerli: "سكر كامل",
+      sugarRequired: "اختر مستوى السكر أولاً",
+      okTitle: "شكراً! ✓",
+      okAsk: "هل لديك طلب إضافي؟",
+      againBtn: "طلب إضافي",
+      exitBtn: "خروج",
+      exitDone: "شكراً لزيارتك — تم إنهاء الطلب",
+      exitHomeBtn: "العودة لشاشة الهاتف",
+      exitHomeHint: "اضغط الزر أدناه، أو زر الصفحة الرئيسية في هاتفك",
       okFeedback:
-        "Ø±Ø£ÙŠÙƒ ÙŠÙ‡Ù…Ù‘Ù†Ø§ â€” Ø¥Ù† ÙƒØ§Ù† Ù„Ø¯ÙŠÙƒ Ù…Ù„Ø§Ø­Ø¸Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø®Ø¯Ù…Ø© Ø£Ùˆ Ø´ÙƒÙˆÙ‰ØŒ Ø³Ø§Ø¹Ø¯Ù†Ø§ Ù„Ù†Ø­Ø³Ù‘Ù† Ø£Ø¯Ø§Ø¡ Ø§Ù„Ù…Ø·Ø¹Ù….",
-      okFeedbackOpen: "Ø´Ø§Ø±ÙƒÙ†Ø§ Ø±Ø£ÙŠÙƒ",
-      okFeedbackPh: "Ø§ÙƒØªØ¨ Ù…Ù„Ø§Ø­Ø¸ØªÙƒ Ø£Ùˆ Ø´ÙƒÙˆØ§Ùƒ Ù‡Ù†Ø§â€¦",
-      okFeedbackSend: "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…",
-      okFeedbackThanks: "Ø´ÙƒØ±Ø§Ù‹ Ù„Ù…Ø³Ø§Ø¹Ø¯ØªÙƒ â€” ÙˆØµÙ„Ù†Ø§ Ø±Ø£ÙŠÙƒ.",
-      okFeedbackErr: "ØªØ¹Ø°Ù‘Ø± Ø§Ù„Ø¥Ø±Ø³Ø§Ù„ â€” Ø­Ø§ÙˆÙ„ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰",
-      table: "Ø·Ø§ÙˆÙ„Ø©",
-      items: "Ø£ØµÙ†Ø§Ù",
-      orderTotal: "Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹",
-      emptyCart: "Ø§Ù„Ø³Ù„Ø© ÙØ§Ø±ØºØ©",
-      emptyCartHint: "Ø§Ø¶ØºØ· + ÙÙŠ Ø§Ù„Ù…ÙŠÙ†Ùˆ Ø£Ùˆ Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©",
-      menuLoading: "Ø¬Ø§Ø±ÙŠ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ø£Ø·Ø¨Ø§Ù‚â€¦",
-      menuNoResults: "Ù„Ø§ Ù†ØªØ§Ø¦Ø¬",
-      errScanQr: "Ø§Ù…Ø³Ø­ QR",
-      errScanQrD: "Ø§Ù…Ø³Ø­ Ø±Ù…Ø² QR Ù…Ù† Ø§Ù„Ø·Ø§ÙˆÙ„Ø© Ù„Ù„Ø·Ù„Ø¨.",
-      errOldQr: "QR Ù‚Ø¯ÙŠÙ…",
-      errOldQrD: "Ø­Ø¯Ù‘Ø« Ø§Ù„Ø±Ù…ÙˆØ² Ù…Ù† Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„ÙƒØ§Ø´ÙŠØ±.",
-      errDisabled: "Ø·Ù„Ø¨Ø§Øª QR Ù…Ø¹Ø·Ù‘Ù„Ø©",
-      errDisabledD: "ÙØ¹Ù‘Ù„Ù‡Ø§ Ù…Ù† Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„ÙƒØ§Ø´ÙŠØ±.",
-      errConn: "Ø¹Ø°Ø±Ø§Ù‹ØŒ Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬ Ù…Ù‚ÙÙ„ Ù…Ø¤Ù‚ØªØ§Ù‹",
-      errConnD: "ÙŠØ±Ø¬Ù‰ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù…Ø±Ø© Ø£Ø®Ø±Ù‰ Ø¨Ø¹Ø¯ Ù‚Ù„ÙŠÙ„.",
-      retry: "Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø©",
-      errTable: "Ø§Ù„Ø·Ø§ÙˆÙ„Ø© ØºÙŠØ± Ù…ÙØªÙˆØ­Ø© Ø¹Ù„Ù‰ Ø§Ù„ÙƒØ§Ø´ÙŠØ±.\nØ§ÙØªØ­ Ø§Ù„Ø·Ø§ÙˆÙ„Ø© Ù…Ù† ZEKiQ POS Ø«Ù… Ø£Ø¹Ø¯ Ø§Ù„Ø¥Ø±Ø³Ø§Ù„.",
-      errToken: "Ø±Ù…Ø² QR Ù‚Ø¯ÙŠÙ… â€” Ø§Ø·Ø¨Ø¹ QR Ø¬Ø¯ÙŠØ¯ Ù…Ù† Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„ÙƒØ§Ø´ÙŠØ±.",
-      errSend: "ØªØ¹Ø°Ù‘Ø± Ø§Ù„Ø¥Ø±Ø³Ø§Ù„ â€” ØªØ­Ù‚Ù‚ Ù…Ù† Ø§Ù„Ø¥Ù†ØªØ±Ù†Øª Ø£Ùˆ Ø£Ù† ZEKiQ POS Ø´ØºÙ‘Ø§Ù„.",
-      errNet: "ØªØ¹Ø°Ù‘Ø± Ø§Ù„Ø§ØªØµØ§Ù„ â€” ØªØ­Ù‚Ù‚ Ù…Ù† Ø§Ù„Ø¥Ù†ØªØ±Ù†Øª.",
-      okDetail: "ÙˆØµÙ„ Ø·Ù„Ø¨Ùƒ Ø¥Ù„Ù‰ Ø§Ù„ÙƒØ§Ø´ÙŠØ± ÙˆØ§Ù„Ù…Ø·Ø¨Ø®",
-      toastAdded: "â†’ Ø§Ù„Ø³Ù„Ø©",
-      menuNotReady: "Ø§Ù„Ù…ÙŠÙ†Ùˆ ØºÙŠØ± Ø¬Ø§Ù‡Ø²",
-      menuNotReadyD: "Ù…Ù† Ø§Ù„ÙƒØ§Ø´ÙŠØ±: Ø§Ø³ØªÙˆØ±Ø¯ PDF Ø§Ù„Ù…ÙŠÙ†Ùˆ Ø«Ù… Ø´ØºÙ‘Ù„ export-guest-menu-book",
+        "رأيك يهمّنا — إن كان لديك ملاحظة على الخدمة أو شكوى، ساعدنا لنحسّن أداء المطعم.",
+      okFeedbackOpen: "شاركنا رأيك",
+      okFeedbackPh: "اكتب ملاحظتك أو شكواك هنا…",
+      okFeedbackSend: "إرسال التقييم",
+      okFeedbackThanks: "شكراً لمساعدتك — وصلنا رأيك.",
+      okFeedbackErr: "تعذّر الإرسال — حاول مرة أخرى",
+      table: "طاولة",
+      items: "أصناف",
+      orderTotal: "المجموع",
+      emptyCart: "السلة فارغة",
+      emptyCartHint: "اضغط + في المينو أو القائمة",
+      menuLoading: "جاري تحميل الأطباق…",
+      menuNoResults: "لا نتائج",
+      errScanQr: "امسح QR",
+      errScanQrD: "امسح رمز QR من الطاولة للطلب.",
+      errOldQr: "QR قديم",
+      errOldQrD: "حدّث الرموز من إعدادات الكاشير.",
+      errDisabled: "طلبات QR معطّلة",
+      errDisabledD: "فعّلها من إعدادات الكاشير.",
+      errConn: "عذراً، البرنامج مقفل مؤقتاً",
+      errConnD: "يرجى المحاولة مرة أخرى بعد قليل.",
+      retry: "إعادة المحاولة",
+      errTable: "الطاولة غير مفتوحة على الكاشير.\nافتح الطاولة من ZEKiQ POS ثم أعد الإرسال.",
+      errToken: "رمز QR قديم — اطبع QR جديد من إعدادات الكاشير.",
+      errSend: "تعذّر الإرسال — تحقق من الإنترنت أو أن ZEKiQ POS شغّال.",
+      errNet: "تعذّر الاتصال — تحقق من الإنترنت.",
+      okDetail: "وصل طلبك إلى الكاشير والمطبخ",
+      toastAdded: "→ السلة",
+      menuNotReady: "المينو غير جاهز",
+      menuNotReadyD: "من الكاشير: استورد PDF المينو ثم شغّل export-guest-menu-book",
     },
     tr: {
-      pageTitle: "Masadan sipariÅŸ â€” ZEKiQ",
-      loadingTitle: "MenÃ¼ yÃ¼kleniyorâ€¦",
-      loadingSub: "Dijital menÃ¼ kitabÄ±",
-      menuList: "ğŸ“‹ MenÃ¼",
-      send: "GÃ¶nder âœ“",
-      guide1: '<span class="guide-n">1</span> Resimdeki yeÅŸil <strong>+</strong> dÃ¼ÄŸmesine basÄ±n',
-      guide2: '<span class="guide-n">2</span> Sonra onay iÃ§in <strong>GÃ¶nder</strong>',
-      coachTitle: "Kendin nasÄ±l sipariÅŸ verirsin?",
-      coverWelcomeGreet: "HoÅŸ geldiniz",
-      coverWelcomeSub: "Konforunuz bizim iÃ§in Ã¶nemli â€” rahatÄ±nÄ±z Ã¶nceliÄŸimiz",
-      coverOrderHead: "Kendin kolayca sipariÅŸ ver â€” sipariÅŸin masana gelir",
-      coverOrderLead: "Telefondan masana 4 basit adÄ±m",
-      coverWelcomeHead: "HoÅŸ geldiniz",
-      coverWelcomeLead: "Konforunuz bizim iÃ§in Ã¶nemli â€” rahatÄ±nÄ±z Ã¶nceliÄŸimiz",
-      coverPitch1: "SipariÅŸlerinizde tam kontrol sizde",
-      coverPitch2: "MenÃ¼yÃ¼ Ã¶zgÃ¼rce gezinin, sipariÅŸinizi doÄŸrudan mutfaÄŸa gÃ¶nderin",
-      coverPitch3: "Her Ã¼rÃ¼ne istediÄŸiniz notu ekleyin â€” tam istediÄŸiniz gibi",
-      coach1: "MenÃ¼ sayfalarÄ±nÄ± Ã§evirmek iÃ§in saÄŸa/sola kaydÄ±rÄ±n",
-      coach2: 'Ä°stediÄŸiniz yemeÄŸe <strong>yeÅŸil +</strong> basÄ±n',
-      coach3: 'Ãœstte <strong>GÃ¶nder â†‘</strong> â†’ sepeti kontrol et â†’ <strong>Onayla</strong>',
-      coach4: 'SipariÅŸe <strong>not</strong> ekleyin â€” Ã¶rneÄŸin bir ÅŸeyi Ã§Ä±karmak veya eklemek iÃ§in',
-      coachOk: "AnladÄ±m â€” ÅŸimdi sipariÅŸe baÅŸla âœ“",
+      pageTitle: "Masadan sipariş — ZEKiQ",
+      loadingTitle: "Menü yükleniyor…",
+      loadingSub: "Dijital menü kitabı",
+      menuList: "📋 Menü",
+      send: "Gönder ✓",
+      guide1: '<span class="guide-n">1</span> Resimdeki yeşil <strong>+</strong> düğmesine basın',
+      guide2: '<span class="guide-n">2</span> Sonra onay için <strong>Gönder</strong>',
+      coachTitle: "Kendin nasıl sipariş verirsin?",
+      coverWelcomeGreet: "Hoş geldiniz",
+      coverWelcomeSub: "Konforunuz bizim için önemli — rahatınız önceliğimiz",
+      coverOrderHead: "Kendin kolayca sipariş ver — siparişin masana gelir",
+      coverOrderLead: "Telefondan masana 4 basit adım",
+      coverWelcomeHead: "Hoş geldiniz",
+      coverWelcomeLead: "Konforunuz bizim için önemli — rahatınız önceliğimiz",
+      coverPitch1: "Siparişlerinizde tam kontrol sizde",
+      coverPitch2: "Menüyü özgürce gezinin, siparişinizi doğrudan mutfağa gönderin",
+      coverPitch3: "Her ürüne istediğiniz notu ekleyin — tam istediğiniz gibi",
+      coach1: "Menü sayfalarını çevirmek için sağa/sola kaydırın",
+      coach2: 'İstediğiniz yemeğe <strong>yeşil +</strong> basın',
+      coach3: 'Üstte <strong>Gönder ↑</strong> → sepeti kontrol et → <strong>Onayla</strong>',
+      coach4: 'Siparişe <strong>not</strong> ekleyin — örneğin bir şeyi çıkarmak veya eklemek için',
+      coachOk: "Anladım — şimdi siparişe başla ✓",
       coverStartBadge: "Kapak",
       coverStartTitle: "Tonino Coffee",
       coverStartKicker: "MENU",
-      coverDigitalMenu: "Dijital MenÃ¼",
-      coverBrandSub: "Coffee Â· Restaurant",
-      coverTagline: "Kahve Â· Yemek Â· Hayat",
-      coverStartSub: "BaÅŸlamak iÃ§in Â«AnladÄ±mÂ»a basÄ±n",
-      coverEndBadge: "MenÃ¼ sonu",
-      coverEndTitle: "MenÃ¼ bitti",
-      coverEndSub: "Geri kaydÄ±rÄ±n veya Ã¼stten sipariÅŸ gÃ¶nderin",
-      prev: "â—€ Ã–nceki",
-      next: "Sonraki â–¶",
+      coverDigitalMenu: "Dijital Menü",
+      coverBrandSub: "Coffee · Restaurant",
+      coverTagline: "Kahve · Yemek · Hayat",
+      coverStartSub: "Başlamak için «Anladım»a basın",
+      coverEndBadge: "Menü sonu",
+      coverEndTitle: "Menü bitti",
+      coverEndSub: "Geri kaydırın veya üstten sipariş gönderin",
+      prev: "◀ Önceki",
+      next: "Sonraki ▶",
       orientLock: "Telefonu dikey tutun",
-      dailySoupBanner: "GÃ¼nÃ¼n Ã§orbasÄ±",
-      dailySoupPhoto: "Ã‡orba fotoÄŸrafÄ±",
-      dailyDishTitle: "GÃ¼nÃ¼n YemeÄŸi",
-      dailyDishContinue: "MenÃ¼ye geÃ§",
+      dailySoupBanner: "Günün çorbası",
+      dailySoupPhoto: "Çorba fotoğrafı",
+      dailyDishTitle: "Günün Yemeği",
+      dailyDishContinue: "Menüye geç",
       dailyDishMain: "Ana yemek",
-      dailyDishSoup: "Ã‡orba",
-      dailyDishSides: "YanÄ±nda",
-      dailyDishDessert: "TatlÄ±",
-      dailyDishDrink: "Ä°Ã§ecek",
-      dailyDishToday: "BugÃ¼n",
-      dailyDishOrder: "Bu yemeÄŸi seÃ§",
-      dailyDishToMenu: "MenÃ¼ye geÃ§",
-      dailyDishSwipeHint: "MenÃ¼ iÃ§in saÄŸa veya sola kaydÄ±rÄ±n",
-      dailyDishGuide: "AltÄ±n dÃ¼ÄŸmeden yemeÄŸi seÃ§in Â· menÃ¼ iÃ§in kaydÄ±rÄ±n",
-      coverSwipeHint: "SayfalarÄ± Ã§evirmek iÃ§in saÄŸa veya sola kaydÄ±rÄ±n",
+      dailyDishSoup: "Çorba",
+      dailyDishSides: "Yanında",
+      dailyDishDessert: "Tatlı",
+      dailyDishDrink: "İçecek",
+      dailyDishToday: "Bugün",
+      dailyDishOrder: "Bu yemeği seç",
+      dailyDishToMenu: "Menüye geç",
+      dailyDishSwipeHint: "Menü için sağa veya sola kaydırın",
+      dailyDishGuide: "Altın düğmeden yemeği seçin · menü için kaydırın",
+      coverSwipeHint: "Sayfaları çevirmek için sağa veya sola kaydırın",
       dailyDishPriceLabel: "Fiyat",
-      dailyDishPickTitle: "MenÃ¼ seÃ§imleri",
-      dailyDishPickDessert: "TatlÄ± seÃ§in",
-      dailyDishPickDrink: "Ä°Ã§ecek seÃ§in",
-      dailyDishPickTea: "Ã‡ay ister misiniz?",
-      dailyDishTeaYes: "Evet â€” Ã§ay",
-      dailyDishTeaNo: "Ã‡aysÄ±z",
-      dailyDishTeaIncluded: "Ã‡ay ikram",
-      dailyDishPickRequired: "TÃ¼m seÃ§imleri yapÄ±n",
-      dailyDishAddToCart: "SipariÅŸe ekle",
+      dailyDishPickTitle: "Menü seçimleri",
+      dailyDishPickDessert: "Tatlı seçin",
+      dailyDishPickDrink: "İçecek seçin",
+      dailyDishPickTea: "Çay ister misiniz?",
+      dailyDishTeaYes: "Evet — çay",
+      dailyDishTeaNo: "Çaysız",
+      dailyDishTeaIncluded: "Çay ikram",
+      dailyDishPickRequired: "Tüm seçimleri yapın",
+      dailyDishAddToCart: "Siparişe ekle",
       dailyDishNoteLabel: "Yemek notu",
-      dailyDishNotePlaceholder: "Ã–rn: salatasÄ±z, ekstra pilavâ€¦",
-      dailyDishWeekBrowse: "Bu haftanÄ±n menÃ¼sÃ¼",
-      dailyDishWeekTitle: "Bu haftanÄ±n yemekleri",
-      dailyDishWeekHint: "SipariÅŸ sadece bugÃ¼nÃ¼n yemeÄŸi iÃ§in",
-      dailyDishWeekToday: "BugÃ¼n",
+      dailyDishNotePlaceholder: "Örn: salatasız, ekstra pilav…",
+      dailyDishWeekBrowse: "Bu haftanın menüsü",
+      dailyDishWeekTitle: "Bu haftanın yemekleri",
+      dailyDishWeekHint: "Sipariş sadece bugünün yemeği için",
+      dailyDishWeekToday: "Bugün",
       dailyDishWeekClose: "Kapat",
       iceCreamTitle: "Dondurma",
-      iceCreamFlavor: "Ã‡eÅŸit",
+      iceCreamFlavor: "Çeşit",
       iceCreamScoops: "Top adedi",
       iceCreamVessel: "Servis",
       iceCreamCup: "Kase",
-      iceCreamCone: "KÃ¼lah",
-      iceCreamAdd: "SipariÅŸe ekle",
+      iceCreamCone: "Külah",
+      iceCreamAdd: "Siparişe ekle",
       iceCreamTotal: "Toplam",
       iceCreamScoopUnit: "top",
       iceCreamServing: "Kase",
       iceCreamScoopN: "Top",
       iceCreamAddServing: "+ Bir kase daha",
-      iceCreamAddAll: "Hepsini sipariÅŸe ekle",
+      iceCreamAddAll: "Hepsini siparişe ekle",
       iceCreamRemoveServing: "Sil",
-      swipeHint: "SayfayÄ± Ã§evirmek iÃ§in kaydÄ±rÄ±n",
-      railOrderHint: "SipariÅŸ iÃ§in resimdeki yeÅŸil + dÃ¼ÄŸmesine basÄ±n",
-      tapPlusHint: 'Resimdeki yemeÄŸe <strong>yeÅŸil +</strong> dÃ¼ÄŸmesine basÄ±n',
-      tapPlusNudge: 'Resimde <strong>yeÅŸil +</strong> dÃ¼ÄŸmesine basÄ±n',
-      fsHint: "ğŸ‘† Tam ekran iÃ§in menÃ¼ye dokunun",
-      fsHintIos: "â†‘ Safari Ã§ubuÄŸunu gizlemek iÃ§in yukarÄ± kaydÄ±rÄ±n",
-      coverIosTip: "ğŸ“± iPhone: Safari Ã§ubuÄŸunu gizlemek iÃ§in yukarÄ± kaydÄ±rÄ±n â€” veya tam ekran iÃ§in Â«PaylaÅŸ â†’ Ana Ekrana EkleÂ»",
+      swipeHint: "Sayfayı çevirmek için kaydırın",
+      railOrderHint: "Sipariş için resimdeki yeşil + düğmesine basın",
+      tapPlusHint: 'Resimdeki yemeğe <strong>yeşil +</strong> düğmesine basın',
+      tapPlusNudge: 'Resimde <strong>yeşil +</strong> düğmesine basın',
+      fsHint: "👆 Tam ekran için menüye dokunun",
+      fsHintIos: "↑ Safari çubuğunu gizlemek için yukarı kaydırın",
+      coverIosTip: "📱 iPhone: Safari çubuğunu gizlemek için yukarı kaydırın — veya tam ekran için «Paylaş → Ana Ekrana Ekle»",
       iosInstallTitle: "iPhone'da daha iyi deneyim",
-      iosInstallSimple: "Otomatik indirme YOK. Safari'de altta â–¡â†‘ PaylaÅŸ â†’ Â«Ana Ekrana EkleÂ»",
-      iosInstallNote: "Bu bir indirme deÄŸil â€” 2 manuel adÄ±m. Sonra simgeden tam ekran aÃ§Ä±n.",
-      iosInstallContinue: "Tamam â€” menÃ¼ye geÃ§",
-      iosInstallLater: "Atla â€” menÃ¼ye geÃ§",
-      iosInAppTitle: "Ã–nce Safari'de aÃ§Ä±n",
-      iosInAppSimple: "WhatsApp vb. iÃ§inden Ana Ekrana Ekle Ã§alÄ±ÅŸmaz. â‹¯ â†’ Â«Safari'de AÃ§Â» seÃ§in.",
-      iosInAppNote: "Safari'den: â–¡â†‘ PaylaÅŸ â†’ Ana Ekrana Ekle. Veya Safari'de sipariÅŸ verin.",
-      iosInAppContinue: "AnladÄ±m",
+      iosInstallSimple: "Otomatik indirme YOK. Safari'de altta □↑ Paylaş → «Ana Ekrana Ekle»",
+      iosInstallNote: "Bu bir indirme değil — 2 manuel adım. Sonra simgeden tam ekran açın.",
+      iosInstallContinue: "Tamam — menüye geç",
+      iosInstallLater: "Atla — menüye geç",
+      iosInAppTitle: "Önce Safari'de açın",
+      iosInAppSimple: "WhatsApp vb. içinden Ana Ekrana Ekle çalışmaz. ⋯ → «Safari'de Aç» seçin.",
+      iosInAppNote: "Safari'den: □↑ Paylaş → Ana Ekrana Ekle. Veya Safari'de sipariş verin.",
+      iosInAppContinue: "Anladım",
       iosInAppLater: "Kapat",
-      iosInstallCoverBtn: "ğŸ“² Tam ekran â€” iPhone'a ekle",
-      iosCompactTip: "â–¡â†‘ PaylaÅŸ â†’ Ana Ekrana Ekle (tam ekran â€” Android gibi)",
-      menuTitle: "ğŸ“‹ Yemek listesi",
-      menuSub: "Ara ve her sayfadan sipariÅŸ ver",
-      menuSearch: "Araâ€¦ TÃ¼rk kahve, menemen, pastaâ€¦",
-      cartTitle: "SipariÅŸini kontrol et",
-      cartSub: "MiktarÄ± dÃ¼zenle, istersen her Ã¼rÃ¼ne not ekle",
+      iosInstallCoverBtn: "📲 Tam ekran — iPhone'a ekle",
+      iosCompactTip: "□↑ Paylaş → Ana Ekrana Ekle (tam ekran — Android gibi)",
+      menuTitle: "📋 Yemek listesi",
+      menuSub: "Ara ve her sayfadan sipariş ver",
+      menuSearch: "Ara… Türk kahve, menemen, pasta…",
+      cartTitle: "Siparişini kontrol et",
+      cartSub: "Miktarı düzenle, istersen her ürüne not ekle",
       cartTotal: "Toplam",
-      cartSend: "âœ“ Onayla ve mutfaÄŸa gÃ¶nder",
+      cartSend: "✓ Onayla ve mutfağa gönder",
       cartClearAll: "Sepeti temizle",
       noteDone: "Tamam",
       cartDelete: "Sil",
       toastCleared: "Sepet temizlendi",
-      notePh: "Genel sipariÅŸ notu (isteÄŸe baÄŸlÄ±)â€¦",
-      itemNotePh: "Bu Ã¼rÃ¼n iÃ§in not (soÄŸansÄ±z, az piÅŸmiÅŸâ€¦)",
-      lineNoteTitle: "ÃœrÃ¼n notu",
+      notePh: "Genel sipariş notu (isteğe bağlı)…",
+      itemNotePh: "Bu ürün için not (soğansız, az pişmiş…)",
+      lineNoteTitle: "Ürün notu",
       lineNoteSave: "Tamam",
-      popupClose: "Ä°ptal",
+      popupClose: "İptal",
       popupAdd: "Sepete ekle",
-      sugarChoose: "Åeker tercihini seÃ§in",
+      sugarChoose: "Şeker tercihini seçin",
       sugarSade: "Sade",
-      sugarOrta: "Orta ÅŸekerli",
-      sugarSekerli: "Åekerli",
-      sugarRequired: "Ã–nce ÅŸeker tercihini seÃ§in",
-      okTitle: "TeÅŸekkÃ¼rler! âœ“",
-      okAsk: "Ek sipariÅŸiniz var mÄ±?",
-      againBtn: "Ek sipariÅŸ",
-      exitBtn: "Ã‡Ä±kÄ±ÅŸ",
-      exitDone: "TeÅŸekkÃ¼rler â€” sipariÅŸ tamamlandÄ±",
-      exitHomeBtn: "Telefon ana ekranÄ±na dÃ¶n",
-      exitHomeHint: "AÅŸaÄŸÄ±daki dÃ¼ÄŸmeye veya telefonunuzun ana ekran dÃ¼ÄŸmesine basÄ±n",
+      sugarOrta: "Orta şekerli",
+      sugarSekerli: "Şekerli",
+      sugarRequired: "Önce şeker tercihini seçin",
+      okTitle: "Teşekkürler! ✓",
+      okAsk: "Ek siparişiniz var mı?",
+      againBtn: "Ek sipariş",
+      exitBtn: "Çıkış",
+      exitDone: "Teşekkürler — sipariş tamamlandı",
+      exitHomeBtn: "Telefon ana ekranına dön",
+      exitHomeHint: "Aşağıdaki düğmeye veya telefonunuzun ana ekran düğmesine basın",
       okFeedback:
-        "GÃ¶rÃ¼ÅŸÃ¼nÃ¼z bizim iÃ§in Ã¶nemli â€” hizmet hakkÄ±nda notunuz veya ÅŸikayetiniz varsa restoranÄ±mÄ±zÄ± geliÅŸtirmemize yardÄ±mcÄ± olun.",
-      okFeedbackOpen: "GÃ¶rÃ¼ÅŸÃ¼nÃ¼zÃ¼ paylaÅŸÄ±n",
-      okFeedbackPh: "Notunuzu veya ÅŸikayetinizi yazÄ±nâ€¦",
-      okFeedbackSend: "DeÄŸerlendirmeyi gÃ¶nder",
-      okFeedbackThanks: "TeÅŸekkÃ¼rler â€” gÃ¶rÃ¼ÅŸÃ¼nÃ¼z bize ulaÅŸtÄ±.",
-      okFeedbackErr: "GÃ¶nderilemedi â€” tekrar deneyin",
+        "Görüşünüz bizim için önemli — hizmet hakkında notunuz veya şikayetiniz varsa restoranımızı geliştirmemize yardımcı olun.",
+      okFeedbackOpen: "Görüşünüzü paylaşın",
+      okFeedbackPh: "Notunuzu veya şikayetinizi yazın…",
+      okFeedbackSend: "Değerlendirmeyi gönder",
+      okFeedbackThanks: "Teşekkürler — görüşünüz bize ulaştı.",
+      okFeedbackErr: "Gönderilemedi — tekrar deneyin",
       table: "Masa",
-      items: "Ã¼rÃ¼n",
+      items: "ürün",
       orderTotal: "Toplam",
-      emptyCart: "Sepet boÅŸ",
-      emptyCartHint: "MenÃ¼de + veya listeden ekle",
-      menuLoading: "Yemekler yÃ¼kleniyorâ€¦",
-      menuNoResults: "SonuÃ§ yok",
+      emptyCart: "Sepet boş",
+      emptyCartHint: "Menüde + veya listeden ekle",
+      menuLoading: "Yemekler yükleniyor…",
+      menuNoResults: "Sonuç yok",
       errScanQr: "QR okut",
-      errScanQrD: "SipariÅŸ iÃ§in masadaki QR kodu okutun.",
+      errScanQrD: "Sipariş için masadaki QR kodu okutun.",
       errOldQr: "Eski QR",
-      errOldQrD: "Kasiyer ayarlarÄ±ndan QR kodlarÄ±nÄ± gÃ¼ncelleyin.",
-      errDisabled: "QR sipariÅŸ kapalÄ±",
-      errDisabledD: "Kasiyer ayarlarÄ±ndan etkinleÅŸtirin.",
-      errConn: "ÃœzgÃ¼nÃ¼z, sistem geÃ§ici olarak kapalÄ±",
-      errConnD: "LÃ¼tfen biraz sonra tekrar deneyin.",
+      errOldQrD: "Kasiyer ayarlarından QR kodlarını güncelleyin.",
+      errDisabled: "QR sipariş kapalı",
+      errDisabledD: "Kasiyer ayarlarından etkinleştirin.",
+      errConn: "Üzgünüz, sistem geçici olarak kapalı",
+      errConnD: "Lütfen biraz sonra tekrar deneyin.",
       retry: "Tekrar dene",
-      errTable: "Masa kasada aÃ§Ä±k deÄŸil.\nZEKiQ POS'tan masayÄ± aÃ§Ä±n ve tekrar deneyin.",
-      errToken: "Eski QR â€” kasiyerden yeni QR yazdÄ±rÄ±n.",
-      errSend: "GÃ¶nderilemedi â€” internet veya ZEKiQ POS'u kontrol edin.",
-      errNet: "BaÄŸlantÄ± hatasÄ± â€” interneti kontrol edin.",
-      okDetail: "SipariÅŸiniz kasa ve mutfaÄŸa ulaÅŸtÄ±",
-      toastAdded: "â†’ sepet",
-      menuNotReady: "MenÃ¼ hazÄ±r deÄŸil",
-      menuNotReadyD: "Kasadan PDF menÃ¼yÃ¼ iÃ§e aktarÄ±n",
+      errTable: "Masa kasada açık değil.\nZEKiQ POS'tan masayı açın ve tekrar deneyin.",
+      errToken: "Eski QR — kasiyerden yeni QR yazdırın.",
+      errSend: "Gönderilemedi — internet veya ZEKiQ POS'u kontrol edin.",
+      errNet: "Bağlantı hatası — interneti kontrol edin.",
+      okDetail: "Siparişiniz kasa ve mutfağa ulaştı",
+      toastAdded: "→ sepet",
+      menuNotReady: "Menü hazır değil",
+      menuNotReadyD: "Kasadan PDF menüyü içe aktarın",
     },
     en: {
-      pageTitle: "Table order â€” ZEKiQ",
-      loadingTitle: "Loading menuâ€¦",
+      pageTitle: "Table order — ZEKiQ",
+      loadingTitle: "Loading menu…",
       loadingSub: "Digital menu book",
-      menuList: "ğŸ“‹ Menu",
-      send: "Send âœ“",
+      menuList: "📋 Menu",
+      send: "Send ✓",
       guide1: '<span class="guide-n">1</span> Tap the green <strong>+</strong> on the image',
       guide2: '<span class="guide-n">2</span> Then <strong>Send</strong> to confirm',
       coachTitle: "How do you order yourself?",
       coverWelcomeGreet: "Welcome",
-      coverWelcomeSub: "Your comfort matters â€” we care about your experience",
-      coverOrderHead: "Order easily â€” your order arrives at your table",
+      coverWelcomeSub: "Your comfort matters — we care about your experience",
+      coverOrderHead: "Order easily — your order arrives at your table",
       coverOrderLead: "4 simple steps from your phone to your table",
       coverWelcomeHead: "Welcome",
-      coverWelcomeLead: "Your comfort matters â€” we care about your experience",
+      coverWelcomeLead: "Your comfort matters — we care about your experience",
       coverPitch1: "Full control of your orders, right in your hands",
       coverPitch2: "Browse the menu freely and send orders straight to the kitchen",
-      coverPitch3: "Add notes to each item â€” exactly how you want it",
+      coverPitch3: "Add notes to each item — exactly how you want it",
       coach1: "Swipe left or right to turn menu pages",
       coach2: 'Tap the green <strong>+</strong> on the dish you want',
-      coach3: 'Tap <strong>Send â†‘</strong> at the top, then confirm',
-      coach4: 'Add a <strong>note</strong> to your order â€” e.g. to remove or add something',
-      coachOk: "Got it â€” start ordering now âœ“",
+      coach3: 'Tap <strong>Send ↑</strong> at the top, then confirm',
+      coach4: 'Add a <strong>note</strong> to your order — e.g. to remove or add something',
+      coachOk: "Got it — start ordering now ✓",
       coverStartBadge: "Cover",
       coverStartTitle: "Tonino Coffee",
       coverStartKicker: "MENU",
       coverDigitalMenu: "Digital Menu",
-      coverBrandSub: "Coffee Â· Restaurant",
-      coverTagline: "Kahve Â· Yemek Â· Hayat",
-      coverStartSub: "Tap Â«Got itÂ» to start ordering",
+      coverBrandSub: "Coffee · Restaurant",
+      coverTagline: "Kahve · Yemek · Hayat",
+      coverStartSub: "Tap «Got it» to start ordering",
       coverEndBadge: "Menu end",
       coverEndTitle: "End of menu",
       coverEndSub: "Swipe back or send your order above",
-      prev: "â—€ Prev",
-      next: "Next â–¶",
+      prev: "◀ Prev",
+      next: "Next ▶",
       orientLock: "Keep your phone upright to browse the menu",
       dailySoupBanner: "Soup of the day",
       dailySoupPhoto: "Soup photo",
@@ -4350,20 +4350,20 @@
       dailyDishOrder: "Choose this dish",
       dailyDishToMenu: "Full menu",
       dailyDishSwipeHint: "Swipe left or right for the menu",
-      dailyDishGuide: "Pick the dish with the gold button Â· then swipe for the menu",
+      dailyDishGuide: "Pick the dish with the gold button · then swipe for the menu",
       coverSwipeHint: "Swipe left or right to turn pages",
       dailyDishPriceLabel: "Price",
       dailyDishPickTitle: "Choose your options",
       dailyDishPickDessert: "Choose dessert",
       dailyDishPickDrink: "Choose drink",
       dailyDishPickTea: "Would you like tea?",
-      dailyDishTeaYes: "Yes â€” tea",
+      dailyDishTeaYes: "Yes — tea",
       dailyDishTeaNo: "No tea",
       dailyDishTeaIncluded: "Tea included",
       dailyDishPickRequired: "Please complete all choices",
       dailyDishAddToCart: "Add to order",
       dailyDishNoteLabel: "Dish note",
-      dailyDishNotePlaceholder: "e.g. no salad, extra riceâ€¦",
+      dailyDishNotePlaceholder: "e.g. no salad, extra rice…",
       dailyDishWeekBrowse: "This week's menu",
       dailyDishWeekTitle: "Dishes this week",
       dailyDishWeekHint: "Order is only available for today's dish",
@@ -4387,34 +4387,34 @@
       railOrderHint: "Tap the green + on the image to order",
       tapPlusHint: 'Tap the green <strong>+</strong> button on the dish in the image',
       tapPlusNudge: 'Tap the green <strong>+</strong> on the image',
-      fsHint: "ğŸ‘† Tap the menu for full screen",
-      fsHintIos: "â†‘ Swipe up slightly to hide Safari bar and fill the screen",
-      coverIosTip: "ğŸ“± iPhone: swipe up to hide Safari bar â€” or Share â†’ Add to Home Screen for always-fullscreen",
+      fsHint: "👆 Tap the menu for full screen",
+      fsHintIos: "↑ Swipe up slightly to hide Safari bar and fill the screen",
+      coverIosTip: "📱 iPhone: swipe up to hide Safari bar — or Share → Add to Home Screen for always-fullscreen",
       iosInstallTitle: "Better experience on iPhone",
-      iosInstallSimple: "No auto download. In Safari: â–¡â†‘ Share â†’ Â«Add to Home ScreenÂ»",
-      iosInstallNote: "Not a download button â€” two manual steps. Then open from the home icon.",
-      iosInstallContinue: "OK â€” open menu",
-      iosInstallLater: "Skip â€” open menu",
+      iosInstallSimple: "No auto download. In Safari: □↑ Share → «Add to Home Screen»",
+      iosInstallNote: "Not a download button — two manual steps. Then open from the home icon.",
+      iosInstallContinue: "OK — open menu",
+      iosInstallLater: "Skip — open menu",
       iosInAppTitle: "Open in Safari first",
-      iosInAppSimple: "Add to Home Screen does not work inside WhatsApp. Tap â‹¯ â†’ Â«Open in SafariÂ».",
-      iosInAppNote: "Then in Safari: â–¡â†‘ Share â†’ Add to Home Screen. Or order in Safari.",
+      iosInAppSimple: "Add to Home Screen does not work inside WhatsApp. Tap ⋯ → «Open in Safari».",
+      iosInAppNote: "Then in Safari: □↑ Share → Add to Home Screen. Or order in Safari.",
       iosInAppContinue: "Got it",
       iosInAppLater: "Close",
-      iosInstallCoverBtn: "ğŸ“² Full screen â€” Add to iPhone",
-      iosCompactTip: "â–¡â†‘ Share â†’ Add to Home Screen (full screen like Android)",
-      menuTitle: "ğŸ“‹ Dish list",
+      iosInstallCoverBtn: "📲 Full screen — Add to iPhone",
+      iosCompactTip: "□↑ Share → Add to Home Screen (full screen like Android)",
+      menuTitle: "📋 Dish list",
       menuSub: "Search and order from any page",
-      menuSearch: "Searchâ€¦ coffee, pastaâ€¦",
+      menuSearch: "Search… coffee, pasta…",
       cartTitle: "Review your order",
       cartSub: "Edit qty and add a note per item if you like",
       cartTotal: "Total",
-      cartSend: "âœ“ Confirm & send to kitchen",
+      cartSend: "✓ Confirm & send to kitchen",
       cartClearAll: "Clear cart",
       noteDone: "Done",
       cartDelete: "Delete",
       toastCleared: "Cart cleared",
-      notePh: "General order note (optional)â€¦",
-      itemNotePh: "Note for this item (no onion, medium rareâ€¦)",
+      notePh: "General order note (optional)…",
+      itemNotePh: "Note for this item (no onion, medium rare…)",
       lineNoteTitle: "Item note",
       lineNoteSave: "Done",
       popupClose: "Cancel",
@@ -4424,26 +4424,26 @@
       sugarOrta: "Medium sugar",
       sugarSekerli: "Full sugar",
       sugarRequired: "Choose sugar level first",
-      okTitle: "Thank you! âœ“",
+      okTitle: "Thank you! ✓",
       okAsk: "Would you like to order more?",
       againBtn: "Order more",
       exitBtn: "Exit",
-      exitDone: "Thank you â€” order complete",
+      exitDone: "Thank you — order complete",
       exitHomeBtn: "Back to phone home",
-      exitHomeHint: "Tap the button below, or your phoneâ€™s Home button",
+      exitHomeHint: "Tap the button below, or your phone’s Home button",
       okFeedback:
-        "Your opinion matters â€” if you have feedback or a complaint, help us improve the restaurant.",
+        "Your opinion matters — if you have feedback or a complaint, help us improve the restaurant.",
       okFeedbackOpen: "Share your feedback",
-      okFeedbackPh: "Write your note or complaint hereâ€¦",
+      okFeedbackPh: "Write your note or complaint here…",
       okFeedbackSend: "Send feedback",
-      okFeedbackThanks: "Thank you â€” we received your feedback.",
-      okFeedbackErr: "Could not send â€” try again",
+      okFeedbackThanks: "Thank you — we received your feedback.",
+      okFeedbackErr: "Could not send — try again",
       table: "Table",
       items: "items",
       orderTotal: "Total",
       emptyCart: "Cart is empty",
       emptyCartHint: "Tap + on menu or use list",
-      menuLoading: "Loading dishesâ€¦",
+      menuLoading: "Loading dishes…",
       menuNoResults: "No results",
       errScanQr: "Scan QR",
       errScanQrD: "Scan the table QR code to order.",
@@ -4455,11 +4455,11 @@
       errConnD: "Please try again in a little while.",
       retry: "Try again",
       errTable: "Table not open on cashier.\nOpen the table in ZEKiQ POS and try again.",
-      errToken: "Old QR â€” print a new one from cashier.",
-      errSend: "Could not send â€” check internet or ZEKiQ POS.",
-      errNet: "Connection failed â€” check internet.",
+      errToken: "Old QR — print a new one from cashier.",
+      errSend: "Could not send — check internet or ZEKiQ POS.",
+      errNet: "Connection failed — check internet.",
       okDetail: "Your order reached the cashier and kitchen",
-      toastAdded: "â†’ cart",
+      toastAdded: "→ cart",
       menuNotReady: "Menu not ready",
       menuNotReadyD: "Import PDF menu from cashier",
     },
@@ -4916,8 +4916,8 @@
     }
     const ICE_CREAM_SCOOP_PRICE = 60;
     const ICE_CREAM_FLAVORS = [
-      "Ã‡ikolata", "Vanilya", "Muz", "BÃ¶ÄŸÃ¼rtlen", "Yaban Mersini",
-      "Limon", "Antep FÄ±stÄ±ÄŸÄ±", "Karamelli",
+      "Çikolata", "Vanilya", "Muz", "Böğürtlen", "Yaban Mersini",
+      "Limon", "Antep Fıstığı", "Karamelli",
     ];
     function rebuildBookSpread() {
       bookSpread = [{ kind: "cover-start" }];
@@ -4948,7 +4948,7 @@
       if (kind === "cover-end") return guestT("coverEndBadge");
       if (kind === "daily-dish") return guestT("dailyDishTitle");
       const mi = menuIdxFromCur(cur);
-      return mi >= 0 ? (mi + 1) + " / " + menuPageCount : "â€”";
+      return mi >= 0 ? (mi + 1) + " / " + menuPageCount : "—";
     }
     function isStandaloneIceCreamItem(it) {
       const n = normName(it && it.name);
@@ -4974,7 +4974,7 @@
       const s = String(raw || "").trim();
       if (!s) return "Tonino Coffee";
       const lower = s.toLowerCase().replace(/\s+/g, " ");
-      if (/zekiq\s*dev|zekiq\s*vendor|dev\s*zekiq|zekiq\s*â€”\s*dev|^zekiq$/i.test(lower)) return "Tonino Coffee";
+      if (/zekiq\s*dev|zekiq\s*vendor|dev\s*zekiq|zekiq\s*—\s*dev|^zekiq$/i.test(lower)) return "Tonino Coffee";
       const digits = s.replace(/\D/g, "");
       const compact = s.replace(/\s/g, "");
       if (digits.length >= 8 && digits.length / Math.max(compact.length, 1) >= 0.85) return "Tonino Coffee";
@@ -5060,7 +5060,7 @@
           : guestT("iceCreamAdd");
       }
       if (totalEl) {
-        totalEl.textContent = guestT("iceCreamTotal") + ": " + iceSheetGrandTotal() + " â‚º";
+        totalEl.textContent = guestT("iceCreamTotal") + ": " + iceSheetGrandTotal() + " ₺";
       }
       if (!list) return;
       list.innerHTML = "";
@@ -5180,8 +5180,8 @@
       const flavorNote = n === 1
         ? serving.flavors[0]
         : serving.flavors.join(" + ");
-      const note = flavorNote + " Â· " + n + " " + guestT("iceCreamScoopUnit") + " Â· " + vesselLabel;
-      const displayName = "Dondurma Â· " + note;
+      const note = flavorNote + " · " + n + " " + guestT("iceCreamScoopUnit") + " · " + vesselLabel;
+      const displayName = "Dondurma · " + note;
       const price = ICE_CREAM_SCOOP_PRICE * n;
       const item = Object.assign({}, base, { name: displayName, price: String(price) });
       addToCart(item, { flash: true, note: note });
@@ -5213,7 +5213,7 @@
         const tableLine = document.createElement("p");
         tableLine.className = "cover-table-line";
         if (section && tableNum) {
-          tableLine.textContent = section + " Â· " + guestT("table") + " " + tableNum;
+          tableLine.textContent = section + " · " + guestT("table") + " " + tableNum;
         }
 
         const guide = document.createElement("div");
@@ -5229,7 +5229,7 @@
 
         const instr = document.createElement("div");
         instr.className = "cover-instructions";
-        const stepIcons = ["ğŸ“–", "â•", "âœ“", "ğŸ“"];
+        const stepIcons = ["📖", "➕", "✓", "📝"];
         [1, 2, 3, 4].forEach(n => {
           const row = document.createElement("div");
           row.className = "cover-step";
@@ -5292,8 +5292,8 @@
         const swipe = document.createElement("div");
         swipe.className = "book-cover-swipe";
         swipe.innerHTML =
-          '<span class="cover-arrow cover-arrow-prev" aria-hidden="true">â€¹</span>' +
-          '<span class="cover-arrow cover-arrow-next" aria-hidden="true">â€º</span>';
+          '<span class="cover-arrow cover-arrow-prev" aria-hidden="true">‹</span>' +
+          '<span class="cover-arrow cover-arrow-next" aria-hidden="true">›</span>';
         frame.appendChild(badge);
         frame.appendChild(title);
         frame.appendChild(sub);
@@ -5334,11 +5334,11 @@
         el.textContent = guestT("coachTitle");
       });
       document.querySelectorAll(".cover-table-line").forEach(el => {
-        if (section && tableNum) el.textContent = section + " Â· " + guestT("table") + " " + tableNum;
+        if (section && tableNum) el.textContent = section + " · " + guestT("table") + " " + tableNum;
       });
       document.querySelectorAll(".cover-instructions .cover-step").forEach((row, i) => {
         const txt = row.querySelector(".cover-step-text");
-        const icons = ["ğŸ“–", "â•", "âœ“", "ğŸ“"];
+        const icons = ["📖", "➕", "✓", "📝"];
         const ico = row.querySelector(".cover-step-ico");
         if (ico && icons[i]) ico.textContent = icons[i];
         if (txt && i < 4) txt.innerHTML = guestT("coach" + (i + 1));
@@ -5366,64 +5366,64 @@
     function esc(s) {
       return String(s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
     }
-    function money(n) { return (Math.round(Number(n) || 0)).toLocaleString("tr-TR") + " â‚º"; }
-    /** Price digits only (no TL / â‚º) â€” used in selected-orders chip. */
+    function money(n) { return (Math.round(Number(n) || 0)).toLocaleString("tr-TR") + " ₺"; }
+    /** Price digits only (no TL / ₺) — used in selected-orders chip. */
     function moneyPlain(n) { return (Math.round(Number(n) || 0)).toLocaleString("tr-TR"); }
     function deptEmoji(d) {
-      if (d === "kitchen") return "ğŸ³";
-      if (d === "barista") return "â˜•";
-      if (d === "nargile") return "ğŸ’¨";
-      return "ğŸ½";
+      if (d === "kitchen") return "🍳";
+      if (d === "barista") return "☕";
+      if (d === "nargile") return "💨";
+      return "🍽";
     }
     const CAT_AR = {
-      "kahvalti": "Ø¥ÙØ·Ø§Ø±", "baslangic": "Ù…Ù‚Ø¨Ù„Ø§Øª", "lavas tost": "ØªÙˆØ³Øª", "makarnalar": "Ù…Ø¹ÙƒØ±ÙˆÙ†Ø©",
-      "salatalar": "Ø³Ù„Ø·Ø§Øª", "tavuk": "Ø¯Ø¬Ø§Ø¬", "pizza": "Ø¨ÙŠØªza", "kofte & burger": "ÙƒÙØªØ© ÙˆØ¨Ø±Ø¬Ø±",
-      "tatlilar": "Ø­Ù„ÙˆÙŠØ§Øª", "cay": "Ø´Ø§ÙŠ", "kahve": "Ù‚Ù‡ÙˆØ©", "soguk icecek": "Ù…Ø´Ø±ÙˆØ¨Ø§Øª Ø¨Ø§Ø±Ø¯Ø©",
-      "icecek": "Ù…Ø´Ø±ÙˆØ¨Ø§Øª", "nargile": "Ø£Ø±Ø¬ÙŠÙ„Ø©",
+      "kahvalti": "إفطار", "baslangic": "مقبلات", "lavas tost": "توست", "makarnalar": "معكرونة",
+      "salatalar": "سلطات", "tavuk": "دجاج", "pizza": "بيتza", "kofte & burger": "كفتة وبرجر",
+      "tatlilar": "حلويات", "cay": "شاي", "kahve": "قهوة", "soguk icecek": "مشروبات باردة",
+      "icecek": "مشروبات", "nargile": "أرجيلة",
     };
     const CATEGORY_SHORT = {
-      "kahvalti": "KahvaltÄ±",
-      "baslangic": "BaÅŸlangÄ±Ã§",
+      "kahvalti": "Kahvaltı",
+      "baslangic": "Başlangıç",
       "lavas tost": "Tost",
       "makarnalar": "Makarna",
       "salatalar": "Salata",
       "tavuk": "Tavuk",
       "pizza": "Pizza",
-      "kofte & burger": "KÃ¶fte",
-      "tatlilar": "TatlÄ±",
+      "kofte & burger": "Köfte",
+      "tatlilar": "Tatlı",
       "dondurma": "Dondurma",
-      "cay": "Ã‡ay",
+      "cay": "Çay",
       "kahve": "Kahve",
-      "soguk icecek": "Ä°Ã§ecek",
-      "icecek": "Ä°Ã§ecek",
+      "soguk icecek": "İçecek",
+      "icecek": "İçecek",
       "nargile": "Nargile",
       "sporcu": "Spor",
     };
     const PAGE_CHIP_SHORT = [
-      "Serpme", "KahvaltÄ±", "Tost", "Makarna", "Tavuk", "Tavuk", "Pizza", "KÃ¶fte", "Burger",
-      "Spor", "TatlÄ±", "Dondurma", "Ã‡ay", "SÄ±cak Kahve", "SoÄŸuk Kahve", "Frozen", "Smoothie", "Milkshake", "Mojito",
-      "Kokteyl", "Ä°Ã§ecek",
+      "Serpme", "Kahvaltı", "Tost", "Makarna", "Tavuk", "Tavuk", "Pizza", "Köfte", "Burger",
+      "Spor", "Tatlı", "Dondurma", "Çay", "Sıcak Kahve", "Soğuk Kahve", "Frozen", "Smoothie", "Milkshake", "Mojito",
+      "Kokteyl", "İçecek",
     ];
     function categoryChipLabel(pageIdx) {
       if (chipLabelOverrides[String(pageIdx)]) return chipLabelOverrides[String(pageIdx)];
       const file = bookPages[pageIdx] || "";
-      if (file === "page-013.jpg") return "Ã‡ay";
-      if (file === "page-014.jpg") return "SÄ±cak Kahve";
-      if (file === "page-015.jpg") return "SoÄŸuk Kahve";
+      if (file === "page-013.jpg") return "Çay";
+      if (file === "page-014.jpg") return "Sıcak Kahve";
+      if (file === "page-015.jpg") return "Soğuk Kahve";
       const cats = pageCategories[String(pageIdx)] || pageCategories[pageIdx] || [];
       const catKey = normCat(cats[0] || "");
-      if (catKey === "cay") return "Ã‡ay";
+      if (catKey === "cay") return "Çay";
       if (catKey === "kahve") {
-        if (file === "page-015.jpg" || pageIdx === 14) return "SoÄŸuk Kahve";
-        if (file === "page-014.jpg" || pageIdx === 13) return "SÄ±cak Kahve";
+        if (file === "page-015.jpg" || pageIdx === 14) return "Soğuk Kahve";
+        if (file === "page-014.jpg" || pageIdx === 13) return "Sıcak Kahve";
       }
       if (PAGE_CHIP_SHORT[pageIdx]) return PAGE_CHIP_SHORT[pageIdx];
       const raw = cats[0] || "";
       const key = normCat(raw);
       if (CATEGORY_SHORT[key]) return CATEGORY_SHORT[key];
       const pl = PAGE_LABELS[pageIdx];
-      if (pl) return pl.split("Â·")[0].trim().replace(/\s*\(\d+\)\s*$/, "").trim();
-      return raw || "â€”";
+      if (pl) return pl.split("·")[0].trim().replace(/\s*\(\d+\)\s*$/, "").trim();
+      return raw || "—";
     }
     function buildCategoryChips() {
       const chips = [];
@@ -5481,11 +5481,11 @@
     let dailyDishGuestAlwaysVisible = true;
     function isSoupMenuItem(it) {
       const n = normName(it && it.name);
-      return /gunun\s*corbasi|corbasi|corba|soup|Ø´ÙˆØ±Ø¨Ø©|Ø´ÙˆØ±Ø¨Ù‡/.test(n);
+      return /gunun\s*corbasi|corbasi|corba|soup|شوربة|شوربه/.test(n);
     }
     function isSoupSpot(spot) {
       const n = normName(spot && spot.name);
-      return /gunun\s*corbasi|corbasi|corba|soup|Ø´ÙˆØ±Ø¨Ø©|Ø´ÙˆØ±Ø¨Ù‡/.test(n);
+      return /gunun\s*corbasi|corbasi|corba|soup|شوربة|شوربه/.test(n);
     }
     function findSoupMenuPageIdx() {
       for (const key of Object.keys(manualSpots || {})) {
@@ -5540,7 +5540,7 @@
       const d = new Date();
       return d.getHours() * 60 + d.getMinutes();
     }
-    /** Guest daily dish â€” 24/7 when API says always visible (trial default). */
+    /** Guest daily dish — 24/7 when API says always visible (trial default). */
     function isDailyDishGuestWindow() {
       if (!dailySoupFeatureOn) return false;
       if (dailyDishGuestAlwaysVisible !== false) return hasDailyDishPackage();
@@ -5550,7 +5550,7 @@
       if (start <= end) return cur >= start && cur < end;
       return cur >= start || cur < end;
     }
-    /** Lunch window â†’ open soup/starter page when daily dish page is off. */
+    /** Lunch window → open soup/starter page when daily dish page is off. */
     function isLunchSpecialWindow() {
       return isDailyDishGuestWindow();
     }
@@ -5575,7 +5575,7 @@
           dessert2: String(dish.dessert2 || "").trim(),
           drink: String(dish.drink || "").trim(),
           drink2: String(dish.drink2 || "").trim(),
-          teaOffer: String(dish.teaOffer || "Ù†Ø¹Ù…").trim(),
+          teaOffer: String(dish.teaOffer || "نعم").trim(),
           price: String(dish.price || "").trim(),
           imageUrl: fixImgUrl(String(dish.imageUrl || "").trim()),
         };
@@ -5617,9 +5617,9 @@
         formatDailyDishChoiceLine(guestT("dailyDishDessert"), todayDailyDish.dessert, todayDailyDish.dessert2),
         formatDailyDishChoiceLine(guestT("dailyDishDrink"), todayDailyDish.drink, todayDailyDish.drink2),
       ];
-      const tea = String(todayDailyDish.teaOffer || "Ù†Ø¹Ù…").trim();
-      if (tea === "Ù†Ø¹Ù…") extras.push(guestT("dailyDishTeaIncluded"));
-      else if (tea === "Ø§Ø®ØªÙŠØ§Ø±ÙŠ") extras.push(guestT("dailyDishPickTea"));
+      const tea = String(todayDailyDish.teaOffer || "نعم").trim();
+      if (tea === "نعم") extras.push(guestT("dailyDishTeaIncluded"));
+      else if (tea === "اختياري") extras.push(guestT("dailyDishPickTea"));
       const extrasHtml = extras.map(function (t) { return String(t || "").trim(); }).filter(Boolean).length
         ? '<ul class="dd-page-items">' + extras.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>"
         : "";
@@ -5634,7 +5634,7 @@
         e.stopPropagation();
         orderDailyDish();
         btn.classList.add("in-cart");
-        btn.textContent = "âœ“ " + guestT("dailyDishOrder");
+        btn.textContent = "✓ " + guestT("dailyDishOrder");
       };
     }
     function fillDailyDishPage(pf) {
@@ -5668,7 +5668,7 @@
         }
         actionsHtml +=
           '<button type="button" class="dd-poster-order' + (inCart ? " in-cart" : "") + '" data-dd-order="1">' +
-          esc(inCart ? ("âœ“ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
+          esc(inCart ? ("✓ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
           "</button>";
         const swipeHintHtml = swipeFingerHintHtml("dailyDishSwipeHint").replace(
           'data-swipe-finger="1"',
@@ -5679,7 +5679,7 @@
         stack.className = "book-daily-poster-stack";
         stack.innerHTML =
           '<div class="dd-poster-img">' +
-          '<span class="dd-poster-badge">' + esc(guestT("dailyDishToday")) + " Â· " + esc(guestT("dailyDishTitle")) + "</span>" +
+          '<span class="dd-poster-badge">' + esc(guestT("dailyDishToday")) + " · " + esc(guestT("dailyDishTitle")) + "</span>" +
           '<img alt="" draggable="false" decoding="async" src="' + esc(posterSrc) + '" />' +
           "</div>" +
           '<div class="dd-poster-explain">' +
@@ -5722,7 +5722,7 @@
         body.extras +
         priceHtml +
         '<button type="button" class="dd-page-order' + (inCart ? " in-cart" : "") + '" data-dd-order="1">' +
-        esc(inCart ? ("âœ“ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
+        esc(inCart ? ("✓ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
         "</button>" +
         (weeklyDishes.length > 1
           ? '<button type="button" class="dd-poster-week-btn" style="max-width:320px;margin-top:8px" data-dd-week="1">' +
@@ -5765,11 +5765,11 @@
     function defaultDailyDishPick() {
       const desserts = dailyDishOptionList(todayDailyDish && todayDailyDish.dessert, todayDailyDish && todayDailyDish.dessert2);
       const drinks = dailyDishOptionList(todayDailyDish && todayDailyDish.drink, todayDailyDish && todayDailyDish.drink2);
-      const tea = String((todayDailyDish && todayDailyDish.teaOffer) || "Ù†Ø¹Ù…").trim();
+      const tea = String((todayDailyDish && todayDailyDish.teaOffer) || "نعم").trim();
       return {
         dessert: desserts.length === 1 ? desserts[0] : "",
         drink: drinks.length === 1 ? drinks[0] : "",
-        tea: tea === "Ù†Ø¹Ù…" ? true : tea === "Ù„Ø§" ? false : null,
+        tea: tea === "نعم" ? true : tea === "لا" ? false : null,
         note: "",
       };
     }
@@ -5777,17 +5777,17 @@
       if (!todayDailyDish) return false;
       const desserts = dailyDishOptionList(todayDailyDish.dessert, todayDailyDish.dessert2);
       const drinks = dailyDishOptionList(todayDailyDish.drink, todayDailyDish.drink2);
-      const tea = String(todayDailyDish.teaOffer || "Ù†Ø¹Ù…").trim();
-      return desserts.length > 1 || drinks.length > 1 || tea === "Ø§Ø®ØªÙŠØ§Ø±ÙŠ";
+      const tea = String(todayDailyDish.teaOffer || "نعم").trim();
+      return desserts.length > 1 || drinks.length > 1 || tea === "اختياري";
     }
     function dailyDishSheetValid(pick) {
       if (!todayDailyDish || !pick) return false;
       const desserts = dailyDishOptionList(todayDailyDish.dessert, todayDailyDish.dessert2);
       const drinks = dailyDishOptionList(todayDailyDish.drink, todayDailyDish.drink2);
-      const tea = String(todayDailyDish.teaOffer || "Ù†Ø¹Ù…").trim();
+      const tea = String(todayDailyDish.teaOffer || "نعم").trim();
       if (desserts.length > 1 && !pick.dessert) return false;
       if (drinks.length > 1 && !pick.drink) return false;
-      if (tea === "Ø§Ø®ØªÙŠØ§Ø±ÙŠ" && pick.tea !== true && pick.tea !== false) return false;
+      if (tea === "اختياري" && pick.tea !== true && pick.tea !== false) return false;
       return true;
     }
     function buildDailyDishCartNote(pick) {
@@ -5800,12 +5800,12 @@
       const drinkVal = p.drink || (drinks.length === 1 ? drinks[0] : "");
       if (dessertVal) parts.push(guestT("dailyDishDessert") + ": " + dessertVal);
       if (drinkVal) parts.push(guestT("dailyDishDrink") + ": " + drinkVal);
-      const tea = String(todayDailyDish.teaOffer || "Ù†Ø¹Ù…").trim();
-      if (tea === "Ù†Ø¹Ù…" || p.tea === true) parts.push(guestT("dailyDishTeaYes"));
-      else if (tea === "Ø§Ø®ØªÙŠØ§Ø±ÙŠ" && p.tea === false) parts.push(guestT("dailyDishTeaNo"));
+      const tea = String(todayDailyDish.teaOffer || "نعم").trim();
+      if (tea === "نعم" || p.tea === true) parts.push(guestT("dailyDishTeaYes"));
+      else if (tea === "اختياري" && p.tea === false) parts.push(guestT("dailyDishTeaNo"));
       const customNote = String((p && p.note) || "").trim();
       if (customNote) parts.push(customNote);
-      return parts.filter(Boolean).join(" Â· ");
+      return parts.filter(Boolean).join(" · ");
     }
     function closeDailyDishSheet() {
       const sheet = document.getElementById("daily-dish-sheet");
@@ -5835,7 +5835,7 @@
       const title = document.getElementById("ddWeekTitle");
       const sub = document.getElementById("ddWeekSub");
       const closeBtn = document.getElementById("ddWeekClose");
-      if (title) title.textContent = dailyDishWeekLabel ? (dailyDishWeekLabel + " â€” " + guestT("dailyDishWeekTitle")) : guestT("dailyDishWeekTitle");
+      if (title) title.textContent = dailyDishWeekLabel ? (dailyDishWeekLabel + " — " + guestT("dailyDishWeekTitle")) : guestT("dailyDishWeekTitle");
       if (sub) sub.textContent = guestT("dailyDishWeekHint");
       if (closeBtn) closeBtn.textContent = guestT("dailyDishWeekClose");
       if (!list) return;
@@ -5847,8 +5847,8 @@
         const imgSrc = row.imageUrl ? fixImgUrl(row.imageUrl) : "";
         const thumb = imgSrc
           ? '<img alt="" draggable="false" decoding="async" src="' + esc(imgSrc) + '" />'
-          : '<span class="dd-week-thumb-ph" aria-hidden="true">ğŸ½</span>';
-        const meta = [row.soup, row.sides].map(function (t) { return String(t || "").trim(); }).filter(Boolean).join(" Â· ");
+          : '<span class="dd-week-thumb-ph" aria-hidden="true">🍽</span>';
+        const meta = [row.soup, row.sides].map(function (t) { return String(t || "").trim(); }).filter(Boolean).join(" · ");
         const priceNum = Number(String(row.price || "").replace(",", "."));
         const priceHtml = row.price && Number.isFinite(priceNum) && priceNum > 0
           ? '<div class="dd-week-price">' + esc(money(priceNum)) + "</div>"
@@ -5857,7 +5857,7 @@
         if (row.orderable) {
           actions =
             '<button type="button" class="dd-week-order' + (inCart ? " in-cart" : "") + '" data-dd-week-order="1">' +
-            esc(inCart ? ("âœ“ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
+            esc(inCart ? ("✓ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
             "</button>";
         }
         card.innerHTML =
@@ -5867,7 +5867,7 @@
           '<span class="dd-week-day">' + esc(row.day) + "</span>" +
           (row.isToday ? '<span class="dd-week-badge">' + esc(guestT("dailyDishWeekToday")) + "</span>" : "") +
           "</div>" +
-          '<div class="dd-week-main">' + esc(row.main || row.soup || "â€”") + "</div>" +
+          '<div class="dd-week-main">' + esc(row.main || row.soup || "—") + "</div>" +
           (meta ? '<div class="dd-week-meta">' + esc(meta) + "</div>" : "") +
           priceHtml +
           actions +
@@ -5878,11 +5878,11 @@
             e.stopPropagation();
             orderDailyDish();
             orderBtn.classList.add("in-cart");
-            orderBtn.textContent = "âœ“ " + guestT("dailyDishOrder");
+            orderBtn.textContent = "✓ " + guestT("dailyDishOrder");
             document.querySelectorAll(".dd-poster-order, .dd-page-order, .dd-week-order").forEach(function (b) {
               b.classList.add("in-cart");
-              if (b.classList.contains("dd-week-order")) b.textContent = "âœ“ " + guestT("dailyDishOrder");
-              else b.textContent = "âœ“ " + guestT("dailyDishOrder");
+              if (b.classList.contains("dd-week-order")) b.textContent = "✓ " + guestT("dailyDishOrder");
+              else b.textContent = "✓ " + guestT("dailyDishOrder");
             });
           };
         }
@@ -5918,12 +5918,12 @@
       if (summaryParts.length) {
         const sum = document.createElement("div");
         sum.className = "dd-sheet-summary";
-        sum.textContent = summaryParts.join(" Â· ");
+        sum.textContent = summaryParts.join(" · ");
         list.appendChild(sum);
       }
       const desserts = dailyDishOptionList(todayDailyDish.dessert, todayDailyDish.dessert2);
       const drinks = dailyDishOptionList(todayDailyDish.drink, todayDailyDish.drink2);
-      const tea = String(todayDailyDish.teaOffer || "Ù†Ø¹Ù…").trim();
+      const tea = String(todayDailyDish.teaOffer || "نعم").trim();
       function appendChipSection(label, opts, field) {
         if (!opts.length) return;
         if (opts.length === 1) ddSheetPick[field] = opts[0];
@@ -5952,7 +5952,7 @@
       }
       appendChipSection(guestT("dailyDishPickDessert"), desserts, "dessert");
       appendChipSection(guestT("dailyDishPickDrink"), drinks, "drink");
-      if (tea === "Ø§Ø®ØªÙŠØ§Ø±ÙŠ") {
+      if (tea === "اختياري") {
         const sec = document.createElement("div");
         sec.className = "ice-sec";
         sec.innerHTML = '<div class="ice-sec-label">' + esc(guestT("dailyDishPickTea")) + "</div><div class=\"ice-flavors\"></div>";
@@ -5973,7 +5973,7 @@
           wrap.appendChild(btn);
         });
         list.appendChild(sec);
-      } else if (tea === "Ù†Ø¹Ù…") {
+      } else if (tea === "نعم") {
         const sec = document.createElement("div");
         sec.className = "ice-sec";
         sec.innerHTML =
@@ -6010,7 +6010,7 @@
         itemId: "guest-daily-dish",
         name: guestT("dailyDishTitle"),
         price: String(Number.isFinite(numPrice) && numPrice > 0 ? Math.round(numPrice) : 0),
-        category: "GÃ¼nÃ¼n YemeÄŸi",
+        category: "Günün Yemeği",
       };
       addToCart(item, { flash: true, note: buildDailyDishCartNote(usePick) });
       dailyDishSeen = true;
@@ -6451,7 +6451,7 @@
       }
       ordersWrap.classList.toggle("orders-expanded", !!(chip && chip.classList.contains("orders-expanded")));
       if (listEl) {
-        /* 2 items per row Ã— 6 rows = 12 items before scroll (iPhone + Android) */
+        /* 2 items per row × 6 rows = 12 items before scroll (iPhone + Android) */
         listEl.classList.toggle("has-overflow", liveOverflow || lineCount > 12);
       }
     }
@@ -6557,27 +6557,27 @@
     }
     const SERPME_PRICES = new Set([1250, 1650, 1850]);
     const PAGE_LABELS = [
-      "Serpme KahvaltÄ± Â· Ø¥ÙØ·Ø§Ø± Ù…Ø´ØªØ±Ùƒ",
-      "KahvaltÄ± Â· Ø¥ÙØ·Ø§Ø±",
-      "BaÅŸlangÄ±Ã§ & Tost Â· Ù…Ù‚Ø¨Ù„Ø§Øª ÙˆØªÙˆØ³Øª",
-      "Makarna & Salata Â· Ù…Ø¹ÙƒØ±ÙˆÙ†Ø© ÙˆØ³Ù„Ø·Ø§Øª",
-      "Tavuk Â· Ø¯Ø¬Ø§Ø¬ (1)",
-      "Tavuk Â· Ø¯Ø¬Ø§Ø¬ (2)",
-      "Pizza Â· Ø¨ÙŠØªza",
-      "KÃ¶fte Â· ÙƒÙØªØ©",
-      "Burger Â· Ø¨Ø±Ø¬Ø±",
-      "Sporcu MenÃ¼sÃ¼ Â· Ø±ÙŠØ§Ø¶ÙŠÙˆÙ†",
-      "TatlÄ±lar Â· Ø­Ù„ÙˆÙŠØ§Øª",
-      "Dondurma Â· Ø¨ÙˆØ¸Ø©",
-      "Ã‡ay Â· Ø´Ø§ÙŠ",
-      "SÄ±cak Kahveler Â· Ù‚Ù‡ÙˆØ© Ø³Ø§Ø®Ù†Ø©",
-      "SoÄŸuk Kahveler Â· Ù‚Ù‡ÙˆØ© Ø¨Ø§Ø±Ø¯Ø©",
-      "Frozen Â· Ù…Ø«Ù„Ù‘Ø¬",
-      "Smoothie Â· Ø³Ù…ÙˆØ°ÙŠ",
-      "Milkshake Â· Ù…ÙŠÙ„Ùƒ Ø´ÙŠÙƒ",
+      "Serpme Kahvaltı · إفطار مشترك",
+      "Kahvaltı · إفطار",
+      "Başlangıç & Tost · مقبلات وتوست",
+      "Makarna & Salata · معكرونة وسلطات",
+      "Tavuk · دجاج (1)",
+      "Tavuk · دجاج (2)",
+      "Pizza · بيتza",
+      "Köfte · كفتة",
+      "Burger · برجر",
+      "Sporcu Menüsü · رياضيون",
+      "Tatlılar · حلويات",
+      "Dondurma · بوظة",
+      "Çay · شاي",
+      "Sıcak Kahveler · قهوة ساخنة",
+      "Soğuk Kahveler · قهوة باردة",
+      "Frozen · مثلّج",
+      "Smoothie · سموذي",
+      "Milkshake · ميلك شيك",
       "Mojito & Limonata",
-      "Kokteyl & Bubble Â· ÙƒÙˆÙƒØªÙŠÙ„",
-      "Ä°Ã§ecek & Nargile Â· Ù…Ø´Ø±ÙˆØ¨Ø§Øª ÙˆØ£Ø±Ø¬ÙŠÙ„Ø©",
+      "Kokteyl & Bubble · كوكتيل",
+      "İçecek & Nargile · مشروبات وأرجيلة",
     ];
     function tavukHalf(item, half) {
       if (!catMatches(item.category, "TAVUK")) return false;
@@ -6592,28 +6592,28 @@
       switch (pageIdx) {
         case 0: return catMatches(item.category, "KAHVALTI") && SERPME_PRICES.has(p);
         case 1: return catMatches(item.category, "KAHVALTI") && !SERPME_PRICES.has(p);
-        case 2: return catMatches(item.category, "LAVAÅ TOST") || catMatches(item.category, "BAÅLANGIÃ‡");
+        case 2: return catMatches(item.category, "LAVAŞ TOST") || catMatches(item.category, "BAŞLANGIÇ");
         case 3: return catMatches(item.category, "MAKARNALAR") || catMatches(item.category, "SALATALAR");
         case 4: return tavukHalf(item, 0);
         case 5: return tavukHalf(item, 1);
-        case 6: return catMatches(item.category, "PÄ°ZZA");
-        case 7: return catMatches(item.category, "KÃ–FTE & BURGER") && (n.includes("kofte") || n.includes("wrap"));
-        case 8: return catMatches(item.category, "KÃ–FTE & BURGER") && n.includes("burger");
+        case 6: return catMatches(item.category, "PİZZA");
+        case 7: return catMatches(item.category, "KÖFTE & BURGER") && (n.includes("kofte") || n.includes("wrap"));
+        case 8: return catMatches(item.category, "KÖFTE & BURGER") && n.includes("burger");
         case 9: return false;
         case 10: return catMatches(item.category, "TATLILAR");
         case 11: return catMatches(item.category, "DONDURMA") || isStandaloneIceCreamItem(item);
-        case 12: return catMatches(item.category, "Ã‡AY");
+        case 12: return catMatches(item.category, "ÇAY");
         case 13: return catMatches(item.category, "KAHVE") && !n.includes("iced");
         case 14: return catMatches(item.category, "KAHVE") && n.includes("iced");
-        case 15: return catMatches(item.category, "SOÄUK Ä°Ã‡ECEK") && n.includes("frozen");
-        case 16: return catMatches(item.category, "SOÄUK Ä°Ã‡ECEK") && n.includes("smoothie") && !n.includes("bubble");
-        case 17: return catMatches(item.category, "SOÄUK Ä°Ã‡ECEK") && n.includes("milkshake");
-        case 18: return catMatches(item.category, "SOÄUK Ä°Ã‡ECEK") && (n.includes("mojito") || n.includes("limonata") || n.includes("portakal"));
-        case 19: return catMatches(item.category, "SOÄUK Ä°Ã‡ECEK") && (
+        case 15: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("frozen");
+        case 16: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("smoothie") && !n.includes("bubble");
+        case 17: return catMatches(item.category, "SOĞUK İÇECEK") && n.includes("milkshake");
+        case 18: return catMatches(item.category, "SOĞUK İÇECEK") && (n.includes("mojito") || n.includes("limonata") || n.includes("portakal"));
+        case 19: return catMatches(item.category, "SOĞUK İÇECEK") && (
           n.includes("bubble") || n.includes("mathilda") || n.includes("valentina") ||
           n.includes("churchill") || n.includes("cool lime") || n.includes("margarita") || n.includes("ice lime")
         );
-        case 20: return catExact(item.category, "Ä°Ã‡ECEK") || catExact(item.category, "NARGILE") || item.dept === "nargile";
+        case 20: return catExact(item.category, "İÇECEK") || catExact(item.category, "NARGILE") || item.dept === "nargile";
         default: return false;
       }
     }
@@ -6624,16 +6624,16 @@
     function itemHint(name) {
       const n = String(name || "");
       if (needsTurkishCoffeeSugar(n)) return guestT("sugarChoose");
-      const m = n.match(/(\d+)\s*ki[sÅŸ]ilik/i);
-      if (m) return m[1] + " Ø£Ø´Ø®Ø§Øµ Â· " + m[1] + " kiÅŸi";
-      if (/ki[sÅŸ]ilik/i.test(n)) return "Ø­Ø³Ø¨ Ø¹Ø¯Ø¯ Ø§Ù„Ø£Ø´Ø®Ø§Øµ";
-      if (/tek\s*ki[sÅŸ]ilik/i.test(n)) return "Ø´Ø®Øµ ÙˆØ§Ø­Ø¯";
+      const m = n.match(/(\d+)\s*ki[sş]ilik/i);
+      if (m) return m[1] + " أشخاص · " + m[1] + " kişi";
+      if (/ki[sş]ilik/i.test(n)) return "حسب عدد الأشخاص";
+      if (/tek\s*ki[sş]ilik/i.test(n)) return "شخص واحد";
       return "";
     }
     const TURKISH_COFFEE_SUGAR = [
       { id: "sade", note: "Sade", labelKey: "sugarSade" },
-      { id: "orta", note: "Orta ÅŸekerli", labelKey: "sugarOrta" },
-      { id: "sekerli", note: "Åekerli", labelKey: "sugarSekerli" },
+      { id: "orta", note: "Orta şekerli", labelKey: "sugarOrta" },
+      { id: "sekerli", note: "Şekerli", labelKey: "sugarSekerli" },
     ];
     function needsTurkishCoffeeSugar(name) {
       const n = normName(name);
@@ -6669,9 +6669,9 @@
     let menuSearchQuery = "";
     function normCat(s) {
       return String(s || "").toLowerCase()
-        .replace(/Ä±/g, "i").replace(/Ä°/g, "i").replace(/ÄŸ/g, "g").replace(/Ä/g, "g")
-        .replace(/ÅŸ/g, "s").replace(/Å/g, "s").replace(/Ã¶/g, "o").replace(/Ã–/g, "o")
-        .replace(/Ã¼/g, "u").replace(/Ãœ/g, "u").replace(/Ã§/g, "c").replace(/Ã‡/g, "c")
+        .replace(/ı/g, "i").replace(/İ/g, "i").replace(/ğ/g, "g").replace(/Ğ/g, "g")
+        .replace(/ş/g, "s").replace(/Ş/g, "s").replace(/ö/g, "o").replace(/Ö/g, "o")
+        .replace(/ü/g, "u").replace(/Ü/g, "u").replace(/ç/g, "c").replace(/Ç/g, "c")
         .replace(/\s+/g, " ").trim();
     }
     function catMatches(a, b) {
@@ -6777,13 +6777,13 @@
       card.dataset.itemId = item.id;
       card.innerHTML =
         '<span class="pc-price">' + shortPrice(item.price) + '</span>' +
-        '<span class="pc-cur">â‚º</span>' +
+        '<span class="pc-cur">₺</span>' +
         '<span class="pc-plus">' + (q > 0 ? String(q) : "+") + '</span>';
     }
     function collectPagePins(pageIdx) {
       const manual = (manualSpots[String(pageIdx)] || manualSpots[pageIdx] || []).filter(function (s) {
         if (!s) return false;
-        /* Keep calibrated + / ice-cream buttons â€” do not drop Dondurma Top plus spot. */
+        /* Keep calibrated + / ice-cream buttons — do not drop Dondurma Top plus spot. */
         if (s.kind === "plus" || s.kind === "ice-cream") return true;
         return !isStandaloneIceCreamItem(s);
       });
@@ -6966,7 +6966,7 @@
       const cw = pf.clientWidth, ch = pf.clientHeight;
       if (!cw || !ch) return null;
       const isCover = pf.classList.contains("book-cover");
-      /* Pack chrome (HUD + logo + cats) at the top â€” image fills the rest. */
+      /* Pack chrome (HUD + logo + cats) at the top — image fills the rest. */
       let chromeTop = 0;
       let chromeBody = 0;
       if (!isCover) {
@@ -7083,17 +7083,17 @@
     function swipeArrowTrackHtml() {
       return '<div class="swipe-arrow-track" aria-hidden="true">' +
         '<div class="swipe-track-slide">' +
-        '<span class="swipe-track-chev lit left">â€¹</span>' +
-        '<span class="swipe-track-chev lit left delay-1">â€¹</span>' +
-        '<span class="swipe-track-chev lit right delay-2">â€º</span>' +
-        '<span class="swipe-track-chev lit right delay-3">â€º</span>' +
+        '<span class="swipe-track-chev lit left">‹</span>' +
+        '<span class="swipe-track-chev lit left delay-1">‹</span>' +
+        '<span class="swipe-track-chev lit right delay-2">›</span>' +
+        '<span class="swipe-track-chev lit right delay-3">›</span>' +
         "</div></div>";
     }
     function swipeFingerHintHtml(hintKey) {
       const label = guestT(hintKey || "swipeHint");
       return '<div class="page-swipe-finger-hint" data-swipe-finger="1">' +
         '<div class="page-swipe-finger-row">' +
-        '<span class="page-swipe-finger-emoji swipe-hand" aria-hidden="true">ğŸ‘†</span>' +
+        '<span class="page-swipe-finger-emoji swipe-hand" aria-hidden="true">👆</span>' +
         '<div class="page-swipe-finger-copy">' +
         '<p class="page-swipe-finger-text">' + esc(label) + "</p>" +
         swipeArrowTrackHtml() +
@@ -7155,7 +7155,7 @@
         const pageNum = (menuIdx + 1) + " / " + menuPageCount;
         let catHtml = "";
         if (cats.length) {
-          catHtml = cats.map(c => '<span class="pf-rail-cat">' + esc(c) + (catLabelAr(c) ? " Â· " + esc(catLabelAr(c)) : "") + "</span>").join("");
+          catHtml = cats.map(c => '<span class="pf-rail-cat">' + esc(c) + (catLabelAr(c) ? " · " + esc(catLabelAr(c)) : "") + "</span>").join("");
         } else {
           catHtml = '<span class="pf-rail-cat">' + esc(shopName || "Menu") + "</span>";
         }
@@ -7464,7 +7464,7 @@
       glow.style.animationDelay = (Number(glowIndex) || 0) * 0.5 + "s";
       h.appendChild(glow);
       h.title = item.name;
-      h.setAttribute("aria-label", "Ø£Ø¶Ù " + item.name);
+      h.setAttribute("aria-label", "أضف " + item.name);
       bindPlusTap(h);
       overlay.appendChild(h);
     }
@@ -7479,7 +7479,7 @@
       h.dataset.y = String(spot.y);
       h.style.zIndex = hotspotZIndex(spot);
       h.title = item.name;
-      h.setAttribute("aria-label", "Ø§Ø·Ù„Ø¨ " + item.name + " " + money(item.price));
+      h.setAttribute("aria-label", "اطلب " + item.name + " " + money(item.price));
       const mask = document.createElement("span");
       mask.className = "price-mask";
       mask.setAttribute("aria-hidden", "true");
@@ -7581,19 +7581,19 @@
         !isStandaloneIceCreamItem(it) && (!q || menuSearchHay(it).includes(q))
       );
       if (!filtered.length) {
-        box.innerHTML = '<div class="ml-empty">' + esc(guestT("menuNoResults")) + ' Â«' + esc(menuSearchQuery) + 'Â»</div>';
+        box.innerHTML = '<div class="ml-empty">' + esc(guestT("menuNoResults")) + ' «' + esc(menuSearchQuery) + '»</div>';
         return;
       }
       const groups = new Map();
       for (const it of filtered) {
-        const cat = it.category || "â€”";
+        const cat = it.category || "—";
         if (!groups.has(cat)) groups.set(cat, []);
         groups.get(cat).push(it);
       }
       const cats = [...groups.keys()].sort((a, b) => a.localeCompare(b, "tr"));
       let html = "";
       for (const cat of cats) {
-        html += '<div class="ml-cat">' + esc(cat) + (catLabelAr(cat) ? ' Â· ' + esc(catLabelAr(cat)) : "") + '</div>';
+        html += '<div class="ml-cat">' + esc(cat) + (catLabelAr(cat) ? ' · ' + esc(catLabelAr(cat)) : "") + '</div>';
         for (const it of groups.get(cat)) {
           const hint = itemHint(it.name);
           const qv = qtyOf(it.id);
@@ -7657,7 +7657,7 @@
       const ls = document.getElementById("loadScreen");
       if (!ls) return;
       const retry = withRetry !== false
-        ? '<button type="button" id="guestRetryBtn" style="margin-top:16px;background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:800;color:#0d0500;cursor:pointer">â†» ' + esc(guestT("retry") || "Retry") + "</button>"
+        ? '<button type="button" id="guestRetryBtn" style="margin-top:16px;background:linear-gradient(135deg,#b87200,#f0a820);border:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:800;color:#0d0500;cursor:pointer">↻ ' + esc(guestT("retry") || "Retry") + "</button>"
         : "";
       ls.innerHTML =
         '<div style="max-width:320px"><p class="title">' + esc(title) + '</p><p>' + esc(detail) + '</p>' + retry + "</div>";
@@ -7827,7 +7827,7 @@
       return u + (String(spread.imgUrl).indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=1"));
     }
     function setBookPad(_spread) {
-      /* page-reveal shows the target page â€” skip bookPad img to avoid flash */
+      /* page-reveal shows the target page — skip bookPad img to avoid flash */
     }
     function hideBookPad() {}
 
@@ -8043,7 +8043,7 @@
       document.getElementById("p-emoji").textContent = item.icon || deptEmoji(item.dept);
       document.getElementById("p-name").textContent = item.name;
       const hint = itemHint(item.name);
-      document.getElementById("p-cat").textContent = (item.category || "") + (hint ? " Â· " + hint : "");
+      document.getElementById("p-cat").textContent = (item.category || "") + (hint ? " · " + hint : "");
       document.getElementById("p-price").textContent = money(item.price);
       document.getElementById("p-qty").textContent = "1";
       const addBtn = document.getElementById("popupAdd");
@@ -8073,7 +8073,7 @@
       const needsSugar = needsTurkishCoffeeSugar(popupItem.name);
       const sugarNote = needsSugar ? sugarNoteForChoice(popupSugarChoice) : "";
       if (needsSugar && !sugarNote) {
-        showToast("â˜• " + guestT("sugarRequired"));
+        showToast("☕ " + guestT("sugarRequired"));
         return;
       }
       for (let i = 0; i < popupQty; i++) {
@@ -8189,7 +8189,7 @@
       document.documentElement.classList.toggle("orders-active", t > 0 && coachDone);
       if (shopEl) shopEl.textContent = "";
       refreshCoverTitles();
-      if (tableEl && section && tableNum) tableEl.textContent = "ğŸª‘ " + guestT("table") + " " + tableNum;
+      if (tableEl && section && tableNum) tableEl.textContent = "🪑 " + guestT("table") + " " + tableNum;
       syncTableFootBadge();
       applyManualHudView();
       if (!coachDone || document.documentElement.classList.contains("coach-locked")) {
@@ -8229,20 +8229,20 @@
       if (ordersWrap) ordersWrap.classList.add("show");
       if (chipEl) chipEl.classList.add("show");
       if (stageEl) stageEl.classList.remove("orders-overlay");
-      if (summaryEl) summaryEl.textContent = (isIosGuestNoLogo() ? "" : "ğŸ›’ ") + t + " " + guestT("items") + " Â· " + guestT("orderTotal") + " " + money(total);
+      if (summaryEl) summaryEl.textContent = (isIosGuestNoLogo() ? "" : "🛒 ") + t + " " + guestT("items") + " · " + guestT("orderTotal") + " " + money(total);
       if (listEl) {
         listEl.innerHTML = cart.map((l, idx) => {
           const qty = Math.max(1, Number(l.qty) || 1);
-          const name = String(l.item?.name || "").trim() || "â€”";
+          const name = String(l.item?.name || "").trim() || "—";
           const noteText = String(l.note || "").trim();
-          /* qty=1 â†’ delete only; qty>1 â†’ decrease only (frees space for name on iPhone) */
+          /* qty=1 → delete only; qty>1 → decrease only (frees space for name on iPhone) */
           const showDel = qty <= 1;
           return `
           <div class="order-chip-line${noteText ? " has-note" : ""}" data-line-idx="${idx}" data-qty="${qty}">
-            <span class="order-chip-name" title="${esc(name)}${noteText ? " â€” " + esc(noteText) : ""}"><bdi class="order-chip-qty">${qty}Ã—</bdi> ${esc(name)}</span>
+            <span class="order-chip-name" title="${esc(name)}${noteText ? " — " + esc(noteText) : ""}"><bdi class="order-chip-qty">${qty}×</bdi> ${esc(name)}</span>
             <div class="order-chip-actions">
-              <button type="button" class="order-chip-dec" data-dec-idx="${idx}" aria-label="âˆ’"${showDel ? " hidden" : ""}>âˆ’</button>
-              <button type="button" class="order-chip-del" data-del-idx="${idx}" aria-label="${esc(guestT("cartDelete"))}"${showDel ? "" : " hidden"}>ğŸ—‘</button>
+              <button type="button" class="order-chip-dec" data-dec-idx="${idx}" aria-label="−"${showDel ? " hidden" : ""}>−</button>
+              <button type="button" class="order-chip-del" data-del-idx="${idx}" aria-label="${esc(guestT("cartDelete"))}"${showDel ? "" : " hidden"}>🗑</button>
               <span class="order-chip-price">${moneyPlain(Number(l.item.price) * qty)}</span>
             </div>
           </div>`;
@@ -8263,7 +8263,7 @@
       if (!coachDone) return;
       if (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }
       if (!cart.length) {
-        showToast("ğŸ›’ " + guestT("emptyCart") + "\n" + guestT("emptyCartHint"));
+        showToast("🛒 " + guestT("emptyCart") + "\n" + guestT("emptyCartHint"));
         return;
       }
       const chip = document.getElementById("guestOrderChip");
@@ -8350,14 +8350,14 @@
       cart.splice(idx, 1);
       updateBadge();
       renderCart();
-      showToast("ğŸ—‘ " + name);
+      showToast("🗑 " + name);
     }
     function clearCart() {
       if (!cart.length) return;
       cart = [];
       updateBadge();
       renderCart();
-      showToast("ğŸ—‘ " + guestT("toastCleared"));
+      showToast("🗑 " + guestT("toastCleared"));
     }
 
     function finishNoteField(inp) {
@@ -8392,8 +8392,8 @@
     function renderCart() {
       const c = document.getElementById("cart-items");
       if (!cart.length) {
-        c.innerHTML = '<div class="empty-c">ğŸ½<br/>' + esc(guestT("emptyCart")) + '<br/><small>' + esc(guestT("emptyCartHint")) + '</small></div>';
-        document.getElementById("total").textContent = "0 â‚º";
+        c.innerHTML = '<div class="empty-c">🍽<br/>' + esc(guestT("emptyCart")) + '<br/><small>' + esc(guestT("emptyCartHint")) + '</small></div>';
+        document.getElementById("total").textContent = "0 ₺";
         document.getElementById("sendBtn").disabled = true;
         return;
       }
@@ -8404,11 +8404,11 @@
             <div class="ci-body"><div class="ci-name">${esc(l.item.name)}</div>${l.note ? '<div class="ci-variant">' + esc(l.note) + "</div>" : ""}<div class="ci-price">${money(Number(l.item.price) * l.qty)}</div></div>
             <div class="ci-actions">
               <div class="ci-qty">
-                <button type="button" class="ci-btn" data-dec-idx="${idx}">âˆ’</button>
+                <button type="button" class="ci-btn" data-dec-idx="${idx}">−</button>
                 <span class="ci-n">${l.qty}</span>
                 <button type="button" class="ci-btn" data-inc-idx="${idx}">+</button>
               </div>
-              <button type="button" class="ci-del" data-del-idx="${idx}" aria-label="${esc(guestT("cartDelete"))}">ğŸ—‘</button>
+              <button type="button" class="ci-del" data-del-idx="${idx}" aria-label="${esc(guestT("cartDelete"))}">🗑</button>
             </div>
           </div>
           ${needsTurkishCoffeeSugar(l.item.name) ? "" : `<div class="ci-note-wrap"><textarea class="ci-note" data-line-idx="${idx}" rows="2" maxlength="120" placeholder="${esc(guestT("itemNotePh"))}">${esc(l.note || "")}</textarea><button type="button" class="ci-note-done" data-note-done="${idx}">${doneLabel}</button></div>`}
@@ -8698,7 +8698,7 @@
       }
       if (sendFb) {
         sendFb.disabled = true;
-        sendFb.textContent = "â€¦";
+        sendFb.textContent = "…";
       }
       try {
         const res = await fetch(apiBase + "/api/guest/v1/feedback", {
@@ -8860,7 +8860,7 @@
       add(j.lanUrl);
       add(j.api);
       if (Array.isArray(j.apis)) j.apis.forEach(add);
-      // Per-shop map (hostname or LAN key) â€” prefer stable tunnels over trycloudflare.
+      // Per-shop map (hostname or LAN key) — prefer stable tunnels over trycloudflare.
       if (j.shops && typeof j.shops === "object") {
         const prefer = [];
         const rest = [];
@@ -8892,7 +8892,7 @@
       if (siteRoot && shopSlug && shopSlug !== "shop") {
         jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-" + shopSlug + ".json", 5000).then(j => ingestManifest(j, add)));
       }
-      // GitHub QR without api= â€” load known shop manifests (Tonino cashier .25)
+      // GitHub QR without api= — load known shop manifests (Tonino cashier .25)
       if (siteRoot && /github\.io$/i.test(location.hostname)) {
         jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-tonino.json", 5000).then(j => ingestManifest(j, add)));
         jobs.push(fetchJson(location.origin + siteRoot + "/guest-api-dev.json", 5000).then(j => ingestManifest(j, add)).catch(() => {}));
@@ -9045,9 +9045,9 @@
       if (data.dailyDishShowTo) dailyDishShowTo = String(data.dailyDishShowTo);
       if (data.dailyDishGuestAlwaysVisible === false) dailyDishGuestAlwaysVisible = false;
       else dailyDishGuestAlwaysVisible = true;
-      document.title = shopName + " â€” " + guestT("table") + " " + tableNum;
+      document.title = shopName + " — " + guestT("table") + " " + tableNum;
       document.getElementById("shopLabel").textContent = shopName;
-      document.getElementById("tblLabel").textContent = section + " Â· " + guestT("table") + " " + tableNum;
+      document.getElementById("tblLabel").textContent = section + " · " + guestT("table") + " " + tableNum;
       buildBook();
       syncSceneHud();
       if (STUDIO_MODE) {
@@ -9088,7 +9088,7 @@
             applyMenuData(data);
             return;
           }
-          showErr(guestT("menuNotReady"), data && data.error === "forbidden" ? "Ø³Ø¬Ù‘Ù„ Ø¯Ø®ÙˆÙ„ Ø§Ù„Ù…Ø¯ÙŠØ± ÙÙŠ Ø§Ù„ÙƒØ§Ø´ÙŠØ± Ø£ÙˆÙ„Ø§Ù‹." : guestT("menuNotReadyD"));
+          showErr(guestT("menuNotReady"), data && data.error === "forbidden" ? "سجّل دخول المدير في الكاشير أولاً." : guestT("menuNotReadyD"));
         } catch (_) {
           if (!bootAlive(gen)) return;
           showErr(guestT("menuNotReady"), guestT("menuNotReadyD"));
