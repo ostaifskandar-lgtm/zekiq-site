@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v172: logo glued above category chips; studio controls work -->
+  <!-- guest-table-ui-v173: logo flips with page (no dock shimmer) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1267,7 +1267,7 @@
     }
     #menuTopDock.show{display:flex;}
     #menuBrandDock{
-      display:none;
+      display:none!important;
       position:relative;
       left:auto;
       right:auto;
@@ -1280,35 +1280,15 @@
       padding:0;
       pointer-events:none;
       z-index:0;
-      min-height:var(--logo-strip-h, 48px);
-      background-color:#1a120c;
-      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=172");
-      background-repeat:no-repeat;
-      background-position:center center;
-      background-size:contain;
-      transform-origin:bottom center;
-      /* opacity only when folding for orders — not on every page turn */
-      transition:max-height .38s cubic-bezier(.4,0,.2,1),transform .38s cubic-bezier(.4,0,.2,1);
+      min-height:0;
     }
-    #menuTopDock.has-brand-dock #menuBrandDock{display:block;}
-    #menuBrandDock .menu-dock-brand-img{
-      display:block;
-      width:100%;
-      height:var(--logo-strip-h, 48px);
-      object-fit:contain;
-      object-position:center center;
-      pointer-events:none;
-      user-select:none;
-      -webkit-user-drag:none;
-    }
-    /* Orders fold the dock logo — categories stay put */
-    html.orders-cover-logo #menuBrandDock{
-      max-height:0!important;
+    #menuTopDock.has-brand-dock #menuBrandDock{display:none!important;}
+    #menuBrandDock .menu-dock-brand-img{display:none!important;}
+    html.orders-cover-logo .pf-brand-strip{
+      display:none!important;
       opacity:0!important;
-      transform:scaleY(0);
-      pointer-events:none!important;
+      visibility:hidden!important;
     }
-    /* Keep #menuBrandDock visible during flips — swapping to .pf-brand-strip made the logo flash. */
     #menuCategoryBar{
       position:relative;
       left:auto;
@@ -1328,14 +1308,12 @@
     }
     #menuCategoryBar:not(.show){display:none;}
     #menuCategoryBar.chrome-hidden{display:none!important;}
-    /* Logo strip must sit flush on the chips — no gap from --cat-bar-offset. */
-    #menuTopDock.has-brand-dock #menuCategoryBar{margin-top:0!important;}
+    #menuTopDock.show #menuCategoryBar{margin-top:0!important;}
     html.guest-manual-chrome #menuTopDock{
       overflow:visible;
       height:auto!important;
       min-height:0!important;
     }
-    html.guest-manual-chrome #menuTopDock.has-brand-dock #menuBrandDock{display:block!important;}
     html.guest-manual-chrome #menuCategoryBar{margin-top:0!important;}
     html.page-flipping #menuTopDock{
       visibility:visible!important;
@@ -1343,23 +1321,35 @@
     }
     html.page-flipping .pf-overlay{visibility:hidden!important;}
     .pf-cat-strip{display:none!important;}
-    /* Page-face logo strip retired — static #menuBrandDock stays put (no flash on flip). */
+    /* Logo on each page face — flips with the turn (no static dock flash). */
     .pf-brand-strip{
-      display:none!important;
+      display:block;
       position:absolute;
       left:0;
+      top:0;
       line-height:0;
       margin:0;
       padding:0;
       pointer-events:none;
       z-index:8;
       overflow:hidden;
-      opacity:0;
-      max-height:0;
-      visibility:hidden;
+      opacity:1;
+      visibility:visible;
+      max-height:none;
+      background-color:#1a120c;
+      transform:none;
+      transition:none;
     }
-    html.orders-cover-logo .pw .pf-brand-strip{
-      display:none!important;
+    .pf-brand-strip .guest-brand-banner-img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      object-position:center center;
+      pointer-events:none;
+      user-select:none;
+      -webkit-user-drag:none;
+      -webkit-touch-callout:none;
     }
     .guest-brand-banner-img{
       display:block;
@@ -3780,7 +3770,7 @@
       <div id="menuViewport">
       <div id="menuTopDock">
       <div id="menuBrandDock" aria-hidden="true">
-        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=172" />
+        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=173" />
       </div>
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -4982,13 +4972,17 @@
       if (chrome.logo && chrome.logo.visible === true) return true;
       return !isIosGuestNoLogo();
     }
-    /** Static logo sits in #menuBrandDock (directly above category chips). */
+    /** Dock never hosts the brand — logo is on .pf-brand-strip and flips with the page. */
     function usesDockBrandLogo() {
-      /* iPhone Safari (not PWA): keep dock logo off — categories only. */
-      if (isIosGuestNoLogo()) return false;
+      return false;
+    }
+    function pageFaceLogoHeight(rect) {
+      if (!shouldShowGuestLogo()) return 0;
+      if (document.documentElement.classList.contains("orders-cover-logo")) return 0;
       var chrome = activeGuestChrome();
-      if (chrome.logo && chrome.logo.visible === false) return false;
-      return true;
+      var logo = chrome.logo;
+      var scale = logo ? Math.max(0.5, Math.min(2, Number(logo.scale) || 1)) : 1;
+      return Math.max(28, Math.round(logoStripHeight(rect || { dw: 360 }) * scale));
     }
     function isIosGuestHideFootBar() {
       return isIosGuestNoLogo();
@@ -5003,7 +4997,7 @@
       listEl.scrollLeft = 0;
     }
     function coverLogoSrc() {
-      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "??v=171";
+      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=173";
       /* Always GitHub Pages asset — tunnel /table/assets falls through to SPA HTML (broken img). */
       return "https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg" + bv;
     }
@@ -6281,9 +6275,38 @@
     }
     function layoutPfBrandStrip(pf, rect) {
       const strip = pf?.querySelector(".pf-brand-strip");
-      if (!strip) return;
-      /* Always hidden — dock logo stays fixed; strip caused shimmer on every flip. */
-      strip.style.display = "none";
+      if (!strip || !rect) return;
+      const logoH = pageFaceLogoHeight(rect);
+      if (logoH <= 0) {
+        strip.style.display = "none";
+        return;
+      }
+      var chrome = activeGuestChrome();
+      var logo = chrome.logo;
+      var cropTop = logo ? Math.max(0, Math.min(0.55, Number(logo.cropTop) || 0)) : 0;
+      var lx = logo ? Math.max(0.05, Math.min(0.95, Number(logo.x) || 0.5)) : 0.5;
+      var nudgeX = Math.round((lx - 0.5) * (rect.dw || 300) * 0.35);
+      strip.style.display = "block";
+      strip.style.visibility = "visible";
+      strip.style.opacity = "1";
+      strip.style.maxHeight = "none";
+      strip.style.width = Math.round(rect.dw) + "px";
+      strip.style.height = logoH + "px";
+      strip.style.left = Math.round(rect.ox + nudgeX) + "px";
+      strip.style.top = Math.round(rect.oy - logoH) + "px";
+      strip.style.backgroundColor = "#1a120c";
+      strip.style.transition = "none";
+      strip.style.transform = "none";
+      const img = strip.querySelector(".guest-brand-banner-img");
+      if (img) {
+        img.style.height = logoH + "px";
+        img.style.width = "100%";
+        img.style.objectFit = "contain";
+        img.style.objectPosition = cropTop > 0 ? ("center " + (cropTop * 100) + "%") : "center center";
+        img.style.clipPath = cropTop > 0 ? ("inset(" + (cropTop * 100) + "% 0 0 0)") : "";
+        const src = coverLogoSrc();
+        if (img.getAttribute("src") !== src) img.src = src;
+      }
     }
     function syncMenuBrandDock(rect) {
       const topDock = document.getElementById("menuTopDock");
@@ -6294,7 +6317,7 @@
       topDock?.classList.toggle("has-brand-dock", dockMode);
       if (!dockMode || !rect) {
         if (brandDock) brandDock.style.display = "none";
-        if (view) view.style.removeProperty("--logo-strip-h");
+        /* Keep --logo-strip-h — page-face logo uses it for layout. */
         return 0;
       }
       const chrome = activeGuestChrome();
@@ -6485,6 +6508,10 @@
         const viewM = document.getElementById("menuViewport");
         const dwM = Math.max(280, Math.round((viewM?.clientWidth || pf?.clientWidth || window.innerWidth || 360)));
         syncMenuBrandDock({ ox: 0, oy: 0, dw: dwM, dh: 1 });
+        if (pf) {
+          const rectM = imageOverlayRect(pf, { measureOnly: true }) || imageOverlayRect(pf);
+          if (rectM) layoutPfBrandStrip(pf, rectM);
+        }
         return;
       }
       const view = document.getElementById("menuViewport");
@@ -6512,12 +6539,9 @@
       if (!rect) {
         const dw = Math.max(280, Math.round(pf.clientWidth || view.clientWidth || window.innerWidth || 360));
         const catH0 = Math.round(bar?.offsetHeight || 40);
-        const logoH0 = isDdPoster ? 0 : syncMenuBrandDock({ ox: 0, oy: 0, dw, dh: 1 });
-        if (isDdPoster) {
-          const brandDock = document.getElementById("menuBrandDock");
-          if (brandDock) brandDock.style.display = "none";
-          view.style.setProperty("--logo-strip-h", "0px");
-        }
+        syncMenuBrandDock({ ox: 0, oy: 0, dw, dh: 1 });
+        const logoH0 = 0;
+        view.style.setProperty("--logo-strip-h", "0px");
         const chromeTop0 = menuChromeTopPx();
         const dockH0 = catH0 + logoH0;
         const dockKey0 = "dd|" + (isDdPoster ? "p" : "t") + "|" + chromeTop0 + "|" + dockH0;
@@ -6532,28 +6556,14 @@
       }
       const catH = Math.round(bar?.offsetHeight || 0);
       const oy = Math.round(rect.oy);
-      const logoH = syncMenuBrandDock(rect, catH);
-      if (isIosGuestNoLogo() && logoH <= 0) {
-        /* Category chips directly above menu image top (no logo). */
-        const dockH = catH > 0 ? catH : 0;
-        const dockKey = "ios-above|" + oy + "|" + dockH;
-        if (lastCategoryDockKey === dockKey) return;
-        lastCategoryDockKey = dockKey;
-        view.style.setProperty("--menu-top-dock-h", dockH + "px");
-        view.style.setProperty("--menu-img-top", oy + "px");
-        view.style.setProperty("--cat-bar-h", dockH + "px");
-        view.style.removeProperty("--logo-strip-h");
-        view.style.removeProperty("--ios-cat-h");
-        syncOrdersListHeight();
-        scheduleHotspotRelayout();
-        return;
-      }
-      /* Dock height = logo strip (in-flow) + categories. Logo folds after 5 order lines. */
-      const dockH = catH + logoH;
+      syncMenuBrandDock(rect); /* keeps #menuBrandDock hidden */
+      const logoH = pageFaceLogoHeight(rect);
+      /* Dock = categories only; logo sits on the page face just above the image and flips with it. */
+      const dockH = catH;
+      const stackH = catH + logoH;
       const chromeTop = menuChromeTopPx();
-      /* Sit logo+cats directly on the page top so letterbox stays above the whole stack. */
-      const dockTop = Math.max(chromeTop, oy - dockH);
-      const dockKey = oy + "|" + dockH + "|" + logoH + "|" + dockTop;
+      const dockTop = Math.max(chromeTop, oy - stackH);
+      const dockKey = "face|" + oy + "|" + dockH + "|" + logoH + "|" + dockTop;
       if (lastCategoryDockKey === dockKey) {
         layoutPfBrandStrip(pf, rect);
         return;
@@ -7024,8 +7034,8 @@
         chromeTop = menuChromeTopPx();
         const bar = document.getElementById("menuCategoryBar");
         const catH = (bar && bar.classList.contains("show")) ? Math.max(36, Math.round(bar.offsetHeight || 40)) : 40;
-        if (usesDockBrandLogo() && !document.documentElement.classList.contains("orders-cover-logo")) {
-          const logoH = logoStripHeight({ dw: cw });
+        const logoH = pageFaceLogoHeight({ dw: cw });
+        if (logoH > 0) {
           chromeBody = logoH + catH;
         } else if (!isIosGuestNoLogo() || (bar && bar.classList.contains("show"))) {
           chromeBody = catH;
@@ -7915,10 +7925,7 @@
 
     function setPageFlipping(on) {
       document.documentElement.classList.toggle("page-flipping", !!on);
-      /* Do not swap dock logo ↔ page strip — that made the logo flash after every turn. */
-      if (!on) {
-        document.querySelectorAll(".pf-brand-strip").forEach(function (s) { s.style.display = "none"; });
-      }
+      /* Keep page-face logos visible — they turn with .pw; never hide/show them here (shimmer). */
     }
 
     function endPageTurn(pw) {
