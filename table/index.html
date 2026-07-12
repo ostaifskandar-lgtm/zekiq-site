@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v179: logo outside 3D book + canvas freeze (no shimmer) -->
+  <!-- guest-table-ui-v180: prefer QR api= over tonino default (dev daily dish) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -9196,6 +9196,11 @@
 
     function rankApiBases(bases) {
       const onHttps = location.protocol === "https:";
+      const preferredApi = (readParams().get("api") || "").trim().replace(/\/+$/, "");
+      let preferredHost = "";
+      try {
+        if (preferredApi) preferredHost = new URL(preferredApi.includes("://") ? preferredApi : "https://" + preferredApi).hostname.toLowerCase();
+      } catch (_) {}
       const scored = [];
       bases.forEach((base, i) => {
         let score = 1000 - i;
@@ -9203,11 +9208,20 @@
           const u = new URL(base.includes("://") ? base : "http://" + base);
           /* GitHub https page cannot call http://192.168.x — skip (was causing WiFi hang). */
           if (onHttps && u.protocol === "http:" && isPrivateApi(base)) return;
-          if (/zekiq-dev\./i.test(u.hostname)) score -= 600;
+          const host = u.hostname.toLowerCase();
+          // Explicit api= in the QR must win (dev laptop vs live cashier).
+          if (preferredApi && base.replace(/\/+$/, "") === preferredApi) score += 5000;
+          else if (preferredHost && host === preferredHost) score += 4500;
+          if (/zekiq-dev\./i.test(host)) {
+            // Only demote zekiq-dev when the QR did not ask for it.
+            if (!preferredHost || preferredHost !== host) score -= 600;
+          }
           if (u.protocol === "https:") score += 500;
-          if (/^tonino\.zekiqmenu\.com$/i.test(u.hostname)) score += 400;
-          else if (/zekiqmenu\.com$/i.test(u.hostname)) score += 200;
-          if (/212\.156\.209\.82|trycloudflare\.com|loca\.lt/i.test(u.hostname)) score -= 400;
+          if (/^tonino\.zekiqmenu\.com$/i.test(host)) {
+            // Do not steal traffic when QR/api points at another shop tunnel.
+            if (!preferredHost || preferredHost === host) score += 400;
+          } else if (/zekiqmenu\.com$/i.test(host)) score += 200;
+          if (/212\.156\.209\.82|trycloudflare\.com|loca\.lt/i.test(host)) score -= 400;
         } catch (_) { return; }
         scored.push({ base, score });
       });
@@ -9335,8 +9349,15 @@
       const onCellular = navigator.connection?.type === "cellular";
       const skipPrivateBases = onGithub || onCellular;
       const qBoot = readParams();
-      const apiParamBoot = (qBoot.get("api") || "").trim();
+      const apiParamBoot = (qBoot.get("api") || "").trim().replace(/\/+$/, "");
       const cachedApiBoot = readCachedApiBase();
+      // QR api= must be tried before ranked defaults (tonino was winning over zekiq-dev).
+      if (apiParamBoot) {
+        setLoadStatus(guestT("loadingSub"));
+        const preferred = handleMenuData(await fetchMenuFromBase(apiParamBoot));
+        if (!bootAlive(gen)) return;
+        if (preferred === true || preferred === "stop") return;
+      }
       const instantBases = rankApiBases([
         cachedApiBoot,
         apiParamBoot,
@@ -9344,7 +9365,7 @@
         onGithub ? "https://zekiq-dev.zekiqmenu.com" : "",
         onGithub ? "https://shop.zekiqmenu.com" : "",
       ].filter(Boolean));
-      const seen = new Set();
+      const seen = new Set(apiParamBoot ? [apiParamBoot] : []);
       for (let b = 0; b < instantBases.length; b++) {
         const base = instantBases[b];
         if (!base || seen.has(base)) continue;
