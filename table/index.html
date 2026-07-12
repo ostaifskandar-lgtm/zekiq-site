@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v181: hide broken page-number chips (Tavuk 5 6) on phone category bar -->
+  <!-- guest-table-ui-v182: clean daily-dish opening page (no poster clutter / no triple swipe hints) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -2830,78 +2830,85 @@
       cursor:pointer;
     }
     .dd-continue:active{transform:scale(.98);}
-    /* Daily dish — secondary book page (logo + price, no category groups) */
+    /* Daily dish opening — one calm card; hide chrome noise */
+    html.daily-dish-open #pageSwipeBar{display:none!important;}
+    html.daily-dish-open #guestGuide{display:none!important;}
+    html.daily-dish-open #menuBookWrap{--foot-h:0px;}
     .pf.book-daily-dish{
-      background:linear-gradient(180deg,#fff8e8 0%,#f5e0b0 42%,#ebe4d3 100%);
+      background:
+        radial-gradient(120% 70% at 50% 0%,rgba(255,220,140,.45),transparent 55%),
+        linear-gradient(180deg,#1a1208 0%,#2a1a0c 38%,#3d2814 100%);
       color:#1a0a00;
     }
     .book-daily-dish-inner{
       width:100%;height:100%;box-sizing:border-box;
-      display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-      padding:clamp(8px,2.5vw,14px) clamp(16px,5vw,28px) clamp(10px,3vw,16px);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:clamp(12px,3vw,18px) clamp(16px,5vw,28px) clamp(14px,4vw,22px);
       overflow-y:auto;-webkit-overflow-scrolling:touch;
       text-align:center;
+      gap:0;
     }
-    .dd-page-logo{
-      flex:0 0 auto;width:min(88%,240px);margin:0 auto 6px;
+    .dd-page-card{
+      width:min(100%,360px);
+      margin:0 auto;
+      padding:18px 16px 16px;
+      border-radius:22px;
+      background:linear-gradient(165deg,#fffaf0 0%,#f7e7c4 55%,#efe2c2 100%);
+      border:1px solid rgba(200,150,60,.35);
+      box-shadow:0 18px 40px rgba(0,0,0,.35);
+      display:flex;flex-direction:column;align-items:center;
     }
-    .dd-page-logo img{
-      width:100%;height:auto;display:block;border-radius:10px;
-      box-shadow:0 6px 20px rgba(120,70,10,.22);
-    }
+    .dd-page-logo{display:none;}
     .dd-page-photo{
-      flex:0 0 auto;width:min(92%,300px);margin:0 auto 12px;
-      border-radius:14px;overflow:hidden;
-      box-shadow:0 8px 24px rgba(80,50,10,.28);
+      flex:0 0 auto;width:100%;margin:0 0 12px;
+      border-radius:16px;overflow:hidden;
+      aspect-ratio:4 / 3;
+      background:#2a1a0c;
+      box-shadow:0 8px 20px rgba(80,50,10,.22);
     }
     .dd-page-photo img{
-      width:100%;max-height:min(42vw,200px);object-fit:cover;display:block;
+      width:100%;height:100%;object-fit:cover;object-position:center;display:block;
     }
+    .dd-page-photo.is-menu-scan{display:none!important;}
     .dd-page-kicker{
-      margin:0 0 2px;
-      font-size:11px;font-weight:800;letter-spacing:.1em;
-      color:#8a5a10;opacity:.85;text-transform:uppercase;
+      margin:0 0 8px;
+      font-size:11px;font-weight:800;letter-spacing:.12em;
+      color:#8a5a10;opacity:.9;text-transform:uppercase;
     }
     .dd-page-title{
-      margin:0 0 12px;
-      font-size:clamp(20px,5.5vw,26px);font-weight:900;line-height:1.15;
+      margin:0 0 10px;max-width:100%;
+      font-size:clamp(26px,7vw,34px);font-weight:900;line-height:1.12;
+      color:#1a0a00;letter-spacing:-.01em;
     }
-    .dd-page-main{
-      margin:0 0 10px;max-width:340px;
-      font-size:clamp(15px,4.2vw,18px);font-weight:800;line-height:1.4;
-      color:#2a1808;
-    }
+    .dd-page-main{display:none;}
     .dd-page-items{
-      list-style:none;margin:0 0 12px;padding:0;max-width:340px;width:100%;
-      display:flex;flex-direction:column;gap:6px;
+      list-style:none;margin:0 0 12px;padding:0;max-width:100%;width:100%;
+      display:flex;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:6px;
     }
     .dd-page-items li{
-      padding:8px 12px;border-radius:12px;
-      background:rgba(255,255,255,.72);
+      padding:6px 10px;border-radius:999px;
+      background:rgba(255,255,255,.82);
       border:1px solid rgba(160,100,20,.18);
-      font-size:clamp(13px,3.5vw,15px);font-weight:700;line-height:1.35;
-      text-align:center;
+      font-size:clamp(11px,3.1vw,13px);font-weight:700;line-height:1.25;
+      text-align:center;flex:0 1 auto;
     }
     .dd-page-price-box{
-      flex:0 0 auto;width:100%;max-width:280px;margin:8px auto 14px;
-      padding:12px 16px;border-radius:16px;
-      background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(255,248,230,.88));
-      border:1.5px solid rgba(160,100,20,.35);
-      box-shadow:0 4px 16px rgba(120,70,10,.12);
+      flex:0 0 auto;width:auto;margin:2px auto 12px;padding:0;
+      background:none;border:none;box-shadow:none;
     }
-    .dd-page-price-label{
-      display:block;font-size:11px;font-weight:800;letter-spacing:.06em;
-      color:#8a5a10;opacity:.9;margin-bottom:4px;
-    }
+    .dd-page-price-label{display:none;}
     .dd-page-price-val{
-      display:block;font-size:clamp(28px,8vw,36px);font-weight:900;
-      color:#8a5a10;line-height:1.05;
+      display:block;font-size:clamp(30px,8.5vw,38px);font-weight:900;
+      color:#8a5a10;line-height:1;
+    }
+    .dd-page-actions{
+      width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;
     }
     .dd-page-order{
-      width:100%;max-width:320px;border:none;border-radius:14px;
-      padding:14px 12px;font-size:15px;font-weight:900;color:#1a0a00;
+      width:100%;border:none;border-radius:16px;
+      padding:15px 12px;font-size:16px;font-weight:900;color:#1a0a00;
       background:linear-gradient(145deg,#ffd54f,#f0b820);
-      box-shadow:0 4px 14px rgba(160,100,20,.35);
+      box-shadow:0 6px 18px rgba(160,100,20,.35);
       cursor:pointer;touch-action:manipulation;
     }
     .dd-page-order:active{transform:scale(.98);}
@@ -2909,18 +2916,19 @@
       background:linear-gradient(145deg,#81c784,#43a047);
       color:#fff;
     }
-    .dd-page-hint{
-      margin:auto 0 0;max-width:320px;width:100%;
-      padding:10px 12px;border-radius:14px;
-      background:rgba(200,134,10,.1);
-      border:1px dashed rgba(160,100,20,.32);
-      font-size:11px;font-weight:700;line-height:1.45;
-      color:#6a4510;
+    .dd-page-week{
+      width:100%;border:none;border-radius:14px;
+      padding:10px 12px;font-size:13px;font-weight:800;color:#6a4510;
+      background:transparent;text-decoration:underline;text-underline-offset:3px;
+      cursor:pointer;touch-action:manipulation;
     }
-    .dd-page-hint .page-swipe-finger-hint{
-      margin:0 auto;opacity:1;
+    .dd-page-swipe{
+      margin:14px 0 0;padding:0;
+      font-size:12px;font-weight:700;line-height:1.35;
+      color:rgba(255,236,200,.72);
     }
-    /* Daily dish — photo raised; explanation + CTA in bottom panel */
+    .dd-page-hint{display:none;}
+    /* legacy poster mode — disabled; keep selectors harmless */
     .pf.book-daily-dish.book-daily-poster{
       padding:0;overflow:hidden;
       background:linear-gradient(180deg,#1a1208 0%,#2a1a0c 100%);
@@ -4076,8 +4084,8 @@
       dailyDishToday: "اليوم",
       dailyDishOrder: "اختر هذا الطبق",
       dailyDishToMenu: "المينو الكامل",
-      dailyDishSwipeHint: "اسحب يميناً أو يساراً للمينو",
-      dailyDishGuide: "اختر الطبق من الزر الذهبي · ثم اسحب لتصفح المينو",
+      dailyDishSwipeHint: "اسحب للمينو",
+      dailyDishGuide: "اسحب للمينو",
       coverSwipeHint: "اسحب يميناً أو يساراً لقلب الصفحات",
       dailyDishPriceLabel: "السعر",
       dailyDishPickTitle: "اختر تفاصيل الطبق",
@@ -4238,8 +4246,8 @@
       dailyDishToday: "Bugün",
       dailyDishOrder: "Bu yemeği seç",
       dailyDishToMenu: "Menüye geç",
-      dailyDishSwipeHint: "Menü için sağa veya sola kaydırın",
-      dailyDishGuide: "Altın düğmeden yemeği seçin · menü için kaydırın",
+      dailyDishSwipeHint: "Menü için kaydırın",
+      dailyDishGuide: "Menü için kaydırın",
       coverSwipeHint: "Sayfaları çevirmek için sağa veya sola kaydırın",
       dailyDishPriceLabel: "Fiyat",
       dailyDishPickTitle: "Menü seçimleri",
@@ -4400,8 +4408,8 @@
       dailyDishToday: "Today",
       dailyDishOrder: "Choose this dish",
       dailyDishToMenu: "Full menu",
-      dailyDishSwipeHint: "Swipe left or right for the menu",
-      dailyDishGuide: "Pick the dish with the gold button · then swipe for the menu",
+      dailyDishSwipeHint: "Swipe for the menu",
+      dailyDishGuide: "Swipe for the menu",
       coverSwipeHint: "Swipe left or right to turn pages",
       dailyDishPriceLabel: "Price",
       dailyDishPickTitle: "Choose your options",
@@ -5711,114 +5719,65 @@
       if (!pf || !todayDailyDish) return;
       pf.classList.add("book-daily-dish");
       pf.classList.remove("book-cover", "book-daily-poster");
+      delete pf.dataset.ddImgFailed;
+      pf.querySelectorAll(".book-daily-dish-inner, .book-daily-poster-stack, .dd-poster-overlay, .pf-bg, .page-shade, .page-edge").forEach(el => el.remove());
       const rawPrice = String(todayDailyDish.price || "").trim();
       const numPrice = Number(String(rawPrice).replace(",", "."));
       const dishImg = String(todayDailyDish.imageUrl || "").trim();
       const dishImgFixed = dishImg ? fixImgUrl(dishImg) : "";
       const inCart = cart.some(l => l.item && String(l.item.id) === "guest-daily-dish");
-      if (dishImgFixed && !pf.dataset.ddImgFailed) {
-        pf.classList.add("book-daily-poster");
-        pf.querySelectorAll(".book-daily-dish-inner, .book-daily-poster-stack, .dd-poster-overlay, .pf-bg, .page-shade, .page-edge").forEach(el => el.remove());
-        const shade = document.createElement("div");
-        shade.className = "page-shade";
-        pf.appendChild(shade);
-        const edge = document.createElement("div");
-        edge.className = "page-edge";
-        pf.appendChild(edge);
-        const body = dailyDishBodyHtml();
-        const priceHead = rawPrice && Number.isFinite(numPrice) && numPrice > 0
-          ? '<div class="dd-poster-head-price">' + esc(money(numPrice)) + "</div>"
-          : "";
-        let actionsHtml = "";
-        if (weeklyDishes.length > 1) {
-          actionsHtml +=
-            '<button type="button" class="dd-poster-week-btn" data-dd-week="1">' +
-            esc(guestT("dailyDishWeekBrowse")) +
-            "</button>";
-        }
-        actionsHtml +=
-          '<button type="button" class="dd-poster-order' + (inCart ? " in-cart" : "") + '" data-dd-order="1">' +
-          esc(inCart ? ("✓ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
-          "</button>";
-        const swipeHintHtml = swipeFingerHintHtml("dailyDishSwipeHint").replace(
-          'data-swipe-finger="1"',
-          'data-swipe-finger="1" data-swipe-kind="dailyDishSwipeHint"'
-        );
-        const posterSrc = dishImgFixed + (dishImgFixed.indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=dd1"));
-        const stack = document.createElement("div");
-        stack.className = "book-daily-poster-stack";
-        stack.innerHTML =
-          '<div class="dd-poster-img">' +
-          '<span class="dd-poster-badge">' + esc(guestT("dailyDishToday")) + " · " + esc(guestT("dailyDishTitle")) + "</span>" +
-          '<img alt="" draggable="false" decoding="async" src="' + esc(posterSrc) + '" />' +
-          "</div>" +
-          '<div class="dd-poster-explain">' +
-          '<h2 class="dd-poster-title">' + esc(guestT("dailyDishTitle")) + "</h2>" +
-          body.main.replace("dd-page-main", "dd-poster-main") +
-          body.extras +
-          priceHead +
-          '<div class="dd-poster-actions">' + actionsHtml + "</div>" +
-          '<div class="dd-poster-guide">' +
-          swipeHintHtml +
-          '<p class="dd-poster-guide-txt">' + esc(guestT("dailyDishGuide")) + "</p>" +
-          "</div></div>";
-        pf.appendChild(stack);
-        const posterImg = stack.querySelector(".dd-poster-img img");
-        const failPoster = () => {
-          if (pf.dataset.ddImgFailed === "1") return;
-          pf.dataset.ddImgFailed = "1";
-          fillDailyDishPage(pf);
-          try { syncCategoryDock(pf); } catch (_) {}
-        };
-        if (posterImg) {
-          posterImg.onerror = failPoster;
-          posterImg.onload = function () {
-            if (!posterImg.naturalWidth) failPoster();
-          };
-          if (posterImg.complete && !posterImg.naturalWidth) failPoster();
-        }
-        bindDailyDishOrderBtn(stack.querySelector("[data-dd-order]"));
-        const weekBtn = stack.querySelector("[data-dd-week]");
-        if (weekBtn) {
-          weekBtn.onclick = function (e) {
-            e.stopPropagation();
-            openWeeklyDishSheet();
-          };
-        }
-        return;
-      }
-      delete pf.dataset.ddImgFailed;
       const body = dailyDishBodyHtml();
-      if (!body.main && !body.extras) return;
-      pf.querySelectorAll(".pf-bg, .dd-poster-overlay, .page-shade, .page-edge, .book-daily-poster-stack").forEach(el => el.remove());
-      const logoSrc = coverLogoSrc();
-      const priceHtml = rawPrice && Number.isFinite(numPrice) && numPrice > 0
-        ? '<div class="dd-page-price-box">' +
-          '<span class="dd-page-price-label">' + esc(guestT("dailyDishPriceLabel")) + "</span>" +
-          '<span class="dd-page-price-val">' + esc(money(numPrice)) + "</span></div>"
+      const mainName = String(todayDailyDish.main || "").trim();
+      if (!mainName && !body.extras) return;
+      const photoSrc = dishImgFixed
+        ? dishImgFixed + (dishImgFixed.indexOf("?") >= 0 ? "" : (bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=dd1"))
         : "";
-      pf.innerHTML =
-        '<div class="book-daily-dish-inner">' +
-        '<div class="dd-page-logo" aria-hidden="true">' +
-        '<img class="guest-brand-banner-img" alt="" draggable="false" decoding="async" src="' + esc(logoSrc) + '" /></div>' +
-        '<p class="dd-page-kicker">' + esc(guestT("dailyDishToday")) + "</p>" +
-        '<h2 class="dd-page-title">' + esc(guestT("dailyDishTitle")) + "</h2>" +
-        body.main +
-        body.extras +
-        priceHtml +
+      const photoHtml = photoSrc
+        ? '<div class="dd-page-photo" data-dd-photo="1"><img alt="" draggable="false" decoding="async" src="' + esc(photoSrc) + '" /></div>'
+        : "";
+      const priceHtml = rawPrice && Number.isFinite(numPrice) && numPrice > 0
+        ? '<div class="dd-page-price-box"><span class="dd-page-price-val">' + esc(money(numPrice)) + "</span></div>"
+        : "";
+      let actionsHtml =
         '<button type="button" class="dd-page-order' + (inCart ? " in-cart" : "") + '" data-dd-order="1">' +
         esc(inCart ? ("✓ " + guestT("dailyDishOrder")) : guestT("dailyDishOrder")) +
-        "</button>" +
-        (weeklyDishes.length > 1
-          ? '<button type="button" class="dd-poster-week-btn" style="max-width:320px;margin-top:8px" data-dd-week="1">' +
-            esc(guestT("dailyDishWeekBrowse")) + "</button>"
-          : "") +
-        '<div class="dd-page-hint">' +
-        swipeFingerHintHtml("dailyDishSwipeHint").replace(
-          'data-swipe-finger="1"',
-          'data-swipe-finger="1" data-swipe-kind="dailyDishSwipeHint"'
-        ) +
-        "</div></div>";
+        "</button>";
+      if (weeklyDishes.length > 1) {
+        actionsHtml +=
+          '<button type="button" class="dd-page-week" data-dd-week="1">' +
+          esc(guestT("dailyDishWeekBrowse")) +
+          "</button>";
+      }
+      pf.innerHTML =
+        '<div class="book-daily-dish-inner">' +
+        '<div class="dd-page-card">' +
+        '<p class="dd-page-kicker">' + esc(guestT("dailyDishToday")) + " · " + esc(guestT("dailyDishTitle")) + "</p>" +
+        photoHtml +
+        (mainName ? '<h2 class="dd-page-title">' + esc(mainName) + "</h2>" : "") +
+        body.extras +
+        priceHtml +
+        '<div class="dd-page-actions">' + actionsHtml + "</div>" +
+        "</div>" +
+        '<p class="dd-page-swipe">' + esc(guestT("dailyDishSwipeHint")) + "</p>" +
+        "</div>";
+      const photoWrap = pf.querySelector("[data-dd-photo]");
+      const photoImg = photoWrap && photoWrap.querySelector("img");
+      const hideBadPhoto = function () {
+        if (photoWrap) photoWrap.classList.add("is-menu-scan");
+      };
+      if (photoImg) {
+        photoImg.onerror = hideBadPhoto;
+        photoImg.onload = function () {
+          const w = photoImg.naturalWidth || 0;
+          const h = photoImg.naturalHeight || 0;
+          /* Full menu-page scans are tall; food shots are closer to landscape/square. */
+          if (!w || !h || h / w > 1.2) hideBadPhoto();
+        };
+        if (photoImg.complete) {
+          if (!photoImg.naturalWidth) hideBadPhoto();
+          else if (photoImg.naturalHeight / photoImg.naturalWidth > 1.2) hideBadPhoto();
+        }
+      }
       bindDailyDishOrderBtn(pf.querySelector("[data-dd-order]"));
       const weekBtn = pf.querySelector("[data-dd-week]");
       if (weekBtn) {
@@ -7388,7 +7347,7 @@
       document.documentElement.classList.toggle("letterbox-nav", !!useTopRail);
       if (pgEl && menuIdx >= 0) pgEl.textContent = (menuIdx + 1) + " / " + menuPageCount;
       if (!bar) return;
-      if (isIosGuestHideFootBar()) bar.style.display = "none";
+      if (isIosGuestHideFootBar() || spreadKind(cur) === "daily-dish") bar.style.display = "none";
       else bar.style.display = bookSpread.length <= 1 || document.documentElement.classList.contains("coach-locked") ? "none" : "";
       syncFootLayout();
     }
@@ -8215,6 +8174,12 @@
         syncSwipeBar();
         refreshCoverTitles();
         syncCategoryBar();
+        try {
+          document.documentElement.classList.toggle(
+            "daily-dish-open",
+            !!coachDone && spreadKind(cur) === "daily-dish"
+          );
+        } catch (_) {}
       }
       if (!duringFlip) {
         document.querySelectorAll(".pw").forEach((pw, i) => {
