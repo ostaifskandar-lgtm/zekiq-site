@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v187: first menu open requests fullscreen (same look as FS) -->
+  <!-- guest-table-ui-v188: immersive layout identical with/without Fullscreen API (iPhone-safe) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -52,19 +52,18 @@
         var h=vv?vv.height:window.innerHeight;
         var top=vv?vv.offsetTop:0;
         var left=vv?vv.offsetLeft:0;
-        if(isIosInBrowser()&&vv){
+        /* Always lock to the visible viewport so FS and non-FS look the same. */
+        if(vv){
           h=Math.round(vv.height);
           w=Math.round(vv.width);
           top=Math.round(vv.offsetTop);
           left=Math.round(vv.offsetLeft);
-          root.style.setProperty("--chrome-h","0px");
-          root.style.setProperty("--ios-safe-bottom","0px");
-        } else if(isIosInBrowser()){
-          var ih=window.innerHeight||h;
-          h=Math.min(h,ih);
-          root.style.setProperty("--chrome-h","0px");
-          root.style.setProperty("--ios-safe-bottom","0px");
+        } else {
+          h=Math.round(window.innerHeight||h);
+          w=Math.round(window.innerWidth||w);
         }
+        root.style.setProperty("--chrome-h","0px");
+        if(isIosInBrowser()) root.style.setProperty("--ios-safe-bottom","0px");
         var key=Math.round(w)+","+Math.round(h)+","+Math.round(top)+","+Math.round(left);
         if(key===lastFitKey) return;
         lastFitKey=key;
@@ -128,8 +127,8 @@
           if(!req) continue;
           try{
             var p=req.call(el);
-            if(p&&p.then) return p.then(function(){fitViewport();burstRelayout();hideFsHint();root.classList.add("chrome-hidden","fs-active");}).catch(function(){enterImmersiveAuto();});
-            fitViewport();burstRelayout();hideFsHint();root.classList.add("chrome-hidden","fs-active");
+            if(p&&p.then) return p.then(function(){enterImmersiveAuto();hideFsHint();root.classList.add("chrome-hidden","fs-active","guest-immersive");}).catch(function(){enterImmersiveAuto();});
+            enterImmersiveAuto();hideFsHint();root.classList.add("chrome-hidden","fs-active","guest-immersive");
             return Promise.resolve();
           }catch(e){}
         }
@@ -137,31 +136,33 @@
         return Promise.resolve();
       }
       function enterImmersiveAuto(){
+        /* Layout class — same look with or without Fullscreen API (iPhone has no FS). */
+        root.classList.add("chrome-hidden","fs-active","guest-immersive");
         fitViewport();
-        if(!isIosInBrowser()) root.classList.add("chrome-hidden");
         hideFsHint();
         if(!isIosInBrowser()) hideSafariChrome();
         burstRelayout();
-        setTimeout(fitViewport, 120);
+        setTimeout(fitViewport, 80);
+        setTimeout(fitViewport, 220);
+        setTimeout(burstRelayout, 260);
       }
       function engage(withFullscreen){
         fitViewport();
         lockPortrait();
         updateOrientLock();
         if(isCoachLocked()) return Promise.resolve(false);
+        /* Always unlock the good immersive layout first (Android + iPhone). */
+        enterImmersiveAuto();
         if(withFullscreen&&!isIosInBrowser()){
           return tryFullscreen().then(function(){
-            fitViewport();
-            burstRelayout();
-            hideFsHint();
+            enterImmersiveAuto();
             return isFullscreen();
           }).catch(function(){
             enterImmersiveAuto();
             return false;
           });
         }
-        enterImmersiveAuto();
-        return Promise.resolve(false);
+        return Promise.resolve(isFullscreen());
       }
       function hideFsHint(){
         var h=document.getElementById("fsHint");
@@ -169,11 +170,8 @@
         try{sessionStorage.setItem("zekiq_fs_hint","1");}catch(e){}
       }
       function maybeShowFsHint(){
-        try{if(sessionStorage.getItem("zekiq_fs_hint")==="1")return;}catch(e){}
-        if(isIosInBrowser()) return;
-        var h=document.getElementById("fsHint");
-        var span=document.getElementById("i18n-fsHint");
-        if(h&&!isFullscreen()) h.classList.remove("hide");
+        /* Do not nag — menu must look correct without Fullscreen API (esp. iPhone). */
+        hideFsHint();
       }
       function iosInstallKey(){return "zekiq_ios_a2hs_tip_v2";}
       function shouldShowIosInstall(){
@@ -1708,6 +1706,23 @@
       cursor:pointer;
       touch-action:none;
     }
+    /* Same filled frame whether browser Fullscreen API works or not (iPhone). */
+    html.guest-menu-active #scene,
+    html.guest-immersive #scene,
+    html.immersive.chrome-hidden #scene,
+    html.immersive.fs-active #scene{
+      top:var(--vv-top,0px)!important;
+      left:var(--vv-left,0px)!important;
+      right:auto!important;
+      width:var(--app-w,100vw)!important;
+      height:var(--app-h,100dvh)!important;
+      max-width:none!important;
+      max-height:none!important;
+      padding-top:0!important;
+      justify-content:flex-start;
+    }
+    html.guest-menu-active #fsHint,
+    html.guest-immersive #fsHint{display:none!important;opacity:0!important;}
     html.immersive.chrome-hidden #scene,
     html.immersive.fs-active #scene,
     #scene:fullscreen,
@@ -1732,7 +1747,9 @@
     }
     html.immersive #scene,
     html.immersive.chrome-hidden #scene,
-    html.immersive.fs-active #scene{
+    html.immersive.fs-active #scene,
+    html.guest-menu-active #scene,
+    html.guest-immersive #scene{
       padding-top:0;
     }
     #pageSwipeBar{
@@ -8141,7 +8158,7 @@
     function finishGuestMenuEntry() {
       coachDone = true;
       document.documentElement.classList.remove("coach-locked");
-      document.documentElement.classList.add("guest-menu-active");
+      document.documentElement.classList.add("guest-menu-active", "guest-immersive", "chrome-hidden", "fs-active");
       lastCategoryDockKey = "";
       syncSceneHud();
       function relayoutAfterEngage() {
@@ -8158,15 +8175,12 @@
         if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
         if (window.__zekiqFitViewport) window.__zekiqFitViewport();
       }
-      /* First open must match fullscreen look — request FS on the same user gesture. */
+      /* Immersive layout always; Fullscreen API is optional (iPhone never has it). */
       const engageP =
         window.__zekiqEngage
           ? Promise.resolve(window.__zekiqEngage(true))
           : Promise.resolve().then(function () {
               if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
-              if (window.__zekiqTryFullscreen && !document.documentElement.classList.contains("ios-inbrowser")) {
-                return window.__zekiqTryFullscreen();
-              }
             });
       if (window.__zekiqBurstHideSafariChrome && !document.documentElement.classList.contains("ios-inbrowser")) {
         window.__zekiqBurstHideSafariChrome();
@@ -8174,23 +8188,18 @@
         window.__zekiqHideSafariChrome();
       }
       if (window.__zekiqLockPortrait) window.__zekiqLockPortrait();
+      try { sessionStorage.setItem("zekiq_fs_hint", "1"); } catch (_) {}
+      const fsHint = document.getElementById("fsHint");
+      if (fsHint) fsHint.classList.add("hide");
       buildCategoryBar();
       relayoutAfterEngage();
-      engageP.then(function (ok) {
-        if (ok || (document.fullscreenElement || document.webkitFullscreenElement)) {
-          try { sessionStorage.setItem("zekiq_fs_hint", "1"); } catch (_) {}
-          const h = document.getElementById("fsHint");
-          if (h) h.classList.add("hide");
-        } else if (window.__zekiqMaybeShowFsHint) {
-          window.__zekiqMaybeShowFsHint();
-        }
+      engageP.then(function () {
         requestAnimationFrame(function () {
           relayoutAfterEngage();
-          setTimeout(relayoutAfterEngage, 180);
-          setTimeout(relayoutAfterEngage, 480);
+          setTimeout(relayoutAfterEngage, 160);
+          setTimeout(relayoutAfterEngage, 420);
         });
       }).catch(function () {
-        if (window.__zekiqMaybeShowFsHint) window.__zekiqMaybeShowFsHint();
         relayoutAfterEngage();
       });
     }
@@ -8216,6 +8225,9 @@
     function initCoverGate() {
       document.documentElement.classList.remove("guest-menu-active");
       document.documentElement.classList.remove("daily-dish-open");
+      document.documentElement.classList.remove("guest-immersive");
+      document.documentElement.classList.remove("fs-active");
+      document.documentElement.classList.remove("chrome-hidden");
       hideDailyDishScreen();
       dailyDishSeen = false;
       try { sessionStorage.removeItem(coachDoneKey()); } catch (e) {}
