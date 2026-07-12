@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v185: daily-dish layout tune — image/rail/card alignment -->
+  <!-- guest-table-ui-v186: daily-dish card anchored to bottom of screen -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -2851,22 +2851,22 @@
     }
     .book-daily-dish-inner{
       width:100%;height:100%;box-sizing:border-box;
-      display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+      display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
       padding:
         calc(var(--menu-top-dock-h, 44px) + 6px)
         clamp(10px,3.2vw,16px)
-        calc(10px + env(safe-area-inset-bottom,0px));
+        calc(8px + env(safe-area-inset-bottom,0px));
       overflow-y:auto;-webkit-overflow-scrolling:touch;
       text-align:center;
     }
     .dd-page-card{
       width:min(100%,392px);
-      margin:0 auto auto;
+      margin:0 auto;
       padding:12px 12px 14px;
-      border-radius:18px;
+      border-radius:18px 18px 14px 14px;
       background:#fff9f0;
       border:1px solid rgba(255,220,160,.2);
-      box-shadow:0 14px 32px rgba(0,0,0,.38);
+      box-shadow:0 -8px 28px rgba(0,0,0,.35), 0 10px 24px rgba(0,0,0,.22);
       display:flex;flex-direction:column;align-items:stretch;
       text-align:center;
     }
@@ -3016,9 +3016,16 @@
     }
     .dd-page-week{display:none;}
     .dd-page-swipe{
-      margin:8px 0 0;padding:0;
+      margin:6px 0 0;padding:0;
       font-size:11px;font-weight:600;letter-spacing:.02em;
       color:rgba(255,236,200,.5);
+      order:2;
+    }
+    .dd-page-card{order:1;}
+    .book-daily-dish-inner > .dd-page-card{
+      flex:0 0 auto;
+      max-height:calc(100% - 28px);
+      overflow-y:auto;-webkit-overflow-scrolling:touch;
     }
     @media (max-height:700px){
       .dd-hero-row{grid-template-rows:minmax(140px, min(30vh, 200px));}
