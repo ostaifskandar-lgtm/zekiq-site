@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v175: fix WiFi/4G API pick — tonino only, skip dead LAN/dev -->
+  <!-- guest-table-ui-v177: keep dock logo position; stop flip/DD transition flicker -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -1267,7 +1267,7 @@
     }
     #menuTopDock.show{display:flex;}
     #menuBrandDock{
-      display:none!important;
+      display:none;
       position:relative;
       left:auto;
       right:auto;
@@ -1280,15 +1280,38 @@
       padding:0;
       pointer-events:none;
       z-index:0;
-      min-height:0;
+      min-height:var(--logo-strip-h, 48px);
+      background-color:#1a120c;
+      background-image:url("https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=177");
+      background-repeat:no-repeat;
+      background-position:center center;
+      background-size:contain;
+      transform:none;
+      transition:none;
+      /* Avoid compositor flicker when dock top vars settle */
+      backface-visibility:hidden;
+      -webkit-backface-visibility:hidden;
     }
-    #menuTopDock.has-brand-dock #menuBrandDock{display:none!important;}
-    #menuBrandDock .menu-dock-brand-img{display:none!important;}
-    html.orders-cover-logo .pf-brand-strip{
-      display:none!important;
+    #menuTopDock.has-brand-dock #menuBrandDock{display:block;}
+    #menuBrandDock .menu-dock-brand-img{
+      display:block;
+      width:100%;
+      height:var(--logo-strip-h, 48px);
+      object-fit:contain;
+      object-position:center center;
+      pointer-events:none;
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+    html.orders-cover-logo #menuBrandDock{
+      max-height:0!important;
+      min-height:0!important;
       opacity:0!important;
-      visibility:hidden!important;
+      overflow:hidden!important;
+      pointer-events:none!important;
     }
+    .pf-brand-strip{display:none!important;}
+    html.orders-cover-logo .pf-brand-strip{display:none!important;}
     #menuCategoryBar{
       position:relative;
       left:auto;
@@ -1314,7 +1337,7 @@
       margin-top:0!important;
       background:linear-gradient(180deg,#ebe4d3 0%,rgba(235,228,211,.98) 92%,rgba(235,228,211,.9) 100%);
     }
-    html.letterbox-chrome .pf-brand-strip{display:none!important;}
+    #menuTopDock.has-brand-dock #menuCategoryBar{margin-top:0!important;}
     html.guest-manual-chrome #menuTopDock{
       overflow:visible;
       height:auto!important;
@@ -1324,12 +1347,31 @@
     html.page-flipping #menuTopDock{
       visibility:visible!important;
       pointer-events:auto!important;
+      transition:none!important;
+      animation:none!important;
+    }
+    /* Keep logo painted during page turns — never flash opacity/height. */
+    html.page-flipping #menuBrandDock{
+      opacity:1!important;
+      visibility:visible!important;
+      transition:none!important;
+      animation:none!important;
+      transform:none!important;
+    }
+    html.page-flipping:not(.orders-cover-logo) #menuBrandDock{
+      max-height:none!important;
+      min-height:var(--logo-strip-h, 48px)!important;
+    }
+    html.page-flipping #menuBrandDock .menu-dock-brand-img{
+      opacity:1!important;
+      visibility:visible!important;
+      transition:none!important;
     }
     html.page-flipping .pf-overlay{visibility:hidden!important;}
     .pf-cat-strip{display:none!important;}
-    /* Logo on each page face — flips with the turn (no static dock flash). */
+    /* Logo is in #menuBrandDock above chips — page strip stays off. */
     .pf-brand-strip{
-      display:block;
+      display:none!important;
       position:absolute;
       left:0;
       top:0;
@@ -1339,12 +1381,9 @@
       pointer-events:none;
       z-index:8;
       overflow:hidden;
-      opacity:1;
-      visibility:visible;
-      max-height:none;
-      background-color:#1a120c;
-      transform:none;
-      transition:none;
+      opacity:0;
+      visibility:hidden;
+      max-height:0;
     }
     .pf-brand-strip .guest-brand-banner-img{
       display:block;
@@ -3776,7 +3815,7 @@
       <div id="menuViewport">
       <div id="menuTopDock">
       <div id="menuBrandDock" aria-hidden="true">
-        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=175" />
+        <img class="menu-dock-brand-img" alt="" draggable="false" decoding="async" src="https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=177" />
       </div>
       <div id="menuCategoryBar" aria-label="أقسام المينو">
         <div id="menuCategoryScroll" class="menu-cat-scroll"></div>
@@ -4978,9 +5017,10 @@
       if (chrome.logo && chrome.logo.visible === true) return true;
       return !isIosGuestNoLogo();
     }
-    /** Dock never hosts the brand — logo is on .pf-brand-strip and flips with the page. */
+    /** Logo strip in #menuBrandDock — directly above category chips. */
     function usesDockBrandLogo() {
-      return false;
+      if (isIosGuestNoLogo()) return false;
+      return shouldShowGuestLogo();
     }
     function guestLogoScale() {
       var chrome = activeGuestChrome();
@@ -4996,7 +5036,6 @@
       if (!shouldShowGuestLogo()) return 0;
       if (document.documentElement.classList.contains("orders-cover-logo")) return 0;
       if (isIosGuestNoLogo()) return 0;
-      if (pf && isLetterboxMenuLayout(pf)) return 0;
       return Math.max(28, Math.round(logoStripHeight(rect || { dw: 360 }) * guestLogoScale()));
     }
     function isIosGuestHideFootBar() {
@@ -5012,9 +5051,9 @@
       listEl.scrollLeft = 0;
     }
     function coverLogoSrc() {
-      const bv = bookCacheVer ? "?v=" + encodeURIComponent(bookCacheVer) : "?v=175";
       /* Always GitHub Pages asset — tunnel /table/assets falls through to SPA HTML (broken img). */
-      return "https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg" + bv;
+      const ver = bookCacheVer || "177";
+      return "https://ostaifskandar-lgtm.github.io/zekiq-site/table/assets/tonino-brand.jpg?v=" + encodeURIComponent(ver);
     }
     let iceSheetServings = [];
     function newIceServing() {
@@ -6290,38 +6329,9 @@
     }
     function layoutPfBrandStrip(pf, rect) {
       const strip = pf?.querySelector(".pf-brand-strip");
-      if (!strip || !rect) return;
-      const logoH = pageFaceLogoHeight(rect, pf);
-      if (logoH <= 0) {
-        strip.style.display = "none";
-        return;
-      }
-      var chrome = activeGuestChrome();
-      var logo = chrome.logo;
-      var cropTop = logo ? Math.max(0, Math.min(0.55, Number(logo.cropTop) || 0)) : 0;
-      var lx = logo ? Math.max(0.05, Math.min(0.95, Number(logo.x) || 0.5)) : 0.5;
-      var nudgeX = Math.round((lx - 0.5) * (rect.dw || 300) * 0.35);
-      strip.style.display = "block";
-      strip.style.visibility = "visible";
-      strip.style.opacity = "1";
-      strip.style.maxHeight = "none";
-      strip.style.width = Math.round(rect.dw) + "px";
-      strip.style.height = logoH + "px";
-      strip.style.left = Math.round(rect.ox + nudgeX) + "px";
-      strip.style.top = Math.round(rect.oy - logoH) + "px";
-      strip.style.backgroundColor = "#1a120c";
-      strip.style.transition = "none";
-      strip.style.transform = "none";
-      const img = strip.querySelector(".guest-brand-banner-img");
-      if (img) {
-        img.style.height = logoH + "px";
-        img.style.width = "100%";
-        img.style.objectFit = "contain";
-        img.style.objectPosition = cropTop > 0 ? ("center " + (cropTop * 100) + "%") : "center center";
-        img.style.clipPath = cropTop > 0 ? ("inset(" + (cropTop * 100) + "% 0 0 0)") : "";
-        const src = coverLogoSrc();
-        if (img.getAttribute("src") !== src) img.src = src;
-      }
+      if (!strip) return;
+      /* Dock hosts the logo above chips — keep page strip off (no shimmer). */
+      strip.style.display = "none";
     }
     function syncMenuBrandDock(rect) {
       const topDock = document.getElementById("menuTopDock");
@@ -6329,9 +6339,10 @@
       const view = document.getElementById("menuViewport");
       const dockMode = usesDockBrandLogo();
       const folded = document.documentElement.classList.contains("orders-cover-logo");
+      const flipping = document.documentElement.classList.contains("page-flipping");
       topDock?.classList.toggle("has-brand-dock", dockMode);
       if (!dockMode || !rect) {
-        if (brandDock) brandDock.style.display = "none";
+        if (brandDock && !flipping) brandDock.style.display = "none";
         /* Keep --logo-strip-h — page-face logo uses it for layout. */
         return 0;
       }
@@ -6346,30 +6357,37 @@
       }
       if (brandDock) {
         brandDock.style.display = "";
-        brandDock.style.maxHeight = folded ? "0px" : "";
-        brandDock.style.opacity = "";
+        /* During page turns do not touch opacity/maxHeight — stops shimmer. */
+        if (!flipping) {
+          brandDock.style.maxHeight = folded ? "0px" : "";
+          brandDock.style.opacity = "";
+        }
         /* Don't fight orders fold (scaleY) or manual dock translateX — only set when not folded. */
-        if (!folded && !document.documentElement.classList.contains("guest-manual-chrome")) {
+        if (!flipping && !folded && !document.documentElement.classList.contains("guest-manual-chrome")) {
           const lx = logo ? Math.max(0.05, Math.min(0.95, Number(logo.x) || 0.5)) : 0.5;
           const logoNudge = Math.round((lx - 0.5) * (rect.dw || 300) * 0.35);
           brandDock.style.transform = logoNudge ? ("translateX(" + logoNudge + "px)") : "";
-        } else if (!folded) {
+        } else if (!flipping && !folded) {
           brandDock.style.transform = "";
         }
-        brandDock.style.minHeight = logoH + "px";
+        if (!flipping || !brandDock.style.minHeight) {
+          brandDock.style.minHeight = logoH + "px";
+        }
         const img = brandDock.querySelector(".menu-dock-brand-img");
         if (img) {
-          img.style.height = logoH + "px";
+          if (!flipping || !img.style.height) img.style.height = logoH + "px";
           img.style.objectFit = "contain";
           img.style.objectPosition = cropTop > 0 ? ("center " + (cropTop * 100) + "%") : "center center";
           img.style.clipPath = cropTop > 0 ? ("inset(" + (cropTop * 100) + "% 0 0 0)") : "";
         }
-        if (cropTop > 0) {
-          brandDock.style.backgroundPosition = "center " + (cropTop * 100) + "%";
-          brandDock.style.clipPath = "inset(" + (cropTop * 100) + "% 0 0 0)";
-        } else {
-          brandDock.style.backgroundPosition = "center center";
-          brandDock.style.clipPath = "";
+        if (!flipping) {
+          if (cropTop > 0) {
+            brandDock.style.backgroundPosition = "center " + (cropTop * 100) + "%";
+            brandDock.style.clipPath = "inset(" + (cropTop * 100) + "% 0 0 0)";
+          } else {
+            brandDock.style.backgroundPosition = "center center";
+            brandDock.style.clipPath = "";
+          }
         }
       }
       /* Folded logo must not reserve dock height */
@@ -6533,6 +6551,10 @@
       const dock = document.getElementById("menuTopDock");
       const bar = document.getElementById("menuCategoryBar");
       if (!view || !dock) return;
+      /* Freeze dock geometry while a page is turning — stops logo jump/shimmer. */
+      if (document.documentElement.classList.contains("page-flipping") || animating) {
+        return;
+      }
       const show = dock.classList.contains("show");
       const onDailyDish = spreadKind(cur) === "daily-dish";
       const onMenu = pf && !pf.classList.contains("book-cover") && (menuIdxFromCur(cur) >= 0 || onDailyDish);
@@ -6543,23 +6565,21 @@
           view.style.removeProperty("--menu-top-dock-h");
           view.style.removeProperty("--menu-chrome-top");
           view.style.removeProperty("--cat-bar-h");
-          view.style.removeProperty("--logo-strip-h");
+          /* Keep --logo-strip-h so logo does not collapse during brief cover/DD transitions. */
           view.style.removeProperty("--ios-cat-h");
         }
         return;
       }
       const isDdPoster = onDailyDish && pf.classList.contains("book-daily-poster");
       let rect = onDailyDish ? null : imageOverlayRect(pf, { measureOnly: true });
-      /* Daily dish / missing page image — dock under HUD; poster hides brand strip. */
+      /* Daily dish — keep dock logo height (same as menu) so leaving DD does not jump. */
       if (!rect) {
         const dw = Math.max(280, Math.round(pf.clientWidth || view.clientWidth || window.innerWidth || 360));
         const catH0 = Math.round(bar?.offsetHeight || 40);
-        syncMenuBrandDock({ ox: 0, oy: 0, dw, dh: 1 });
-        const logoH0 = 0;
-        view.style.setProperty("--logo-strip-h", "0px");
+        const logoH0 = syncMenuBrandDock({ ox: 0, oy: 0, dw, dh: 1 });
         const chromeTop0 = menuChromeTopPx();
         const dockH0 = catH0 + logoH0;
-        const dockKey0 = "dd|" + (isDdPoster ? "p" : "t") + "|" + chromeTop0 + "|" + dockH0;
+        const dockKey0 = "dd|" + (isDdPoster ? "p" : "t") + "|" + chromeTop0 + "|" + dockH0 + "|" + logoH0;
         if (lastCategoryDockKey === dockKey0) return;
         lastCategoryDockKey = dockKey0;
         view.style.setProperty("--menu-chrome-top", chromeTop0 + "px");
@@ -6571,14 +6591,12 @@
       }
       const catH = Math.round(bar?.offsetHeight || 0);
       const oy = Math.round(rect.oy);
-      syncMenuBrandDock(rect); /* keeps #menuBrandDock hidden */
-      const logoH = pageFaceLogoHeight(rect, pf);
-      /* Dock = categories only; logo sits on the page face (when page fills) and flips with it. */
-      const dockH = catH;
-      const stackH = catH + logoH;
+      const logoH = syncMenuBrandDock(rect) || pageFaceLogoHeight(rect, pf);
+      /* Dock = logo + categories, glued above the page. */
+      const dockH = catH + logoH;
       const chromeTop = menuChromeTopPx();
-      const dockTop = Math.max(chromeTop, oy - stackH);
-      const dockKey = "face|" + oy + "|" + dockH + "|" + logoH + "|" + dockTop;
+      const dockTop = Math.max(chromeTop, oy - dockH);
+      const dockKey = "dock|" + oy + "|" + dockH + "|" + logoH + "|" + dockTop;
       if (lastCategoryDockKey === dockKey) {
         layoutPfBrandStrip(pf, rect);
         return;
@@ -7056,18 +7074,21 @@
         const usableProbe = Math.max(1, ch - chromeTop - chromeBody);
         const scaleProbe = Math.min(cw / nw, usableProbe / nh);
         const dhProbe = nh * scaleProbe;
-        const fillsScreen = (dhProbe / Math.max(1, ch)) >= 0.92;
         const canLogo = shouldShowGuestLogo()
           && !document.documentElement.classList.contains("orders-cover-logo")
           && !isIosGuestNoLogo();
-        if (canLogo && fillsScreen) {
+        if (canLogo) {
           logoH = Math.max(28, Math.round(logoStripHeight({ dw: cw }) * guestLogoScale()));
           chromeBody = logoH + catH;
         } else {
           logoH = 0;
         }
-        pf.dataset.letterboxChrome = logoH > 0 ? "0" : "1";
-        document.documentElement.classList.toggle("letterbox-chrome", logoH <= 0);
+        const fillsScreen = ((nh * Math.min(cw / nw, Math.max(1, ch - chromeTop - chromeBody) / nh)) / Math.max(1, ch)) >= 0.92;
+        pf.dataset.letterboxChrome = fillsScreen ? "0" : "1";
+        /* Don't thrash letterbox class mid-flip — causes dock/logo reflow shimmer. */
+        if (!document.documentElement.classList.contains("page-flipping") && !animating) {
+          document.documentElement.classList.toggle("letterbox-chrome", !fillsScreen);
+        }
       } else if (pf && pf.dataset) {
         pf.dataset.letterboxChrome = "0";
       }
@@ -8095,10 +8116,19 @@
     let lastSyncCur = -1;
     function sync(duringFlip) {
       if (cur !== lastSyncCur) {
+        const prevCur = lastSyncCur;
         lastSyncCur = cur;
         if (!duringFlip) {
-          lastCategoryDockKey = "";
           lastCategoryScrollPi = -1;
+          /* Invalidate dock lock only when chrome kind changes (cover↔menu↔daily).
+             Same-kind page turns keep logo dock geometry → no shimmer. */
+          try {
+            const prevKind = prevCur >= 0 ? spreadKind(prevCur) : "";
+            const nextKind = spreadKind(cur);
+            if (prevKind !== nextKind) lastCategoryDockKey = "";
+          } catch (e) {
+            lastCategoryDockKey = "";
+          }
         }
       }
       const pgText = formatPageLabel();
