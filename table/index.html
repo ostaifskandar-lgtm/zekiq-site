@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v186: daily-dish card anchored to bottom of screen -->
+  <!-- guest-table-ui-v187: first menu open requests fullscreen (same look as FS) -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -148,9 +148,20 @@
         fitViewport();
         lockPortrait();
         updateOrientLock();
-        if(isCoachLocked()) return;
-        if(withFullscreen&&!isIosInBrowser()) tryFullscreen();
-        else enterImmersiveAuto();
+        if(isCoachLocked()) return Promise.resolve(false);
+        if(withFullscreen&&!isIosInBrowser()){
+          return tryFullscreen().then(function(){
+            fitViewport();
+            burstRelayout();
+            hideFsHint();
+            return isFullscreen();
+          }).catch(function(){
+            enterImmersiveAuto();
+            return false;
+          });
+        }
+        enterImmersiveAuto();
+        return Promise.resolve(false);
       }
       function hideFsHint(){
         var h=document.getElementById("fsHint");
@@ -8133,22 +8144,54 @@
       document.documentElement.classList.add("guest-menu-active");
       lastCategoryDockKey = "";
       syncSceneHud();
-      const pfEntry = document.querySelector("#pw" + cur + " .pf");
-      if (pfEntry) syncCategoryDock(pfEntry);
-      if (window.__zekiqEngage) window.__zekiqEngage(false);
-      else {
-        if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
-      }
-      if (window.__zekiqBurstHideSafariChrome && !document.documentElement.classList.contains("ios-inbrowser")) window.__zekiqBurstHideSafariChrome();
-      else if (window.__zekiqHideSafariChrome && !document.documentElement.classList.contains("ios-inbrowser")) window.__zekiqHideSafariChrome();
-      if (window.__zekiqMaybeShowFsHint) window.__zekiqMaybeShowFsHint();
-      if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
-      if (window.__zekiqLockPortrait) window.__zekiqLockPortrait();
-      buildCategoryBar();
-      requestAnimationFrame(function () {
+      function relayoutAfterEngage() {
+        lastCategoryDockKey = "";
+        const pfEntry = document.querySelector("#pw" + cur + " .pf");
+        if (pfEntry) {
+          try { syncCategoryDock(pfEntry); } catch (_) {}
+          if (pfEntry.classList.contains("book-daily-dish")) {
+            try { fillDailyDishPage(pfEntry); } catch (_) {}
+          }
+        }
         syncSceneHud();
         if (typeof layoutAllHotspots === "function") layoutAllHotspots();
         if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
+        if (window.__zekiqFitViewport) window.__zekiqFitViewport();
+      }
+      /* First open must match fullscreen look — request FS on the same user gesture. */
+      const engageP =
+        window.__zekiqEngage
+          ? Promise.resolve(window.__zekiqEngage(true))
+          : Promise.resolve().then(function () {
+              if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
+              if (window.__zekiqTryFullscreen && !document.documentElement.classList.contains("ios-inbrowser")) {
+                return window.__zekiqTryFullscreen();
+              }
+            });
+      if (window.__zekiqBurstHideSafariChrome && !document.documentElement.classList.contains("ios-inbrowser")) {
+        window.__zekiqBurstHideSafariChrome();
+      } else if (window.__zekiqHideSafariChrome && !document.documentElement.classList.contains("ios-inbrowser")) {
+        window.__zekiqHideSafariChrome();
+      }
+      if (window.__zekiqLockPortrait) window.__zekiqLockPortrait();
+      buildCategoryBar();
+      relayoutAfterEngage();
+      engageP.then(function (ok) {
+        if (ok || (document.fullscreenElement || document.webkitFullscreenElement)) {
+          try { sessionStorage.setItem("zekiq_fs_hint", "1"); } catch (_) {}
+          const h = document.getElementById("fsHint");
+          if (h) h.classList.add("hide");
+        } else if (window.__zekiqMaybeShowFsHint) {
+          window.__zekiqMaybeShowFsHint();
+        }
+        requestAnimationFrame(function () {
+          relayoutAfterEngage();
+          setTimeout(relayoutAfterEngage, 180);
+          setTimeout(relayoutAfterEngage, 480);
+        });
+      }).catch(function () {
+        if (window.__zekiqMaybeShowFsHint) window.__zekiqMaybeShowFsHint();
+        relayoutAfterEngage();
       });
     }
     function enterGuestMenu() {
