@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v189: stable immersive layout — no FS jump, freeze letterbox, settle gate -->
+  <!-- guest-table-ui-v190: fixed 100svh scene; no hide-flash; no Fullscreen API jump -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -118,8 +118,6 @@
         return !!(document.fullscreenElement||document.webkitFullscreenElement);
       }
       function tryFullscreen(){
-        /* Disabled: Fullscreen API causes a visible jump (small menu / logo centered)
-           then a second layout. Immersive visualViewport fill is stable on Android + iPhone. */
         enterImmersiveAuto();
         return Promise.resolve();
       }
@@ -128,19 +126,16 @@
         fitViewport();
         hideFsHint();
         if(!isIosInBrowser()) hideSafariChrome();
+        burstRelayout();
       }
-      var settleTimer=0;
-      function scheduleStableLayout(){
-        root.classList.add("layout-settling");
-        root.classList.remove("layout-ready");
-        clearTimeout(settleTimer);
-        settleTimer=setTimeout(function(){
-          lastFitKey="";
-          fitViewportNow();
+      var resizeDebounce=0;
+      function onViewportChange(){
+        fitViewport();
+        if(!root.classList.contains("guest-menu-active")) return;
+        clearTimeout(resizeDebounce);
+        resizeDebounce=setTimeout(function(){
           if(typeof window.__zekiqRelayout==="function") window.__zekiqRelayout();
-          root.classList.remove("layout-settling");
-          root.classList.add("layout-ready");
-        },280);
+        },120);
       }
       function engage(withFullscreen){
         fitViewport();
@@ -148,7 +143,6 @@
         updateOrientLock();
         if(isCoachLocked()) return Promise.resolve(false);
         enterImmersiveAuto();
-        if(root.classList.contains("guest-menu-active")) scheduleStableLayout();
         return Promise.resolve(false);
       }
       function hideFsHint(){
@@ -298,28 +292,16 @@
         e.preventDefault();
       }
       function onFsChange(){
-        /* Keep immersive classes — never drop them mid-session (avoids logo/menu jump). */
         if(root.classList.contains("guest-menu-active")){
           root.classList.add("chrome-hidden","fs-active","guest-immersive");
-          scheduleStableLayout();
-          return;
         }
-        fitViewport();
-        if(isFullscreen()){
-          hideFsHint();
-          root.classList.add("fs-active","chrome-hidden");
-        }
-        scheduleStableLayout();
+        onViewportChange();
       }
       root.classList.add("immersive");
       fitViewport();
       bindSceneFullscreen();
-      window.addEventListener("resize",function(){
-        if(root.classList.contains("guest-menu-active")) scheduleStableLayout();
-        else fitViewport();
-      });
+      window.addEventListener("resize",onViewportChange);
       window.addEventListener("orientationchange",function(){
-        root.classList.remove("layout-ready");
         document.querySelectorAll(".pf[data-letterbox-locked]").forEach(function(pf){
           delete pf.dataset.letterboxLocked;
         });
@@ -333,10 +315,7 @@
       document.addEventListener("fullscreenchange",onFsChange);
       document.addEventListener("webkitfullscreenchange",onFsChange);
       if(window.visualViewport){
-        visualViewport.addEventListener("resize",function(){
-          if(root.classList.contains("guest-menu-active")) scheduleStableLayout();
-          else fitViewport();
-        });
+        visualViewport.addEventListener("resize",onViewportChange);
       }
       document.addEventListener("DOMContentLoaded",function(){
         bindSceneFullscreen();
@@ -382,7 +361,7 @@
       window.__zekiqTryFullscreen=tryFullscreen;
       window.__zekiqMaybeShowFsHint=maybeShowFsHint;
       window.__zekiqHideSafariChrome=hideSafariChrome;
-      window.__zekiqScheduleStableLayout=scheduleStableLayout;
+      window.__zekiqBurstHideSafariChrome=burstHideSafariChrome;
       window.__zekiqIsIosSafari=isIosSafari;
       window.__zekiqIsIosInBrowser=isIosInBrowser;
       window.__zekiqIsIosInAppBrowser=isIosInAppBrowser;
@@ -1706,37 +1685,32 @@
       cursor:pointer;
       touch-action:none;
     }
-    /* Same filled frame whether browser Fullscreen API works or not (iPhone). */
+    /* Same filled frame whether browser chrome is visible or not (iPhone + Android). */
     html.guest-menu-active #scene,
     html.guest-immersive #scene,
     html.immersive.chrome-hidden #scene,
     html.immersive.fs-active #scene{
-      top:var(--vv-top,0px)!important;
-      left:var(--vv-left,0px)!important;
-      right:auto!important;
-      width:var(--app-w,100vw)!important;
-      height:var(--app-h,100dvh)!important;
+      top:0!important;
+      left:0!important;
+      right:0!important;
+      width:100%!important;
+      height:100dvh!important;
+      height:100svh!important;
       max-width:none!important;
       max-height:none!important;
       padding-top:0!important;
       justify-content:flex-start;
     }
+    @supports not (height:100svh){
+      html.guest-menu-active #scene,
+      html.guest-immersive #scene,
+      html.immersive.chrome-hidden #scene,
+      html.immersive.fs-active #scene{
+        height:100dvh!important;
+      }
+    }
     html.guest-menu-active #fsHint,
     html.guest-immersive #fsHint{display:none!important;opacity:0!important;}
-    /* Hide unstable intermediate frames (tiny menu / floating logo). */
-    html.guest-menu-active.layout-settling #menuBookWrap,
-    html.guest-menu-active.layout-settling #menuTopDock{
-      opacity:0!important;
-      pointer-events:none!important;
-    }
-    html.guest-menu-active.layout-ready #menuBookWrap,
-    html.guest-menu-active.layout-ready #menuTopDock{
-      opacity:1;
-      transition:opacity .18s ease;
-    }
-    html.guest-menu-active.layout-settling #scene{
-      background:#1e1208;
-    }
     html.immersive.chrome-hidden #scene,
     html.immersive.fs-active #scene,
     #scene:fullscreen,
@@ -6820,9 +6794,6 @@
       if (document.documentElement.classList.contains("page-flipping") || animating) {
         return;
       }
-      if (document.documentElement.classList.contains("layout-settling") && lastCategoryDockKey) {
-        return;
-      }
       const show = dock.classList.contains("show");
       const onDailyDish = spreadKind(cur) === "daily-dish";
       const onMenu = pf && !pf.classList.contains("book-cover") && (menuIdxFromCur(cur) >= 0 || onDailyDish);
@@ -7357,16 +7328,12 @@
         const fillsScreen = ((nh * Math.min(cw / nw, Math.max(1, ch - chromeTop - chromeBody) / nh)) / Math.max(1, ch)) >= 0.92;
         const rootEl = document.documentElement;
         const lockLetterbox = rootEl.classList.contains("guest-menu-active")
-          && rootEl.classList.contains("layout-ready")
           && pf.dataset.letterboxLocked === "1";
-        if (lockLetterbox) {
-          /* Keep first stable letterbox decision — avoids logo centering / tiny-menu flash. */
-        } else {
+        if (!lockLetterbox) {
           pf.dataset.letterboxChrome = fillsScreen ? "0" : "1";
-          if (rootEl.classList.contains("layout-ready")) pf.dataset.letterboxLocked = "1";
+          if (rootEl.classList.contains("guest-menu-active")) pf.dataset.letterboxLocked = "1";
         }
-        /* Don't thrash letterbox class mid-flip — causes dock/logo reflow shimmer. */
-        if (!rootEl.classList.contains("page-flipping") && !animating && !rootEl.classList.contains("layout-settling")) {
+        if (!rootEl.classList.contains("page-flipping") && !animating) {
           rootEl.classList.toggle("letterbox-chrome", pf.dataset.letterboxChrome === "1");
         }
       } else if (pf && pf.dataset) {
@@ -8184,23 +8151,9 @@
     function finishGuestMenuEntry() {
       coachDone = true;
       document.documentElement.classList.remove("coach-locked");
-      document.documentElement.classList.add("guest-menu-active", "guest-immersive", "chrome-hidden", "fs-active", "layout-settling");
-      document.documentElement.classList.remove("layout-ready");
+      document.documentElement.classList.add("guest-menu-active", "guest-immersive", "chrome-hidden", "fs-active");
       lastCategoryDockKey = "";
       syncSceneHud();
-      function paintStableMenu() {
-        const pfEntry = document.querySelector("#pw" + cur + " .pf");
-        if (pfEntry) {
-          try { syncCategoryDock(pfEntry); } catch (_) {}
-          if (pfEntry.classList.contains("book-daily-dish")) {
-            try { fillDailyDishPage(pfEntry); } catch (_) {}
-          }
-        }
-        syncSceneHud();
-        if (typeof layoutAllHotspots === "function") layoutAllHotspots();
-        document.documentElement.classList.remove("layout-settling");
-        document.documentElement.classList.add("layout-ready");
-      }
       if (window.__zekiqEnterImmersive) window.__zekiqEnterImmersive();
       else if (window.__zekiqEngage) window.__zekiqEngage(false);
       if (window.__zekiqBurstHideSafariChrome && !document.documentElement.classList.contains("ios-inbrowser")) {
@@ -8211,13 +8164,16 @@
       const fsHint = document.getElementById("fsHint");
       if (fsHint) fsHint.classList.add("hide");
       buildCategoryBar();
-      /* One deferred paint — never cascade 3–4 relayouts that flash logo/gaps. */
+      const pfEntry = document.querySelector("#pw" + cur + " .pf");
+      if (pfEntry) {
+        try { syncCategoryDock(pfEntry); } catch (_) {}
+        if (pfEntry.classList.contains("book-daily-dish")) {
+          try { fillDailyDishPage(pfEntry); } catch (_) {}
+        }
+      }
       requestAnimationFrame(function () {
-        if (window.__zekiqFitViewport) window.__zekiqFitViewport();
-        setTimeout(function () {
-          paintStableMenu();
-          if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
-        }, 280);
+        if (typeof layoutAllHotspots === "function") layoutAllHotspots();
+        if (window.__zekiqBurstRelayout) window.__zekiqBurstRelayout();
       });
     }
     function enterGuestMenu() {
@@ -8245,8 +8201,6 @@
       document.documentElement.classList.remove("guest-immersive");
       document.documentElement.classList.remove("fs-active");
       document.documentElement.classList.remove("chrome-hidden");
-      document.documentElement.classList.remove("layout-ready");
-      document.documentElement.classList.remove("layout-settling");
       document.querySelectorAll(".pf[data-letterbox-locked]").forEach(function (pf) {
         delete pf.dataset.letterboxLocked;
       });
