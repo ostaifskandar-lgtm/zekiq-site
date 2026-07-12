@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v184: daily-dish hero image + week-day strip beside it -->
+  <!-- guest-table-ui-v185: daily-dish layout tune — image/rail/card alignment -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -2830,7 +2830,7 @@
       cursor:pointer;
     }
     .dd-continue:active{transform:scale(.98);}
-    /* Daily dish — hero image + week strip; calm chrome */
+    /* Daily dish — tuned layout: image + week rail + details in one frame */
     html.daily-dish-open #pageSwipeBar{display:none!important;}
     html.daily-dish-open #guestGuide{display:none!important;}
     html.daily-dish-open #menuBookWrap{--foot-h:0px;}
@@ -2840,153 +2840,170 @@
     }
     html.daily-dish-open #menuTopDock.has-brand-dock{--logo-strip-h:0px;}
     html.daily-dish-open #menuTopDock{
-      background:rgba(26,18,8,.72);
+      background:rgba(26,18,8,.78);
       backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
       border-bottom:1px solid rgba(255,220,160,.12);
     }
-    html.daily-dish-open #menuCategoryBar{padding-top:4px;padding-bottom:6px;}
+    html.daily-dish-open #menuCategoryBar{padding-top:2px;padding-bottom:4px;}
     .pf.book-daily-dish{
-      background:linear-gradient(180deg,#120c08 0%,#1c140e 45%,#24180f 100%);
+      background:linear-gradient(180deg,#100c08 0%,#1a140e 50%,#22180f 100%);
       color:#1a0a00;
     }
     .book-daily-dish-inner{
       width:100%;height:100%;box-sizing:border-box;
       display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-      padding:clamp(8px,2vw,12px) clamp(10px,3.5vw,18px) clamp(10px,2.5vw,14px);
+      padding:
+        calc(var(--menu-top-dock-h, 44px) + 6px)
+        clamp(10px,3.2vw,16px)
+        calc(10px + env(safe-area-inset-bottom,0px));
       overflow-y:auto;-webkit-overflow-scrolling:touch;
       text-align:center;
     }
     .dd-page-card{
-      width:min(100%,380px);
-      margin:0 auto;
-      padding:14px 12px 14px;
-      border-radius:20px;
-      background:#fff8ee;
-      border:1px solid rgba(255,220,160,.22);
-      box-shadow:0 16px 36px rgba(0,0,0,.4);
+      width:min(100%,392px);
+      margin:0 auto auto;
+      padding:12px 12px 14px;
+      border-radius:18px;
+      background:#fff9f0;
+      border:1px solid rgba(255,220,160,.2);
+      box-shadow:0 14px 32px rgba(0,0,0,.38);
       display:flex;flex-direction:column;align-items:stretch;
       text-align:center;
     }
     .dd-page-logo,.dd-page-main,.dd-page-hint{display:none!important;}
     .dd-page-kicker{
-      margin:0 0 10px;
-      font-size:10px;font-weight:800;letter-spacing:.16em;
+      margin:0 0 8px;
+      font-size:10px;font-weight:800;letter-spacing:.14em;
       color:#9a6a18;text-transform:uppercase;
     }
     .dd-hero-row{
-      display:flex;flex-direction:row;align-items:stretch;gap:8px;
-      width:100%;margin:0 0 12px;
-      min-height:0;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 68px;
+      grid-template-rows:minmax(168px, min(36vh, 248px));
+      gap:8px;
+      width:100%;
+      margin:0 0 10px;
+      direction:rtl;
     }
     .dd-page-photo{
-      flex:1 1 auto;min-width:0;margin:0;
-      border-radius:16px;overflow:hidden;
-      aspect-ratio:1 / 1;
-      max-height:min(42vh,280px);
-      background:linear-gradient(160deg,#2a1a0c,#1a1208);
-      box-shadow:inset 0 0 0 1px rgba(160,100,20,.18);
+      grid-column:1;grid-row:1;
+      margin:0;min-width:0;min-height:0;height:100%;
+      border-radius:14px;overflow:hidden;
+      background:#1a1208;
+      box-shadow:inset 0 0 0 1px rgba(160,100,20,.16);
       display:flex;align-items:center;justify-content:center;
+      position:relative;
     }
     .dd-page-photo img{
       width:100%;height:100%;
       object-fit:contain;object-position:center;
-      display:block;background:#1a1208;
+      display:block;
     }
     .dd-page-photo.is-empty{
       background:linear-gradient(160deg,#3a2814,#24180f);
     }
     .dd-page-photo.is-empty::after{
-      content:"🍽";font-size:42px;opacity:.28;
+      content:"🍽";font-size:40px;opacity:.28;
     }
     .dd-week-rail{
-      flex:0 0 72px;width:72px;
-      display:flex;flex-direction:column;gap:6px;
-      max-height:min(42vh,280px);
-      overflow-y:auto;-webkit-overflow-scrolling:touch;
-      padding:2px 0;scrollbar-width:none;
+      grid-column:2;grid-row:1;
+      width:68px;height:100%;min-height:0;
+      display:flex;flex-direction:column;gap:5px;
+      overflow-y:auto;overflow-x:hidden;
+      -webkit-overflow-scrolling:touch;
+      padding:0;scrollbar-width:none;
+      overscroll-behavior:contain;
     }
     .dd-week-rail::-webkit-scrollbar{display:none;}
     .dd-week-rail-btn{
       flex:0 0 auto;border:none;padding:0;margin:0;
-      width:100%;border-radius:12px;overflow:hidden;
-      background:rgba(255,255,255,.55);
-      border:1.5px solid rgba(160,100,20,.16);
+      width:100%;border-radius:10px;overflow:hidden;
+      background:rgba(255,255,255,.7);
+      box-shadow:inset 0 0 0 1px rgba(160,100,20,.14);
       cursor:pointer;touch-action:manipulation;
       display:flex;flex-direction:column;align-items:stretch;
     }
     .dd-week-rail-btn.is-active{
-      border-color:#c8860a;
-      box-shadow:0 0 0 2px rgba(240,184,32,.35);
+      box-shadow:inset 0 0 0 2px #c8860a, 0 0 0 2px rgba(240,184,32,.28);
       background:#fff;
     }
     .dd-week-rail-btn.is-today:not(.is-active){
-      border-color:rgba(200,134,10,.45);
+      box-shadow:inset 0 0 0 1.5px rgba(200,134,10,.5);
     }
     .dd-week-rail-thumb{
-      width:100%;aspect-ratio:1;background:#2a1a0c;
+      width:100%;height:48px;background:#1a1208;
       display:flex;align-items:center;justify-content:center;
       overflow:hidden;
     }
     .dd-week-rail-thumb img{
-      width:100%;height:100%;object-fit:cover;display:block;
+      width:100%;height:100%;object-fit:cover;object-position:center;display:block;
     }
-    .dd-week-rail-thumb-ph{font-size:16px;opacity:.35;}
+    .dd-week-rail-thumb-ph{font-size:14px;opacity:.35;}
     .dd-week-rail-day{
-      padding:4px 2px;font-size:9px;font-weight:800;
-      letter-spacing:.02em;color:#6a4510;line-height:1.1;
+      padding:3px 2px 4px;font-size:9px;font-weight:800;
+      letter-spacing:.01em;color:#6a4510;line-height:1.05;
       white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     }
+    .dd-page-head{
+      display:flex;flex-direction:column;align-items:center;gap:2px;
+      margin:0 0 8px;
+    }
     .dd-page-title{
-      margin:0 0 8px;max-width:100%;
-      font-size:clamp(24px,6.5vw,32px);font-weight:900;line-height:1.1;
+      margin:0;max-width:100%;
+      font-size:clamp(22px,6vw,30px);font-weight:900;line-height:1.12;
       color:#160a00;letter-spacing:-.02em;
     }
     .dd-page-daytag{
-      margin:-2px 0 10px;
+      margin:0;
       font-size:11px;font-weight:800;color:#9a6a18;
     }
     .dd-page-spec{
-      list-style:none;margin:0 0 12px;padding:0;width:100%;
+      list-style:none;margin:0 0 8px;padding:0;width:100%;
       display:flex;flex-direction:column;gap:0;
-      border-top:1px solid rgba(140,90,20,.14);
-      border-bottom:1px solid rgba(140,90,20,.14);
+      border-top:1px solid rgba(140,90,20,.12);
+      border-bottom:1px solid rgba(140,90,20,.12);
       text-align:start;
     }
     .dd-page-spec li{
-      display:grid;grid-template-columns:minmax(72px,30%) 1fr;
-      gap:8px;align-items:baseline;
-      padding:8px 2px;
-      border-bottom:1px solid rgba(140,90,20,.08);
-      font-size:12px;line-height:1.35;
+      display:grid;grid-template-columns:minmax(64px,28%) 1fr;
+      gap:6px;align-items:baseline;
+      padding:6px 2px;
+      border-bottom:1px solid rgba(140,90,20,.07);
+      font-size:12px;line-height:1.3;
     }
     .dd-page-spec li:last-child{border-bottom:none;}
     .dd-page-spec .dd-spec-k{
-      font-size:11px;font-weight:800;letter-spacing:.04em;
+      font-size:10px;font-weight:800;letter-spacing:.03em;
       color:#9a6a18;opacity:.95;
     }
     .dd-page-spec .dd-spec-v{
       font-weight:700;color:#2a1808;text-align:end;
     }
     .dd-page-note{
-      margin:-4px 0 12px;padding:0;
-      font-size:12px;font-weight:700;color:#6a4510;opacity:.9;
+      margin:0 0 8px;padding:0;
+      font-size:11px;font-weight:700;color:#6a4510;opacity:.9;
     }
     .dd-page-items{display:none;}
+    .dd-page-foot{
+      display:flex;flex-direction:column;align-items:stretch;gap:8px;
+      margin-top:2px;
+    }
     .dd-page-price-box{
-      flex:0 0 auto;width:auto;margin:0 auto 12px;padding:0;
+      flex:0 0 auto;width:auto;margin:0;padding:0;
       background:none;border:none;box-shadow:none;
+      text-align:center;
     }
     .dd-page-price-label{display:none;}
     .dd-page-price-val{
-      display:block;font-size:clamp(26px,7vw,32px);font-weight:900;
+      display:block;font-size:clamp(24px,6.5vw,30px);font-weight:900;
       color:#8a5a10;line-height:1;letter-spacing:-.01em;
     }
     .dd-page-actions{
-      width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;
+      width:100%;display:flex;flex-direction:column;align-items:center;gap:0;
     }
     .dd-page-order{
       width:100%;border:none;border-radius:14px;
-      padding:14px 12px;font-size:15px;font-weight:900;color:#160a00;
+      padding:13px 12px;font-size:15px;font-weight:900;color:#160a00;
       background:#f0b820;
       box-shadow:0 4px 14px rgba(160,100,20,.28);
       cursor:pointer;touch-action:manipulation;
@@ -2999,15 +3016,23 @@
     }
     .dd-page-week{display:none;}
     .dd-page-swipe{
-      margin:10px 0 0;padding:0;
+      margin:8px 0 0;padding:0;
       font-size:11px;font-weight:600;letter-spacing:.02em;
-      color:rgba(255,236,200,.55);
+      color:rgba(255,236,200,.5);
+    }
+    @media (max-height:700px){
+      .dd-hero-row{grid-template-rows:minmax(140px, min(30vh, 200px));}
+      .dd-week-rail-thumb{height:42px;}
+      .dd-page-spec li{padding:5px 2px;}
     }
     @media (max-width:360px){
-      .dd-week-rail{flex-basis:64px;width:64px;}
-      .dd-page-photo{max-height:min(38vh,240px);}
-      .dd-week-rail{max-height:min(38vh,240px);}
+      .dd-hero-row{grid-template-columns:minmax(0,1fr) 60px;gap:6px;}
+      .dd-week-rail{width:60px;}
     }
+    .dd-hero-row.dd-hero-solo{
+      grid-template-columns:1fr;
+    }
+    .dd-hero-row.dd-hero-solo .dd-page-photo{grid-column:1;}
     /* legacy poster mode — disabled; keep selectors harmless */
     .pf.book-daily-dish.book-daily-poster{
       padding:0;overflow:hidden;
@@ -5903,20 +5928,25 @@
         ' data-dd-order="1">' +
         esc(orderLabel) +
         "</button>";
+      const heroClass = "dd-hero-row" + (railHtml ? "" : " dd-hero-solo");
       pf.innerHTML =
         '<div class="book-daily-dish-inner">' +
         '<div class="dd-page-card">' +
         '<p class="dd-page-kicker">' + esc(guestT("dailyDishToday")) + " · " + esc(guestT("dailyDishTitle")) + "</p>" +
-        '<div class="dd-hero-row">' +
+        '<div class="' + heroClass + '">' +
         photoHtml +
         railHtml +
         "</div>" +
+        '<div class="dd-page-head">' +
         (mainName ? '<h2 class="dd-page-title">' + esc(mainName) + "</h2>" : "") +
         dayTag +
+        "</div>" +
         body.extras +
         body.note +
+        '<div class="dd-page-foot">' +
         priceHtml +
         '<div class="dd-page-actions">' + actionsHtml + "</div>" +
+        "</div>" +
         "</div>" +
         '<p class="dd-page-swipe">' + esc(guestT("dailyDishSwipeHint")) + "</p>" +
         "</div>";
@@ -5939,6 +5969,10 @@
           try { syncCategoryDock(pf); } catch (_) {}
         };
       });
+      const activeRail = pf.querySelector(".dd-week-rail-btn.is-active");
+      if (activeRail && activeRail.scrollIntoView) {
+        try { activeRail.scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (_) {}
+      }
     }
     function refreshDailyDishPagesInBook() {
       document.querySelectorAll(".pf.book-daily-dish").forEach(fillDailyDishPage);
