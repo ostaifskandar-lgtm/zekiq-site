@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v180: prefer QR api= over tonino default (dev daily dish) -->
+  <!-- guest-table-ui-v181: hide broken page-number chips (Tavuk 5 6) on phone category bar -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -6433,14 +6433,11 @@
     }
     function categoryChipsHtml() {
       const chips = buildCategoryChips();
+      // Do not show raw page numbers (5, 6…) inside chips — looks like a broken menu on phone.
+      // Multi-page categories still jump to the first page; guest swipes for the rest.
       return chips.map(c => {
-        const pagesHtml = c.pages.length > 1
-          ? c.pages.map(p =>
-              '<span class="cat-chip-page" data-jump-page="' + p + '">' + (p + 1) + "</span>"
-            ).join("")
-          : "";
         return '<button type="button" class="cat-chip" data-page-idx="' + c.pageIdx + '" data-kind="' + esc(c.kind || "menu") + '">' +
-          esc(c.label) + pagesHtml + "</button>";
+          esc(c.label) + "</button>";
       }).join("");
     }
     function wireCategoryChipHandlers(root) {
