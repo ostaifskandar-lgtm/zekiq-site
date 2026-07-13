@@ -6568,13 +6568,18 @@
         brandDock.style.maxHeight = folded ? "0px" : "";
         brandDock.style.opacity = "";
         brandDock.style.backgroundImage = "none";
-        if (!folded && !document.documentElement.classList.contains("guest-manual-chrome")) {
+        if (!folded) {
           const lx = logo ? Math.max(0.05, Math.min(0.95, Number(logo.x) || 0.5)) : 0.5;
-          const logoNudge = Math.round((lx - 0.5) * (rect.dw || 300) * 0.35);
-          const nextTx = logoNudge ? ("translateZ(0) translateX(" + logoNudge + "px)") : "translateZ(0)";
+          const ly = logo ? Math.max(0, Math.min(0.45, Number(logo.y) || 0)) : 0;
+          const logoNudgeX = Math.round((lx - 0.5) * (rect.dw || 300) * 0.55);
+          const logoNudgeY = Math.round(ly * Math.max(24, Math.round((rect.dw || 300) * 0.12)));
+          const nextTx =
+            "translateZ(0)" +
+            (logoNudgeX ? " translateX(" + logoNudgeX + "px)" : "") +
+            (logoNudgeY ? " translateY(" + logoNudgeY + "px)" : "");
           if (brandDock.style.transform !== nextTx) brandDock.style.transform = nextTx;
-        } else if (!folded) {
-          if (brandDock.style.transform !== "translateZ(0)") brandDock.style.transform = "translateZ(0)";
+        } else if (brandDock.style.transform !== "translateZ(0)") {
+          brandDock.style.transform = "translateZ(0)";
         }
         if (!heightUnchanged) {
           brandDock.style.minHeight = logoH + "px";
@@ -7348,9 +7353,13 @@
       let oy;
       if (isCover) oy = (ch - dh) / 2;
       else {
-        /* Like iPhone: leftover beige sits ABOVE the chips+page stack, not below. */
-        oy = ch - dh;
-        if (oy < reserveTop) oy = reserveTop;
+        /* Pin the page directly under the logo+category dock on every page.
+           reserveTop only depends on chrome (HUD/logo/cats), never on this
+           image's own aspect ratio — so the dock never jumps up/down when
+           flipping between pages whose source images have different
+           height/width ratios. Any leftover space now falls below the
+           page instead of floating above the dock. */
+        oy = reserveTop;
         if (
           stableMenuFrame &&
           stableMenuFrame.cw === cw &&
