@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v191: daily-dish photo + week rail; no hide-flash; no Fullscreen API jump -->
+  <!-- guest-table-ui-v192: crop clip to overlay rect; daily-dish week rail -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -3893,7 +3893,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v191</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v192</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -7448,26 +7448,48 @@
         img.style.objectPosition = "center";
         img.style.transform = "translateZ(0)";
       } else if (useView) {
+        /* Studio crop fills the whole page frame (logo/chips overlay on top) — no black band. */
+        const cw = pf.clientWidth || rect.dw;
+        const ch = pf.clientHeight || rect.dh;
+        const fill = { ox: 0, oy: 0, dw: cw, dh: ch };
         const cropW = view.cropW * nw;
         const cropH = view.cropH * nh;
         const cropX = view.cropX * nw;
         const cropY = view.cropY * nh;
-        const fitScale = Math.min(rect.dw / cropW, rect.dh / cropH);
+        const fitScale = Math.max(fill.dw / cropW, fill.dh / cropH);
         const scale = fitScale * view.scale;
         const dispW = nw * scale;
         const dispH = nh * scale;
-        const left = rect.ox - cropX * scale + (rect.dw - cropW * scale) / 2 + view.panX;
-        const top = rect.oy - cropY * scale + (rect.dh - cropH * scale) / 2 + view.panY;
+        const left = fill.ox - cropX * scale + (fill.dw - cropW * scale) / 2 + view.panX;
+        const top = fill.oy - cropY * scale + (fill.dh - cropH * scale) / 2 + view.panY;
+        let clip = pf.querySelector(".pf-view-clip");
+        if (!clip) {
+          clip = document.createElement("div");
+          clip.className = "pf-view-clip";
+          if (img.parentNode) img.parentNode.insertBefore(clip, img);
+          clip.appendChild(img);
+        }
+        clip.style.cssText =
+          "position:absolute;left:0;top:0;width:" +
+          fill.dw +
+          "px;height:" +
+          fill.dh +
+          "px;overflow:hidden;z-index:0;pointer-events:none;";
         img.style.position = "absolute";
-        img.style.left = left + "px";
-        img.style.top = top + "px";
+        img.style.left = left - fill.ox + "px";
+        img.style.top = top - fill.oy + "px";
         img.style.width = dispW + "px";
         img.style.height = dispH + "px";
         img.style.objectFit = "fill";
         img.style.objectPosition = "center";
         img.style.transform = "translateZ(0)";
-        pf.style.overflow = "";
+        pf.style.overflow = "hidden";
       } else {
+        const clip = pf.querySelector(".pf-view-clip");
+        if (clip && img.parentNode === clip && pf.contains(clip)) {
+          pf.insertBefore(img, clip);
+          clip.remove();
+        }
         img.style.position = "absolute";
         img.style.left = rect.ox + "px";
         img.style.top = rect.oy + "px";
