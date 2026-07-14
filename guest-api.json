@@ -1,17 +1,22 @@
 {
-  "apiUrl": "https://zekiq-dev.zekiqmenu.com",
-  "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
-  "updatedAt": "2026-07-13T18:24:58.542Z",
+  "apiUrl": "https://tonino.zekiqmenu.com",
+  "tunnelUrl": "https://tonino.zekiqmenu.com",
+  "lanUrl": "http://192.168.1.84:3000",
+  "updatedAt": "2026-07-14T09:01:13.497Z",
   "shops": {
+    "192.168.1.84": {
+      "tunnelUrl": "https://tonino.zekiqmenu.com",
+      "lanUrl": "http://192.168.1.84:3000",
+      "shopName": "zekiq-dev",
+      "hostname": "tonino.zekiqmenu.com",
+      "updatedAt": "2026-07-14T09:01:13.497Z"
+    },
     "tonino.zekiqmenu.com": {
       "tunnelUrl": "https://tonino.zekiqmenu.com",
+      "lanUrl": "http://192.168.1.84:3000",
+      "shopName": "zekiq-dev",
       "hostname": "tonino.zekiqmenu.com",
-      "updatedAt": "2026-07-11T18:48:51.881Z"
-    },
-    "zekiq-dev.zekiqmenu.com": {
-      "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
-      "hostname": "zekiq-dev.zekiqmenu.com",
-      "updatedAt": "2026-07-13T18:24:58.542Z"
+      "updatedAt": "2026-07-14T09:01:13.497Z"
     }
   }
 }
