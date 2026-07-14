@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <title>طلب من الطاولة — ZEKiQ</title>
-  <!-- guest-table-ui-v195: direct menu entry; compact phone chrome; warm-dark frame -->
+  <!-- guest-table-ui-v196: direct menu entry; compact phone chrome; warm-dark frame -->
   <script>
     (function immersiveBoot(){
       var root=document.documentElement,body=document.body,hideTimer=0,relayoutTimer=0,safariHideTimer=0,fitRaf=0,lastFitKey="",lastRelayoutAt=0;
@@ -3903,7 +3903,7 @@
 
   <button type="button" id="iosCompactTip" aria-hidden="true">□↑ Paylaş → Ana Ekrana Ekle (tam ekran)</button>
 
-  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v195</p></div></div>
+  <div id="loadScreen"><div><p class="title" id="i18n-load-title">جاري تحميل المينو…</p><p id="i18n-load-sub">صفحات الكتاب الحقيقي</p><p id="uiVerStamp" style="margin-top:10px;font-size:10px;opacity:.45;font-weight:700">v196</p></div></div>
   <div id="dailyDishScreen" aria-live="polite" hidden>
     <div class="dd-card">
       <p class="dd-kicker" id="ddKicker">اليوم</p>
@@ -5898,7 +5898,7 @@
         resetDailyDishToToday();
         preview = todayDailyDish;
       }
-      const canOrder = !!(preview && (preview.isToday || preview.orderable === true || (!weeklyDishes.length && preview === todayDailyDish)));
+      const canOrder = document.documentElement.classList.contains("guest-menu-active") || !!(preview && (preview.isToday || preview.orderable === true || (!weeklyDishes.length && preview === todayDailyDish)));
       const rawPrice = String(preview.price || todayDailyDish.price || "").trim();
       const numPrice = Number(String(rawPrice).replace(",", "."));
       const inCart = cart.some(l => l.item && String(l.item.id) === "guest-daily-dish");
