@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#17100a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Tonino QR Menu</title>
+<title>Tonino QR Menu</title><!-- cashier-send-v1 -->
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -210,10 +210,62 @@ window.TONINO_CONFIG = Object.freeze({
   let cart = [];
   let toastTimer = null;
 
-  function tableInfo() {
+  function peekTokenPayload(token) {
+    try {
+      const body = String(token || "").split(".")[0];
+      if (!body) return null;
+      const pad = body.length % 4 ? "=".repeat(4 - (body.length % 4)) : "";
+      const b64 = (body + pad).replace(/-/g, "+").replace(/_/g, "/");
+      return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0))));
+    } catch (_) { return null; }
+  }
+  function guestSession() {
     const params = new URLSearchParams(location.search);
-    const table = params.get("table") || params.get("masa") || CONFIG.defaultTable;
-    const zone = params.get("zone") || params.get("area") || params.get("bolge") || CONFIG.defaultZone;
+    const hash = location.hash.replace(/^#\??/, "");
+    if (hash && hash.includes("=") && !(params.get("t") || params.get("token"))) {
+      const hp = new URLSearchParams(hash);
+      hp.forEach((v, k) => { if (!params.has(k)) params.set(k, v); });
+    }
+    const token = (params.get("t") || params.get("token") || "").trim();
+    const payload = peekTokenPayload(token);
+    const shop = (params.get("shop") || "").trim() || (payload?.d ? String(payload.d).trim() : "");
+    const api = (params.get("api") || "").trim().replace(/\/+$/, "");
+    const section = (payload?.s && String(payload.s).trim()) || params.get("zone") || params.get("section") || params.get("bolge") || CONFIG.defaultZone || "";
+    const tableNum = Number.isFinite(Number(payload?.t)) ? Number(payload.t) : (params.get("table") || params.get("masa") || CONFIG.defaultTable);
+    return { token, shop, api, section, tableNum };
+  }
+  let cachedApiBase = "";
+  async function resolveApiBase() {
+    if (cachedApiBase) return cachedApiBase;
+    const session = guestSession();
+    if (session.api && /^https?:\/\//i.test(session.api)) {
+      cachedApiBase = session.api.replace(/\/+$/, "");
+      return cachedApiBase;
+    }
+    const candidates = [];
+    if (location.origin && !/github\.io$/i.test(location.hostname)) candidates.push(location.origin);
+    candidates.push("https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api.json");
+    candidates.push(location.origin + "/guest-api.json");
+    for (const url of candidates) {
+      try {
+        if (url.endsWith("guest-api.json")) {
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) continue;
+          const j = await res.json();
+          const base = String(j.apiUrl || j.tunnelUrl || "").trim().replace(/\/+$/, "");
+          if (base && /^https?:\/\//i.test(base)) { cachedApiBase = base; return cachedApiBase; }
+        } else {
+          cachedApiBase = url.replace(/\/+$/, "");
+          return cachedApiBase;
+        }
+      } catch (_) {}
+    }
+    return "";
+  }
+  function tableInfo() {
+    const session = guestSession();
+    const table = session.tableNum;
+    const zone = session.section;
     return {table, zone, label: zone ? `${zone} • طاولة ${table}` : `طاولة ${table}`};
   }
   function loadCart() {
@@ -500,12 +552,63 @@ window.TONINO_CONFIG = Object.freeze({
     const info=tableInfo(), total=cart.reduce((sum,item)=>sum+item.qty*item.price,0);
     return [`طلب جديد — ${CONFIG.restaurantName}`,`الطاولة: ${info.zone?info.zone+' — ':''}${info.table}`,'────────────────',...cart.map(item=>`${item.qty} × ${item.name} — ${money(item.qty*item.price)}`),'────────────────',`المجموع: ${money(total)}`].join("\n");
   }
+  let sending = false;
+  function mapSendError(code) {
+    if (code === "table_not_active") return "الطاولة غير مفتوحة — أخبر الكاشير";
+    if (code === "invalid_token" || code === "token_expired") return "رمز QR غير صالح أو منتهٍ — امسح من جديد";
+    if (code === "disabled") return "طلب الزبون معطّل من الإعدادات";
+    if (code === "table_qr_disabled") return "QR هذه الطاولة معطّل";
+    if (code === "rate_limit") return "محاولات كثيرة — انتظر قليلاً";
+    return "تعذّر إرسال الطلب للكاشير";
+  }
   async function sendOrder() {
-    if(!cart.length){toast("أضف صنفاً واحداً على الأقل");return;}
-    const text=orderText();
-    if(CONFIG.whatsappNumber){location.href=`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(text)}`;return;}
-    try{if(CONFIG.enableNativeShare&&navigator.share){await navigator.share({title:`${CONFIG.restaurantName} — طلب جديد`,text});return;}}catch(error){if(error?.name==="AbortError")return;}
-    try{await navigator.clipboard.writeText(text);toast("تم نسخ الطلب");}catch(_){const area=document.createElement("textarea");area.value=text;document.body.appendChild(area);area.select();document.execCommand("copy");area.remove();toast("تم نسخ الطلب");}
+    if (!cart.length) { toast("أضف صنفاً واحداً على الأقل"); return; }
+    if (sending) return;
+    const session = guestSession();
+    if (!session.token) {
+      toast("امسح QR الطاولة لإرسال الطلب للكاشير");
+      return;
+    }
+    sending = true;
+    const sendBtn = $("sendButton");
+    if (sendBtn) { sendBtn.disabled = true; sendBtn.style.opacity = ".65"; }
+    try {
+      const apiBase = await resolveApiBase();
+      if (!apiBase) {
+        toast("لا يوجد اتصال بالكاشير (api)");
+        return;
+      }
+      const res = await fetch(apiBase + "/api/guest/v1/orders", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          token: session.token,
+          items: cart.map(item => ({
+            name: String(item.name || "").trim() || "صنف",
+            category: CATEGORIES[item.page] || undefined,
+            price: String(item.price),
+            qty: String(Math.max(1, Number(item.qty) || 1)),
+            notes: item.note ? String(item.note) : undefined,
+          })),
+        }),
+      });
+      let data = {};
+      try { data = await res.json(); } catch (_) {}
+      if (data && data.ok) {
+        cart = [];
+        saveCart();
+        renderCart();
+        updateBadges();
+        toast("تم الإرسال للكاشير ✓");
+        return;
+      }
+      toast(mapSendError(data && data.error));
+    } catch (_) {
+      toast("تعذّر الاتصال بالكاشير — تحقق من النفق");
+    } finally {
+      sending = false;
+      if (sendBtn) { sendBtn.disabled = false; sendBtn.style.opacity = ""; }
+    }
   }
   function toast(message){const element=$("toast");element.textContent=message;element.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>element.classList.remove("show"),1700);}
 
