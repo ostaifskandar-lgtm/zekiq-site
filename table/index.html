@@ -123,7 +123,7 @@ button{font:inherit}
 
 /* Variant sheet for the single ice-cream button. */
 #shade{position:absolute;z-index:1080;inset:0;background:#000b;opacity:0;pointer-events:none;transition:.2s}#shade.show{opacity:1;pointer-events:auto}
-#variantSheet{position:absolute;z-index:1100;left:6px;right:6px;bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);padding:15px;border:1px solid #d99a34;border-radius:20px;background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1)}#variantSheet.show{transform:translateY(0)}#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.variant{min-height:42px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:11px;font-weight:1000;cursor:pointer}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
+#variantSheet:not(.show){visibility:hidden;pointer-events:none}#variantSheet{position:absolute;z-index:1100;left:6px;right:6px;bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);padding:15px;border:1px solid #d99a34;border-radius:20px;background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1)}#variantSheet.show{transform:translateY(0)}#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.variant{min-height:42px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:11px;font-weight:1000;cursor:pointer}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
 
 @media(max-width:350px){
   :root{--top-h:43px;--cats-h:40px;--footer-h:40px}
@@ -246,13 +246,10 @@ window.TONINO_CONFIG = Object.freeze({
     const topHeight = $("topbar").offsetHeight;
     const categoryHeight = $("categoryBand").offsetHeight;
     const footerHeight = $("footer").offsetHeight;
-    const [imageWidth, imageHeight] = PAGE_SIZES[currentIndex];
-    const pageHeight = Math.ceil(phoneWidth * imageHeight / imageWidth);
-    const usableHeight = Math.max(0, phoneHeight - topHeight - categoryHeight - footerHeight);
-    const expandedLogoHeight = Math.max(artworkHeight, usableHeight - pageHeight);
-
+    // Keep logo strip at artwork ratio; menu fills remaining height (no vertical scroll).
+    void phoneWidth; void topHeight; void categoryHeight; void footerHeight; void phoneHeight;
     document.documentElement.style.setProperty("--logo-art-h", `${artworkHeight}px`);
-    document.documentElement.style.setProperty("--logo-h", `${Math.max(0, Math.floor(expandedLogoHeight))}px`);
+    document.documentElement.style.setProperty("--logo-h", `${artworkHeight}px`);
 
     fitMenuPage(currentMenu, currentIndex);
     if (underMenu) fitMenuPage(underMenu, Number(underMenu.dataset.page));
