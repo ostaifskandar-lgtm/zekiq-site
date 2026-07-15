@@ -1,12 +1,12 @@
 {
   "apiUrl": "https://tonino.zekiqmenu.com",
   "tunnelUrl": "https://tonino.zekiqmenu.com",
-  "updatedAt": "2026-07-15T19:58:07.514Z",
+  "updatedAt": "2026-07-15T19:58:22.907Z",
   "shops": {
     "tonino.zekiqmenu.com": {
       "tunnelUrl": "https://tonino.zekiqmenu.com",
       "hostname": "tonino.zekiqmenu.com",
-      "updatedAt": "2026-07-15T19:58:07.514Z"
+      "updatedAt": "2026-07-15T19:58:22.907Z"
     }
   }
 }
