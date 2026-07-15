@@ -6,13 +6,13 @@
 <meta name="theme-color" content="#17100a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Tonino QR Menu</title><!-- menu-bottom-v210 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v210 -->
+<title>Tonino QR Menu</title><!-- menu-bottom-v210 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- cats-title-bold-v212 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v210 -->
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
-  --top-h:clamp(42px,5.6dvh,48px);--logo-h:0px;--logo-art-h:0px;--cats-h:clamp(34px,4.8dvh,42px);--footer-h:clamp(38px,5.4dvh,46px);
+  --top-h:clamp(42px,5.6dvh,48px);--logo-h:0px;--logo-art-h:0px;--cats-h:clamp(48px,6.8dvh,58px);--footer-h:clamp(38px,5.4dvh,46px);
   --gold:#d7982e;--gold-light:#ffda7d;--paper:#f7eedc;--ink:#1a1108;--lime:#b8df1b;
 }
 html,body{width:100%;height:100%;overflow:hidden;background:#090604;font-family:Tahoma,"Segoe UI",Arial,sans-serif;overscroll-behavior:none}
@@ -89,31 +89,35 @@ button{font:inherit}
 .order-main .quantity{grid-row:1/3;align-self:center;color:#caed38;font-size:9px;font-weight:1000}.order-main .name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px;font-weight:1000}.order-main .price{font-size:8px;color:#f4c96e}
 .order-action{border:0;border-right:1px solid #e0aa4538;background:#ffffff08;color:#ffd46c;font-size:15px;font-weight:1000;cursor:pointer}.order-action.trash{font-size:12px}.order-action:active{background:#c78922;color:#171008}
 
-/* 3 — category title strip sits ON the menu (title + jump navigation). */
+/* 3 — bold title strip fixed ON TOP of the menu paper (title + jump). */
 #categoryBand{
-  position:absolute;z-index:900;top:calc(var(--top-h) + var(--safe-top));left:0;right:0;height:var(--cats-h);
+  position:absolute;z-index:950;
+  top:calc(var(--top-h) + var(--safe-top));left:0;right:0;height:var(--cats-h);
   display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(180deg,#2a1a0c 0%,#3d2610 55%,#684108 100%);
-  border:0;border-bottom:0;box-shadow:none;direction:ltr;pointer-events:auto
+  background:linear-gradient(180deg,#1a1208 0%,#3a240c 40%,#684108 100%);
+  border:0;border-bottom:3px solid #b8df1b;box-shadow:0 8px 22px #000a;
+  direction:ltr;pointer-events:auto
 }
-#categoryBand::after{
-  content:"";position:absolute;left:8%;right:8%;bottom:0;height:1px;
-  background:linear-gradient(90deg,transparent,#b8df1b55 20%,#b8df1b88 50%,#b8df1b55 80%,transparent);pointer-events:none;opacity:.7
+#categoryBand::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 0%,#b8df1b22 0%,transparent 70%)
 }
 #categories{
-  width:100%;height:100%;display:flex;align-items:center;justify-content:center;gap:14px;padding:0 10px;
-  overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;touch-action:pan-x
+  width:100%;height:100%;display:flex;align-items:center;justify-content:flex-start;gap:18px;
+  padding:0 42%;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;
+  overscroll-behavior-x:contain;touch-action:pan-x;-webkit-overflow-scrolling:touch
 }
 #categories::-webkit-scrollbar{display:none}
 .category{
-  flex:0 0 auto;height:auto;max-width:none;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;
-  color:#7a9428;font:inherit;font-size:clamp(13px,3.8vw,17px);font-weight:1000;letter-spacing:.4px;
+  flex:0 0 auto;height:auto;max-width:none;padding:4px 2px;border:0;border-radius:0;background:transparent;box-shadow:none;
+  color:#9bb83a;font:inherit;font-size:clamp(14px,3.9vw,17px);font-weight:1000;letter-spacing:.6px;
   white-space:nowrap;overflow:visible;text-overflow:clip;scroll-snap-align:center;cursor:pointer;
-  opacity:.55;text-transform:none;transition:color .15s,opacity .15s,text-shadow .15s
+  opacity:.42;text-transform:uppercase;transition:color .16s,opacity .16s,transform .16s,text-shadow .16s
 }
 .category.active{
-  color:#b8df1b;background:transparent;border:0;box-shadow:none;opacity:1;
-  font-size:clamp(15px,4.4vw,19px);text-shadow:0 1px 0 #0006,0 0 14px #b8df1b66
+  color:#d7ff3d;background:transparent;border:0;box-shadow:none;opacity:1;
+  font-size:clamp(18px,5.2vw,24px);letter-spacing:1px;transform:scale(1.04);
+  text-shadow:0 2px 0 #0008,0 0 18px #b8df1bbb,0 0 2px #fff4
 }
 
 /* 4 — the menu occupies the lower section only. */
@@ -123,11 +127,11 @@ button{font:inherit}
 }
 #viewer::before{content:"";position:absolute;inset:-25%;pointer-events:none;background:radial-gradient(circle at 15% 20%,#f2b43c22 0 1px,transparent 2px),radial-gradient(circle at 75% 55%,#badc3218 0 1px,transparent 2px),radial-gradient(ellipse at center,#9b5c182d,transparent 65%);background-size:83px 91px,108px 101px,100% 100%;animation:stars 22s linear infinite}@keyframes stars{to{transform:translate3d(34px,-28px,0)}}
 #menuScene{position:absolute;inset:0;transform-style:preserve-3d;overflow:hidden}
-.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch}
+.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch}
 .menu-page::-webkit-scrollbar{display:none}.menu-page.under{filter:saturate(.97);transform:scale(.988);opacity:.83}
 .ambient{position:fixed;inset:-28px;z-index:-2;background-position:center;background-size:cover;filter:blur(29px) saturate(.85) brightness(.54);transform:scale(1.13);opacity:.88;pointer-events:none}.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 8%,#160c04b5 88%)}
-.paper{position:relative;width:100%;margin:0;margin-top:auto;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:0 0 auto}
-.paper img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
+.paper{position:relative;width:100%;margin:0;margin-top:0;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:1 1 auto}
+.paper img{display:block;width:100%;height:100%;object-fit:contain;object-position:center top;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
 .page-edge{position:absolute;z-index:20;top:0;bottom:0;width:12px;opacity:0;pointer-events:none;background:linear-gradient(90deg,#fff1ad,#da952e66,transparent);box-shadow:0 0 27px #ffd96c}
 .page-shade{position:absolute;z-index:19;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent 42%,#000b 100%)}
 .menu-page[data-dir="prev"] .page-edge{right:0;left:auto;transform:scaleX(-1)}.menu-page[data-dir="prev"] .page-shade{background:linear-gradient(-90deg,transparent 42%,#000b 100%)}
@@ -146,13 +150,13 @@ button{font:inherit}
 #variantSheet:not(.show){visibility:hidden;pointer-events:none}#variantSheet{position:absolute;z-index:1100;left:6px;right:6px;bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);padding:15px;border:1px solid #d99a34;border-radius:20px;background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1)}#variantSheet.show{transform:translateY(0)}#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.variant{min-height:42px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:11px;font-weight:1000;cursor:pointer}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
 
 @media(max-width:350px){
-  :root{--top-h:43px;--cats-h:36px;--footer-h:40px}
+  :root{--top-h:43px;--cats-h:50px;--footer-h:40px}
   #topbar{grid-template-columns:72px minmax(0,1fr) 91px;gap:4px;padding-left:4px;padding-right:4px}.top-button{min-height:30px}
   .order{height:26px;grid-template-columns:minmax(0,1fr) 24px}.order-main .price{display:none}.hotspot{width:42px;height:42px}
   #footer{grid-template-columns:48px 1fr 66px}.footer-side{font-size:10px}#hint{font-size:11px}
 }
 @media(orientation:landscape) and (max-height:520px){
-  :root{--top-h:40px;--cats-h:34px;--footer-h:36px}
+  :root{--top-h:40px;--cats-h:46px;--footer-h:36px}
   #topbar{grid-template-columns:70px minmax(0,1fr) 90px}.top-button{min-height:28px}#titleBox small{display:none}.category{font-size:8px}.order{height:25px}.order-main .price{display:none}
 }
 @media(prefers-reduced-motion:reduce){#viewer::before{animation:none}.logo-page,.menu-page,#toast,#variantSheet{transition-duration:.01ms!important}}
@@ -527,10 +531,14 @@ window.TONINO_CONFIG = Object.freeze({
     const titleEl = $("currentTitle");
     if (titleEl) titleEl.textContent = CATEGORIES[currentIndex];
     $("pageNumber").textContent = `${currentIndex+1} / ${PAGES.length}`;
-    document.querySelectorAll(".category").forEach((button,index) => {
-      button.classList.toggle("active",index===currentIndex);
-      if(index===currentIndex) button.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});
-    });
+    const host = $("categories");
+    const buttons = [...document.querySelectorAll(".category")];
+    buttons.forEach((button,index) => button.classList.toggle("active",index===currentIndex));
+    const active = buttons[currentIndex];
+    if (host && active) {
+      const left = active.offsetLeft - (host.clientWidth / 2) + (active.clientWidth / 2);
+      host.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+    }
   }
   function preloadNeighbors() {
     [currentIndex-1,currentIndex+1].filter(i=>i>=0&&i<PAGES.length).forEach(i=>{const image=new Image();image.src=pageSource(i)});
