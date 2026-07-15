@@ -6,13 +6,13 @@
 <meta name="theme-color" content="#17100a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Tonino QR Menu</title><!-- menu-bottom-v207 --><!-- cashier-send-v1 -->
+<title>Tonino QR Menu</title><!-- menu-bottom-v207 --><!-- cats-as-title-v208 --><!-- cashier-send-v1 -->
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
-  --top-h:clamp(42px,5.6dvh,48px);--logo-h:0px;--logo-art-h:0px;--cats-h:clamp(40px,5.2dvh,45px);--footer-h:clamp(38px,5.4dvh,46px);
+  --top-h:clamp(42px,5.6dvh,48px);--logo-h:0px;--logo-art-h:0px;--cats-h:0px;--footer-h:clamp(38px,5.4dvh,46px);
   --gold:#d7982e;--gold-light:#ffda7d;--paper:#f7eedc;--ink:#1a1108;--lime:#b8df1b;
 }
 html,body{width:100%;height:100%;overflow:hidden;background:#090604;font-family:Tahoma,"Segoe UI",Arial,sans-serif;overscroll-behavior:none}
@@ -38,9 +38,21 @@ button{font:inherit}
 #summaryButton{background:linear-gradient(145deg,#ffffff12,#e1a73a10);color:#ffe9b1;display:flex;align-items:center;justify-content:center;gap:4px;padding:0 6px}
 #cartCount{min-width:18px;height:18px;padding:0 4px;border-radius:10px;background:#d4313d;color:#fff;display:grid;place-items:center;font-size:9px}
 #cartTotal{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:9px}
-#titleBox{min-width:0;text-align:center;direction:rtl;color:#f5d992;line-height:1}
-#titleBox b{display:block;font-size:12px;font-size:clamp(10px,3.1vw,12px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#titleBox small{display:block;margin-top:4px;font-size:9px;font-size:clamp(7px,2.4vw,9px);color:#cdb27a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#titleBox{min-width:0;align-self:stretch;display:flex;flex-direction:column;justify-content:center;gap:2px;text-align:center;direction:rtl;color:#f5d992;line-height:1;overflow:hidden}
+#currentTitle{display:none!important}
+#titleBox small,#tableTop{display:none!important}
+#categories{
+  height:auto;max-height:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 2px;
+  overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;overscroll-behavior-x:contain;touch-action:pan-x;direction:ltr
+}
+#categories::-webkit-scrollbar{display:none}
+.category{
+  flex:0 0 auto;height:auto;max-width:none;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;
+  color:#cdb27a;font-size:12px;font-size:clamp(10px,3.1vw,12px);font-weight:1000;white-space:nowrap;overflow:visible;text-overflow:clip;
+  scroll-snap-align:center;cursor:pointer;opacity:.78
+}
+.category.active{color:#f5d992;background:transparent;border:0;box-shadow:none;opacity:1;text-shadow:0 0 10px #d7982e55}
+
 
 /* 2 — logo area. Logo and menu flip together, but this overlay remains fixed. */
 #logoBand{
@@ -88,20 +100,12 @@ button{font:inherit}
 .order-main .quantity{grid-row:1/3;align-self:center;color:#caed38;font-size:9px;font-weight:1000}.order-main .name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px;font-weight:1000}.order-main .price{font-size:8px;color:#f4c96e}
 .order-action{border:0;border-right:1px solid #e0aa4538;background:#ffffff08;color:#ffd46c;font-size:15px;font-weight:1000;cursor:pointer}.order-action.trash{font-size:12px}.order-action:active{background:#c78922;color:#171008}
 
-/* 3 — categories remain completely fixed during every page turn. */
-#categoryBand{
-  position:absolute;z-index:900;top:calc(var(--top-h) + var(--safe-top));left:0;right:0;height:var(--cats-h);
-  background:linear-gradient(180deg,#faf3e6,#e8dcc6);border-top:1px solid #c9b58f;border-bottom:0;
-  box-shadow:0 -2px 8px #0004;direction:ltr
-}
-#categories{height:100%;display:flex;align-items:center;gap:5px;padding:4px 6px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;overscroll-behavior-x:contain;touch-action:pan-x}
-#categories::-webkit-scrollbar{display:none}
-.category{flex:0 0 auto;height:calc(var(--cats-h) - 9px);max-width:155px;padding:0 11px;border:1px solid #d9cdb8;border-radius:12px;background:#fff;color:#2a2118;font-size:10px;font-size:clamp(9px,2.7vw,10px);font-weight:1000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;scroll-snap-align:center;cursor:pointer;box-shadow:0 1px 4px #0002}
-.category.active{color:#1c1208;background:linear-gradient(145deg,#fff1c8,#efc567);border-color:#b97812;box-shadow:0 0 0 2px #d9a23a22 inset,0 3px 9px #87550b35}
+/* 3 — categories live inside the title slot (cats-as-title-v208). */
+#categoryBand{display:none!important;height:0!important;pointer-events:none!important}
 
 /* 4 — the menu occupies the lower section only. */
 #viewer{
-  position:absolute;z-index:1;top:calc(var(--top-h) + var(--safe-top) + var(--cats-h));bottom:calc(var(--footer-h) + var(--safe-bottom));left:0;right:0;
+  position:absolute;z-index:1;top:calc(var(--top-h) + var(--safe-top));bottom:calc(var(--footer-h) + var(--safe-bottom));left:0;right:0;
   overflow:hidden;perspective:1500px;background:#1b1005;touch-action:none
 }
 #viewer::before{content:"";position:absolute;inset:-25%;pointer-events:none;background:radial-gradient(circle at 15% 20%,#f2b43c22 0 1px,transparent 2px),radial-gradient(circle at 75% 55%,#badc3218 0 1px,transparent 2px),radial-gradient(ellipse at center,#9b5c182d,transparent 65%);background-size:83px 91px,108px 101px,100% 100%;animation:stars 22s linear infinite}@keyframes stars{to{transform:translate3d(34px,-28px,0)}}
@@ -129,13 +133,13 @@ button{font:inherit}
 #variantSheet:not(.show){visibility:hidden;pointer-events:none}#variantSheet{position:absolute;z-index:1100;left:6px;right:6px;bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);padding:15px;border:1px solid #d99a34;border-radius:20px;background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1)}#variantSheet.show{transform:translateY(0)}#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.variant{min-height:42px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:11px;font-weight:1000;cursor:pointer}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
 
 @media(max-width:350px){
-  :root{--top-h:43px;--cats-h:40px;--footer-h:40px}
+  :root{--top-h:43px;--cats-h:0px;--footer-h:40px}
   #topbar{grid-template-columns:72px minmax(0,1fr) 91px;gap:4px;padding-left:4px;padding-right:4px}.top-button{min-height:30px}
-  .category{padding:0 9px}.order{height:26px;grid-template-columns:minmax(0,1fr) 24px}.order-main .price{display:none}.hotspot{width:42px;height:42px}
+  .order{height:26px;grid-template-columns:minmax(0,1fr) 24px}.order-main .price{display:none}.hotspot{width:42px;height:42px}
   #footer{grid-template-columns:48px 1fr 66px}.footer-side{font-size:10px}#hint{font-size:11px}
 }
 @media(orientation:landscape) and (max-height:520px){
-  :root{--top-h:40px;--cats-h:37px;--footer-h:36px}
+  :root{--top-h:40px;--cats-h:0px;--footer-h:36px}
   #topbar{grid-template-columns:70px minmax(0,1fr) 90px}.top-button{min-height:28px}#titleBox small{display:none}.category{font-size:8px}.order{height:25px}.order-main .price{display:none}
 }
 @media(prefers-reduced-motion:reduce){#viewer::before{animation:none}.logo-page,.menu-page,#toast,#variantSheet{transition-duration:.01ms!important}}
@@ -150,7 +154,7 @@ button{font:inherit}
 <div id="phone">
   <header id="topbar">
     <button class="top-button" id="sendButton" type="button">✓ إرسال</button>
-    <div id="titleBox"><b id="currentTitle">القائمة</b><small id="tableTop">طاولة ?</small></div>
+    <div id="titleBox" aria-label="مجموعات المنيو"><b id="currentTitle">القائمة</b><div id="categories"></div><small id="tableTop">طاولة ?</small></div>
     <button class="top-button" id="summaryButton" type="button"><span>🧾</span><span id="cartCount">0</span><span id="cartTotal">0 TL</span></button>
   </header>
 
@@ -159,7 +163,7 @@ button{font:inherit}
     <div id="orderCloud"><div id="orderGrid"></div></div>
   </section>
 
-  <nav id="categoryBand" aria-label="مجموعات المنيو"><div id="categories"></div></nav>
+  <nav id="categoryBand" aria-hidden="true"></nav>
 
   <main id="viewer" aria-label="صفحات المنيو"><div id="menuScene"></div></main>
 
@@ -506,7 +510,8 @@ window.TONINO_CONFIG = Object.freeze({
     });
   }
   function syncNavigation() {
-    $("currentTitle").textContent = CATEGORIES[currentIndex];
+    const titleEl = $("currentTitle");
+    if (titleEl) titleEl.textContent = CATEGORIES[currentIndex];
     $("pageNumber").textContent = `${currentIndex+1} / ${PAGES.length}`;
     document.querySelectorAll(".category").forEach((button,index) => {
       button.classList.toggle("active",index===currentIndex);
