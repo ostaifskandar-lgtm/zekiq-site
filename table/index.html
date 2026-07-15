@@ -12,7 +12,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
-  --top-h:clamp(42px,5.6dvh,48px);--logo-h:84px;--logo-art-h:84px;--cats-h:clamp(40px,5.2dvh,45px);--footer-h:clamp(25px,3.7dvh,30px);
+  --top-h:clamp(42px,5.6dvh,48px);--logo-h:84px;--logo-art-h:84px;--cats-h:clamp(40px,5.2dvh,45px);--footer-h:clamp(38px,5.4dvh,46px);
   --gold:#d7982e;--gold-light:#ffda7d;--paper:#f7eedc;--ink:#1a1108;--lime:#b8df1b;
 }
 html,body{width:100%;height:100%;overflow:hidden;background:#090604;font-family:Tahoma,"Segoe UI",Arial,sans-serif;overscroll-behavior:none}
@@ -99,15 +99,15 @@ button{font:inherit}
 /* 4 — the menu occupies the lower section only. */
 #viewer{
   position:absolute;z-index:1;top:calc(var(--top-h) + var(--safe-top) + var(--logo-h) + var(--cats-h));bottom:calc(var(--footer-h) + var(--safe-bottom));left:0;right:0;
-  overflow:hidden;perspective:1500px;background:#684108;touch-action:pan-y
+  overflow:hidden;perspective:1500px;background:#684108;touch-action:none
 }
 #viewer::before{content:"";position:absolute;inset:-25%;pointer-events:none;background:radial-gradient(circle at 15% 20%,#f2b43c22 0 1px,transparent 2px),radial-gradient(circle at 75% 55%,#badc3218 0 1px,transparent 2px),radial-gradient(ellipse at center,#9b5c182d,transparent 65%);background-size:83px 91px,108px 101px,100% 100%;animation:stars 22s linear infinite}@keyframes stars{to{transform:translate3d(34px,-28px,0)}}
 #menuScene{position:absolute;inset:0;transform-style:preserve-3d;overflow:hidden}
-.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;overscroll-behavior:contain;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:pan-y}
+.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none}
 .menu-page::-webkit-scrollbar{display:none}.menu-page.under{filter:saturate(.97);transform:scale(.988);opacity:.83}
 .ambient{position:fixed;inset:-28px;z-index:-2;background-position:center;background-size:cover;filter:blur(29px) saturate(.85) brightness(.54);transform:scale(1.13);opacity:.88;pointer-events:none}.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 8%,#160c04b5 88%)}
 .paper{position:relative;width:100%;margin:0;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d}
-.paper img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.paper img{display:block;width:100%;height:100%;object-fit:cover;object-position:top center;user-select:none;-webkit-user-drag:none;pointer-events:none}
 .page-edge{position:absolute;z-index:20;top:0;bottom:0;width:12px;opacity:0;pointer-events:none;background:linear-gradient(90deg,#fff1ad,#da952e66,transparent);box-shadow:0 0 27px #ffd96c}
 .page-shade{position:absolute;z-index:19;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent 42%,#000b 100%)}
 .menu-page[data-dir="prev"] .page-edge{right:0;left:auto;transform:scaleX(-1)}.menu-page[data-dir="prev"] .page-shade{background:linear-gradient(-90deg,transparent 42%,#000b 100%)}
@@ -115,10 +115,10 @@ button{font:inherit}
 .hotspot::after{content:"";position:absolute;inset:4px;border-radius:9px;border:1px solid transparent;opacity:0}.hotspot.ping::after{animation:ring .42s ease}@keyframes ring{0%{opacity:1;transform:scale(.4);border-color:#f4ffab;box-shadow:0 0 0 0 #c8ed4588}100%{opacity:0;transform:scale(1.55);border-color:transparent;box-shadow:0 0 0 13px transparent}}
 .qty-badge{position:absolute;top:-2px;right:-2px;min-width:15px;height:15px;padding:0 3px;border-radius:9px;display:none;place-items:center;background:#d62e39;color:#fff;border:1px solid #fff;font-size:8px;font-weight:1000;box-shadow:0 2px 4px #0007}.hotspot.has-qty .qty-badge{display:grid}
 
-/* 5 — tiny footer, only guidance and page/table information. */
-#footer{position:absolute;z-index:950;left:0;right:0;bottom:0;height:calc(var(--footer-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);display:grid;grid-template-columns:58px 1fr 78px;gap:3px;align-items:center;direction:ltr;background:linear-gradient(180deg,#fbf5e8,#eadfc9);border-top:1px solid #c9b590;color:#49351f;box-shadow:0 -3px 10px #0004}
-.footer-side{font-size:8px;font-weight:1000;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#pageNumber{color:#845b19}#tableFooter{direction:rtl}
-#hint{text-align:center;direction:rtl;font-size:9px;font-weight:1000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#hint em{font-style:normal;color:#0c9ebc;letter-spacing:1px}
+/* 5 — clear fixed footer guidance */
+#footer{position:absolute;z-index:950;left:0;right:0;bottom:0;height:calc(var(--footer-h) + var(--safe-bottom));padding:0 6px var(--safe-bottom);display:grid;grid-template-columns:56px 1fr 72px;gap:4px;align-items:center;direction:ltr;background:linear-gradient(180deg,#2a1c10,#17100a);border-top:2px solid #d7982e;color:#ffe9b1;box-shadow:0 -6px 18px #000a}
+.footer-side{font-size:11px;font-weight:1000;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ffda7d}#pageNumber{color:#ffda7d}#tableFooter{direction:rtl;color:#ffe9b1}
+#hint{text-align:center;direction:rtl;font-size:12px;font-weight:1000;line-height:1.25;white-space:normal;overflow:visible;color:#fff6df}#hint em{font-style:normal;color:#b8df1b;letter-spacing:1.5px;font-size:13px}
 #toast{position:absolute;z-index:1200;left:50%;bottom:calc(var(--footer-h) + var(--safe-bottom) + 8px);transform:translate(-50%,58px);opacity:0;max-width:92%;padding:8px 13px;border-radius:12px;background:linear-gradient(135deg,#1f7f32,#31a347);color:#fff;font-size:10px;font-weight:1000;box-shadow:0 6px 24px #0009;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:.22s}#toast.show{transform:translate(-50%,0);opacity:1}
 
 /* Variant sheet for the single ice-cream button. */
@@ -126,13 +126,13 @@ button{font:inherit}
 #variantSheet{position:absolute;z-index:1100;left:6px;right:6px;bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);padding:15px;border:1px solid #d99a34;border-radius:20px;background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1)}#variantSheet.show{transform:translateY(0)}#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.variant{min-height:42px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:11px;font-weight:1000;cursor:pointer}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
 
 @media(max-width:350px){
-  :root{--top-h:43px;--cats-h:40px;--footer-h:26px}
+  :root{--top-h:43px;--cats-h:40px;--footer-h:40px}
   #topbar{grid-template-columns:72px minmax(0,1fr) 91px;gap:4px;padding-left:4px;padding-right:4px}.top-button{min-height:30px}
   .category{padding:0 9px}.order{height:26px;grid-template-columns:minmax(0,1fr) 24px}.order-main .price{display:none}.hotspot{width:42px;height:42px}
-  #footer{grid-template-columns:48px 1fr 66px}.footer-side{font-size:7px}#hint{font-size:8px}
+  #footer{grid-template-columns:48px 1fr 66px}.footer-side{font-size:10px}#hint{font-size:11px}
 }
 @media(orientation:landscape) and (max-height:520px){
-  :root{--top-h:40px;--cats-h:37px;--footer-h:24px}
+  :root{--top-h:40px;--cats-h:37px;--footer-h:36px}
   #topbar{grid-template-columns:70px minmax(0,1fr) 90px}.top-button{min-height:28px}#titleBox small{display:none}.category{font-size:8px}.order{height:25px}.order-main .price{display:none}
 }
 @media(prefers-reduced-motion:reduce){#viewer::before{animation:none}.logo-page,.menu-page,#toast,#variantSheet{transition-duration:.01ms!important}}
@@ -162,7 +162,7 @@ button{font:inherit}
 
   <footer id="footer">
     <div id="pageNumber" class="footer-side">1 / 21</div>
-    <div id="hint">اسحب كالكتاب <em>‹‹ ››</em> واضغط + للطلب</div>
+    <div id="hint">اسحب يمين / يسار ككتاب <em>‹‹ ››</em><br><span style="color:#ffda7d;font-size:11px">اضغط زر + الأخضر للطلب</span></div>
     <div id="tableFooter" class="footer-side">طاولة ?</div>
   </footer>
 
@@ -264,11 +264,11 @@ window.TONINO_CONFIG = Object.freeze({
     const viewer = $("viewer");
     const paper = layer.querySelector(".paper");
     const [imageWidth, imageHeight] = PAGE_SIZES[index];
-    const paperHeight = Math.ceil(viewer.clientWidth * imageHeight / imageWidth);
+    const paperHeight = Math.max(1, viewer.clientHeight);
     paper.style.height = `${paperHeight}px`;
     layer.style.paddingTop = "0px";
     layer.style.paddingBottom = "0px";
-    layer.scrollTop = Math.min(layer.scrollTop, Math.max(0, paperHeight - viewer.clientHeight));
+    layer.scrollTop = 0;
   }
   function exposeLayoutDiagnostics() {
     const categoryRect = $("categoryBand").getBoundingClientRect();
@@ -512,7 +512,7 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function toast(message){const element=$("toast");element.textContent=message;element.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>element.classList.remove("show"),1700);}
 
-  /* Direction-locked interactive page turn. Vertical motion scrolls; horizontal motion turns the book. */
+  /* Horizontal only — menu page does not scroll vertically. */
   let gesture={active:false,mode:null,x:0,y:0,time:0,dx:0,direction:0,target:-1};
   $("viewer").addEventListener("pointerdown",event=>{
     if(turning||event.target.closest(".hotspot"))return;
@@ -521,7 +521,10 @@ window.TONINO_CONFIG = Object.freeze({
   $("viewer").addEventListener("pointermove",event=>{
     if(!gesture.active||turning)return;
     const dx=event.clientX-gesture.x,dy=event.clientY-gesture.y;
-    if(!gesture.mode&&Math.max(Math.abs(dx),Math.abs(dy))>8)gesture.mode=Math.abs(dx)>Math.abs(dy)*1.15?"horizontal":"vertical";
+    if(!gesture.mode&&Math.max(Math.abs(dx),Math.abs(dy))>8){
+      if(Math.abs(dy)>Math.abs(dx)*1.05){gesture.active=false;return;}
+      gesture.mode="horizontal";
+    }
     if(gesture.mode!=="horizontal")return;
     event.preventDefault();
     const direction=dx<0?1:-1,target=currentIndex+direction;
