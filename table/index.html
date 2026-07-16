@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v229 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v229 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v230 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v230 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -29,7 +29,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
-  --top-h:clamp(42px,5.6dvh,48px);--logo-h:0px;--logo-art-h:0px;--orders-h:0px;--quick-h:36px;--cats-h:clamp(40px,5.5dvh,48px);--footer-h:clamp(36px,5dvh,44px);
+  --top-h:clamp(42px,5.6dvh,48px);--logo-h:0px;--logo-art-h:0px;--orders-h:0px;--quick-h:36px;--cats-h:clamp(40px,5.5dvh,48px);--footer-h:clamp(42px,5.8dvh,50px);
   --gold:#d7982e;--gold-light:#ffda7d;--paper:#f7eedc;--ink:#1a1108;--lime:#b8df1b;
 }
 html,body{width:100%;height:100%;min-height:100%;overflow:hidden;background:#090604;font-family:Tahoma,"Segoe UI",Arial,sans-serif;overscroll-behavior:none}
@@ -108,7 +108,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 #cartTotal{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:9px}
 #titleBox{min-width:0;text-align:center;direction:rtl;color:#f5d992;line-height:1;overflow:hidden}
 #currentTitle{display:none!important}
-#titleBox small,#tableTop{display:block;margin-top:0;font-size:10px;font-size:clamp(8px,2.6vw,10px);color:#cdb27a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#titleBox small,#tableTop{display:block;margin-top:0;font-size:clamp(11px,3.2vw,14px);font-weight:1000;color:#ffda7d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 
 /* 2 — orders band: uses leftover phone height ABOVE natural menu (not menu zoom) */
@@ -225,8 +225,9 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 
 /* 5 — clear fixed footer guidance */
 #footer{position:absolute;z-index:950;left:0;right:0;bottom:0;height:calc(var(--footer-h) + var(--safe-bottom));padding:0 6px var(--safe-bottom);display:grid;grid-template-columns:56px 1fr 72px;gap:4px;align-items:center;direction:ltr;background:linear-gradient(180deg,#2a1c10,#17100a);border-top:2px solid #d7982e;color:#ffe9b1;box-shadow:0 -6px 18px #000a}
-.footer-side{font-size:11px;font-weight:1000;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ffda7d}#pageNumber{color:#ffda7d}#tableFooter{direction:rtl;color:#ffe9b1}
-#hint{text-align:center;direction:rtl;font-size:12px;font-weight:1000;line-height:1.25;white-space:normal;overflow:visible;color:#fff6df}#hint em{font-style:normal;color:#b8df1b;letter-spacing:1.5px;font-size:13px}
+.footer-side{font-size:12px;font-weight:1000;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ffda7d}#pageNumber{color:#ffda7d}#tableFooter{direction:rtl;color:#ffe9b1;font-size:clamp(12px,3.2vw,14px)}
+#hint{text-align:center;direction:rtl;font-size:clamp(13px,3.5vw,15px);font-weight:1000;line-height:1.3;white-space:normal;overflow:visible;color:#fff6df}#hint em{font-style:normal;color:#b8df1b;letter-spacing:1.5px;font-size:clamp(14px,3.8vw,16px)}
+#hint span{font-size:clamp(12px,3.3vw,14px)!important;color:#ffda7d}
 #toast{position:absolute;z-index:1200;left:50%;bottom:calc(var(--footer-h) + var(--safe-bottom) + 8px);transform:translate(-50%,58px);opacity:0;max-width:92%;padding:8px 13px;border-radius:12px;background:linear-gradient(135deg,#1f7f32,#31a347);color:#fff;font-size:10px;font-weight:1000;box-shadow:0 6px 24px #0009;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:.22s}#toast.show{transform:translate(-50%,0);opacity:1}
 
 /* Variant sheet for the single ice-cream button. */
@@ -234,10 +235,10 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 #variantSheet:not(.show){visibility:hidden;pointer-events:none}#variantSheet{position:absolute;z-index:1100;left:6px;right:6px;bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);padding:15px;border:1px solid #d99a34;border-radius:20px;background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1)}#variantSheet.show{transform:translateY(0)}#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.variant{min-height:42px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:11px;font-weight:1000;cursor:pointer}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
 
 @media(max-width:350px){
-  :root{--top-h:43px;--quick-h:34px;--cats-h:46px;--footer-h:40px}
+  :root{--top-h:43px;--quick-h:34px;--cats-h:46px;--footer-h:46px}
   #topbar{grid-template-columns:72px minmax(0,1fr) 91px;gap:4px;padding-left:4px;padding-right:4px}.top-button{min-height:30px}
   .order{height:26px;grid-template-columns:minmax(0,1fr) 24px}.order-main .price{display:none}.hotspot{width:42px;height:42px}
-  #footer{grid-template-columns:48px 1fr 66px}.footer-side{font-size:10px}#hint{font-size:11px}
+  #footer{grid-template-columns:48px 1fr 66px}.footer-side{font-size:11px}#hint{font-size:12px}
 }
 @media(orientation:landscape) and (max-height:520px){
   :root{--top-h:40px;--quick-h:32px;--cats-h:42px;--footer-h:36px}
@@ -335,26 +336,38 @@ window.TONINO_CONFIG = Object.freeze({
 
   function peekTokenPayload(token) {
     try {
-      const body = String(token || "").split(".")[0];
+      let raw = decodeURIComponent(String(token || "").trim());
+      const body = raw.split(".")[0];
       if (!body) return null;
       const pad = body.length % 4 ? "=".repeat(4 - (body.length % 4)) : "";
       const b64 = (body + pad).replace(/-/g, "+").replace(/_/g, "/");
       return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0))));
     } catch (_) { return null; }
   }
-  function guestSession() {
-    const params = new URLSearchParams(location.search);
+  function readQueryParams() {
+    /* Repair broken QR links: …html?ui=229?t=TOKEN → …html?ui=229&t=TOKEN */
+    let q = location.search || "";
+    if (q.startsWith("?")) q = "?" + q.slice(1).replace(/\?/g, "&");
+    const params = new URLSearchParams(q);
     const hash = location.hash.replace(/^#\??/, "");
-    if (hash && hash.includes("=") && !(params.get("t") || params.get("token"))) {
-      const hp = new URLSearchParams(hash);
+    if (hash && hash.includes("=")) {
+      const hp = new URLSearchParams(hash.replace(/\?/g, "&"));
       hp.forEach((v, k) => { if (!params.has(k)) params.set(k, v); });
     }
+    return params;
+  }
+  function guestSession() {
+    const params = readQueryParams();
     const token = (params.get("t") || params.get("token") || "").trim();
     const payload = peekTokenPayload(token);
     const shop = (params.get("shop") || "").trim() || (payload?.d ? String(payload.d).trim() : "");
     const api = (params.get("api") || "").trim().replace(/\/+$/, "");
     const section = (payload?.s && String(payload.s).trim()) || params.get("zone") || params.get("section") || params.get("bolge") || CONFIG.defaultZone || "";
-    const tableNum = Number.isFinite(Number(payload?.t)) ? Number(payload.t) : (params.get("table") || params.get("masa") || CONFIG.defaultTable);
+    const fromToken = payload != null && Number.isFinite(Number(payload.t)) ? Number(payload.t) : NaN;
+    const fromQuery = Number(params.get("table") || params.get("masa") || "");
+    const tableNum = Number.isFinite(fromToken) ? fromToken
+      : Number.isFinite(fromQuery) ? fromQuery
+      : (params.get("table") || params.get("masa") || CONFIG.defaultTable);
     return { token, shop, api, section, tableNum };
   }
   let cachedApiBase = "";
@@ -961,7 +974,13 @@ window.TONINO_CONFIG = Object.freeze({
   })();
 
   (function init(){
-    const info=tableInfo();$("tableTop").textContent=info.label;$("tableFooter").textContent=info.label;
+    const info=tableInfo();
+    $("tableTop").textContent=info.label;
+    $("tableFooter").textContent=info.label;
+    const startSub = document.querySelector("#startGate .start-sub");
+    if (startSub && info.table != null && String(info.table) !== "?" && String(info.table) !== "") {
+      startSub.textContent = `${info.label} — اضغط «فهمت» لفتح المينو على كامل الشاشة`;
+    }
     buildCategories();loadCart();updateGeometry();mountInitial(initialPage());renderCart();
   })();
 })();
