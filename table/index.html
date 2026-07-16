@@ -841,7 +841,6 @@ window.TONINO_CONFIG = Object.freeze({
     const gate = document.getElementById("startGate");
     const btn = document.getElementById("startGo");
     const phone = document.getElementById("phone");
-    const doneKey = "tonino_start_gate_v228";
     function isStandalone(){
       try{
         if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return true;
@@ -867,15 +866,14 @@ window.TONINO_CONFIG = Object.freeze({
     function unlockMenu(){
       root.classList.remove("coach-locked");
       if (gate) gate.classList.remove("show");
-      try { sessionStorage.setItem(doneKey, "1"); } catch(_){}
       try { updateGeometry(); } catch(_){}
     }
     function showGate(){
       root.classList.add("coach-locked");
       if (gate) gate.classList.add("show");
     }
+    /* Skip gate only when already immersive (PWA / live fullscreen). Otherwise always require «فهمت». */
     function alreadyDone(){
-      try { if (sessionStorage.getItem(doneKey) === "1") return true; } catch(_){}
       return isStandalone() || isFs();
     }
     if (btn) {
