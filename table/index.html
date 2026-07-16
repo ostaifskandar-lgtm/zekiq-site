@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#17100a">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Tonino QR Menu</title><!-- menu-bottom-v216 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- cats-title-bold-v212 --><!-- cats-bar-clear-v213 --><!-- cats-bar-clear-v214 --><!-- menu-bottom-pin-v215 --><!-- no-crop-v216 --><!-- cats-clean-on-menu-v217 --><!-- cats-clean-on-menu-v217b --><!-- cashier-send-v1 --><!-- pdf-no-titles-v210 -->
+<meta name="format-detection" content="telephone=no">
+<title>Tonino QR Menu</title><!-- menu-bottom-v216 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- cats-title-bold-v212 --><!-- cats-bar-clear-v213 --><!-- cats-bar-clear-v214 --><!-- menu-bottom-pin-v215 --><!-- no-crop-v216 --><!-- cats-clean-on-menu-v217 --><!-- cats-clean-on-menu-v217b --><!-- fullscreen-phones-v218 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v210 -->
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -15,16 +17,22 @@
   --top-h:clamp(42px,5.6dvh,48px);--logo-h:0px;--logo-art-h:0px;--cats-h:clamp(44px,6dvh,52px);--footer-h:clamp(38px,5.4dvh,46px);
   --gold:#d7982e;--gold-light:#ffda7d;--paper:#f7eedc;--ink:#1a1108;--lime:#b8df1b;
 }
-html,body{width:100%;height:100%;overflow:hidden;background:#090604;font-family:Tahoma,"Segoe UI",Arial,sans-serif;overscroll-behavior:none}
-body{height:100vh;height:100dvh;display:grid;place-items:center;color:#fff}
+html,body{width:100%;height:100%;min-height:100%;overflow:hidden;background:#090604;font-family:Tahoma,"Segoe UI",Arial,sans-serif;overscroll-behavior:none}
+html{height:-webkit-fill-available}
+body{
+  min-height:100vh;min-height:100dvh;min-height:-webkit-fill-available;
+  height:var(--app-height,100dvh);display:grid;place-items:stretch;color:#fff
+}
 button{font:inherit}
 #phone{
-  position:relative;width:min(100vw,430px);height:100vh;height:100dvh;overflow:hidden;isolation:isolate;
-  background:#1b1005;container-type:inline-size;
+  position:relative;width:100%;max-width:100%;height:100%;min-height:100%;
+  overflow:hidden;isolation:isolate;background:#1b1005;container-type:inline-size;
+  border:0;border-radius:0;box-shadow:none
 }
-@media(min-width:540px) and (min-height:680px){
-  body{padding:14px;background:radial-gradient(circle at 50% 10%,#503820 0,#17100b 47%,#070504 100%)}
-  #phone{width:430px;height:min(920px,calc(100dvh - 28px));border:8px solid #0e0e0e;border-radius:44px;box-shadow:0 35px 105px #000d,0 0 0 1px #504942 inset}
+/* Desktop / large tablet only — never frame real phones */
+@media(hover:hover) and (pointer:fine) and (min-width:768px){
+  body{place-items:center;padding:14px;background:radial-gradient(circle at 50% 10%,#503820 0,#17100b 47%,#070504 100%)}
+  #phone{width:min(430px,100%);height:min(920px,calc(var(--app-height,100dvh) - 28px));max-width:430px;border:8px solid #0e0e0e;border-radius:44px;box-shadow:0 35px 105px #000d,0 0 0 1px #504942 inset}
 }
 
 /* 1 — compact fixed command bar */
@@ -706,6 +714,18 @@ window.TONINO_CONFIG = Object.freeze({
   window.addEventListener("orientationchange",()=>setTimeout(updateGeometry,160),{passive:true});
   if(window.visualViewport)visualViewport.addEventListener("resize",updateGeometry,{passive:true});
   if("ResizeObserver" in window)new ResizeObserver(updateGeometry).observe($("phone"));
+
+  
+  (function lockAppHeight(){
+    const apply = () => {
+      const h = Math.round(window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight);
+      if (h > 0) document.documentElement.style.setProperty("--app-height", h + "px");
+    };
+    apply();
+    window.addEventListener("resize", apply, {passive:true});
+    window.addEventListener("orientationchange", () => setTimeout(apply, 180), {passive:true});
+    if (window.visualViewport) visualViewport.addEventListener("resize", apply, {passive:true});
+  })();
 
   (function init(){
     const info=tableInfo();$("tableTop").textContent=info.label;$("tableFooter").textContent=info.label;
