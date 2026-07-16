@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v237 --><!-- order-story-v237 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v237 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v238 --><!-- order-story-v238 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v238 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -151,43 +151,58 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   text-align:center;direction:rtl;
   font-size:clamp(10px,2.7vw,12px);font-weight:900;color:#cdb27acc
 }
-/* SVG timeline ~7s */
-.amb-guest{transform-origin:70px 70px}
-.amb-phone-glow{animation:ambPhoneTap 7s ease-in-out infinite}
-.amb-signal{animation:ambSignal 7s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
-.amb-waiter-g{animation:ambWaiterWalk 7s ease-in-out infinite}
-.amb-plate{animation:ambPlateDrop 7s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
-.amb-steam-p{animation:ambSteamPuff 7s ease-in-out infinite}
+/* SVG timeline ~9s — order → cashier → waiter from afar */
+.amb-phone-glow{animation:ambPhoneTap 9s ease-in-out infinite}
+.amb-signal{animation:ambSignal 9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.amb-cashier-ping{animation:ambCashierPing 9s ease-in-out infinite}
+.amb-cashier-check{animation:ambCashierCheck 9s ease-in-out infinite}
+.amb-waiter-g{animation:ambWaiterWalk 9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.amb-plate{animation:ambPlateDrop 9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.amb-steam-p{animation:ambSteamPuff 9s ease-in-out infinite}
 @keyframes ambPulse{0%,100%{opacity:.5;transform:translate(-50%,-20%) scale(1)}50%{opacity:1;transform:translate(-50%,-20%) scale(1.06)}}
 @keyframes ambLogoShine{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
 @keyframes ambPhoneTap{
-  0%,18%{opacity:.35}22%{opacity:1}28%{opacity:.9}40%,100%{opacity:.4}
+  0%,12%{opacity:.35}16%{opacity:1}22%{opacity:.95}30%,100%{opacity:.4}
 }
 @keyframes ambSignal{
-  0%,20%{opacity:0;transform:translate(0,0) scale(.4)}
-  26%{opacity:1;transform:translate(-8px,-6px) scale(1)}
-  38%{opacity:0;transform:translate(-28px,-14px) scale(1.2)}
+  0%,14%{opacity:0;transform:translate(0,0) scale(.3)}
+  18%{opacity:1;transform:translate(-20px,-8px) scale(1)}
+  28%{opacity:1;transform:translate(-160px,-18px) scale(.85)}
+  34%{opacity:0;transform:translate(-175px,-22px) scale(.5)}
   100%{opacity:0}
 }
+@keyframes ambCashierPing{
+  0%,26%{opacity:.45;filter:brightness(1)}
+  30%,40%{opacity:1;filter:brightness(1.35)}
+  48%,100%{opacity:.55;filter:brightness(1)}
+}
+@keyframes ambCashierCheck{
+  0%,28%{opacity:0;transform:scale(.4)}
+  32%{opacity:1;transform:scale(1.15)}
+  42%{opacity:1;transform:scale(1)}
+  52%,100%{opacity:0;transform:scale(.8)}
+}
 @keyframes ambWaiterWalk{
-  0%,26%{transform:translateX(0)}
-  46%{transform:translateX(72px)}
-  62%{transform:translateX(72px)}
-  84%,100%{transform:translateX(0)}
+  0%,36%{transform:translateX(-95px) scale(.72);opacity:0}
+  40%{opacity:.85;transform:translateX(-70px) scale(.78)}
+  58%{opacity:1;transform:translateX(55px) scale(1)}
+  72%{opacity:1;transform:translateX(55px) scale(1)}
+  88%,100%{opacity:0;transform:translateX(70px) scale(1)}
 }
 @keyframes ambPlateDrop{
-  0%,42%{opacity:0;transform:translateY(-10px) scale(.5)}
-  52%{opacity:1;transform:translateY(0) scale(1.05)}
-  60%{opacity:1;transform:translateY(0) scale(1)}
-  78%{opacity:1}
-  88%,100%{opacity:0;transform:translateY(4px) scale(.9)}
+  0%,56%{opacity:0;transform:translateY(-10px) scale(.5)}
+  64%{opacity:1;transform:translateY(0) scale(1.05)}
+  72%{opacity:1;transform:translateY(0) scale(1)}
+  84%{opacity:1}
+  92%,100%{opacity:0;transform:translateY(4px) scale(.9)}
 }
 @keyframes ambSteamPuff{
-  0%,50%{opacity:0}58%{opacity:.7}75%{opacity:.35}90%,100%{opacity:0}
+  0%,62%{opacity:0}68%{opacity:.7}82%{opacity:.35}92%,100%{opacity:0}
 }
 @media(prefers-reduced-motion:reduce){
-  .amb-glow,.amb-logo,.amb-phone-glow,.amb-signal,.amb-waiter-g,.amb-plate,.amb-steam-p{animation:none!important}
-  .amb-waiter-g{transform:translateX(40px)}.amb-plate{opacity:1}.amb-phone-glow{opacity:.8}
+  .amb-glow,.amb-logo,.amb-phone-glow,.amb-signal,.amb-cashier-ping,.amb-cashier-check,.amb-waiter-g,.amb-plate,.amb-steam-p{animation:none!important}
+  .amb-waiter-g{transform:translateX(40px);opacity:1}.amb-plate{opacity:1}.amb-phone-glow{opacity:.8}
+  .amb-cashier-check{opacity:1}
 }
 #logoScene{position:absolute;inset:0;transform-style:preserve-3d;overflow:hidden}
 .logo-page{
@@ -336,7 +351,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
       <div class="amb-glow"></div>
       <div class="amb-logo">TONINO</div>
       <div class="amb-story">
-        <svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg viewBox="0 0 440 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
             <linearGradient id="ambWood" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#a06630"/><stop offset="100%" stop-color="#4a2a10"/>
@@ -360,97 +375,117 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
               <stop offset="0%" stop-color="#7a4a22"/><stop offset="100%" stop-color="#3a2010"/>
             </linearGradient>
           </defs>
-          <ellipse cx="200" cy="128" rx="155" ry="8" fill="#0006"/>
+          <ellipse cx="250" cy="128" rx="130" ry="7" fill="#0005"/>
 
-          <!-- cafe chair (side view, behind guest) -->
+          <!-- cashier POS (left) — receives order -->
+          <g class="amb-cashier-ping" transform="translate(8 28)">
+            <rect x="0" y="18" width="52" height="36" rx="5" fill="#1a1510" stroke="#d7982e88" stroke-width="1.3"/>
+            <rect x="4" y="22" width="44" height="22" rx="2" fill="#243018"/>
+            <rect x="8" y="26" width="18" height="8" rx="1" fill="#b8df1b99"/>
+            <rect x="28" y="26" width="16" height="3" rx="1" fill="#d7982e88"/>
+            <rect x="28" y="32" width="12" height="3" rx="1" fill="#d7982e55"/>
+            <rect x="14" y="54" width="24" height="6" rx="1" fill="#3a2818"/>
+            <text x="26" y="14" text-anchor="middle" font-size="9" font-weight="800" fill="#f0c15e">كاشير</text>
+            <g class="amb-cashier-check" opacity="0">
+              <circle cx="44" cy="20" r="9" fill="#2a4018" stroke="#b8df1b" stroke-width="1.4"/>
+              <path d="M39 20l3.5 3.5 7-7" fill="none" stroke="#b8df1b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+          </g>
+
+          <!-- table (center) — chair is NOT on the table -->
+          <g class="amb-table">
+            <rect x="175" y="78" width="110" height="14" rx="6" fill="url(#ambWood)" stroke="#d7982e99" stroke-width="1.3"/>
+            <rect x="218" y="92" width="14" height="22" rx="2" fill="#3d2410"/>
+            <ellipse cx="230" cy="78" rx="48" ry="2.5" fill="#0003"/>
+          </g>
+
+          <!-- chair to the RIGHT of the table (beside, not above) -->
           <g class="amb-chair">
-            <path d="M248 22c18 2 28 14 28 32v8H252V48c0-10-2-18-10-22z" fill="url(#ambChairWood)" stroke="#d7982e66" stroke-width="1.2"/>
-            <path d="M255 28c10 2 16 10 16 20" fill="none" stroke="#c9a45a55" stroke-width="2"/>
-            <ellipse cx="248" cy="58" rx="22" ry="7" fill="#6b3f1c" stroke="#d7982e77" stroke-width="1.2"/>
-            <ellipse cx="248" cy="56" rx="18" ry="4.5" fill="#8a5528"/>
-            <path d="M232 60 L226 98" stroke="#3d2410" stroke-width="3.5" stroke-linecap="round"/>
-            <path d="M258 60 L268 98" stroke="#3d2410" stroke-width="3.5" stroke-linecap="round"/>
-            <path d="M242 60 L238 98" stroke="#2a1808" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M254 60 L260 98" stroke="#2a1808" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- backrest behind seat, to the right -->
+            <path d="M318 48c14 0 22 10 22 24v10h-10V70c0-8-3-14-10-16z" fill="url(#ambChairWood)" stroke="#d7982e55" stroke-width="1.1"/>
+            <!-- seat at table height, right of table edge -->
+            <ellipse cx="308" cy="76" rx="20" ry="6" fill="#6b3f1c" stroke="#d7982e66" stroke-width="1.1"/>
+            <ellipse cx="308" cy="74" rx="16" ry="3.8" fill="#8a5528"/>
+            <!-- legs down to floor -->
+            <path d="M294 78 L290 112" stroke="#3d2410" stroke-width="3.2" stroke-linecap="round"/>
+            <path d="M318 78 L326 112" stroke="#3d2410" stroke-width="3.2" stroke-linecap="round"/>
+            <path d="M302 78 L300 112" stroke="#2a1808" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M314 78 L318 112" stroke="#2a1808" stroke-width="2.2" stroke-linecap="round"/>
           </g>
 
-          <!-- table -->
-          <rect x="118" y="88" width="145" height="16" rx="7" fill="url(#ambWood)" stroke="#d7982e99" stroke-width="1.4"/>
-          <rect x="178" y="104" width="16" height="18" rx="2" fill="#3d2410"/>
-          <ellipse cx="190" cy="88" rx="55" ry="3" fill="#0004"/>
-
-          <!-- guest sitting on chair -->
+          <!-- guest sitting ON the chair, facing table -->
           <g class="amb-guest">
-            <path d="M232 58c6 2 18 4 28 2" stroke="#2a3548" stroke-width="10" stroke-linecap="round" fill="none"/>
-            <path d="M258 60c2 14 4 22 8 28" stroke="#2a3548" stroke-width="6" stroke-linecap="round" fill="none"/>
-            <path d="M248 62c0 14 2 22 6 28" stroke="#2a3548" stroke-width="6" stroke-linecap="round" fill="none"/>
-            <ellipse cx="268" cy="90" rx="8" ry="3.5" fill="#1a1510"/>
-            <ellipse cx="256" cy="92" rx="8" ry="3.5" fill="#1a1510"/>
-            <path d="M222 48c2 22 10 32 22 32s20-10 22-32c-5 5-14 8-22 8s-17-3-22-8z" fill="url(#ambShirt)"/>
-            <path d="M230 55h28" stroke="#d7982e33" stroke-width="1"/>
-            <rect x="240" y="40" width="8" height="8" rx="2" fill="url(#ambSkin)"/>
-            <circle cx="244" cy="32" r="14" fill="url(#ambSkin)" stroke="#0003"/>
-            <path d="M230 30c2-12 10-16 14-16s12 4 14 16c-4-4-10-6-14-6s-10 2-14 6z" fill="#2c1e14"/>
-            <circle cx="239" cy="32" r="1.6" fill="#2a1a10"/>
-            <circle cx="249" cy="32" r="1.6" fill="#2a1a10"/>
-            <path d="M240 38c2.5 2.5 7 2.5 9.5 0" stroke="#b07a4a" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-            <path d="M222 58c-8 6-14 12-16 18" stroke="url(#ambSkin)" stroke-width="5.5" stroke-linecap="round" fill="none"/>
-            <path d="M266 55c10 4 16 12 18 18" stroke="url(#ambSkin)" stroke-width="5.5" stroke-linecap="round" fill="none"/>
-            <g transform="translate(278 64) rotate(8)">
-              <rect x="0" y="0" width="16" height="26" rx="3.5" fill="#12100e" stroke="#d7982ecc" stroke-width="1.4"/>
-              <rect x="2" y="3" width="12" height="15" rx="1.5" fill="#3a2a18"/>
-              <rect class="amb-phone-glow" x="3.5" y="20" width="9" height="4" rx="1" fill="#b8df1b"/>
-              <text x="8" y="13" text-anchor="middle" font-size="8" font-weight="800" fill="#f0c15e">+</text>
+            <!-- thighs on seat -->
+            <path d="M292 74c8 1 20 1 28-2" stroke="#2a3548" stroke-width="9" stroke-linecap="round" fill="none"/>
+            <!-- lower legs under table -->
+            <path d="M292 76c-6 10-10 18-12 26" stroke="#2a3548" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+            <path d="M300 76c-4 12-6 20-6 28" stroke="#2a3548" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+            <ellipse cx="278" cy="104" rx="7" ry="3" fill="#1a1510"/>
+            <ellipse cx="292" cy="106" rx="7" ry="3" fill="#1a1510"/>
+            <!-- torso above seat, beside table -->
+            <path d="M296 42c1 20 8 30 16 30s15-10 16-30c-4 4-10 6-16 6s-12-2-16-6z" fill="url(#ambShirt)"/>
+            <rect x="306" y="36" width="7" height="8" rx="2" fill="url(#ambSkin)"/>
+            <circle cx="310" cy="28" r="12" fill="url(#ambSkin)" stroke="#0003"/>
+            <path d="M298 26c2-10 8-14 12-14s10 4 12 14c-3-3-8-5-12-5s-9 2-12 5z" fill="#2c1e14"/>
+            <circle cx="306" cy="28" r="1.4" fill="#2a1a10"/>
+            <circle cx="314" cy="28" r="1.4" fill="#2a1a10"/>
+            <path d="M307 33c2 2 5 2 7 0" stroke="#b07a4a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            <!-- arm to phone over table -->
+            <path d="M296 52c-14 4-24 10-28 16" stroke="url(#ambSkin)" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <g transform="translate(248 58) rotate(-8)">
+              <rect x="0" y="0" width="15" height="24" rx="3" fill="#12100e" stroke="#d7982ecc" stroke-width="1.3"/>
+              <rect x="2" y="3" width="11" height="14" rx="1.5" fill="#3a2a18"/>
+              <rect class="amb-phone-glow" x="3" y="19" width="9" height="3.5" rx="1" fill="#b8df1b"/>
+              <text x="7.5" y="12" text-anchor="middle" font-size="7" font-weight="800" fill="#f0c15e">+</text>
             </g>
           </g>
 
+          <!-- order signal: phone → cashier -->
           <g class="amb-signal" opacity="0">
-            <circle cx="286" cy="58" r="6" fill="none" stroke="#f0c15e" stroke-width="1.8"/>
-            <circle cx="272" cy="46" r="10" fill="none" stroke="#d7982e88" stroke-width="1.4"/>
-            <path d="M290 56 L250 38" stroke="url(#ambGold)" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="256" cy="62" r="5" fill="none" stroke="#f0c15e" stroke-width="1.6"/>
+            <circle cx="256" cy="62" r="9" fill="none" stroke="#d7982e66" stroke-width="1.2"/>
+            <path d="M250 60 L210 48" stroke="url(#ambGold)" stroke-width="2.2" stroke-linecap="round"/>
           </g>
 
-          <g class="amb-waiter-g">
-            <path d="M42 82 L36 108" stroke="#111" stroke-width="6" stroke-linecap="round"/>
-            <path d="M54 82 L64 108" stroke="#111" stroke-width="6" stroke-linecap="round"/>
-            <ellipse cx="34" cy="110" rx="8" ry="3.5" fill="#0a0a0a"/>
-            <ellipse cx="66" cy="110" rx="8" ry="3.5" fill="#0a0a0a"/>
-            <path d="M30 46c0 26 8 40 18 40s18-14 18-40c-5 6-12 9-18 9s-13-3-18-9z" fill="url(#ambWaiterCoat)"/>
-            <path d="M42 50h12l2 28h-16z" fill="#f4efe6"/>
-            <path d="M38 62h20c1.5 0 2.5 1.2 2.5 2.5v22c0 5-4 9-10 9h-5c-6 0-10-4-10-9V64.5c0-1.3 1-2.5 2.5-2.5z" fill="url(#ambApron)" stroke="#d7982e55"/>
-            <line x1="48" y1="66" x2="48" y2="88" stroke="#d7982e44" stroke-width="1"/>
-            <path d="M40 48h16l-8 6z" fill="#fff"/>
-            <path d="M42 52h12" stroke="#111" stroke-width="1"/>
-            <path d="M40 54 L48 57 L56 54 L52 60 L48 58 L44 60z" fill="#c0392b"/>
-            <circle cx="48" cy="57" r="2.2" fill="#8b1e1e"/>
-            <circle cx="48" cy="34" r="13" fill="url(#ambSkin)" stroke="#0003"/>
-            <path d="M35 32c2-14 8-18 13-18s11 4 13 18c-4-5-9-7-13-7s-9 2-13 7z" fill="#1f1710"/>
-            <circle cx="43" cy="34" r="1.5" fill="#2a1a10"/>
-            <circle cx="53" cy="34" r="1.5" fill="#2a1a10"/>
-            <path d="M44 39c2 2 6 2 8 0" stroke="#b07a4a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-            <path d="M66 56c12 2 22 8 26 14" stroke="url(#ambSkin)" stroke-width="6" stroke-linecap="round" fill="none"/>
-            <g transform="translate(88 58)">
-              <ellipse cx="20" cy="10" rx="24" ry="5.5" fill="#cfc6b6" stroke="#d7982eaa" stroke-width="1.4"/>
-              <ellipse cx="20" cy="7" rx="21" ry="3.5" fill="#f2ebe0"/>
-              <rect x="6" y="-2" width="10" height="10" rx="1.5" fill="#fff" stroke="#c9a45a"/>
-              <ellipse cx="11" cy="-2" rx="5" ry="2" fill="#e8b86a"/>
-              <path d="M16 2h3c2 0 3 2 3 3.5S21 9 19 9h-3" fill="none" stroke="#c9a45a" stroke-width="1.3"/>
-              <ellipse cx="28" cy="2" rx="9" ry="3.5" fill="#f5ead0" stroke="#c9a45a"/>
-              <circle cx="28" cy="1" r="4" fill="#c8e86a" stroke="#8fba12"/>
-              <path d="M8 -6 Q8 -12 10 -14" fill="none" stroke="#fff7" stroke-width="1.3"/>
+          <!-- waiter starts far left (animation moves him in) -->
+          <g class="amb-waiter-g" opacity="0">
+            <path d="M78 86 L72 116" stroke="#111" stroke-width="5.5" stroke-linecap="round"/>
+            <path d="M90 86 L98 116" stroke="#111" stroke-width="5.5" stroke-linecap="round"/>
+            <ellipse cx="70" cy="118" rx="7" ry="3" fill="#0a0a0a"/>
+            <ellipse cx="100" cy="118" rx="7" ry="3" fill="#0a0a0a"/>
+            <path d="M68 50c0 24 7 36 16 36s16-12 16-36c-4 5-10 8-16 8s-12-3-16-8z" fill="url(#ambWaiterCoat)"/>
+            <path d="M78 54h12l2 26h-16z" fill="#f4efe6"/>
+            <path d="M74 66h18c1.2 0 2 1 2 2v20c0 4.5-3.5 8-9 8h-4c-5.5 0-9-3.5-9-8V68c0-1 .8-2 2-2z" fill="url(#ambApron)" stroke="#d7982e55"/>
+            <path d="M76 52h16l-8 5z" fill="#fff"/>
+            <path d="M76 56 L84 59 L92 56 L88 62 L84 60 L80 62z" fill="#c0392b"/>
+            <circle cx="84" cy="59" r="2" fill="#8b1e1e"/>
+            <circle cx="84" cy="38" r="12" fill="url(#ambSkin)" stroke="#0003"/>
+            <path d="M72 36c2-12 7-16 12-16s10 4 12 16c-3-4-8-6-12-6s-9 2-12 6z" fill="#1f1710"/>
+            <circle cx="80" cy="38" r="1.4" fill="#2a1a10"/>
+            <circle cx="88" cy="38" r="1.4" fill="#2a1a10"/>
+            <path d="M80 43c2 1.8 6 1.8 8 0" stroke="#b07a4a" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+            <path d="M100 60c10 2 18 8 22 12" stroke="url(#ambSkin)" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+            <g transform="translate(118 62)">
+              <ellipse cx="18" cy="9" rx="20" ry="4.5" fill="#cfc6b6" stroke="#d7982eaa" stroke-width="1.2"/>
+              <ellipse cx="18" cy="6.5" rx="17" ry="3" fill="#f2ebe0"/>
+              <rect x="6" y="-1" width="9" height="9" rx="1.2" fill="#fff" stroke="#c9a45a"/>
+              <ellipse cx="10.5" cy="-1" rx="4.5" ry="1.8" fill="#e8b86a"/>
+              <ellipse cx="26" cy="2" rx="7" ry="3" fill="#f5ead0" stroke="#c9a45a"/>
+              <circle cx="26" cy="1" r="3.2" fill="#c8e86a"/>
             </g>
           </g>
 
+          <!-- food arrives on table after waiter -->
           <g class="amb-plate" opacity="0">
-            <ellipse cx="168" cy="82" rx="20" ry="7.5" fill="#f5ead0" stroke="#c9a45a" stroke-width="1.3"/>
-            <ellipse cx="168" cy="80" rx="12" ry="5" fill="#d7982e"/>
-            <circle cx="165" cy="79" r="2.2" fill="#b8df1b99"/>
-            <path class="amb-steam-p" d="M162 72 Q160 60 164 56" fill="none" stroke="#fff7" stroke-width="1.6"/>
-            <path class="amb-steam-p" d="M174 72 Q176 61 172 55" fill="none" stroke="#fff5" stroke-width="1.3"/>
+            <ellipse cx="220" cy="74" rx="18" ry="6.5" fill="#f5ead0" stroke="#c9a45a" stroke-width="1.2"/>
+            <ellipse cx="220" cy="72" rx="11" ry="4.2" fill="#d7982e"/>
+            <circle cx="217" cy="71" r="2" fill="#b8df1b99"/>
+            <path class="amb-steam-p" d="M214 64 Q212 54 216 50" fill="none" stroke="#fff7" stroke-width="1.5"/>
+            <path class="amb-steam-p" d="M226 64 Q228 55 224 49" fill="none" stroke="#fff5" stroke-width="1.2"/>
           </g>
         </svg>
       </div>
-      <p class="amb-tag">اطلب من هاتفك… والجرسون يصل إلى طاولتك</p>
+      <p class="amb-tag">اطلب ← يصل للكاشير ← الجرسون يأتي من بعيد</p>
     </div>
     <div id="logoScene"></div>
     <div id="orderCloud"><div id="orderGrid"></div></div>
