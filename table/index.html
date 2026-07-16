@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- menu-bottom-v216 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- no-crop-v216 --><!-- menu-fill-cover-v221 --><!-- fullscreen-touch-v220 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v221 -->
+<title>Tonino QR Menu</title><!-- menu-bottom-v216 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- no-crop-v222 --><!-- no-zoom-contain-v222 --><!-- fullscreen-touch-v220 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v222 -->
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -127,12 +127,12 @@ button{font:inherit}
 }
 #viewer::before{content:"";position:absolute;inset:-25%;pointer-events:none;background:radial-gradient(circle at 15% 20%,#f2b43c22 0 1px,transparent 2px),radial-gradient(circle at 75% 55%,#badc3218 0 1px,transparent 2px),radial-gradient(ellipse at center,#9b5c182d,transparent 65%);background-size:83px 91px,108px 101px,100% 100%;animation:stars 22s linear infinite}@keyframes stars{to{transform:translate3d(34px,-28px,0)}}
 #menuScene{position:absolute;inset:0;transform-style:preserve-3d;overflow:hidden}
-.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none;display:flex;flex-direction:column;justify-content:stretch;align-items:stretch}
+.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch}
 .menu-page::-webkit-scrollbar{display:none}.menu-page.under{filter:saturate(.97);transform:scale(.988);opacity:.83}
 .ambient{position:fixed;inset:-28px;z-index:-2;background-position:center;background-size:cover;filter:blur(29px) saturate(.85) brightness(.54);transform:scale(1.13);opacity:.88;pointer-events:none}.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 8%,#160c04b5 88%)}
-.paper{position:relative;width:100%;height:100%;margin:0;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:1 1 auto}
-/* cover = fill phone edge-to-edge (studio default). contain left brown empty bars. */
-.paper img{display:block;width:100%;height:100%;object-fit:cover;object-position:center center;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
+.paper{position:relative;width:100%;margin:0;margin-top:auto;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:0 0 auto}
+/* Full page visible — NEVER zoom/crop the menu image */
+.paper img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
 .page-edge{position:absolute;z-index:20;top:0;bottom:0;width:12px;opacity:0;pointer-events:none;background:linear-gradient(90deg,#fff1ad,#da952e66,transparent);box-shadow:0 0 27px #ffd96c}
 .page-shade{position:absolute;z-index:19;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent 42%,#000b 100%)}
 .menu-page[data-dir="prev"] .page-edge{right:0;left:auto;transform:scaleX(-1)}.menu-page[data-dir="prev"] .page-shade{background:linear-gradient(-90deg,transparent 42%,#000b 100%)}
@@ -339,11 +339,23 @@ window.TONINO_CONFIG = Object.freeze({
   function placeCategoryBand() {
     const band = $("categoryBand");
     const phone = $("phone");
-    if (!band || !phone) return;
-    /* Menu uses object-fit:cover and fills the viewer — strip sits flush under topbar on the image. */
+    const paper = currentMenu && currentMenu.querySelector(".paper");
+    const img = paper && paper.querySelector("img");
+    if (!band || !phone || !paper || !img) return;
     const phoneRect = phone.getBoundingClientRect();
+    const paperRect = paper.getBoundingClientRect();
+    const nw = img.naturalWidth || PAGE_SIZES[currentIndex]?.[0] || 1;
+    const nh = img.naturalHeight || PAGE_SIZES[currentIndex]?.[1] || 1;
+    const pw = Math.max(1, paper.clientWidth);
+    const ph = Math.max(1, paper.clientHeight);
+    /* contain + bottom: strip sits flush on the visible menu image top edge */
+    const scale = Math.min(pw / nw, ph / nh);
+    const contentH = nh * scale;
+    const contentTop = paperRect.top + (ph - contentH);
+    const bandH = band.offsetHeight || 48;
+    const top = Math.round(contentTop - phoneRect.top - bandH);
     const minTop = Math.round(($("topbar")?.getBoundingClientRect().bottom || 0) - phoneRect.top);
-    band.style.top = `${Math.max(0, minTop)}px`;
+    band.style.top = `${Math.max(minTop, top)}px`;
   }
   function fitMenuPage(layer, index) {
     if (!layer) return;
