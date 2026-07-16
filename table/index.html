@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v239 --><!-- order-story-v239 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v239 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v240 --><!-- order-story-v240 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v240 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -118,7 +118,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   background:#120c07;border:none;pointer-events:none;visibility:visible
 }
 #logoScene,.logo-page{display:none!important;visibility:hidden!important;height:0!important;pointer-events:none!important}
-/* Ambient story — keeps playing; orderCloud covers it when cart has items */
+/* Ambient story — always plays; orderCloud (content-height) covers only the top */
 #ambientStage{
   position:absolute;z-index:810;inset:0;overflow:hidden;pointer-events:none;
   opacity:1;transition:opacity .22s ease;
@@ -126,8 +126,6 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
     radial-gradient(ellipse at 50% 16%,#d7982e50 0%,transparent 50%),
     linear-gradient(180deg,#1a120a 0%,#2a1a0e 50%,#14100a 100%)
 }
-#logoBand.ambient-tiny #ambientStage .amb-story,
-#logoBand.ambient-tiny #ambientStage .amb-tag{display:none}
 .amb-glow{
   position:absolute;left:50%;top:8%;width:min(70%,200px);height:48px;
   transform:translate(-50%,-20%);border-radius:50%;
@@ -229,12 +227,14 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 
 /* Selected products — expands into free space above natural menu */
 #orderCloud{
-  position:absolute;z-index:920;top:0;left:0;right:0;bottom:0;height:100%;max-height:none;overflow-y:auto;overflow-x:hidden;padding:0 4px;
+  position:absolute;z-index:920;top:0;left:0;right:0;bottom:auto;height:auto;max-height:100%;
+  overflow-y:auto;overflow-x:hidden;padding:0 4px;
   background:radial-gradient(circle at 14% 18%,#d49b3428,transparent 34%),linear-gradient(180deg,#18120d,#3d2916);
   border-bottom:1px solid #e3aa456f;box-shadow:0 6px 19px #000b;opacity:0;pointer-events:none;transition:opacity .13s ease;
   scrollbar-width:none;overscroll-behavior:contain;touch-action:pan-y
 }
-#orderCloud::-webkit-scrollbar{display:none}#orderCloud.active{opacity:1;pointer-events:auto;padding-top:4px;padding-bottom:4px}
+#orderCloud::-webkit-scrollbar{display:none}
+#orderCloud.active{opacity:1;pointer-events:auto;padding-top:4px;padding-bottom:4px}
 #orderGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;direction:rtl;align-content:start}
 .order{height:28px;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 26px;border:1px solid #e1aa456e;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#503820f4,#281a10f4);box-shadow:0 2px 5px #0008,0 0 0 1px #fff05 inset}
 .order-main{min-width:0;border:0;background:transparent;color:#fff;padding:2px 4px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr 1fr;column-gap:3px;text-align:right;cursor:pointer}
@@ -992,12 +992,16 @@ window.TONINO_CONFIG = Object.freeze({
     $("cartCount").textContent=count; $("cartTotal").textContent=money(total);
     $("orderGrid").innerHTML=cart.map(item=>`<div class="order"><button class="order-main" type="button" data-page="${item.page}"><span class="quantity">${item.qty}×</span><span class="name">${escapeHtml(item.name)}</span><span class="price">${money(item.qty*item.price)}</span></button><button class="order-action ${item.qty===1?'trash':''}" type="button" data-key="${encodeURIComponent(itemKey(item))}" aria-label="${item.qty>1?'إنقاص':'حذف'} ${escapeHtml(item.name)}">${item.qty>1?'−':'🗑'}</button></div>`).join("");
     const cloud=$("orderCloud"); cloud.classList.toggle("active",cart.length>0);
-    /* Fill leftover space above natural menu (--orders-h). Do not cap at 72px. */
-    cloud.style.height = cart.length ? "100%" : "0px";
-    cloud.style.maxHeight = "none";
+    /* Cover ambient only by cart content height — ambient keeps playing below until filled */
+    if (cart.length) {
+      cloud.style.height = "auto";
+      cloud.style.maxHeight = "100%";
+    } else {
+      cloud.style.height = "0px";
+      cloud.style.maxHeight = "none";
+    }
     const band = $("logoBand");
     if (band) {
-      
       const h = band.clientHeight || parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--orders-h")) || 0;
       band.classList.toggle("ambient-tiny", h > 0 && h < 72);
       band.classList.remove("orders-full");
