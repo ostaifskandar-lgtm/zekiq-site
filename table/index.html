@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v231 --><!-- ambient-stage-v231 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v231 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v232 --><!-- ambient-clear-v232 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v232 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -118,105 +118,81 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   background:#120c07;border:none;pointer-events:none;visibility:visible
 }
 #logoScene,.logo-page{display:none!important;visibility:hidden!important;height:0!important;pointer-events:none!important}
-/* Ambient marketing stage — visible only when cart empty; covered by orders */
+/* Ambient stage v2 — clear: logo + tea cup + short cue to quick jumps */
 #ambientStage{
   position:absolute;z-index:810;inset:0;overflow:hidden;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(4px,1.2vh,10px);padding:6px 12px 8px;
   opacity:1;transition:opacity .22s ease;
   background:
-    radial-gradient(ellipse at 50% 18%,#d7982e55 0%,transparent 52%),
-    radial-gradient(circle at 18% 70%,#b8df1b18 0%,transparent 40%),
-    linear-gradient(180deg,#1a120a 0%,#2a1a0e 48%,#17100a 100%)
+    radial-gradient(ellipse at 50% 22%,#e0a84555 0%,transparent 55%),
+    linear-gradient(180deg,#1c130b 0%,#2c1c10 50%,#15100a 100%)
 }
 #logoBand.has-orders #ambientStage{opacity:0}
-#logoBand.ambient-tiny #ambientStage .amb-scene,
+#logoBand.ambient-tiny #ambientStage .amb-hero,
 #logoBand.ambient-tiny #ambientStage .amb-tag{display:none}
 .amb-glow{
-  position:absolute;left:50%;top:12%;width:min(72%,220px);height:min(48%,90px);
-  transform:translate(-50%,-30%);border-radius:50%;
-  background:radial-gradient(ellipse,#ffd36a66 0%,#d7982e22 42%,transparent 72%);
-  filter:blur(2px);animation:ambPulse 3.4s ease-in-out infinite
+  position:absolute;left:50%;top:18%;width:min(70%,200px);height:56px;
+  transform:translate(-50%,-40%);border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse,#ffd36a77 0%,#d7982e28 45%,transparent 72%);
+  animation:ambPulse 3.6s ease-in-out infinite
 }
 .amb-logo{
-  position:absolute;left:0;right:0;top:10%;text-align:center;
-  font-size:clamp(22px,7vw,34px);font-weight:1000;letter-spacing:.18em;
-  color:#ffe2a0;text-shadow:0 0 18px #f0b747aa,0 0 36px #d7982e66,0 2px 0 #0008;
-  animation:ambLogoShine 4.2s ease-in-out infinite
+  position:relative;z-index:2;flex:0 0 auto;text-align:center;
+  font-size:clamp(24px,7.2vw,36px);font-weight:1000;letter-spacing:.2em;
+  color:#ffe6ae;text-shadow:0 0 16px #f0b747bb,0 0 32px #d7982e66,0 2px 0 #0009;
+  animation:ambLogoShine 4s ease-in-out infinite
 }
-.amb-scene{
-  position:absolute;left:50%;bottom:18%;width:min(92%,340px);height:58%;
-  transform:translateX(-50%);max-height:120px
+.amb-hero{
+  position:relative;z-index:2;width:min(56%,160px);height:clamp(44px,12vh,72px);
+  flex:0 0 auto
 }
-.amb-floor{
-  position:absolute;left:8%;right:8%;bottom:0;height:10px;border-radius:50%;
-  background:radial-gradient(ellipse,#0006,#0000 70%)
+.amb-tabletop{
+  position:absolute;left:6%;right:6%;bottom:8%;height:18%;border-radius:10px;
+  background:linear-gradient(180deg,#7a4a22,#3f2612);
+  border:1px solid #e3aa4566;box-shadow:0 6px 14px #0008
 }
-.amb-table{
-  position:absolute;left:28%;right:28%;bottom:14%;height:12px;border-radius:8px;
-  background:linear-gradient(180deg,#6b4220,#3d2410);box-shadow:0 4px 10px #0007;
-  border:1px solid #d7982e55
+.amb-plate{
+  position:absolute;left:14%;bottom:22%;width:28%;aspect-ratio:1;
+  border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff8e8,#d8c09a 70%,#b89a62);
+  box-shadow:0 2px 6px #0006;border:1px solid #c9a45a55
 }
-.amb-table::after{
-  content:"";position:absolute;left:46%;bottom:-14px;width:8%;height:16px;
-  background:#3d2410;border-radius:2px
+.amb-plate::after{
+  content:"";position:absolute;inset:22%;border-radius:50%;
+  background:radial-gradient(circle at 45% 40%,#f4e0b0,#c9a45a88)
 }
-.amb-cup{
-  position:absolute;bottom:26%;width:10px;height:12px;border-radius:2px 2px 3px 3px;
-  background:linear-gradient(180deg,#fff8e8,#e8d2a8);border:1px solid #c9a45a66
+.amb-cupbig{
+  position:absolute;right:18%;bottom:24%;width:22%;height:42%;
+  border-radius:4px 4px 8px 8px;
+  background:linear-gradient(180deg,#fff9ef 0%,#f0e0c0 40%,#c9a45a 100%);
+  border:1px solid #e3aa4588;box-shadow:0 3px 8px #0007
 }
-.amb-cup.a{left:38%}.amb-cup.b{right:38%;left:auto}
+.amb-cupbig::before{
+  content:"";position:absolute;right:-28%;top:28%;width:34%;height:38%;
+  border:2px solid #e3aa45aa;border-left:0;border-radius:0 10px 10px 0
+}
+.amb-cupbig::after{
+  content:"";position:absolute;left:12%;right:12%;top:10%;height:28%;
+  border-radius:2px;background:linear-gradient(180deg,#3a2212,#5c3518)
+}
 .amb-steam{
-  position:absolute;bottom:38%;width:3px;height:14px;border-radius:3px;
-  background:linear-gradient(180deg,transparent,#fff6);opacity:.55;
-  animation:ambSteam 2.2s ease-in-out infinite
+  position:absolute;right:26%;bottom:66%;width:4px;height:28%;border-radius:4px;
+  background:linear-gradient(180deg,transparent,#fff8);opacity:.65;
+  animation:ambSteam 2.1s ease-in-out infinite
 }
-.amb-steam.a{left:40%}.amb-steam.b{right:40%;left:auto;animation-delay:.45s}
-.amb-person{
-  position:absolute;bottom:22%;width:18px;height:34px
-}
-.amb-person::before{
-  content:"";position:absolute;left:50%;top:0;width:12px;height:12px;border-radius:50%;
-  transform:translateX(-50%);background:#f0d2a8;box-shadow:0 0 0 1px #0003
-}
-.amb-person::after{
-  content:"";position:absolute;left:50%;top:11px;width:16px;height:20px;border-radius:6px 6px 4px 4px;
-  transform:translateX(-50%)
-}
-.amb-man{left:22%}.amb-man::after{background:linear-gradient(180deg,#3a4a6a,#243044)}
-.amb-woman{right:22%;left:auto}.amb-woman::before{background:#f5c9a8}
-.amb-woman::after{background:linear-gradient(180deg,#8b3a4a,#5c2430)}
-.amb-waiter{
-  position:absolute;left:4%;bottom:10%;width:20px;height:40px;
-  animation:ambWaiter 5.5s ease-in-out infinite
-}
-.amb-waiter::before{
-  content:"";position:absolute;left:50%;top:0;width:11px;height:11px;border-radius:50%;
-  transform:translateX(-50%);background:#e8c49a
-}
-.amb-waiter::after{
-  content:"";position:absolute;left:50%;top:10px;width:15px;height:24px;border-radius:5px;
-  transform:translateX(-50%);background:linear-gradient(180deg,#2a2a2a,#111)
-}
-.amb-tray{
-  position:absolute;left:14px;top:14px;width:16px;height:4px;border-radius:3px;
-  background:linear-gradient(90deg,#ddd,#aaa);box-shadow:0 0 6px #ffd36a55;
-  animation:ambTray 5.5s ease-in-out infinite
-}
-.amb-tray::before,.amb-tray::after{
-  content:"";position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;
-  background:#d7982e
-}
-.amb-tray::before{left:2px}.amb-tray::after{right:2px;background:#b8df1b}
+.amb-steam.s2{right:32%;animation-delay:.35s;opacity:.45}
 .amb-tag{
-  position:absolute;left:0;right:0;bottom:4%;text-align:center;direction:rtl;
-  font-size:clamp(10px,2.8vw,12px);font-weight:900;color:#cdb27acc;letter-spacing:.02em
+  position:relative;z-index:2;flex:0 0 auto;margin:0;max-width:96%;
+  text-align:center;direction:rtl;
+  font-size:clamp(11px,3.1vw,13px);font-weight:1000;line-height:1.35;
+  color:#ffe9b1;text-shadow:0 1px 2px #000a
 }
-@keyframes ambPulse{0%,100%{opacity:.55;transform:translate(-50%,-30%) scale(1)}50%{opacity:1;transform:translate(-50%,-30%) scale(1.08)}}
-@keyframes ambLogoShine{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
-@keyframes ambSteam{0%{transform:translateY(4px);opacity:0}40%{opacity:.6}100%{transform:translateY(-12px);opacity:0}}
-@keyframes ambWaiter{0%,100%{transform:translateX(0)}45%{transform:translateX(18px)}70%{transform:translateX(18px)}}
-@keyframes ambTray{0%,100%{transform:translate(0,0) rotate(-4deg)}45%{transform:translate(2px,-1px) rotate(2deg)}70%{transform:translate(2px,-1px) rotate(2deg)}}
+.amb-tag b{color:#d7ff3d;font-weight:1000}
+@keyframes ambPulse{0%,100%{opacity:.5;transform:translate(-50%,-40%) scale(1)}50%{opacity:1;transform:translate(-50%,-40%) scale(1.06)}}
+@keyframes ambLogoShine{0%,100%{filter:brightness(1)}50%{filter:brightness(1.2)}}
+@keyframes ambSteam{0%{transform:translateY(3px);opacity:0}35%{opacity:.7}100%{transform:translateY(-14px);opacity:0}}
 @media(prefers-reduced-motion:reduce){
-  .amb-glow,.amb-logo,.amb-steam,.amb-waiter,.amb-tray{animation:none!important}
+  .amb-glow,.amb-logo,.amb-steam{animation:none!important}
 }
 #orderCloud{pointer-events:none;inset:0;height:100%;max-height:none}
 #orderCloud.active{pointer-events:auto;z-index:940}
@@ -366,16 +342,14 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
     <div id="ambientStage" aria-hidden="true">
       <div class="amb-glow"></div>
       <div class="amb-logo">TONINO</div>
-      <div class="amb-scene">
-        <div class="amb-floor"></div>
-        <div class="amb-waiter"><div class="amb-tray"></div></div>
-        <div class="amb-person amb-man"></div>
-        <div class="amb-person amb-woman"></div>
-        <div class="amb-table"></div>
-        <div class="amb-cup a"></div><div class="amb-cup b"></div>
-        <div class="amb-steam a"></div><div class="amb-steam b"></div>
+      <div class="amb-hero">
+        <div class="amb-tabletop"></div>
+        <div class="amb-plate"></div>
+        <div class="amb-cupbig"></div>
+        <div class="amb-steam"></div>
+        <div class="amb-steam s2"></div>
       </div>
-      <p class="amb-tag">أهلاً بكم — اختاروا واطلبوا بسهولة</p>
+      <p class="amb-tag">للشاي والقهوة — اضغط <b>Çay</b> أو <b>Türk Kahvesi</b> أعلاه</p>
     </div>
     <div id="logoScene"></div>
     <div id="orderCloud"><div id="orderGrid"></div></div>
