@@ -239,16 +239,14 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 .logo-page[data-dir="prev"] .logo-edge{right:0;left:auto;transform:scaleX(-1)}
 .logo-page[data-dir="prev"] .logo-shade{background:linear-gradient(-90deg,transparent 35%,#000a 100%)}
 
-/* Selected products — expands into free space; translucent so portal lives behind */
+/* Selected products — expands into free space above natural menu */
 #orderCloud{
   position:absolute;z-index:920;top:0;left:0;right:0;bottom:0;height:100%;max-height:none;overflow-y:auto;overflow-x:hidden;padding:0 4px;
-  background:linear-gradient(180deg,rgba(20,14,10,.78),rgba(40,26,16,.72));
-  border-bottom:1px solid #e3aa456f;box-shadow:0 6px 19px #0008;opacity:0;pointer-events:none;transition:opacity .2s ease,background .25s ease;
-  scrollbar-width:none;overscroll-behavior:contain;touch-action:pan-y;backdrop-filter:blur(1.5px)
+  background:radial-gradient(circle at 14% 18%,#d49b3423,transparent 34%),linear-gradient(180deg,rgba(24,18,13,.99),rgba(61,41,22,.975));
+  border-bottom:1px solid #e3aa456f;box-shadow:0 6px 19px #000b;opacity:0;pointer-events:none;transition:opacity .13s ease;
+  scrollbar-width:none;overscroll-behavior:contain;touch-action:pan-y
 }
-#orderCloud::-webkit-scrollbar{display:none}
-#orderCloud.active{opacity:1;pointer-events:auto;padding-top:4px;padding-bottom:4px}
-#logoBand.orders-full #orderCloud.active{background:linear-gradient(180deg,rgba(18,12,8,.92),rgba(36,22,14,.9))}
+#orderCloud::-webkit-scrollbar{display:none}#orderCloud.active{opacity:1;pointer-events:auto;padding-top:4px;padding-bottom:4px}
 #orderGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;direction:rtl;align-content:start}
 .order{height:28px;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 26px;border:1px solid #e1aa456e;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#503820f4,#281a10f4);box-shadow:0 2px 5px #0008,0 0 0 1px #fff05 inset}
 .order-main{min-width:0;border:0;background:transparent;color:#fff;padding:2px 4px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr 1fr;column-gap:3px;text-align:right;cursor:pointer}
