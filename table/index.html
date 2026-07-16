@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v238 --><!-- order-story-v238 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v238 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v239 --><!-- order-story-v239 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v239 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -118,7 +118,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   background:#120c07;border:none;pointer-events:none;visibility:visible
 }
 #logoScene,.logo-page{display:none!important;visibility:hidden!important;height:0!important;pointer-events:none!important}
-/* Ambient story — guest orders on phone, waiter delivers (SVG, covered by orders) */
+/* Ambient story — keeps playing; orderCloud covers it when cart has items */
 #ambientStage{
   position:absolute;z-index:810;inset:0;overflow:hidden;pointer-events:none;
   opacity:1;transition:opacity .22s ease;
@@ -126,7 +126,6 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
     radial-gradient(ellipse at 50% 16%,#d7982e50 0%,transparent 50%),
     linear-gradient(180deg,#1a120a 0%,#2a1a0e 50%,#14100a 100%)
 }
-#logoBand.has-orders #ambientStage{opacity:0}
 #logoBand.ambient-tiny #ambientStage .amb-story,
 #logoBand.ambient-tiny #ambientStage .amb-tag{display:none}
 .amb-glow{
@@ -231,7 +230,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 /* Selected products — expands into free space above natural menu */
 #orderCloud{
   position:absolute;z-index:920;top:0;left:0;right:0;bottom:0;height:100%;max-height:none;overflow-y:auto;overflow-x:hidden;padding:0 4px;
-  background:radial-gradient(circle at 14% 18%,#d49b3423,transparent 34%),linear-gradient(180deg,rgba(24,18,13,.99),rgba(61,41,22,.975));
+  background:radial-gradient(circle at 14% 18%,#d49b3428,transparent 34%),linear-gradient(180deg,#18120d,#3d2916);
   border-bottom:1px solid #e3aa456f;box-shadow:0 6px 19px #000b;opacity:0;pointer-events:none;transition:opacity .13s ease;
   scrollbar-width:none;overscroll-behavior:contain;touch-action:pan-y
 }
@@ -998,7 +997,7 @@ window.TONINO_CONFIG = Object.freeze({
     cloud.style.maxHeight = "none";
     const band = $("logoBand");
     if (band) {
-      band.classList.toggle("has-orders", cart.length > 0);
+      
       const h = band.clientHeight || parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--orders-h")) || 0;
       band.classList.toggle("ambient-tiny", h > 0 && h < 72);
       band.classList.remove("orders-full");
