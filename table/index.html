@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v227 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v227 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v228 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v228 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -50,7 +50,49 @@ html.is-phone #phone,html.is-android #phone{
   width:100%!important;max-width:none!important;height:var(--app-height,100dvh)!important;
   border:0!important;border-radius:0!important;box-shadow:none!important
 }
-#fsHint{display:none!important}
+/* Mandatory start gate — unlocks menu + Android fullscreen (hides browser chrome) */
+#startGate{
+  position:absolute;z-index:5000;inset:0;display:none;align-items:stretch;justify-content:center;
+  padding:calc(12px + var(--safe-top)) 16px calc(16px + var(--safe-bottom));
+  background:radial-gradient(circle at 50% 18%,#3a2612 0%,#17100a 55%,#0c0805 100%);
+  color:#ffe9b1;direction:rtl;text-align:center;overflow:auto
+}
+#startGate.show{display:flex}
+#startGate .start-card{
+  margin:auto;width:min(100%,360px);padding:22px 18px 18px;border:1px solid #d7982e88;border-radius:22px;
+  background:linear-gradient(165deg,#2a1c10ee,#17100af2);box-shadow:0 18px 50px #000c
+}
+#startGate h2{font-size:clamp(20px,5.5vw,26px);color:#ffda7d;margin:0 0 6px;font-weight:1000}
+#startGate .start-sub{font-size:12px;color:#cdb27a;margin:0 0 16px;line-height:1.45}
+#startGate ol{list-style:none;display:grid;gap:8px;margin:0 0 18px;padding:0;text-align:right}
+#startGate li{
+  display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:center;
+  padding:10px 10px;border:1px solid #e3aa4538;border-radius:12px;background:#ffffff08;
+  font-size:13px;font-weight:800;line-height:1.35;color:#fff6df
+}
+#startGate li b{
+  width:28px;height:28px;border-radius:9px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#a9670c,#f0b747);color:#181006;font-size:13px
+}
+#startGo{
+  width:100%;min-height:52px;border:0;border-radius:16px;cursor:pointer;
+  background:linear-gradient(145deg,#a9670c,#f0b747);color:#181006;
+  font-size:clamp(15px,4.2vw,18px);font-weight:1000;box-shadow:0 8px 22px #0008
+}
+#startGo:active{transform:scale(.98)}
+html.coach-locked #topbar,
+html.coach-locked #logoBand,
+html.coach-locked #categoryBand,
+html.coach-locked #viewer,
+html.coach-locked #footer,
+html.coach-locked #shade,
+html.coach-locked #variantSheet,
+html.coach-locked #toast{visibility:hidden!important;pointer-events:none!important}
+html:fullscreen,html:-webkit-full-screen,
+html:fullscreen body,html:-webkit-full-screen body,
+html:fullscreen #phone,html:-webkit-full-screen #phone{
+  width:100%!important;height:100%!important;background:#1b1005
+}
 
 /* 1 — compact fixed command bar */
 #topbar{
@@ -218,10 +260,17 @@ html.is-phone #phone,html.is-android #phone{
     <h3>اختر نكهة الآيس كريم</h3><div id="variantGrid"></div><button id="closeVariants" type="button">إغلاق</button>
   </section>
   <div id="toast" role="status" aria-live="polite"></div>
-  <div id="fsHint" role="dialog" aria-label="ملء الشاشة">
-    <b>ملء الشاشة</b>
-    اضغط للعرض على كامل شاشة الهاتف
-    <button type="button" id="fsGo">متابعة بكامل الشاشة</button>
+  <div id="startGate" role="dialog" aria-modal="true" aria-label="تعليمات الطلب">
+    <div class="start-card">
+      <h2>كيف تطلب؟</h2>
+      <p class="start-sub">اضغط «فهمت» لفتح المينو على كامل الشاشة</p>
+      <ol>
+        <li><b>1</b><span>اسحب يمين / يسار ككتاب لقلب الصفحات</span></li>
+        <li><b>2</b><span>اضغط زر + الأخضر لإضافة صنف</span></li>
+        <li><b>3</b><span>راجع طلبك في الأعلى ثم اضغط إرسال</span></li>
+      </ol>
+      <button type="button" id="startGo">فهمت — ابدأ الطلب ✓</button>
+    </div>
   </div>
 </div>
 <script>
@@ -786,7 +835,65 @@ window.TONINO_CONFIG = Object.freeze({
     if (window.visualViewport) visualViewport.addEventListener("resize", apply, {passive:true});
   })();
 
-  /* No requestFullscreen — inconsistent across Android. Edge-to-edge via CSS + --app-height. */
+  /* Start gate: mandatory instructions → user gesture → Android fullscreen (hides URL bar). Menu layout unchanged. */
+  (function startGateFullscreen(){
+    const root = document.documentElement;
+    const gate = document.getElementById("startGate");
+    const btn = document.getElementById("startGo");
+    const phone = document.getElementById("phone");
+    const doneKey = "tonino_start_gate_v228";
+    function isStandalone(){
+      try{
+        if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return true;
+        if (navigator.standalone) return true;
+      }catch(_){}
+      return false;
+    }
+    function isFs(){
+      return !!(document.fullscreenElement || document.webkitFullscreenElement);
+    }
+    function requestFs(){
+      const el = phone || root;
+      const fn = el.requestFullscreen || el.webkitRequestFullscreen || el.webkitRequestFullScreen;
+      if (!fn) return Promise.resolve(false);
+      const run = (opts) => {
+        try{
+          const ret = opts ? fn.call(el, opts) : fn.call(el);
+          return Promise.resolve(ret).then(() => true).catch(() => false);
+        }catch(_){ return Promise.resolve(false); }
+      };
+      return run({ navigationUI: "hide" }).then((ok) => ok ? true : run());
+    }
+    function unlockMenu(){
+      root.classList.remove("coach-locked");
+      if (gate) gate.classList.remove("show");
+      try { sessionStorage.setItem(doneKey, "1"); } catch(_){}
+      try { updateGeometry(); } catch(_){}
+    }
+    function showGate(){
+      root.classList.add("coach-locked");
+      if (gate) gate.classList.add("show");
+    }
+    function alreadyDone(){
+      try { if (sessionStorage.getItem(doneKey) === "1") return true; } catch(_){}
+      return isStandalone() || isFs();
+    }
+    if (btn) {
+      btn.addEventListener("click", () => {
+        btn.disabled = true;
+        requestFs().finally(() => {
+          unlockMenu();
+          btn.disabled = false;
+          try { updateGeometry(); } catch(_){}
+        });
+      });
+    }
+    const onFs = () => { try { updateGeometry(); } catch(_){} };
+    document.addEventListener("fullscreenchange", onFs);
+    document.addEventListener("webkitfullscreenchange", onFs);
+    if (alreadyDone()) unlockMenu();
+    else showGate();
+  })();
 
   (function init(){
     const info=tableInfo();$("tableTop").textContent=info.label;$("tableFooter").textContent=info.label;
