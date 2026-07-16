@@ -889,7 +889,8 @@ window.TONINO_CONFIG = Object.freeze({
     const onFs = () => { try { updateGeometry(); } catch(_){} };
     document.addEventListener("fullscreenchange", onFs);
     document.addEventListener("webkitfullscreenchange", onFs);
-    if (alreadyDone()) unlockMenu();
+    const isPhone = root.classList.contains("is-phone") || root.classList.contains("is-android");
+    if (!isPhone || alreadyDone()) unlockMenu();
     else showGate();
   })();
 
