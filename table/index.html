@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v232 --><!-- ambient-clear-v232 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v232 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v233 --><!-- order-portal-v233 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v233 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -118,84 +118,130 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   background:#120c07;border:none;pointer-events:none;visibility:visible
 }
 #logoScene,.logo-page{display:none!important;visibility:hidden!important;height:0!important;pointer-events:none!important}
-/* Ambient stage v2 — clear: logo + tea cup + short cue to quick jumps */
+/* Order Portal — cinematic horizontal strip (CSS stand-in for 1080×260 loop) */
 #ambientStage{
   position:absolute;z-index:810;inset:0;overflow:hidden;pointer-events:none;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:clamp(4px,1.2vh,10px);padding:6px 12px 8px;
-  opacity:1;transition:opacity .22s ease;
+  opacity:1;filter:none;transition:opacity .35s ease,filter .35s ease,transform .35s ease;
+  background:#120c07
+}
+#logoBand.has-orders #ambientStage{
+  opacity:.38;filter:blur(2.5px) brightness(.72) saturate(.85)
+}
+#logoBand.orders-full #ambientStage{
+  opacity:.22;filter:blur(3.5px) brightness(.55);
+  animation-play-state:paused
+}
+#logoBand.orders-full #ambientStage *{animation-play-state:paused!important}
+#logoBand.ambient-tiny #ambientStage .portal-tag{font-size:10px}
+.portal-strip{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  overflow:hidden
+}
+.portal-bg{
+  position:absolute;inset:-8% -12%;
   background:
-    radial-gradient(ellipse at 50% 22%,#e0a84555 0%,transparent 55%),
-    linear-gradient(180deg,#1c130b 0%,#2c1c10 50%,#15100a 100%)
+    radial-gradient(ellipse at 30% 40%,#d7982e33 0%,transparent 45%),
+    radial-gradient(ellipse at 78% 55%,#b8df1b14 0%,transparent 40%),
+    linear-gradient(105deg,#1a1008 0%,#3a2414 38%,#2a1a10 62%,#140e08 100%),
+    repeating-linear-gradient(90deg,transparent 0 46px,#ffffff03 46px 47px);
+  animation:portalCam 14s ease-in-out infinite alternate
 }
-#logoBand.has-orders #ambientStage{opacity:0}
-#logoBand.ambient-tiny #ambientStage .amb-hero,
-#logoBand.ambient-tiny #ambientStage .amb-tag{display:none}
-.amb-glow{
-  position:absolute;left:50%;top:18%;width:min(70%,200px);height:56px;
-  transform:translate(-50%,-40%);border-radius:50%;pointer-events:none;
-  background:radial-gradient(ellipse,#ffd36a77 0%,#d7982e28 45%,transparent 72%);
-  animation:ambPulse 3.6s ease-in-out infinite
+.portal-vignette{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,transparent 35%,#0a0604cc 100%);
+  pointer-events:none
 }
-.amb-logo{
-  position:relative;z-index:2;flex:0 0 auto;text-align:center;
-  font-size:clamp(24px,7.2vw,36px);font-weight:1000;letter-spacing:.2em;
-  color:#ffe6ae;text-shadow:0 0 16px #f0b747bb,0 0 32px #d7982e66,0 2px 0 #0009;
-  animation:ambLogoShine 4s ease-in-out infinite
+.portal-stage{
+  position:relative;z-index:2;width:min(96%,420px);height:min(92%,120px);
+  aspect-ratio:1080/260;max-height:100%
 }
-.amb-hero{
-  position:relative;z-index:2;width:min(56%,160px);height:clamp(44px,12vh,72px);
-  flex:0 0 auto
+.portal-table{
+  position:absolute;left:8%;right:8%;bottom:10%;height:22%;border-radius:14px;
+  background:linear-gradient(180deg,#6e4320,#3a2412);
+  border:1px solid #e3aa4544;box-shadow:0 8px 20px #000a
 }
-.amb-tabletop{
-  position:absolute;left:6%;right:6%;bottom:8%;height:18%;border-radius:10px;
-  background:linear-gradient(180deg,#7a4a22,#3f2612);
-  border:1px solid #e3aa4566;box-shadow:0 6px 14px #0008
+.portal-phone{
+  position:absolute;left:14%;bottom:28%;width:18%;height:58%;border-radius:7px;
+  background:linear-gradient(160deg,#2a2218,#12100c);
+  border:1px solid #d7982e77;box-shadow:0 0 14px #d7982e44,0 4px 10px #0008;
+  overflow:hidden
 }
-.amb-plate{
-  position:absolute;left:14%;bottom:22%;width:28%;aspect-ratio:1;
-  border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff8e8,#d8c09a 70%,#b89a62);
-  box-shadow:0 2px 6px #0006;border:1px solid #c9a45a55
+.portal-phone::before{
+  content:"";position:absolute;inset:6% 10% 22%;border-radius:3px;
+  background:linear-gradient(160deg,#3a2a18,#1a120a)
 }
-.amb-plate::after{
-  content:"";position:absolute;inset:22%;border-radius:50%;
-  background:radial-gradient(circle at 45% 40%,#f4e0b0,#c9a45a88)
+.portal-phone::after{
+  content:"+";position:absolute;left:50%;bottom:8%;transform:translateX(-50%);
+  width:42%;height:16%;border-radius:4px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#b8df1b,#8fba12);color:#142006;
+  font-size:clamp(9px,2.8vw,12px);font-weight:1000;line-height:1;
+  animation:portalTap 7s ease-in-out infinite
 }
-.amb-cupbig{
-  position:absolute;right:18%;bottom:24%;width:22%;height:42%;
-  border-radius:4px 4px 8px 8px;
-  background:linear-gradient(180deg,#fff9ef 0%,#f0e0c0 40%,#c9a45a 100%);
-  border:1px solid #e3aa4588;box-shadow:0 3px 8px #0007
+.portal-gleam{
+  position:absolute;left:14%;bottom:28%;width:18%;height:58%;border-radius:7px;
+  background:linear-gradient(105deg,transparent 30%,#ffe9b155 48%,transparent 62%);
+  mix-blend-mode:screen;animation:portalGleam 7s ease-in-out infinite;pointer-events:none
 }
-.amb-cupbig::before{
-  content:"";position:absolute;right:-28%;top:28%;width:34%;height:38%;
-  border:2px solid #e3aa45aa;border-left:0;border-radius:0 10px 10px 0
+.portal-ring{
+  position:absolute;left:42%;bottom:30%;width:22%;aspect-ratio:1;border-radius:50%;
+  border:2px solid #f0c15ecc;box-shadow:0 0 18px #d7982e99,inset 0 0 16px #ffd36a55;
+  animation:portalOpen 7s ease-in-out infinite
 }
-.amb-cupbig::after{
-  content:"";position:absolute;left:12%;right:12%;top:10%;height:28%;
-  border-radius:2px;background:linear-gradient(180deg,#3a2212,#5c3518)
+.portal-ring::before{
+  content:"";position:absolute;inset:-18%;border-radius:50%;
+  border:1px solid #b8df1b33;animation:portalRipple 7s ease-in-out infinite
 }
-.amb-steam{
-  position:absolute;right:26%;bottom:66%;width:4px;height:28%;border-radius:4px;
-  background:linear-gradient(180deg,transparent,#fff8);opacity:.65;
-  animation:ambSteam 2.1s ease-in-out infinite
+.portal-dish{
+  position:absolute;left:46%;bottom:34%;width:14%;aspect-ratio:1;border-radius:50%;
+  background:
+    radial-gradient(circle at 40% 35%,#fff2d0,#e0b86a 55%,#9a6a30),
+    radial-gradient(circle at 60% 60%,#c0392b55,transparent 50%);
+  box-shadow:0 4px 12px #0008,0 0 10px #d7982e55;
+  animation:portalDish 7s ease-in-out infinite;transform-origin:center
 }
-.amb-steam.s2{right:32%;animation-delay:.35s;opacity:.45}
-.amb-tag{
-  position:relative;z-index:2;flex:0 0 auto;margin:0;max-width:96%;
+.portal-dish::after{
+  content:"";position:absolute;left:20%;right:20%;top:-35%;height:40%;border-radius:50%;
+  background:linear-gradient(180deg,#fff6,transparent);opacity:.55;
+  animation:portalSteam 7s ease-in-out infinite
+}
+.portal-tag{
+  position:absolute;z-index:3;left:8%;right:8%;bottom:2%;margin:0;
   text-align:center;direction:rtl;
-  font-size:clamp(11px,3.1vw,13px);font-weight:1000;line-height:1.35;
-  color:#ffe9b1;text-shadow:0 1px 2px #000a
+  font-size:clamp(11px,3.2vw,14px);font-weight:1000;letter-spacing:.04em;
+  color:#ffe9b1;text-shadow:0 0 12px #d7982e88,0 1px 2px #000c;
+  animation:portalTag 7s ease-in-out infinite
 }
-.amb-tag b{color:#d7ff3d;font-weight:1000}
-@keyframes ambPulse{0%,100%{opacity:.5;transform:translate(-50%,-40%) scale(1)}50%{opacity:1;transform:translate(-50%,-40%) scale(1.06)}}
-@keyframes ambLogoShine{0%,100%{filter:brightness(1)}50%{filter:brightness(1.2)}}
-@keyframes ambSteam{0%{transform:translateY(3px);opacity:0}35%{opacity:.7}100%{transform:translateY(-14px);opacity:0}}
+@keyframes portalCam{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(-2.5%,1%,0) scale(1.04)}}
+@keyframes portalTap{
+  0%,12%{transform:translateX(-50%) scale(1)}16%{transform:translateX(-50%) scale(.86)}22%,100%{transform:translateX(-50%) scale(1)}
+}
+@keyframes portalGleam{
+  0%,10%{opacity:0;transform:translateX(-30%)}18%{opacity:.9;transform:translateX(10%)}28%,100%{opacity:0;transform:translateX(40%)}
+}
+@keyframes portalOpen{
+  0%,14%{transform:scale(.15);opacity:0}22%{transform:scale(1.05);opacity:1}38%{transform:scale(1);opacity:1}
+  55%{transform:scale(.2);opacity:.35}70%,100%{transform:scale(.12);opacity:0}
+}
+@keyframes portalRipple{
+  0%,18%{transform:scale(.6);opacity:0}28%{transform:scale(1.15);opacity:.55}45%,100%{transform:scale(1.4);opacity:0}
+}
+@keyframes portalDish{
+  0%,18%{transform:scale(0) translateY(8px);opacity:0}
+  28%{transform:scale(1.08) translateY(-2px);opacity:1}
+  40%{transform:scale(1) translateY(0);opacity:1}
+  58%{transform:scale(.95) translateY(2px);opacity:.85}
+  70%,100%{transform:scale(0) translateY(10px);opacity:0}
+}
+@keyframes portalSteam{
+  0%,25%{opacity:0;transform:translateY(4px)}35%,50%{opacity:.7;transform:translateY(-6px)}65%,100%{opacity:0;transform:translateY(-14px)}
+}
+@keyframes portalTag{
+  0%,45%{opacity:.35;letter-spacing:.02em}55%,78%{opacity:1;letter-spacing:.06em}90%,100%{opacity:.4}
+}
 @media(prefers-reduced-motion:reduce){
-  .amb-glow,.amb-logo,.amb-steam{animation:none!important}
+  .portal-bg,.portal-phone::after,.portal-gleam,.portal-ring,.portal-ring::before,.portal-dish,.portal-dish::after,.portal-tag{animation:none!important}
+  .portal-ring{opacity:.85;transform:scale(1)}.portal-dish{opacity:1;transform:scale(1)}
 }
-#orderCloud{pointer-events:none;inset:0;height:100%;max-height:none}
-#orderCloud.active{pointer-events:auto;z-index:940}
 #logoScene{position:absolute;inset:0;transform-style:preserve-3d;overflow:hidden}
 .logo-page{
   position:absolute;inset:0;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;overflow:hidden;
@@ -220,14 +266,16 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 .logo-page[data-dir="prev"] .logo-edge{right:0;left:auto;transform:scaleX(-1)}
 .logo-page[data-dir="prev"] .logo-shade{background:linear-gradient(-90deg,transparent 35%,#000a 100%)}
 
-/* Selected products — expands into free space above natural menu */
+/* Selected products — expands into free space; translucent so portal lives behind */
 #orderCloud{
   position:absolute;z-index:920;top:0;left:0;right:0;bottom:0;height:100%;max-height:none;overflow-y:auto;overflow-x:hidden;padding:0 4px;
-  background:radial-gradient(circle at 14% 18%,#d49b3423,transparent 34%),linear-gradient(180deg,rgba(24,18,13,.99),rgba(61,41,22,.975));
-  border-bottom:1px solid #e3aa456f;box-shadow:0 6px 19px #000b;opacity:0;pointer-events:none;transition:opacity .13s ease;
-  scrollbar-width:none;overscroll-behavior:contain;touch-action:pan-y
+  background:linear-gradient(180deg,rgba(20,14,10,.78),rgba(40,26,16,.72));
+  border-bottom:1px solid #e3aa456f;box-shadow:0 6px 19px #0008;opacity:0;pointer-events:none;transition:opacity .2s ease,background .25s ease;
+  scrollbar-width:none;overscroll-behavior:contain;touch-action:pan-y;backdrop-filter:blur(1.5px)
 }
-#orderCloud::-webkit-scrollbar{display:none}#orderCloud.active{opacity:1;pointer-events:auto;padding-top:4px;padding-bottom:4px}
+#orderCloud::-webkit-scrollbar{display:none}
+#orderCloud.active{opacity:1;pointer-events:auto;padding-top:4px;padding-bottom:4px}
+#logoBand.orders-full #orderCloud.active{background:linear-gradient(180deg,rgba(18,12,8,.92),rgba(36,22,14,.9))}
 #orderGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;direction:rtl;align-content:start}
 .order{height:28px;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 26px;border:1px solid #e1aa456e;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#503820f4,#281a10f4);box-shadow:0 2px 5px #0008,0 0 0 1px #fff05 inset}
 .order-main{min-width:0;border:0;background:transparent;color:#fff;padding:2px 4px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr 1fr;column-gap:3px;text-align:right;cursor:pointer}
@@ -339,17 +387,19 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   </header>
 
   <section id="logoBand" aria-label="شعار Tonino والطلبات المختارة">
-    <div id="ambientStage" aria-hidden="true">
-      <div class="amb-glow"></div>
-      <div class="amb-logo">TONINO</div>
-      <div class="amb-hero">
-        <div class="amb-tabletop"></div>
-        <div class="amb-plate"></div>
-        <div class="amb-cupbig"></div>
-        <div class="amb-steam"></div>
-        <div class="amb-steam s2"></div>
+    <div id="ambientStage" aria-hidden="true" data-mode="order-portal">
+      <div class="portal-strip">
+        <div class="portal-bg"></div>
+        <div class="portal-vignette"></div>
+        <div class="portal-stage">
+          <div class="portal-table"></div>
+          <div class="portal-phone"></div>
+          <div class="portal-gleam"></div>
+          <div class="portal-ring"></div>
+          <div class="portal-dish"></div>
+          <p class="portal-tag">اختر… اطلب… واسترخِ</p>
+        </div>
       </div>
-      <p class="amb-tag">للشاي والقهوة — اضغط <b>Çay</b> أو <b>Türk Kahvesi</b> أعلاه</p>
     </div>
     <div id="logoScene"></div>
     <div id="orderCloud"><div id="orderGrid"></div></div>
@@ -865,6 +915,9 @@ window.TONINO_CONFIG = Object.freeze({
       band.classList.toggle("has-orders", cart.length > 0);
       const h = band.clientHeight || parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--orders-h")) || 0;
       band.classList.toggle("ambient-tiny", h > 0 && h < 72);
+      /* Pause portal when space is packed (battery + clarity) */
+      const packed = cart.length >= 6 || (cloud.scrollHeight > h + 8 && cart.length >= 3);
+      band.classList.toggle("orders-full", cart.length > 0 && packed);
     }
   }
   function updateBadges() {
