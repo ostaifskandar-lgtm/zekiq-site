@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v228 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v228 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v229 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v229 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -29,7 +29,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
-  --top-h:clamp(42px,5.6dvh,48px);--logo-h:0px;--logo-art-h:0px;--orders-h:0px;--cats-h:clamp(40px,5.5dvh,48px);--footer-h:clamp(36px,5dvh,44px);
+  --top-h:clamp(42px,5.6dvh,48px);--logo-h:0px;--logo-art-h:0px;--orders-h:0px;--quick-h:36px;--cats-h:clamp(40px,5.5dvh,48px);--footer-h:clamp(36px,5dvh,44px);
   --gold:#d7982e;--gold-light:#ffda7d;--paper:#f7eedc;--ink:#1a1108;--lime:#b8df1b;
 }
 html,body{width:100%;height:100%;min-height:100%;overflow:hidden;background:#090604;font-family:Tahoma,"Segoe UI",Arial,sans-serif;overscroll-behavior:none}
@@ -82,6 +82,7 @@ html.is-phone #phone,html.is-android #phone{
 #startGo:active{transform:scale(.98)}
 html.coach-locked #topbar,
 html.coach-locked #logoBand,
+html.coach-locked #quickBand,
 html.coach-locked #categoryBand,
 html.coach-locked #viewer,
 html.coach-locked #footer,
@@ -157,6 +158,26 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 .order-main .quantity{grid-row:1/3;align-self:center;color:#caed38;font-size:9px;font-weight:1000}.order-main .name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px;font-weight:1000}.order-main .price{font-size:8px;color:#f4c96e}
 .order-action{border:0;border-right:1px solid #e0aa4538;background:#ffffff08;color:#ffd46c;font-size:15px;font-weight:1000;cursor:pointer}.order-action.trash{font-size:12px}.order-action:active{background:#c78922;color:#171008}
 
+/* Quick jumps ABOVE categories — tea/coffee guests skip flipping */
+#quickBand{
+  position:absolute;z-index:965;left:0;right:0;height:var(--quick-h);top:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 6px;background:#120c07;border:0;border-bottom:1px solid #d7982e55;
+  pointer-events:auto;direction:rtl
+}
+#quickRow{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;gap:6px;
+  overflow-x:auto;scrollbar-width:none;touch-action:pan-x
+}
+#quickRow::-webkit-scrollbar{display:none}
+.quick-jump{
+  flex:0 0 auto;min-height:28px;padding:0 11px;border:1px solid #e3aa4566;border-radius:999px;
+  background:linear-gradient(180deg,#3a2816,#24180e);color:#ffe9b1;
+  font-size:clamp(11px,3.1vw,13px);font-weight:1000;white-space:nowrap;cursor:pointer
+}
+.quick-jump.active{border-color:#b8df1b;background:linear-gradient(180deg,#4a3518,#2c1e10);color:#d7ff3d;box-shadow:0 0 0 1px #b8df1b44 inset}
+.quick-jump:active{transform:scale(.97)}
+
 /* Category strip ABOVE the menu (own row) — never covers menu art */
 #categoryBand{
   position:absolute;z-index:960;left:0;right:0;height:var(--cats-h);top:0;
@@ -213,13 +234,13 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 #variantSheet:not(.show){visibility:hidden;pointer-events:none}#variantSheet{position:absolute;z-index:1100;left:6px;right:6px;bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);padding:15px;border:1px solid #d99a34;border-radius:20px;background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1)}#variantSheet.show{transform:translateY(0)}#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.variant{min-height:42px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:11px;font-weight:1000;cursor:pointer}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
 
 @media(max-width:350px){
-  :root{--top-h:43px;--cats-h:46px;--footer-h:40px}
+  :root{--top-h:43px;--quick-h:34px;--cats-h:46px;--footer-h:40px}
   #topbar{grid-template-columns:72px minmax(0,1fr) 91px;gap:4px;padding-left:4px;padding-right:4px}.top-button{min-height:30px}
   .order{height:26px;grid-template-columns:minmax(0,1fr) 24px}.order-main .price{display:none}.hotspot{width:42px;height:42px}
   #footer{grid-template-columns:48px 1fr 66px}.footer-side{font-size:10px}#hint{font-size:11px}
 }
 @media(orientation:landscape) and (max-height:520px){
-  :root{--top-h:40px;--cats-h:42px;--footer-h:36px}
+  :root{--top-h:40px;--quick-h:32px;--cats-h:42px;--footer-h:36px}
   #topbar{grid-template-columns:70px minmax(0,1fr) 90px}.top-button{min-height:28px}#titleBox small{display:none}.category{font-size:8px}.order{height:25px}.order-main .price{display:none}
 }
 @media(prefers-reduced-motion:reduce){#viewer::before{animation:none}.logo-page,.menu-page,#toast,#variantSheet{transition-duration:.01ms!important}}
@@ -245,6 +266,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
     <div id="orderCloud"><div id="orderGrid"></div></div>
   </section>
 
+  <nav id="quickBand" aria-label="اختصارات سريعة"><div id="quickRow"></div></nav>
   <nav id="categoryBand" aria-label="عنوان الصفحة والمجموعات"><div id="categories"></div></nav>
 
   <main id="viewer" aria-label="صفحات المنيو"><div id="menuScene"></div></main>
@@ -400,16 +422,25 @@ window.TONINO_CONFIG = Object.freeze({
     const raw = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--cats-h"));
     return Number.isFinite(raw) && raw > 0 ? Math.round(raw) : 48;
   }
+  function quickBandHeight() {
+    const band = $("quickBand");
+    if (band && band.offsetHeight > 0) return band.offsetHeight;
+    const raw = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--quick-h"));
+    return Number.isFinite(raw) && raw > 0 ? Math.round(raw) : 36;
+  }
+  function chromeAboveMenuHeight() {
+    return categoryBandHeight() + quickBandHeight();
+  }
   function applyOrdersSpace(menuHeight) {
     const phone = $("phone");
     if (!phone) return;
     const topH = $("topbar")?.offsetHeight || 0;
     const footerH = $("footer")?.offsetHeight || 0;
-    const catsH = categoryBandHeight();
+    const chromeH = chromeAboveMenuHeight();
     const viewerH = Math.max(0, phone.clientHeight - topH - footerH);
     const free = Math.max(0, viewerH - Math.max(0, menuHeight | 0));
-    /* Reserve categories ABOVE menu; leftover goes to selected orders */
-    const ordersH = Math.max(0, free - catsH);
+    /* Reserve quick + categories ABOVE menu; leftover goes to selected orders */
+    const ordersH = Math.max(0, free - chromeH);
     document.documentElement.style.setProperty("--orders-h", ordersH + "px");
     document.documentElement.style.setProperty("--logo-art-h", "0px");
     document.documentElement.style.setProperty("--logo-h", "0px");
@@ -422,21 +453,25 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function placeCategoryBand() {
     const band = $("categoryBand");
+    const quick = $("quickBand");
     const phone = $("phone");
     if (!band || !phone) return;
     const phoneRect = phone.getBoundingClientRect();
     const topbarBottom = Math.round(($("topbar")?.getBoundingClientRect().bottom || 0) - phoneRect.top);
     const catsH = categoryBandHeight();
+    const quickH = quickBandHeight();
+    const chromeH = catsH + quickH;
     const paper = (currentMenu && currentMenu.querySelector(".paper")) || null;
-    let menuTop = topbarBottom + catsH;
+    let menuTop = topbarBottom + chromeH;
     if (paper) {
       const paperRect = paper.getBoundingClientRect();
       if (paperRect.height > 2) {
         menuTop = Math.round(paperRect.top - phoneRect.top);
       }
     }
-    /* Sit immediately ABOVE the menu — never overlap menu pixels */
+    /* Categories flush above menu; quick jumps flush above categories — never on menu art */
     band.style.top = `${Math.max(topbarBottom, menuTop - catsH)}px`;
+    if (quick) quick.style.top = `${Math.max(topbarBottom, menuTop - chromeH)}px`;
   }
   function fitMenuPage(layer, index) {
     if (!layer) return;
@@ -647,6 +682,33 @@ window.TONINO_CONFIG = Object.freeze({
   const next = () => goTo(currentIndex+1,1);
   const previous = () => goTo(currentIndex-1,-1);
 
+  function findCategoryIndex(name) {
+    const want = String(name || "").trim().toLowerCase();
+    if (!want) return -1;
+    return CATEGORIES.findIndex(c => String(c).trim().toLowerCase() === want);
+  }
+  function buildQuickJumps() {
+    const host = $("quickRow");
+    if (!host || host.dataset.ready === "1") return;
+    const jumps = [
+      { label: "Çay", match: "Çay" },
+      { label: "Türk Kahvesi", match: "Sıcak Kahve" },
+      { label: "Su", match: "Soğuk İçecekler" },
+      { label: "Tatlı", match: "Tatlılar" },
+    ];
+    jumps.forEach(j => {
+      const page = findCategoryIndex(j.match);
+      if (page < 0) return;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "quick-jump";
+      button.textContent = j.label;
+      button.dataset.page = String(page);
+      button.addEventListener("click", () => goTo(page));
+      host.appendChild(button);
+    });
+    host.dataset.ready = "1";
+  }
   function buildCategories() {
     const host = $("categories");
     CATEGORIES.forEach((name,index) => {
@@ -654,6 +716,7 @@ window.TONINO_CONFIG = Object.freeze({
       button.type="button"; button.className="category"; button.textContent=name;
       button.addEventListener("click",()=>goTo(index)); host.appendChild(button);
     });
+    buildQuickJumps();
   }
   function syncNavigation() {
     const titleEl = $("currentTitle");
@@ -667,6 +730,9 @@ window.TONINO_CONFIG = Object.freeze({
       const left = active.offsetLeft - (host.clientWidth / 2) + (active.clientWidth / 2);
       host.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
     }
+    document.querySelectorAll(".quick-jump").forEach(btn => {
+      btn.classList.toggle("active", Number(btn.dataset.page) === currentIndex);
+    });
     placeCategoryBand();
   }
   function preloadNeighbors() {
