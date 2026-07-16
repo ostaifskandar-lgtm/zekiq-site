@@ -8,31 +8,47 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- immersive-bleed-v225 --><!-- fill-screen-v224 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v225 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v226 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v226 -->
+<script>
+/* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
+(function(){try{
+  var ua=navigator.userAgent||"";
+  var android=/Android/i.test(ua);
+  var mobile=/Android|iPhone|iPad|iPod|Mobile|SamsungBrowser/i.test(ua);
+  var coarse=false;try{coarse=!!(window.matchMedia&&window.matchMedia("(any-pointer:coarse)").matches);}catch(e){}
+  var shortSide=Math.min(screen.width||0,screen.height||0);
+  var touch=(navigator.maxTouchPoints>0)&&shortSide>0&&shortSide<=1100;
+  if(android||mobile||coarse||touch){
+    document.documentElement.classList.add("is-phone");
+    if(android||/SamsungBrowser/i.test(ua)||coarse)document.documentElement.classList.add("is-android");
+  }
+}catch(e){}})();
+</script>
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
-  --top-h:clamp(42px,5.6dvh,48px);--logo-h:0px;--logo-art-h:0px;--cats-h:clamp(40px,5.5dvh,48px);--footer-h:clamp(36px,5dvh,44px);
+  --top-h:clamp(42px,5.6dvh,48px);--logo-h:0px;--logo-art-h:0px;--orders-h:0px;--cats-h:clamp(40px,5.5dvh,48px);--footer-h:clamp(36px,5dvh,44px);
   --gold:#d7982e;--gold-light:#ffda7d;--paper:#f7eedc;--ink:#1a1108;--lime:#b8df1b;
 }
-html,body{width:100%;height:100%;min-height:100%;overflow:hidden;background:#000;font-family:Tahoma,"Segoe UI",Arial,sans-serif;overscroll-behavior:none}
+html,body{width:100%;height:100%;min-height:100%;overflow:hidden;background:#090604;font-family:Tahoma,"Segoe UI",Arial,sans-serif;overscroll-behavior:none}
 html{height:-webkit-fill-available}
 body{
   min-height:100vh;min-height:100dvh;min-height:-webkit-fill-available;
-  height:var(--app-height,100dvh);width:100%;display:block;color:#fff;padding:0;margin:0;background:#000
+  height:var(--app-height,100dvh);width:100%;display:block;color:#fff;padding:0;margin:0;background:#090604
 }
 button{font:inherit}
-/* True full-bleed phone surface */
+/* Always full phone viewport — never desktop bezel / never framed card */
 #phone{
   position:fixed!important;inset:0!important;width:100%!important;max-width:none!important;
-  height:var(--app-height,100%)!important;min-height:100%!important;
-  overflow:hidden;isolation:isolate;background:#000;container-type:inline-size;
+  height:var(--app-height,100dvh)!important;min-height:100%!important;
+  overflow:hidden;isolation:isolate;background:#1b1005;container-type:inline-size;
   border:0!important;border-radius:0!important;box-shadow:none!important
 }
-html:fullscreen #phone,html:-webkit-full-screen #phone,#phone:fullscreen,#phone:-webkit-full-screen{
-  width:100vw!important;height:100vh!important;height:100dvh!important;inset:0!important
+html.is-phone #phone,html.is-android #phone{
+  width:100%!important;max-width:none!important;height:var(--app-height,100dvh)!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important
 }
 #fsHint{display:none!important}
 
@@ -40,7 +56,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone,#phone:fullscreen,#phone:
 #topbar{
   position:absolute;z-index:1000;top:0;left:0;right:0;height:calc(var(--top-h) + var(--safe-top));padding:var(--safe-top) 6px 0;
   display:grid;grid-template-columns:minmax(72px,88px) minmax(0,1fr) minmax(92px,110px);gap:5px;align-items:center;direction:ltr;
-  background:linear-gradient(180deg,#000e,#0009 70%,transparent);border-bottom:0;box-shadow:none
+  background:linear-gradient(180deg,#30241b,#17100a);border-bottom:1px solid #b77a25;box-shadow:0 4px 15px #000b
 }
 .top-button{height:calc(var(--top-h) - 11px);min-height:31px;border:1px solid #e8b34f99;border-radius:14px;font-weight:1000;cursor:pointer;white-space:nowrap;min-width:0}
 #sendButton{background:linear-gradient(145deg,#a9670c,#f0b747);color:#181006;font-size:12px;font-size:clamp(10px,3vw,12px);box-shadow:0 3px 10px #0007}
@@ -52,13 +68,14 @@ html:fullscreen #phone,html:-webkit-full-screen #phone,#phone:fullscreen,#phone:
 #titleBox small,#tableTop{display:block;margin-top:0;font-size:10px;font-size:clamp(8px,2.6vw,10px);color:#cdb27a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 
-/* 2 — logo area. Logo and menu flip together, but this overlay remains fixed. */
+/* 2 — orders band: uses leftover phone height ABOVE natural menu (not menu zoom) */
 #logoBand{
-  position:absolute;z-index:800;top:calc(var(--top-h) + var(--safe-top));left:0;right:0;height:0!important;min-height:0!important;overflow:visible;
+  position:absolute;z-index:800;top:calc(var(--top-h) + var(--safe-top));left:0;right:0;
+  height:var(--orders-h,0px);min-height:0;overflow:hidden;
   background:transparent;border:none;pointer-events:none;visibility:visible
 }
 #logoScene,.logo-page{display:none!important;visibility:hidden!important;height:0!important;pointer-events:none!important}
-#orderCloud{pointer-events:none}
+#orderCloud{pointer-events:none;inset:0;height:100%;max-height:none}
 #orderCloud.active{pointer-events:auto;z-index:940}
 #logoScene{position:absolute;inset:0;transform-style:preserve-3d;overflow:hidden}
 .logo-page{
@@ -84,11 +101,11 @@ html:fullscreen #phone,html:-webkit-full-screen #phone,#phone:fullscreen,#phone:
 .logo-page[data-dir="prev"] .logo-edge{right:0;left:auto;transform:scaleX(-1)}
 .logo-page[data-dir="prev"] .logo-shade{background:linear-gradient(-90deg,transparent 35%,#000a 100%)}
 
-/* Selected products descend over the logo only. Two products per row. */
+/* Selected products — expands into free space above natural menu */
 #orderCloud{
-  position:absolute;z-index:920;top:0;left:0;right:0;height:0;max-height:72px;overflow-y:auto;overflow-x:hidden;padding:0 4px;
+  position:absolute;z-index:920;top:0;left:0;right:0;bottom:0;height:100%;max-height:none;overflow-y:auto;overflow-x:hidden;padding:0 4px;
   background:radial-gradient(circle at 14% 18%,#d49b3423,transparent 34%),linear-gradient(180deg,rgba(24,18,13,.99),rgba(61,41,22,.975));
-  border-bottom:1px solid #e3aa456f;box-shadow:0 6px 19px #000b;opacity:0;pointer-events:none;transition:height .18s ease,opacity .13s ease;
+  border-bottom:1px solid #e3aa456f;box-shadow:0 6px 19px #000b;opacity:0;pointer-events:none;transition:opacity .13s ease;
   scrollbar-width:none;overscroll-behavior:contain;touch-action:pan-y
 }
 #orderCloud::-webkit-scrollbar{display:none}#orderCloud.active{opacity:1;pointer-events:auto;padding-top:4px;padding-bottom:4px}
@@ -98,10 +115,9 @@ html:fullscreen #phone,html:-webkit-full-screen #phone,#phone:fullscreen,#phone:
 .order-main .quantity{grid-row:1/3;align-self:center;color:#caed38;font-size:9px;font-weight:1000}.order-main .name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px;font-weight:1000}.order-main .price{font-size:8px;color:#f4c96e}
 .order-action{border:0;border-right:1px solid #e0aa4538;background:#ffffff08;color:#ffd46c;font-size:15px;font-weight:1000;cursor:pointer}.order-action.trash{font-size:12px}.order-action:active{background:#c78922;color:#171008}
 
-/* Category strip overlays the menu (does not push it down) */
+/* Category strip sits flush on the natural menu top (JS sets top) */
 #categoryBand{
-  position:absolute;z-index:960;left:0;right:0;height:var(--cats-h);
-  top:calc(var(--top-h) + var(--safe-top));
+  position:absolute;z-index:960;left:0;right:0;height:var(--cats-h);top:0;
   display:flex;align-items:center;justify-content:center;
   background:#000000bb;
   border:0;border-bottom:2px solid #b8df1b;
@@ -125,18 +141,18 @@ html:fullscreen #phone,html:-webkit-full-screen #phone,#phone:fullscreen,#phone:
   text-shadow:0 1px 0 #0007
 }
 
-/* 4 — MENU owns the entire phone. Bars float ON TOP — they do not shrink the menu. */
+/* 4 — NATURAL menu size (full width, correct aspect). Pinned to bottom. No zoom/stretch. */
 #viewer{
-  position:absolute;z-index:1;inset:0!important;top:0!important;right:0!important;bottom:0!important;left:0!important;
-  overflow:hidden;perspective:1500px;background:#000;touch-action:none
+  position:absolute;z-index:1;top:calc(var(--top-h) + var(--safe-top));bottom:calc(var(--footer-h) + var(--safe-bottom));left:0;right:0;
+  overflow:hidden;perspective:1500px;background:#1b1005;touch-action:none
 }
-#viewer::before{display:none}
+#viewer::before{content:"";position:absolute;inset:-25%;pointer-events:none;background:radial-gradient(circle at 15% 20%,#f2b43c22 0 1px,transparent 2px),radial-gradient(circle at 75% 55%,#badc3218 0 1px,transparent 2px),radial-gradient(ellipse at center,#9b5c182d,transparent 65%);background-size:83px 91px,108px 101px,100% 100%;animation:stars 22s linear infinite}@keyframes stars{to{transform:translate3d(34px,-28px,0)}}
 #menuScene{position:absolute;inset:0;transform-style:preserve-3d;overflow:hidden}
-.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none;display:block}
+.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch}
 .menu-page::-webkit-scrollbar{display:none}.menu-page.under{filter:saturate(.97);transform:scale(.988);opacity:.83}
-.ambient{position:absolute;inset:0;z-index:0;background-position:center;background-size:cover;filter:blur(28px) saturate(.85) brightness(.35);transform:scale(1.08);opacity:.55;pointer-events:none}.ambient::after{content:"";position:absolute;inset:0;background:#0006}
-.paper{position:absolute;inset:0;z-index:1;width:100%!important;height:100%!important;margin:0;background:#000;overflow:hidden;box-shadow:none;transform-style:preserve-3d}
-.paper img{display:block;width:100%!important;height:100%!important;object-fit:fill;object-position:center center;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#000}
+.ambient{position:absolute;inset:0;z-index:0;background-position:center bottom;background-size:cover;filter:blur(28px) saturate(.85) brightness(.4);transform:scale(1.12);opacity:.7;pointer-events:none}.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 20%,#160c04aa 90%)}
+.paper{position:relative;z-index:1;width:100%;height:auto;margin:0;margin-top:auto;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:0 0 auto}
+.paper img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
 .page-edge{position:absolute;z-index:20;top:0;bottom:0;width:12px;opacity:0;pointer-events:none;background:linear-gradient(90deg,#fff1ad,#da952e66,transparent);box-shadow:0 0 27px #ffd96c}
 .page-shade{position:absolute;z-index:19;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent 42%,#000b 100%)}
 .menu-page[data-dir="prev"] .page-edge{right:0;left:auto;transform:scaleX(-1)}.menu-page[data-dir="prev"] .page-shade{background:linear-gradient(-90deg,transparent 42%,#000b 100%)}
@@ -145,7 +161,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone,#phone:fullscreen,#phone:
 .qty-badge{position:absolute;top:-2px;right:-2px;min-width:15px;height:15px;padding:0 3px;border-radius:9px;display:none;place-items:center;background:#d62e39;color:#fff;border:1px solid #fff;font-size:8px;font-weight:1000;box-shadow:0 2px 4px #0007}.hotspot.has-qty .qty-badge{display:grid}
 
 /* 5 — clear fixed footer guidance */
-#footer{position:absolute;z-index:950;left:0;right:0;bottom:0;height:calc(var(--footer-h) + var(--safe-bottom));padding:0 6px var(--safe-bottom);display:grid;grid-template-columns:56px 1fr 72px;gap:4px;align-items:center;direction:ltr;background:linear-gradient(0deg,#000e,#0009 70%,transparent);border-top:0;color:#ffe9b1;box-shadow:none}
+#footer{position:absolute;z-index:950;left:0;right:0;bottom:0;height:calc(var(--footer-h) + var(--safe-bottom));padding:0 6px var(--safe-bottom);display:grid;grid-template-columns:56px 1fr 72px;gap:4px;align-items:center;direction:ltr;background:linear-gradient(180deg,#2a1c10,#17100a);border-top:2px solid #d7982e;color:#ffe9b1;box-shadow:0 -6px 18px #000a}
 .footer-side{font-size:11px;font-weight:1000;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ffda7d}#pageNumber{color:#ffda7d}#tableFooter{direction:rtl;color:#ffe9b1}
 #hint{text-align:center;direction:rtl;font-size:12px;font-weight:1000;line-height:1.25;white-space:normal;overflow:visible;color:#fff6df}#hint em{font-style:normal;color:#b8df1b;letter-spacing:1.5px;font-size:13px}
 #toast{position:absolute;z-index:1200;left:50%;bottom:calc(var(--footer-h) + var(--safe-bottom) + 8px);transform:translate(-50%,58px);opacity:0;max-width:92%;padding:8px 13px;border-radius:12px;background:linear-gradient(135deg,#1f7f32,#31a347);color:#fff;font-size:10px;font-weight:1000;box-shadow:0 6px 24px #0009;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:.22s}#toast.show{transform:translate(-50%,0);opacity:1}
@@ -170,7 +186,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone,#phone:fullscreen,#phone:
 #categoryBand + #viewer{margin:0;padding:0}
 #viewer,#menuScene,.menu-page,.paper{border:0;border-radius:0}
 #categoryBand{border:0;border-bottom:2px solid #b8df1b!important;border-radius:0}
-#viewer{background:#000}
+#viewer{background:#684108}
 
 </style>
 </head>
@@ -322,36 +338,45 @@ window.TONINO_CONFIG = Object.freeze({
   function saveCart() { try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(cart)); } catch (_) {} }
   function pageSource(index) { return PAGES[index]; }
 
-  function updateGeometry() {
+  function menuNaturalHeight(img, phoneWidth) {
+    const w = Math.max(1, phoneWidth || 1);
+    if (img && img.naturalWidth > 0 && img.naturalHeight > 0) {
+      return Math.round(w * (img.naturalHeight / img.naturalWidth));
+    }
+    return 0;
+  }
+  function applyOrdersSpace(menuHeight) {
     const phone = $("phone");
-    const phoneWidth = phone.clientWidth;
-    const phoneHeight = phone.clientHeight;
-    const artworkHeight = Math.ceil(phoneWidth * LOGO_RATIO);
-
-    // Allocate every surplus vertical pixel above the fixed category bar.
-    // The menu itself is therefore never vertically centered and never leaves
-    // a gap below the categories, in the middle, or above the footer.
-    const topHeight = $("topbar").offsetHeight;
-    const categoryHeight = $("categoryBand").offsetHeight;
-    const footerHeight = $("footer").offsetHeight;
-    // Keep logo strip at artwork ratio; menu fills remaining height (no vertical scroll).
-    void phoneWidth; void topHeight; void categoryHeight; void footerHeight; void phoneHeight;
+    if (!phone) return;
+    const topH = $("topbar")?.offsetHeight || 0;
+    const footerH = $("footer")?.offsetHeight || 0;
+    const viewerH = Math.max(0, phone.clientHeight - topH - footerH);
+    const free = Math.max(0, viewerH - Math.max(0, menuHeight | 0));
+    document.documentElement.style.setProperty("--orders-h", free + "px");
     document.documentElement.style.setProperty("--logo-art-h", "0px");
     document.documentElement.style.setProperty("--logo-h", "0px");
-
+  }
+  function updateGeometry() {
     fitMenuPage(currentMenu, currentIndex);
     if (underMenu) fitMenuPage(underMenu, Number(underMenu.dataset.page));
     renderCart();
     exposeLayoutDiagnostics();
-    placeCategoryBand();
   }
   function placeCategoryBand() {
     const band = $("categoryBand");
     const phone = $("phone");
     if (!band || !phone) return;
     const phoneRect = phone.getBoundingClientRect();
-    const minTop = Math.round(($("topbar")?.getBoundingClientRect().bottom || 0) - phoneRect.top);
-    band.style.top = `${Math.max(0, minTop)}px`;
+    const topbarBottom = Math.round(($("topbar")?.getBoundingClientRect().bottom || 0) - phoneRect.top);
+    const paper = (currentMenu && currentMenu.querySelector(".paper")) || null;
+    let menuTop = topbarBottom;
+    if (paper) {
+      const paperRect = paper.getBoundingClientRect();
+      if (paperRect.height > 2) {
+        menuTop = Math.round(paperRect.top - phoneRect.top);
+      }
+    }
+    band.style.top = `${Math.max(topbarBottom, menuTop)}px`;
   }
   function fitMenuPage(layer, index) {
     if (!layer) return;
@@ -359,23 +384,33 @@ window.TONINO_CONFIG = Object.freeze({
     const paper = layer.querySelector(".paper");
     const img = paper && paper.querySelector("img");
     if (!paper || !phone) return;
-    const h = Math.max(1, phone.clientHeight || window.innerHeight);
-    const w = Math.max(1, phone.clientWidth || window.innerWidth);
-    paper.style.inset = "0";
-    paper.style.width = w + "px";
-    paper.style.height = h + "px";
+    /* Natural menu: full width + correct aspect. Never stretch/zoom/fill. */
+    paper.style.inset = "";
+    paper.style.top = "";
+    paper.style.left = "";
+    paper.style.right = "";
+    paper.style.bottom = "";
+    paper.style.width = "100%";
+    paper.style.height = "auto";
+    paper.style.maxHeight = "none";
     if (img) {
       img.style.width = "100%";
-      img.style.height = "100%";
-      img.style.objectFit = "fill";
-      img.style.objectPosition = "center center";
+      img.style.height = "auto";
+      img.style.maxHeight = "none";
+      img.style.objectFit = "contain";
+      img.style.objectPosition = "center bottom";
     }
     layer.style.paddingTop = "0px";
     layer.style.paddingBottom = "0px";
     layer.scrollTop = 0;
-    if (img && img.complete) placeCategoryBand();
-    else if (img) img.addEventListener("load", placeCategoryBand, { once: true });
-    else placeCategoryBand();
+    const sync = () => {
+      const menuH = menuNaturalHeight(img, phone.clientWidth) || (paper.offsetHeight | 0);
+      if (layer === currentMenu || !currentMenu) applyOrdersSpace(menuH);
+      placeCategoryBand();
+    };
+    if (img && img.complete && img.naturalWidth) sync();
+    else if (img) img.addEventListener("load", sync, { once: true });
+    else sync();
   }
   function exposeLayoutDiagnostics() {
     const categoryRect = $("categoryBand").getBoundingClientRect();
@@ -593,9 +628,9 @@ window.TONINO_CONFIG = Object.freeze({
     $("cartCount").textContent=count; $("cartTotal").textContent=money(total);
     $("orderGrid").innerHTML=cart.map(item=>`<div class="order"><button class="order-main" type="button" data-page="${item.page}"><span class="quantity">${item.qty}×</span><span class="name">${escapeHtml(item.name)}</span><span class="price">${money(item.qty*item.price)}</span></button><button class="order-action ${item.qty===1?'trash':''}" type="button" data-key="${encodeURIComponent(itemKey(item))}" aria-label="${item.qty>1?'إنقاص':'حذف'} ${escapeHtml(item.name)}">${item.qty>1?'−':'🗑'}</button></div>`).join("");
     const cloud=$("orderCloud"); cloud.classList.toggle("active",cart.length>0);
-    if(!cart.length){cloud.style.height="0px";return;}
-    const rowHeight=$("phone").clientWidth<=350?26:28, rows=Math.ceil(cart.length/2), desired=8+rows*rowHeight+Math.max(0,rows-1)*3;
-    cloud.style.height=`${Math.min(72, desired)}px`;
+    /* Fill leftover space above natural menu (--orders-h). Do not cap at 72px. */
+    cloud.style.height = cart.length ? "100%" : "0px";
+    cloud.style.maxHeight = "none";
   }
   function updateBadges() {
     document.querySelectorAll(".hotspot").forEach(button=>{
@@ -740,20 +775,7 @@ window.TONINO_CONFIG = Object.freeze({
     if (window.visualViewport) visualViewport.addEventListener("resize", apply, {passive:true});
   })();
 
-  (function phoneFullscreen(){
-    const root = document.documentElement;
-    const phone = document.getElementById("phone");
-    const req = (el) => {
-      const fn = el && (el.requestFullscreen || el.webkitRequestFullscreen || el.webkitRequestFullScreen);
-      if (!fn) return Promise.reject();
-      return Promise.resolve(fn.call(el));
-    };
-    const enter = () => req(phone || root).catch(() => req(root)).catch(() => {});
-    const onFs = () => { try { updateGeometry(); } catch (_) {} };
-    document.addEventListener("fullscreenchange", onFs);
-    document.addEventListener("webkitfullscreenchange", onFs);
-    document.addEventListener("pointerdown", () => { enter().then(onFs); }, {passive:true, once:true});
-  })();
+  /* No requestFullscreen — inconsistent across Android. Edge-to-edge via CSS + --app-height. */
 
   (function init(){
     const info=tableInfo();$("tableTop").textContent=info.label;$("tableFooter").textContent=info.label;
