@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- menu-bottom-v216 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- no-crop-v222 --><!-- no-zoom-contain-v222 --><!-- natural-width-v223 --><!-- fullscreen-touch-v220 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v223 -->
+<title>Tonino QR Menu</title><!-- menu-bottom-v216 --><!-- cats-as-title-v210 --><!-- fill-screen-v224 --><!-- no-crop-page-v224 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v224 -->
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -24,13 +24,22 @@ body{
   height:var(--app-height,100dvh);width:100%;display:block;color:#fff;padding:0;margin:0
 }
 button{font:inherit}
-/* Edge-to-edge phone chrome — no fake bezel */
+/* Edge-to-edge — true phone viewport, no bezel frame */
 #phone{
   position:fixed!important;inset:0!important;width:100%!important;max-width:none!important;
   height:var(--app-height,100dvh)!important;min-height:100%!important;
   overflow:hidden;isolation:isolate;background:#1b1005;container-type:inline-size;
   border:0!important;border-radius:0!important;box-shadow:none!important
 }
+#fsHint{
+  position:absolute;z-index:1300;left:50%;top:50%;transform:translate(-50%,-50%);
+  max-width:86%;padding:14px 16px;border-radius:16px;border:1px solid #e8b34f99;
+  background:linear-gradient(160deg,#21170ff2,#3b2716f2);color:#ffe9b1;text-align:center;
+  font-size:13px;font-weight:1000;box-shadow:0 12px 40px #000c;display:none
+}
+#fsHint.show{display:block}
+#fsHint b{display:block;color:#b8df1b;margin-bottom:6px;font-size:15px}
+#fsHint button{margin-top:10px;width:100%;height:42px;border:0;border-radius:12px;background:linear-gradient(145deg,#a9670c,#f0b747);color:#181006;font-weight:1000;cursor:pointer}
 
 /* 1 — compact fixed command bar */
 #topbar{
@@ -121,19 +130,18 @@ button{font:inherit}
   text-shadow:0 1px 0 #0007
 }
 
-/* 4 — the menu occupies the lower section only. */
+/* 4 — menu fills phone area: full page visible (no crop), stretched to viewport */
 #viewer{
   position:absolute;z-index:1;top:calc(var(--top-h) + var(--safe-top));bottom:calc(var(--footer-h) + var(--safe-bottom));left:0;right:0;
   overflow:hidden;perspective:1500px;background:#1b1005;touch-action:none
 }
 #viewer::before{content:"";position:absolute;inset:-25%;pointer-events:none;background:radial-gradient(circle at 15% 20%,#f2b43c22 0 1px,transparent 2px),radial-gradient(circle at 75% 55%,#badc3218 0 1px,transparent 2px),radial-gradient(ellipse at center,#9b5c182d,transparent 65%);background-size:83px 91px,108px 101px,100% 100%;animation:stars 22s linear infinite}@keyframes stars{to{transform:translate3d(34px,-28px,0)}}
 #menuScene{position:absolute;inset:0;transform-style:preserve-3d;overflow:hidden}
-.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch}
+.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none;display:flex;flex-direction:column;justify-content:stretch;align-items:stretch}
 .menu-page::-webkit-scrollbar{display:none}.menu-page.under{filter:saturate(.97);transform:scale(.988);opacity:.83}
-.ambient{position:fixed;inset:-28px;z-index:-2;background-position:center;background-size:cover;filter:blur(29px) saturate(.85) brightness(.54);transform:scale(1.13);opacity:.88;pointer-events:none}.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 8%,#160c04b5 88%)}
-/* Natural size at full phone WIDTH — no zoom, no crop, no fake tall box */
-.paper{position:relative;width:100%;height:auto;margin:0;margin-top:auto;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:0 0 auto}
-.paper img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
+.ambient{position:absolute;inset:0;z-index:0;background-position:center;background-size:cover;filter:blur(28px) saturate(.85) brightness(.4);transform:scale(1.12);opacity:.75;pointer-events:none}.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 20%,#160c04aa 90%)}
+.paper{position:relative;z-index:1;width:100%;height:100%;margin:0;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:1 1 auto}
+.paper img{display:block;width:100%;height:100%;object-fit:fill;object-position:center center;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
 .page-edge{position:absolute;z-index:20;top:0;bottom:0;width:12px;opacity:0;pointer-events:none;background:linear-gradient(90deg,#fff1ad,#da952e66,transparent);box-shadow:0 0 27px #ffd96c}
 .page-shade{position:absolute;z-index:19;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent 42%,#000b 100%)}
 .menu-page[data-dir="prev"] .page-edge{right:0;left:auto;transform:scaleX(-1)}.menu-page[data-dir="prev"] .page-shade{background:linear-gradient(-90deg,transparent 42%,#000b 100%)}
@@ -167,7 +175,7 @@ button{font:inherit}
 #categoryBand + #viewer{margin:0;padding:0}
 #viewer,#menuScene,.menu-page,.paper{border:0;border-radius:0}
 #categoryBand{border:0;border-bottom:2px solid #b8df1b!important;border-radius:0}
-#viewer{background:#684108}
+#viewer{background:#1b1005}
 
 </style>
 </head>
@@ -199,6 +207,11 @@ button{font:inherit}
     <h3>اختر نكهة الآيس كريم</h3><div id="variantGrid"></div><button id="closeVariants" type="button">إغلاق</button>
   </section>
   <div id="toast" role="status" aria-live="polite"></div>
+  <div id="fsHint" role="dialog" aria-label="ملء الشاشة">
+    <b>ملء الشاشة</b>
+    اضغط للعرض على كامل شاشة الهاتف
+    <button type="button" id="fsGo">متابعة بكامل الشاشة</button>
+  </div>
 </div>
 <script>
 window.TONINO_CONFIG = Object.freeze({
@@ -340,27 +353,32 @@ window.TONINO_CONFIG = Object.freeze({
   function placeCategoryBand() {
     const band = $("categoryBand");
     const phone = $("phone");
-    const paper = currentMenu && currentMenu.querySelector(".paper");
-    if (!band || !phone || !paper) return;
+    if (!band || !phone) return;
     const phoneRect = phone.getBoundingClientRect();
-    const paperRect = paper.getBoundingClientRect();
-    /* Paper matches image (width 100%, height auto) — strip sits flush on menu top */
-    const bandH = band.offsetHeight || 48;
-    const top = Math.round(paperRect.top - phoneRect.top - bandH);
     const minTop = Math.round(($("topbar")?.getBoundingClientRect().bottom || 0) - phoneRect.top);
-    band.style.top = `${Math.max(minTop, top)}px`;
+    band.style.top = `${Math.max(0, minTop)}px`;
   }
   function fitMenuPage(layer, index) {
     if (!layer) return;
+    const viewer = $("viewer");
     const paper = layer.querySelector(".paper");
-    if (!paper) return;
-    /* Do NOT stretch paper to viewer height — that created empty brown "not fullscreen" */
-    paper.style.width = "100%";
-    paper.style.height = "auto";
+    const img = paper && paper.querySelector("img");
+    if (!paper || !viewer) return;
+    /* Fill the viewer box completely without cropping page content:
+       stretch the full page image to the phone area (no side/top cut). */
+    const vh = Math.max(1, viewer.clientHeight);
+    const vw = Math.max(1, viewer.clientWidth);
+    paper.style.width = `${vw}px`;
+    paper.style.height = `${vh}px`;
+    if (img) {
+      img.style.width = "100%";
+      img.style.height = "100%";
+      img.style.objectFit = "fill";
+      img.style.objectPosition = "center center";
+    }
     layer.style.paddingTop = "0px";
     layer.style.paddingBottom = "0px";
     layer.scrollTop = 0;
-    const img = paper.querySelector("img");
     if (img && img.complete) placeCategoryBand();
     else if (img) img.addEventListener("load", placeCategoryBand, { once: true });
     else placeCategoryBand();
@@ -726,6 +744,41 @@ window.TONINO_CONFIG = Object.freeze({
     window.addEventListener("resize", apply, {passive:true});
     window.addEventListener("orientationchange", () => setTimeout(apply, 180), {passive:true});
     if (window.visualViewport) visualViewport.addEventListener("resize", apply, {passive:true});
+  })();
+
+  (function phoneFullscreen(){
+    const root = document.documentElement;
+    const phone = document.getElementById("phone");
+    const hint = document.getElementById("fsHint");
+    const go = document.getElementById("fsGo");
+    const req = (el) => {
+      const fn = el.requestFullscreen || el.webkitRequestFullscreen || el.webkitRequestFullScreen;
+      if (!fn) return Promise.reject();
+      return Promise.resolve(fn.call(el));
+    };
+    const enter = () => {
+      const target = phone || root;
+      return req(target).catch(() => req(root)).catch(() => {});
+    };
+    const maybeShowHint = () => {
+      const tallGap = window.innerHeight > 500;
+      const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+      if (standalone || !hint) return;
+      if (tallGap) hint.classList.add("show");
+    };
+    if (go) go.addEventListener("click", () => {
+      hint && hint.classList.remove("show");
+      enter().then(() => { try { updateGeometry(); } catch (_) {} });
+    });
+    /* First tap anywhere also tries fullscreen (Android often requires gesture). */
+    let armed = true;
+    document.addEventListener("pointerdown", () => {
+      if (!armed) return;
+      armed = false;
+      hint && hint.classList.remove("show");
+      enter();
+    }, {passive:true, once:true});
+    setTimeout(maybeShowHint, 600);
   })();
 
   (function init(){
