@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v235 --><!-- order-story-v235 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v235 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v236 --><!-- order-story-v236 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v236 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -336,59 +336,105 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
       <div class="amb-glow"></div>
       <div class="amb-logo">TONINO</div>
       <div class="amb-story">
-        <svg viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg viewBox="0 0 380 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
             <linearGradient id="ambWood" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#7a4a22"/><stop offset="100%" stop-color="#3d2410"/>
+              <stop offset="0%" stop-color="#8b5528"/><stop offset="100%" stop-color="#3d2410"/>
             </linearGradient>
             <linearGradient id="ambSkin" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#f0d2a8"/><stop offset="100%" stop-color="#d4a878"/>
+              <stop offset="0%" stop-color="#f5d7b5"/><stop offset="100%" stop-color="#d4a878"/>
+            </linearGradient>
+            <linearGradient id="ambShirt" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4a5d7a"/><stop offset="100%" stop-color="#2a3548"/>
+            </linearGradient>
+            <linearGradient id="ambWaiterCoat" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2a2a2a"/><stop offset="100%" stop-color="#111"/>
             </linearGradient>
             <linearGradient id="ambGold" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stop-color="#ffe9b1"/><stop offset="100%" stop-color="#d7982e"/>
             </linearGradient>
+            <linearGradient id="ambApron" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fff8ee"/><stop offset="100%" stop-color="#e8d9c0"/>
+            </linearGradient>
           </defs>
-          <!-- floor shadow -->
-          <ellipse cx="180" cy="108" rx="130" ry="8" fill="#0006"/>
+          <ellipse cx="190" cy="118" rx="140" ry="9" fill="#0007"/>
+          <!-- chair (behind guest) -->
+          <g class="amb-chair">
+            <rect x="228" y="52" width="34" height="8" rx="2" fill="#5a3a1e" stroke="#d7982e44"/>
+            <rect x="232" y="28" width="6" height="28" rx="1.5" fill="#4a2e16"/>
+            <rect x="252" y="28" width="6" height="28" rx="1.5" fill="#4a2e16"/>
+            <path d="M230 30h28c2 0 4 2 4 5v8H226v-8c0-3 2-5 4-5z" fill="#6b4220" stroke="#d7982e55"/>
+            <rect x="234" y="60" width="5" height="28" rx="1" fill="#3d2410"/>
+            <rect x="252" y="60" width="5" height="28" rx="1" fill="#3d2410"/>
+          </g>
           <!-- table -->
-          <rect x="118" y="78" width="124" height="14" rx="5" fill="url(#ambWood)" stroke="#d7982e66"/>
-          <rect x="172" y="92" width="12" height="14" rx="2" fill="#3d2410"/>
-          <!-- guest seated (right) with phone -->
+          <rect x="125" y="84" width="130" height="15" rx="6" fill="url(#ambWood)" stroke="#d7982e77" stroke-width="1.2"/>
+          <rect x="180" y="99" width="14" height="16" rx="2" fill="#3d2410"/>
+          <!-- guest sitting on chair with phone -->
           <g class="amb-guest">
-            <circle cx="232" cy="48" r="11" fill="url(#ambSkin)" stroke="#0003"/>
-            <path d="M218 58c2 14 8 22 14 22s12-8 14-22z" fill="#3a4a6a"/>
-            <path d="M244 62c6 2 10 8 10 12" stroke="url(#ambSkin)" stroke-width="4" stroke-linecap="round" fill="none"/>
-            <!-- phone -->
-            <g transform="translate(250 58)">
-              <rect x="0" y="0" width="14" height="22" rx="2.5" fill="#1a1510" stroke="#d7982e99"/>
-              <rect x="2" y="3" width="10" height="12" rx="1" fill="#2a2218"/>
-              <rect class="amb-phone-glow" x="3.5" y="16" width="7" height="3.5" rx="1" fill="#b8df1b"/>
+            <!-- legs under table -->
+            <path d="M236 78c4 10 8 16 14 16" stroke="#2a3548" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M248 78c2 10 6 16 12 16" stroke="#2a3548" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <ellipse cx="252" cy="95" rx="7" ry="3" fill="#1a1510"/>
+            <ellipse cx="262" cy="95" rx="7" ry="3" fill="#1a1510"/>
+            <!-- torso -->
+            <path d="M228 58c1 18 8 28 18 28s17-10 18-28c-4 4-12 6-18 6s-14-2-18-6z" fill="url(#ambShirt)"/>
+            <!-- head -->
+            <circle cx="246" cy="42" r="13" fill="url(#ambSkin)" stroke="#0003"/>
+            <ellipse cx="246" cy="34" rx="13" ry="7" fill="#3a2818"/>
+            <circle cx="241" cy="42" r="1.4" fill="#2a1a10"/>
+            <circle cx="251" cy="42" r="1.4" fill="#2a1a10"/>
+            <path d="M242 47c2 2 6 2 8 0" stroke="#b07a4a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            <!-- arm + phone -->
+            <path d="M260 62c8 2 14 8 16 14" stroke="url(#ambSkin)" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <g transform="translate(272 68) rotate(12)">
+              <rect x="0" y="0" width="15" height="24" rx="3" fill="#1a1510" stroke="#d7982eaa" stroke-width="1.2"/>
+              <rect x="2" y="3" width="11" height="13" rx="1.5" fill="#352818"/>
+              <rect class="amb-phone-glow" x="3.5" y="18" width="8" height="4" rx="1" fill="#b8df1b"/>
+              <text x="7.5" y="12" text-anchor="middle" font-size="7" font-weight="700" fill="#d7982e">+</text>
             </g>
           </g>
-          <!-- golden signal from phone -->
+          <!-- signal -->
           <g class="amb-signal" opacity="0">
-            <circle cx="248" cy="55" r="4" fill="none" stroke="#f0c15e" stroke-width="1.5"/>
-            <circle cx="240" cy="48" r="7" fill="none" stroke="#d7982e88" stroke-width="1"/>
-            <path d="M252 52 L230 40" stroke="url(#ambGold)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="270" cy="62" r="5" fill="none" stroke="#f0c15e" stroke-width="1.6"/>
+            <circle cx="258" cy="52" r="8" fill="none" stroke="#d7982e77" stroke-width="1.2"/>
+            <path d="M275 60 L245 42" stroke="url(#ambGold)" stroke-width="2.2" stroke-linecap="round"/>
           </g>
-          <!-- waiter walks in with tray -->
+          <!-- waiter (clearer uniform) -->
           <g class="amb-waiter-g">
-            <circle cx="48" cy="42" r="10" fill="url(#ambSkin)" stroke="#0003"/>
-            <path d="M36 52c1 16 6 26 12 26s11-10 12-26z" fill="#1a1a1a"/>
-            <rect x="34" y="50" width="8" height="3" rx="1" fill="#fff8"/>
-            <!-- tray -->
-            <g transform="translate(58 50)">
-              <ellipse cx="14" cy="4" rx="16" ry="3.5" fill="#c9c0b0" stroke="#d7982e66"/>
-              <circle cx="8" cy="1" r="4" fill="#e8b86a" stroke="#b8862d"/>
-              <circle cx="20" cy="0" r="3.5" fill="#b8df1b99" stroke="#8fba12"/>
+            <!-- legs -->
+            <path d="M46 78 L42 100" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/>
+            <path d="M56 78 L62 100" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/>
+            <ellipse cx="40" cy="102" rx="7" ry="3" fill="#111"/>
+            <ellipse cx="64" cy="102" rx="7" ry="3" fill="#111"/>
+            <!-- body + apron -->
+            <path d="M36 48c0 22 6 34 15 34s15-12 15-34c-4 5-10 7-15 7s-11-2-15-7z" fill="url(#ambWaiterCoat)"/>
+            <path d="M42 58h16c1 0 2 1 2 2v20c0 4-3 7-8 7h-4c-5 0-8-3-8-7V60c0-1 1-2 2-2z" fill="url(#ambApron)"/>
+            <rect x="44" y="48" width="14" height="5" rx="1" fill="#fff"/>
+            <circle cx="51" cy="51" r="2" fill="#d7982e"/>
+            <!-- head -->
+            <circle cx="51" cy="36" r="12" fill="url(#ambSkin)" stroke="#0003"/>
+            <ellipse cx="51" cy="29" rx="12" ry="6" fill="#2a2018"/>
+            <circle cx="47" cy="36" r="1.3" fill="#2a1a10"/>
+            <circle cx="55" cy="36" r="1.3" fill="#2a1a10"/>
+            <path d="M48 41c1.5 1.5 4.5 1.5 6 0" stroke="#b07a4a" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+            <!-- arm holding tray -->
+            <path d="M64 58c10 0 18 4 22 10" stroke="url(#ambSkin)" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <g transform="translate(82 60)">
+              <ellipse cx="18" cy="8" rx="20" ry="4.5" fill="#d8cfc0" stroke="#d7982e88" stroke-width="1.2"/>
+              <ellipse cx="18" cy="6" rx="18" ry="3" fill="#efe6d6"/>
+              <circle cx="10" cy="3" r="5" fill="#e8b86a" stroke="#b8862d"/>
+              <circle cx="26" cy="2" r="4.5" fill="#c8e86a" stroke="#8fba12"/>
+              <path d="M10 -2 Q10 -8 12 -10" fill="none" stroke="#fff6" stroke-width="1.2"/>
             </g>
           </g>
-          <!-- plate lands on table -->
+          <!-- plate on table -->
           <g class="amb-plate" opacity="0">
-            <ellipse cx="168" cy="72" rx="16" ry="6" fill="#f5ead0" stroke="#c9a45a"/>
-            <ellipse cx="168" cy="70" rx="10" ry="4" fill="#d7982e"/>
-            <path class="amb-steam-p" d="M164 62 Q162 54 166 50" fill="none" stroke="#fff6" stroke-width="1.5"/>
-            <path class="amb-steam-p" d="M172 62 Q174 55 170 49" fill="none" stroke="#fff5" stroke-width="1.2"/>
+            <ellipse cx="175" cy="78" rx="18" ry="7" fill="#f5ead0" stroke="#c9a45a" stroke-width="1.2"/>
+            <ellipse cx="175" cy="76" rx="11" ry="4.5" fill="#d7982e"/>
+            <circle cx="172" cy="75" r="2" fill="#b8df1b99"/>
+            <path class="amb-steam-p" d="M170 68 Q168 58 172 54" fill="none" stroke="#fff7" stroke-width="1.6"/>
+            <path class="amb-steam-p" d="M180 68 Q182 59 178 53" fill="none" stroke="#fff5" stroke-width="1.3"/>
           </g>
         </svg>
       </div>
