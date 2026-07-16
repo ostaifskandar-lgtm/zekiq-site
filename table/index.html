@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v233 --><!-- order-portal-v233 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v233 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v234 --><!-- ambient-scene-v234 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v234 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -118,129 +118,102 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   background:#120c07;border:none;pointer-events:none;visibility:visible
 }
 #logoScene,.logo-page{display:none!important;visibility:hidden!important;height:0!important;pointer-events:none!important}
-/* Order Portal — cinematic horizontal strip (CSS stand-in for 1080×260 loop) */
+/* Ambient scene v1 restored — logo glow + couple at table + waiter (covered by orders) */
 #ambientStage{
   position:absolute;z-index:810;inset:0;overflow:hidden;pointer-events:none;
-  opacity:1;filter:none;transition:opacity .35s ease,filter .35s ease,transform .35s ease;
-  background:#120c07
-}
-#logoBand.has-orders #ambientStage{
-  opacity:.38;filter:blur(2.5px) brightness(.72) saturate(.85)
-}
-#logoBand.orders-full #ambientStage{
-  opacity:.22;filter:blur(3.5px) brightness(.55);
-  animation-play-state:paused
-}
-#logoBand.orders-full #ambientStage *{animation-play-state:paused!important}
-#logoBand.ambient-tiny #ambientStage .portal-tag{font-size:10px}
-.portal-strip{
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  overflow:hidden
-}
-.portal-bg{
-  position:absolute;inset:-8% -12%;
+  opacity:1;transition:opacity .22s ease;
   background:
-    radial-gradient(ellipse at 30% 40%,#d7982e33 0%,transparent 45%),
-    radial-gradient(ellipse at 78% 55%,#b8df1b14 0%,transparent 40%),
-    linear-gradient(105deg,#1a1008 0%,#3a2414 38%,#2a1a10 62%,#140e08 100%),
-    repeating-linear-gradient(90deg,transparent 0 46px,#ffffff03 46px 47px);
-  animation:portalCam 14s ease-in-out infinite alternate
+    radial-gradient(ellipse at 50% 18%,#d7982e55 0%,transparent 52%),
+    radial-gradient(circle at 18% 70%,#b8df1b18 0%,transparent 40%),
+    linear-gradient(180deg,#1a120a 0%,#2a1a0e 48%,#17100a 100%)
 }
-.portal-vignette{
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse at center,transparent 35%,#0a0604cc 100%);
-  pointer-events:none
+#logoBand.has-orders #ambientStage{opacity:0}
+#logoBand.ambient-tiny #ambientStage .amb-scene,
+#logoBand.ambient-tiny #ambientStage .amb-tag{display:none}
+.amb-glow{
+  position:absolute;left:50%;top:12%;width:min(72%,220px);height:min(48%,90px);
+  transform:translate(-50%,-30%);border-radius:50%;
+  background:radial-gradient(ellipse,#ffd36a66 0%,#d7982e22 42%,transparent 72%);
+  filter:blur(2px);animation:ambPulse 3.4s ease-in-out infinite
 }
-.portal-stage{
-  position:relative;z-index:2;width:min(96%,420px);height:min(92%,120px);
-  aspect-ratio:1080/260;max-height:100%
+.amb-logo{
+  position:absolute;left:0;right:0;top:10%;text-align:center;
+  font-size:clamp(22px,7vw,34px);font-weight:1000;letter-spacing:.18em;
+  color:#ffe2a0;text-shadow:0 0 18px #f0b747aa,0 0 36px #d7982e66,0 2px 0 #0008;
+  animation:ambLogoShine 4.2s ease-in-out infinite
 }
-.portal-table{
-  position:absolute;left:8%;right:8%;bottom:10%;height:22%;border-radius:14px;
-  background:linear-gradient(180deg,#6e4320,#3a2412);
-  border:1px solid #e3aa4544;box-shadow:0 8px 20px #000a
+.amb-scene{
+  position:absolute;left:50%;bottom:18%;width:min(92%,340px);height:58%;
+  transform:translateX(-50%);max-height:120px
 }
-.portal-phone{
-  position:absolute;left:14%;bottom:28%;width:18%;height:58%;border-radius:7px;
-  background:linear-gradient(160deg,#2a2218,#12100c);
-  border:1px solid #d7982e77;box-shadow:0 0 14px #d7982e44,0 4px 10px #0008;
-  overflow:hidden
+.amb-floor{
+  position:absolute;left:8%;right:8%;bottom:0;height:10px;border-radius:50%;
+  background:radial-gradient(ellipse,#0006,#0000 70%)
 }
-.portal-phone::before{
-  content:"";position:absolute;inset:6% 10% 22%;border-radius:3px;
-  background:linear-gradient(160deg,#3a2a18,#1a120a)
+.amb-table{
+  position:absolute;left:28%;right:28%;bottom:14%;height:12px;border-radius:8px;
+  background:linear-gradient(180deg,#6b4220,#3d2410);box-shadow:0 4px 10px #0007;
+  border:1px solid #d7982e55
 }
-.portal-phone::after{
-  content:"+";position:absolute;left:50%;bottom:8%;transform:translateX(-50%);
-  width:42%;height:16%;border-radius:4px;display:grid;place-items:center;
-  background:linear-gradient(145deg,#b8df1b,#8fba12);color:#142006;
-  font-size:clamp(9px,2.8vw,12px);font-weight:1000;line-height:1;
-  animation:portalTap 7s ease-in-out infinite
+.amb-table::after{
+  content:"";position:absolute;left:46%;bottom:-14px;width:8%;height:16px;
+  background:#3d2410;border-radius:2px
 }
-.portal-gleam{
-  position:absolute;left:14%;bottom:28%;width:18%;height:58%;border-radius:7px;
-  background:linear-gradient(105deg,transparent 30%,#ffe9b155 48%,transparent 62%);
-  mix-blend-mode:screen;animation:portalGleam 7s ease-in-out infinite;pointer-events:none
+.amb-cup{
+  position:absolute;bottom:26%;width:10px;height:12px;border-radius:2px 2px 3px 3px;
+  background:linear-gradient(180deg,#fff8e8,#e8d2a8);border:1px solid #c9a45a66
 }
-.portal-ring{
-  position:absolute;left:42%;bottom:30%;width:22%;aspect-ratio:1;border-radius:50%;
-  border:2px solid #f0c15ecc;box-shadow:0 0 18px #d7982e99,inset 0 0 16px #ffd36a55;
-  animation:portalOpen 7s ease-in-out infinite
+.amb-cup.a{left:38%}.amb-cup.b{right:38%;left:auto}
+.amb-steam{
+  position:absolute;bottom:38%;width:3px;height:14px;border-radius:3px;
+  background:linear-gradient(180deg,transparent,#fff6);opacity:.55;
+  animation:ambSteam 2.2s ease-in-out infinite
 }
-.portal-ring::before{
-  content:"";position:absolute;inset:-18%;border-radius:50%;
-  border:1px solid #b8df1b33;animation:portalRipple 7s ease-in-out infinite
+.amb-steam.a{left:40%}.amb-steam.b{right:40%;left:auto;animation-delay:.45s}
+.amb-person{position:absolute;bottom:22%;width:18px;height:34px}
+.amb-person::before{
+  content:"";position:absolute;left:50%;top:0;width:12px;height:12px;border-radius:50%;
+  transform:translateX(-50%);background:#f0d2a8;box-shadow:0 0 0 1px #0003
 }
-.portal-dish{
-  position:absolute;left:46%;bottom:34%;width:14%;aspect-ratio:1;border-radius:50%;
-  background:
-    radial-gradient(circle at 40% 35%,#fff2d0,#e0b86a 55%,#9a6a30),
-    radial-gradient(circle at 60% 60%,#c0392b55,transparent 50%);
-  box-shadow:0 4px 12px #0008,0 0 10px #d7982e55;
-  animation:portalDish 7s ease-in-out infinite;transform-origin:center
+.amb-person::after{
+  content:"";position:absolute;left:50%;top:11px;width:16px;height:20px;border-radius:6px 6px 4px 4px;
+  transform:translateX(-50%)
 }
-.portal-dish::after{
-  content:"";position:absolute;left:20%;right:20%;top:-35%;height:40%;border-radius:50%;
-  background:linear-gradient(180deg,#fff6,transparent);opacity:.55;
-  animation:portalSteam 7s ease-in-out infinite
+.amb-man{left:22%}.amb-man::after{background:linear-gradient(180deg,#3a4a6a,#243044)}
+.amb-woman{right:22%;left:auto}.amb-woman::before{background:#f5c9a8}
+.amb-woman::after{background:linear-gradient(180deg,#8b3a4a,#5c2430)}
+.amb-waiter{
+  position:absolute;left:4%;bottom:10%;width:20px;height:40px;
+  animation:ambWaiter 5.5s ease-in-out infinite
 }
-.portal-tag{
-  position:absolute;z-index:3;left:8%;right:8%;bottom:2%;margin:0;
-  text-align:center;direction:rtl;
-  font-size:clamp(11px,3.2vw,14px);font-weight:1000;letter-spacing:.04em;
-  color:#ffe9b1;text-shadow:0 0 12px #d7982e88,0 1px 2px #000c;
-  animation:portalTag 7s ease-in-out infinite
+.amb-waiter::before{
+  content:"";position:absolute;left:50%;top:0;width:11px;height:11px;border-radius:50%;
+  transform:translateX(-50%);background:#e8c49a
 }
-@keyframes portalCam{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(-2.5%,1%,0) scale(1.04)}}
-@keyframes portalTap{
-  0%,12%{transform:translateX(-50%) scale(1)}16%{transform:translateX(-50%) scale(.86)}22%,100%{transform:translateX(-50%) scale(1)}
+.amb-waiter::after{
+  content:"";position:absolute;left:50%;top:10px;width:15px;height:24px;border-radius:5px;
+  transform:translateX(-50%);background:linear-gradient(180deg,#2a2a2a,#111)
 }
-@keyframes portalGleam{
-  0%,10%{opacity:0;transform:translateX(-30%)}18%{opacity:.9;transform:translateX(10%)}28%,100%{opacity:0;transform:translateX(40%)}
+.amb-tray{
+  position:absolute;left:14px;top:14px;width:16px;height:4px;border-radius:3px;
+  background:linear-gradient(90deg,#ddd,#aaa);box-shadow:0 0 6px #ffd36a55;
+  animation:ambTray 5.5s ease-in-out infinite
 }
-@keyframes portalOpen{
-  0%,14%{transform:scale(.15);opacity:0}22%{transform:scale(1.05);opacity:1}38%{transform:scale(1);opacity:1}
-  55%{transform:scale(.2);opacity:.35}70%,100%{transform:scale(.12);opacity:0}
+.amb-tray::before,.amb-tray::after{
+  content:"";position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;background:#d7982e
 }
-@keyframes portalRipple{
-  0%,18%{transform:scale(.6);opacity:0}28%{transform:scale(1.15);opacity:.55}45%,100%{transform:scale(1.4);opacity:0}
+.amb-tray::before{left:2px}.amb-tray::after{right:2px;background:#b8df1b}
+.amb-tag{
+  position:absolute;left:0;right:0;bottom:4%;text-align:center;direction:rtl;
+  font-size:clamp(10px,2.8vw,12px);font-weight:900;color:#cdb27acc;letter-spacing:.02em
 }
-@keyframes portalDish{
-  0%,18%{transform:scale(0) translateY(8px);opacity:0}
-  28%{transform:scale(1.08) translateY(-2px);opacity:1}
-  40%{transform:scale(1) translateY(0);opacity:1}
-  58%{transform:scale(.95) translateY(2px);opacity:.85}
-  70%,100%{transform:scale(0) translateY(10px);opacity:0}
-}
-@keyframes portalSteam{
-  0%,25%{opacity:0;transform:translateY(4px)}35%,50%{opacity:.7;transform:translateY(-6px)}65%,100%{opacity:0;transform:translateY(-14px)}
-}
-@keyframes portalTag{
-  0%,45%{opacity:.35;letter-spacing:.02em}55%,78%{opacity:1;letter-spacing:.06em}90%,100%{opacity:.4}
-}
+@keyframes ambPulse{0%,100%{opacity:.55;transform:translate(-50%,-30%) scale(1)}50%{opacity:1;transform:translate(-50%,-30%) scale(1.08)}}
+@keyframes ambLogoShine{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
+@keyframes ambSteam{0%{transform:translateY(4px);opacity:0}40%{opacity:.6}100%{transform:translateY(-12px);opacity:0}}
+@keyframes ambWaiter{0%,100%{transform:translateX(0)}45%{transform:translateX(18px)}70%{transform:translateX(18px)}}
+@keyframes ambTray{0%,100%{transform:translate(0,0) rotate(-4deg)}45%{transform:translate(2px,-1px) rotate(2deg)}70%{transform:translate(2px,-1px) rotate(2deg)}}
 @media(prefers-reduced-motion:reduce){
-  .portal-bg,.portal-phone::after,.portal-gleam,.portal-ring,.portal-ring::before,.portal-dish,.portal-dish::after,.portal-tag{animation:none!important}
-  .portal-ring{opacity:.85;transform:scale(1)}.portal-dish{opacity:1;transform:scale(1)}
+  .amb-glow,.amb-logo,.amb-steam,.amb-waiter,.amb-tray{animation:none!important}
 }
 #logoScene{position:absolute;inset:0;transform-style:preserve-3d;overflow:hidden}
 .logo-page{
@@ -387,19 +360,19 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   </header>
 
   <section id="logoBand" aria-label="شعار Tonino والطلبات المختارة">
-    <div id="ambientStage" aria-hidden="true" data-mode="order-portal">
-      <div class="portal-strip">
-        <div class="portal-bg"></div>
-        <div class="portal-vignette"></div>
-        <div class="portal-stage">
-          <div class="portal-table"></div>
-          <div class="portal-phone"></div>
-          <div class="portal-gleam"></div>
-          <div class="portal-ring"></div>
-          <div class="portal-dish"></div>
-          <p class="portal-tag">اختر… اطلب… واسترخِ</p>
-        </div>
+        <div id="ambientStage" aria-hidden="true" data-mode="ambient-scene">
+      <div class="amb-glow"></div>
+      <div class="amb-logo">TONINO</div>
+      <div class="amb-scene">
+        <div class="amb-floor"></div>
+        <div class="amb-waiter"><div class="amb-tray"></div></div>
+        <div class="amb-person amb-man"></div>
+        <div class="amb-person amb-woman"></div>
+        <div class="amb-table"></div>
+        <div class="amb-cup a"></div><div class="amb-cup b"></div>
+        <div class="amb-steam a"></div><div class="amb-steam b"></div>
       </div>
+      <p class="amb-tag">أهلاً بكم — اختاروا واطلبوا بسهولة</p>
     </div>
     <div id="logoScene"></div>
     <div id="orderCloud"><div id="orderGrid"></div></div>
@@ -915,9 +888,7 @@ window.TONINO_CONFIG = Object.freeze({
       band.classList.toggle("has-orders", cart.length > 0);
       const h = band.clientHeight || parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--orders-h")) || 0;
       band.classList.toggle("ambient-tiny", h > 0 && h < 72);
-      /* Pause portal when space is packed (battery + clarity) */
-      const packed = cart.length >= 6 || (cloud.scrollHeight > h + 8 && cart.length >= 3);
-      band.classList.toggle("orders-full", cart.length > 0 && packed);
+      band.classList.remove("orders-full");
     }
   }
   function updateBadges() {
