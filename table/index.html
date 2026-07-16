@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#17100a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Tonino QR Menu</title><!-- menu-bottom-v210 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- cats-title-bold-v212 --><!-- cats-bar-clear-v213 --><!-- cats-bar-clear-v214 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v210 -->
+<title>Tonino QR Menu</title><!-- menu-bottom-v215 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- cats-title-bold-v212 --><!-- cats-bar-clear-v213 --><!-- cats-bar-clear-v214 --><!-- menu-bottom-pin-v215 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v210 -->
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -133,11 +133,11 @@ button{font:inherit}
 }
 #viewer::before{content:"";position:absolute;inset:-25%;pointer-events:none;background:radial-gradient(circle at 15% 20%,#f2b43c22 0 1px,transparent 2px),radial-gradient(circle at 75% 55%,#badc3218 0 1px,transparent 2px),radial-gradient(ellipse at center,#9b5c182d,transparent 65%);background-size:83px 91px,108px 101px,100% 100%;animation:stars 22s linear infinite}@keyframes stars{to{transform:translate3d(34px,-28px,0)}}
 #menuScene{position:absolute;inset:0;transform-style:preserve-3d;overflow:hidden}
-.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch}
+.menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch}
 .menu-page::-webkit-scrollbar{display:none}.menu-page.under{filter:saturate(.97);transform:scale(.988);opacity:.83}
 .ambient{position:fixed;inset:-28px;z-index:-2;background-position:center;background-size:cover;filter:blur(29px) saturate(.85) brightness(.54);transform:scale(1.13);opacity:.88;pointer-events:none}.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 8%,#160c04b5 88%)}
-.paper{position:relative;width:100%;margin:0;margin-top:0;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:1 1 auto}
-.paper img{display:block;width:100%;height:100%;object-fit:contain;object-position:center top;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
+.paper{position:relative;width:100%;margin:0;margin-top:auto;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:0 0 auto}
+.paper img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
 .page-edge{position:absolute;z-index:20;top:0;bottom:0;width:12px;opacity:0;pointer-events:none;background:linear-gradient(90deg,#fff1ad,#da952e66,transparent);box-shadow:0 0 27px #ffd96c}
 .page-shade{position:absolute;z-index:19;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent 42%,#000b 100%)}
 .menu-page[data-dir="prev"] .page-edge{right:0;left:auto;transform:scaleX(-1)}.menu-page[data-dir="prev"] .page-shade{background:linear-gradient(-90deg,transparent 42%,#000b 100%)}
@@ -344,7 +344,6 @@ window.TONINO_CONFIG = Object.freeze({
     if (!layer) return;
     const viewer = $("viewer");
     const paper = layer.querySelector(".paper");
-    const [imageWidth, imageHeight] = PAGE_SIZES[index];
     const paperHeight = Math.max(1, viewer.clientHeight);
     paper.style.height = `${paperHeight}px`;
     layer.style.paddingTop = "0px";
