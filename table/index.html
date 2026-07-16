@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- menu-bottom-v216 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- cats-title-bold-v212 --><!-- cats-bar-clear-v213 --><!-- cats-bar-clear-v214 --><!-- menu-bottom-pin-v215 --><!-- no-crop-v216 --><!-- cats-clean-on-menu-v217 --><!-- cats-clean-on-menu-v217b --><!-- fullscreen-phones-v218 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v210 -->
+<title>Tonino QR Menu</title><!-- menu-bottom-v216 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- cats-title-bold-v212 --><!-- cats-bar-clear-v213 --><!-- cats-bar-clear-v214 --><!-- menu-bottom-pin-v215 --><!-- no-crop-v216 --><!-- cats-clean-on-menu-v217 --><!-- cats-clean-on-menu-v217b --><!-- fullscreen-phones-v218 --><!-- fullscreen-android-v219 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v210 -->
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -21,18 +21,30 @@ html,body{width:100%;height:100%;min-height:100%;overflow:hidden;background:#090
 html{height:-webkit-fill-available}
 body{
   min-height:100vh;min-height:100dvh;min-height:-webkit-fill-available;
-  height:var(--app-height,100dvh);display:grid;place-items:stretch;color:#fff
+  height:var(--app-height,100dvh);width:100%;display:grid;place-items:stretch;color:#fff;padding:0;margin:0
 }
 button{font:inherit}
 #phone{
-  position:relative;width:100%;max-width:100%;height:100%;min-height:100%;
+  position:relative;width:100%!important;max-width:none!important;height:100%!important;min-height:100%!important;
   overflow:hidden;isolation:isolate;background:#1b1005;container-type:inline-size;
-  border:0;border-radius:0;box-shadow:none
+  border:0!important;border-radius:0!important;box-shadow:none!important
 }
-/* Desktop / large tablet only — never frame real phones */
-@media(hover:hover) and (pointer:fine) and (min-width:768px){
-  body{place-items:center;padding:14px;background:radial-gradient(circle at 50% 10%,#503820 0,#17100b 47%,#070504 100%)}
-  #phone{width:min(430px,100%);height:min(920px,calc(var(--app-height,100dvh) - 28px));max-width:430px;border:8px solid #0e0e0e;border-radius:44px;box-shadow:0 35px 105px #000d,0 0 0 1px #504942 inset}
+/* Desktop frame ONLY on real large desktops — never Samsung / Android / touch */
+@media(min-width:1100px) and (min-height:780px) and (hover:hover) and (pointer:fine){
+  html:not(.is-phone):not(.is-android) body{
+    place-items:center;padding:14px;background:radial-gradient(circle at 50% 10%,#503820 0,#17100b 47%,#070504 100%)
+  }
+  html:not(.is-phone):not(.is-android) #phone{
+    width:min(430px,100%)!important;max-width:430px!important;
+    height:min(920px,calc(var(--app-height,100dvh) - 28px))!important;min-height:0!important;
+    border:8px solid #0e0e0e!important;border-radius:44px!important;
+    box-shadow:0 35px 105px #000d,0 0 0 1px #504942 inset!important
+  }
+}
+html.is-phone body,html.is-android body{place-items:stretch!important;padding:0!important;background:#090604!important}
+html.is-phone #phone,html.is-android #phone{
+  width:100%!important;max-width:none!important;height:100%!important;min-height:100%!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important
 }
 
 /* 1 — compact fixed command bar */
@@ -716,10 +728,31 @@ window.TONINO_CONFIG = Object.freeze({
   if("ResizeObserver" in window)new ResizeObserver(updateGeometry).observe($("phone"));
 
   
+  
+  (function markPhoneDevice(){
+    const ua = navigator.userAgent || "";
+    const android = /Android/i.test(ua);
+    const mobile = /Android|iPhone|iPad|iPod|Mobile|SamsungBrowser|webOS|BlackBerry|Opera Mini|IEMobile/i.test(ua);
+    const shortSide = Math.min(screen.width || 0, screen.height || 0);
+    const touchPhone = (navigator.maxTouchPoints > 0) && shortSide > 0 && shortSide <= 920;
+    if (android || mobile || touchPhone) {
+      document.documentElement.classList.add("is-phone");
+      if (android || /SamsungBrowser/i.test(ua)) document.documentElement.classList.add("is-android");
+    }
+  })();
+
   (function lockAppHeight(){
     const apply = () => {
-      const h = Math.round(window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight);
-      if (h > 0) document.documentElement.style.setProperty("--app-height", h + "px");
+      const vv = window.visualViewport;
+      const h = Math.round((vv && vv.height) || window.innerHeight || document.documentElement.clientHeight || 0);
+      if (h > 0) {
+        document.documentElement.style.setProperty("--app-height", h + "px");
+        document.body.style.height = h + "px";
+        const phone = document.getElementById("phone");
+        if (phone) { phone.style.height = h + "px"; phone.style.width = "100%"; }
+      }
+      if (typeof placeCategoryBand === "function") try { placeCategoryBand(); } catch (_) {}
+      if (typeof updateGeometry === "function") try { updateGeometry(); } catch (_) {}
     };
     apply();
     window.addEventListener("resize", apply, {passive:true});
