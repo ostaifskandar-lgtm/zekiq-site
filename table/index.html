@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- menu-bottom-v216 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- no-crop-v222 --><!-- no-zoom-contain-v222 --><!-- fullscreen-touch-v220 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v222 -->
+<title>Tonino QR Menu</title><!-- menu-bottom-v216 --><!-- cats-as-title-v210 --><!-- cats-over-menu-v211 --><!-- no-crop-v222 --><!-- no-zoom-contain-v222 --><!-- natural-width-v223 --><!-- fullscreen-touch-v220 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v223 -->
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -21,12 +21,13 @@ html,body{width:100%;height:100%;min-height:100%;overflow:hidden;background:#090
 html{height:-webkit-fill-available}
 body{
   min-height:100vh;min-height:100dvh;min-height:-webkit-fill-available;
-  height:var(--app-height,100dvh);width:100%;display:grid;place-items:stretch;color:#fff;padding:0;margin:0
+  height:var(--app-height,100dvh);width:100%;display:block;color:#fff;padding:0;margin:0
 }
 button{font:inherit}
-/* Always edge-to-edge — this page is phone-first; no desktop bezel frame */
+/* Edge-to-edge phone chrome — no fake bezel */
 #phone{
-  position:relative;width:100%!important;max-width:none!important;height:100%!important;min-height:100%!important;
+  position:fixed!important;inset:0!important;width:100%!important;max-width:none!important;
+  height:var(--app-height,100dvh)!important;min-height:100%!important;
   overflow:hidden;isolation:isolate;background:#1b1005;container-type:inline-size;
   border:0!important;border-radius:0!important;box-shadow:none!important
 }
@@ -130,9 +131,9 @@ button{font:inherit}
 .menu-page{position:absolute;inset:0;padding:0!important;margin:0;overflow:hidden;scrollbar-width:none;overscroll-behavior:none;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity;touch-action:none;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch}
 .menu-page::-webkit-scrollbar{display:none}.menu-page.under{filter:saturate(.97);transform:scale(.988);opacity:.83}
 .ambient{position:fixed;inset:-28px;z-index:-2;background-position:center;background-size:cover;filter:blur(29px) saturate(.85) brightness(.54);transform:scale(1.13);opacity:.88;pointer-events:none}.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 8%,#160c04b5 88%)}
-.paper{position:relative;width:100%;margin:0;margin-top:auto;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:0 0 auto}
-/* Full page visible — NEVER zoom/crop the menu image */
-.paper img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
+/* Natural size at full phone WIDTH — no zoom, no crop, no fake tall box */
+.paper{position:relative;width:100%;height:auto;margin:0;margin-top:auto;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:0 0 auto}
+.paper img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
 .page-edge{position:absolute;z-index:20;top:0;bottom:0;width:12px;opacity:0;pointer-events:none;background:linear-gradient(90deg,#fff1ad,#da952e66,transparent);box-shadow:0 0 27px #ffd96c}
 .page-shade{position:absolute;z-index:19;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent 42%,#000b 100%)}
 .menu-page[data-dir="prev"] .page-edge{right:0;left:auto;transform:scaleX(-1)}.menu-page[data-dir="prev"] .page-shade{background:linear-gradient(-90deg,transparent 42%,#000b 100%)}
@@ -340,29 +341,22 @@ window.TONINO_CONFIG = Object.freeze({
     const band = $("categoryBand");
     const phone = $("phone");
     const paper = currentMenu && currentMenu.querySelector(".paper");
-    const img = paper && paper.querySelector("img");
-    if (!band || !phone || !paper || !img) return;
+    if (!band || !phone || !paper) return;
     const phoneRect = phone.getBoundingClientRect();
     const paperRect = paper.getBoundingClientRect();
-    const nw = img.naturalWidth || PAGE_SIZES[currentIndex]?.[0] || 1;
-    const nh = img.naturalHeight || PAGE_SIZES[currentIndex]?.[1] || 1;
-    const pw = Math.max(1, paper.clientWidth);
-    const ph = Math.max(1, paper.clientHeight);
-    /* contain + bottom: strip sits flush on the visible menu image top edge */
-    const scale = Math.min(pw / nw, ph / nh);
-    const contentH = nh * scale;
-    const contentTop = paperRect.top + (ph - contentH);
+    /* Paper matches image (width 100%, height auto) — strip sits flush on menu top */
     const bandH = band.offsetHeight || 48;
-    const top = Math.round(contentTop - phoneRect.top - bandH);
+    const top = Math.round(paperRect.top - phoneRect.top - bandH);
     const minTop = Math.round(($("topbar")?.getBoundingClientRect().bottom || 0) - phoneRect.top);
     band.style.top = `${Math.max(minTop, top)}px`;
   }
   function fitMenuPage(layer, index) {
     if (!layer) return;
-    const viewer = $("viewer");
     const paper = layer.querySelector(".paper");
-    const paperHeight = Math.max(1, viewer.clientHeight);
-    paper.style.height = `${paperHeight}px`;
+    if (!paper) return;
+    /* Do NOT stretch paper to viewer height — that created empty brown "not fullscreen" */
+    paper.style.width = "100%";
+    paper.style.height = "auto";
     layer.style.paddingTop = "0px";
     layer.style.paddingBottom = "0px";
     layer.scrollTop = 0;
