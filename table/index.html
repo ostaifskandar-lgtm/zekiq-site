@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v264 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v265 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -316,16 +316,15 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 /* Daily dish template (cloned into book page 0) — does not shift menu hotspots */
 #dailyDishScreen{display:none!important}
 .menu-page.dd-book-page{
-  background:linear-gradient(165deg,#fff8e8,#f3dfb0 55%,#e8c984)!important;
-  overflow:hidden!important;touch-action:none;justify-content:flex-start!important;
+  /* Same shell as art pages: bottom-pinned natural frame */
+  background:transparent!important;overflow:hidden!important;touch-action:none;
   direction:rtl;color:#1a0a00
 }
-.menu-page.dd-book-page .ambient{display:none!important}
-.menu-page.dd-book-page .paper{display:none!important}
-.dd-panel{
-  position:relative;z-index:2;height:100%;max-height:100%;padding:6px 8px 8px;
-  box-sizing:border-box;direction:rtl;color:#1a0a00;
-  display:flex;flex-direction:column;gap:0;overflow:hidden;min-height:0
+.menu-page.dd-book-page .dd-panel.paper{
+  position:relative;z-index:1;width:100%;height:auto;margin:0;margin-top:auto;
+  flex:0 0 auto;padding:6px 8px 8px;box-sizing:border-box;direction:rtl;color:#1a0a00;
+  display:flex;flex-direction:column;gap:0;overflow:hidden;min-height:0;
+  background:linear-gradient(165deg,#fff8e8,#f3dfb0 55%,#e8c984);box-shadow:none
 }
 .dd-panel .dd-close{display:none!important}
 .dd-panel .dd-actions{grid-template-columns:1fr!important;margin-top:auto}
@@ -987,16 +986,56 @@ window.TONINO_CONFIG = Object.freeze({
     band.style.top = `${Math.max(topbarBottom, menuTop - catsH)}px`;
     if (quick) quick.style.top = `${Math.max(topbarBottom, menuTop - chromeH)}px`;
   }
+  let lastArtMenuHeight = 0;
+  function fitDailyMenuPage(layer) {
+    const phone = $("phone");
+    const paper = layer && layer.querySelector(".dd-panel.paper, .dd-panel");
+    if (!layer || !paper || !phone) return;
+    layer.style.paddingTop = "0px";
+    layer.style.paddingBottom = "0px";
+    layer.style.height = "";
+    layer.scrollTop = 0;
+    paper.style.inset = "";
+    paper.style.top = "";
+    paper.style.left = "";
+    paper.style.right = "";
+    paper.style.bottom = "";
+    paper.style.width = "100%";
+    paper.style.marginTop = "auto";
+    paper.style.flex = "0 0 auto";
+    const applyH = (menuH) => {
+      const h = Math.max(0, menuH | 0);
+      if (h > 0) {
+        lastArtMenuHeight = h;
+        paper.style.height = h + "px";
+        paper.style.maxHeight = "none";
+      } else {
+        paper.style.height = "auto";
+        paper.style.maxHeight = "100%";
+      }
+      if (layer === currentMenu || !currentMenu) applyOrdersSpace(h || (paper.offsetHeight | 0));
+      placeCategoryBand();
+    };
+    if (lastArtMenuHeight > 0) {
+      applyH(lastArtMenuHeight);
+      return;
+    }
+    const src = PAGES[0] || "";
+    if (!src) {
+      applyH(Math.round(phone.clientWidth * 1.28));
+      return;
+    }
+    const probe = new Image();
+    const sync = () => applyH(menuNaturalHeight(probe, phone.clientWidth) || Math.round(phone.clientWidth * 1.28));
+    probe.addEventListener("load", sync, { once: true });
+    probe.src = src;
+    if (probe.complete && probe.naturalWidth) sync();
+  }
   function fitMenuPage(layer, index) {
     if (!layer) return;
     const phone = $("phone");
     if (layer.classList.contains("dd-book-page")) {
-      layer.style.paddingTop = "0px";
-      layer.style.paddingBottom = "0px";
-      layer.style.height = "100%";
-      layer.scrollTop = 0;
-      applyOrdersSpace(Math.round((phone && phone.clientHeight) || 0) * 0.92);
-      placeCategoryBand();
+      fitDailyMenuPage(layer);
       return;
     }
     const paper = layer.querySelector(".paper");
@@ -1023,6 +1062,7 @@ window.TONINO_CONFIG = Object.freeze({
     layer.scrollTop = 0;
     const sync = () => {
       const menuH = menuNaturalHeight(img, phone.clientWidth) || (paper.offsetHeight | 0);
+      if (menuH > 0) lastArtMenuHeight = menuH;
       if (layer === currentMenu || !currentMenu) applyOrdersSpace(menuH);
       placeCategoryBand();
     };
@@ -1056,11 +1096,17 @@ window.TONINO_CONFIG = Object.freeze({
     const layer = document.createElement("section");
     layer.className = "menu-page dd-book-page";
     layer.dataset.page = String(bookIndex);
+    /* Same ambient blur plane as art pages (behind the natural paper frame) */
+    const ambient = document.createElement("div");
+    ambient.className = "ambient";
+    if (PAGES[0]) ambient.style.backgroundImage = `url("${PAGES[0]}")`;
+    layer.appendChild(ambient);
     const tpl = $("dailyDishScreen");
     const panel = tpl ? tpl.cloneNode(true) : document.createElement("div");
     panel.removeAttribute("id");
-    panel.classList.add("dd-panel", "show");
-    panel.style.display = "block";
+    /* class "paper" → same bottom pin + category-band geometry as menu pages */
+    panel.classList.add("dd-panel", "paper", "show");
+    panel.style.display = "flex";
     panel.style.visibility = "visible";
     panel.style.transform = "none";
     panel.style.pointerEvents = "auto";
