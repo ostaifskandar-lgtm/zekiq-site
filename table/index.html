@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v242 --><!-- order-story-v242 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v242 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v243 --><!-- order-story-v243 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v243 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -417,7 +417,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
             <rect x="28" y="26" width="16" height="3" rx="1" fill="#d7982e88"/>
             <rect x="28" y="32" width="12" height="3" rx="1" fill="#d7982e55"/>
             <rect x="14" y="54" width="24" height="6" rx="1" fill="#3a2818"/>
-            <text x="26" y="14" text-anchor="middle" font-size="9" font-weight="800" fill="#f0c15e">كاشير</text>
+            <text id="ambCashierLabel" x="26" y="14" text-anchor="middle" font-size="9" font-weight="800" fill="#f0c15e">كاشير</text>
             <g class="amb-cashier-check" opacity="0">
               <circle cx="44" cy="20" r="9" fill="#2a4018" stroke="#b8df1b" stroke-width="1.4"/>
               <path d="M39 20l3.5 3.5 7-7" fill="none" stroke="#b8df1b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -431,30 +431,30 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
             <ellipse cx="230" cy="78" rx="48" ry="2.5" fill="#0003"/>
           </g>
 
-          <!-- QR lying FLAT on the table surface (not floating) -->
+          <!-- QR raised slightly at the TOP/back of the table -->
           <g class="amb-qr">
-            <ellipse cx="218" cy="79" rx="18" ry="4.5" fill="#0005"/>
-            <g transform="translate(200 68) scale(1,0.48)">
-              <rect x="0" y="0" width="36" height="36" rx="3" fill="#fffef8" stroke="#d7982e" stroke-width="2"/>
-              <rect x="4" y="4" width="10" height="10" fill="#1a1510"/>
-              <rect x="6.5" y="6.5" width="5" height="5" fill="#fffef8"/>
-              <rect x="22" y="4" width="10" height="10" fill="#1a1510"/>
-              <rect x="24.5" y="6.5" width="5" height="5" fill="#fffef8"/>
-              <rect x="4" y="22" width="10" height="10" fill="#1a1510"/>
-              <rect x="6.5" y="24.5" width="5" height="5" fill="#fffef8"/>
-              <rect x="16" y="16" width="4" height="4" fill="#1a1510"/>
-              <rect x="22" y="18" width="3" height="3" fill="#1a1510"/>
-              <rect x="18" y="24" width="3" height="3" fill="#1a1510"/>
-              <rect x="26" y="26" width="5" height="5" fill="#1a1510"/>
+            <ellipse cx="218" cy="78" rx="14" ry="3.2" fill="#0005"/>
+            <g transform="translate(203 48) scale(1,0.78)">
+              <rect x="0" y="0" width="30" height="30" rx="3" fill="#fffef8" stroke="#d7982e" stroke-width="2"/>
+              <rect x="3" y="3" width="8" height="8" fill="#1a1510"/>
+              <rect x="5" y="5" width="4" height="4" fill="#fffef8"/>
+              <rect x="19" y="3" width="8" height="8" fill="#1a1510"/>
+              <rect x="21" y="5" width="4" height="4" fill="#fffef8"/>
+              <rect x="3" y="19" width="8" height="8" fill="#1a1510"/>
+              <rect x="5" y="21" width="4" height="4" fill="#fffef8"/>
+              <rect x="13" y="13" width="4" height="4" fill="#1a1510"/>
+              <rect x="19" y="15" width="3" height="3" fill="#1a1510"/>
+              <rect x="15" y="20" width="3" height="3" fill="#1a1510"/>
+              <rect x="22" y="22" width="4" height="4" fill="#1a1510"/>
             </g>
-            <text x="218" y="64" text-anchor="middle" font-size="8" font-weight="800" fill="#f0c15e">QR</text>
+            <text x="218" y="44" text-anchor="middle" font-size="8" font-weight="800" fill="#f0c15e">QR</text>
           </g>
 
-          <!-- scan beam: phone in hand → QR on table -->
+          <!-- scan beam: phone in hand → QR on table top -->
           <g class="amb-scan-beam" opacity="0">
-            <path d="M268 62 L230 74" stroke="#b8df1bcc" stroke-width="2" stroke-linecap="round"/>
-            <path d="M266 58 L228 72" stroke="#f0c15e88" stroke-width="1.2" stroke-linecap="round"/>
-            <ellipse cx="218" cy="76" rx="20" ry="8" fill="none" stroke="#b8df1b" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <path d="M268 62 L230 66" stroke="#b8df1bcc" stroke-width="2" stroke-linecap="round"/>
+            <path d="M266 58 L228 64" stroke="#f0c15e88" stroke-width="1.2" stroke-linecap="round"/>
+            <rect x="201" y="46" width="34" height="28" fill="none" stroke="#b8df1b" stroke-width="1.5" stroke-dasharray="4 3" rx="2"/>
           </g>
 
           <!-- chair RIGHT of table -->
@@ -555,7 +555,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
           </g>
         </svg>
       </div>
-      <p class="amb-tag">QR على الطاولة ← امسح ← ابحث واطلب ← الكاشير ← الجرسون</p>
+      <p class="amb-tag" id="ambStoryTag">QR على الطاولة ← امسح ← ابحث واطلب ← الكاشير ← الجرسون</p>
     </div>
     <div id="logoScene"></div>
     <div id="orderCloud"><div id="orderGrid"></div></div>
@@ -1280,14 +1280,84 @@ window.TONINO_CONFIG = Object.freeze({
     else showGate();
   })();
 
+  /* Ambient labels follow shop guest language (guestPageLanguage / locale) */
+  const AMB_I18N = {
+    ar: {
+      cashierLabel: "كاشير",
+      ambStoryTag: "QR على الطاولة ← امسح ← ابحث واطلب ← الكاشير ← الجرسون",
+      tableWord: "طاولة"
+    },
+    tr: {
+      cashierLabel: "Kasiyer",
+      ambStoryTag: "Masada QR ← okut ← ara ve sipariş ver ← kasiyer ← garson",
+      tableWord: "Masa"
+    },
+    en: {
+      cashierLabel: "Cashier",
+      ambStoryTag: "QR on table ← scan ← browse & order ← cashier ← waiter",
+      tableWord: "Table"
+    }
+  };
+  function normalizeGuestLang(raw) {
+    const v = String(raw || "").trim().toLowerCase();
+    if (v === "tr" || v.startsWith("tr") || v === "turkish") return "tr";
+    if (v === "en" || v.startsWith("en") || v === "english") return "en";
+    if (v === "ar" || v.startsWith("ar") || v === "arabic") return "ar";
+    return "";
+  }
+  function applyAmbientLang(langCode) {
+    const lang = normalizeGuestLang(langCode) || "ar";
+    const bag = AMB_I18N[lang] || AMB_I18N.ar;
+    window.__zekiqGuestLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    const cash = document.getElementById("ambCashierLabel");
+    if (cash) cash.textContent = bag.cashierLabel;
+    const tag = document.getElementById("ambStoryTag");
+    if (tag) tag.textContent = bag.ambStoryTag;
+    if (typeof window.applyGuestLanguage === "function") {
+      try { window.applyGuestLanguage(lang); } catch (_) {}
+    }
+    return bag;
+  }
+  async function resolveGuestLangFromShop() {
+    const params = new URLSearchParams(location.search);
+    const fromQuery = normalizeGuestLang(params.get("lang") || params.get("guestLang") || "");
+    if (fromQuery) return fromQuery;
+    try {
+      const apiBase = await resolveApiBase();
+      const session = guestSession();
+      if (!apiBase || !session.token) return "";
+      const url = apiBase + "/api/guest/v1/menu?t=" + encodeURIComponent(session.token)
+        + (session.shop ? "&shop=" + encodeURIComponent(session.shop) : "");
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) return "";
+      const data = await res.json();
+      return normalizeGuestLang(data && data.guestLanguage);
+    } catch (_) { return ""; }
+  }
+
   (function init(){
     const info=tableInfo();
-    $("tableTop").textContent=info.label;
-    $("tableFooter").textContent=info.label;
-    const startSub = document.querySelector("#startGate .start-sub");
-    if (startSub && info.table != null && String(info.table) !== "?" && String(info.table) !== "") {
-      startSub.textContent = `${info.label} — اضغط «فهمت» لفتح المينو على كامل الشاشة`;
-    }
+    const paintTable = (bag) => {
+      const word = (bag && bag.tableWord) || "طاولة";
+      const label = info.zone ? `${info.zone} • ${word} ${info.table}` : `${word} ${info.table}`;
+      $("tableTop").textContent = label;
+      $("tableFooter").textContent = label;
+      const startSub = document.querySelector("#startGate .start-sub");
+      if (startSub && info.table != null && String(info.table) !== "?" && String(info.table) !== "") {
+        const go = window.__zekiqGuestLang === "tr"
+          ? `${label} — Tam ekran için «Anladım»a basın`
+          : window.__zekiqGuestLang === "en"
+            ? `${label} — Tap «Got it» for full screen`
+            : `${label} — اضغط «فهمت» لفتح المينو على كامل الشاشة`;
+        startSub.textContent = go;
+      }
+    };
+    paintTable(applyAmbientLang("ar"));
+    resolveGuestLangFromShop().then((lang) => {
+      if (lang) paintTable(applyAmbientLang(lang));
+    });
     buildCategories();loadCart();updateGeometry();mountInitial(initialPage());renderCart();
   })();
 })();
