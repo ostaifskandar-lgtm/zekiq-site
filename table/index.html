@@ -682,7 +682,17 @@ window.TONINO_CONFIG = Object.freeze({
           const res = await fetch(url, { cache: "no-store" });
           if (!res.ok) continue;
           const j = await res.json();
-          const base = String(j.apiUrl || j.tunnelUrl || "").trim().replace(/\/+$/, "");
+          let base = String(j.apiUrl || j.tunnelUrl || "").trim().replace(/\/+$/, "");
+          /* Prefer shops[shop] so GitHub QR can target zekiq-dev without stale default tonino. */
+          try {
+            const shopKey = String(session.shop || "").trim().toLowerCase();
+            const shops = j.shops && typeof j.shops === "object" ? j.shops : null;
+            if (shopKey && shops) {
+              const row = shops[shopKey] || shops[shopKey.replace(/\.zekiqmenu\.com$/i, "")] || shops[shopKey + ".zekiqmenu.com"];
+              const shopTunnel = String(row && (row.tunnelUrl || row.apiUrl) || "").trim().replace(/\/+$/, "");
+              if (shopTunnel && /^https:\/\//i.test(shopTunnel)) base = shopTunnel;
+            }
+          } catch (_) {}
           if (base && /^https?:\/\//i.test(base)) { cachedApiBase = base; return cachedApiBase; }
         } else {
           cachedApiBase = url.replace(/\/+$/, "");
