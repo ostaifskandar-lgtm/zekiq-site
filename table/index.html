@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v247 --><!-- order-story-v247 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v247 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -1354,10 +1354,25 @@ window.TONINO_CONFIG = Object.freeze({
     }
     return out;
   }
-  function applyLiveBook(data, apiBase) {
+  function probeLockedNewMenuPage(url) {
+    return new Promise(resolve => {
+      if (!url) { resolve(false); return; }
+      const img = new Image();
+      let done = false;
+      const finish = ok => { if (done) return; done = true; resolve(ok); };
+      img.onload = () => finish(img.naturalWidth === 980 && img.naturalHeight === 949);
+      img.onerror = () => finish(false);
+      setTimeout(() => finish(false), 5000);
+      img.src = url;
+    });
+  }
+  async function applyLiveBook(data, apiBase) {
     if (!data || !data.ok || !data.book || !Array.isArray(data.book.pages) || !data.book.pages.length) return false;
     const livePages = data.book.pages.map(u => absMenuUrl(apiBase, u)).filter(Boolean);
     if (!livePages.length) return false;
+    /* Reject old titled menu (945×1118) — keep baked locked pages instead. */
+    const isNew = await probeLockedNewMenuPage(livePages[0]);
+    if (!isNew) return false;
     PAGES = livePages;
     HOTSPOTS = spotsToHotspots(data.book.manualSpots, data.items);
     const cats = [];
@@ -1380,7 +1395,7 @@ window.TONINO_CONFIG = Object.freeze({
         const res = await fetch(apiBase + "/api/guest/v1/menu-studio", { cache: "no-store", credentials: "include" });
         if (!res.ok) return { ok: false };
         const data = await res.json();
-        if (!applyLiveBook(data, apiBase)) return { ok: false };
+        if (!(await applyLiveBook(data, apiBase))) return { ok: false };
         return { ok: true, guestLanguage: data.guestLanguage };
       }
       const apiBase = await resolveApiBase();
@@ -1391,7 +1406,7 @@ window.TONINO_CONFIG = Object.freeze({
       const res = await fetch(url, { cache: "no-store" });
       if (!res.ok) return { ok: false };
       const data = await res.json();
-      if (!applyLiveBook(data, apiBase)) return { ok: false };
+      if (!(await applyLiveBook(data, apiBase))) return { ok: false };
       return { ok: true, guestLanguage: data.guestLanguage };
     } catch (_) {
       return { ok: false };
