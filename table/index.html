@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v258 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v259 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -318,31 +318,59 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 #dailyDishScreen{
   position:absolute;z-index:1100;left:6px;right:6px;
   bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);
-  max-height:min(78vh,640px);overflow:auto;padding:14px 14px 12px;
+  max-height:min(86vh,720px);overflow:auto;padding:12px 12px 10px;
   border:1px solid #d99a34;border-radius:20px;
   background:linear-gradient(165deg,#fff8e8,#f3dfb0 55%,#e8c984);
   box-shadow:0 -10px 45px #000c;color:#1a0a00;
   transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1);direction:rtl
 }
 #dailyDishScreen.show{transform:translateY(0);visibility:visible;pointer-events:auto}
-.dd-kicker{margin:0 0 4px;font-size:11px;font-weight:1000;letter-spacing:.06em;color:#8a5a10;text-align:center}
-.dd-title{margin:0 0 10px;font-size:clamp(18px,5.2vw,24px);font-weight:1000;line-height:1.2;text-align:center;color:#1a0a00}
-.dd-photo{width:100%;max-height:180px;border-radius:14px;overflow:hidden;background:#3a2816;margin:0 0 10px;border:1px solid #c4892e66}
-.dd-photo img{display:block;width:100%;height:180px;object-fit:cover}
-.dd-photo.is-empty{display:none}
-.dd-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.dd-kicker{margin:0 0 6px;font-size:11px;font-weight:1000;letter-spacing:.06em;color:#8a5a10;text-align:center}
+.dd-hero{
+  display:grid;grid-template-columns:minmax(0,1fr) 76px;gap:8px;align-items:stretch;margin:0 0 10px
+}
+.dd-photo{
+  position:relative;min-height:210px;height:min(42vh,280px);border-radius:16px;overflow:hidden;
+  background:linear-gradient(160deg,#4a3218,#2a1a0e);border:1px solid #c4892e66
+}
+.dd-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.dd-photo.is-empty::after{
+  content:"🍽";position:absolute;inset:0;display:grid;place-items:center;font-size:54px;opacity:.55
+}
+.dd-photo.is-empty img{display:none}
+.dd-week{
+  display:flex;flex-direction:column;gap:5px;overflow-y:auto;overflow-x:hidden;
+  max-height:min(42vh,280px);padding:0;scrollbar-width:none
+}
+.dd-week::-webkit-scrollbar{display:none}
+.dd-week[hidden]{display:none!important}
+.dd-week-btn{
+  flex:0 0 auto;width:100%;padding:5px 4px 4px;border:1px solid #c4892e66;border-radius:11px;
+  background:#fff8;color:#1a0a00;font-size:10px;font-weight:900;cursor:pointer;text-align:center;line-height:1.15
+}
+.dd-week-btn.is-active{border-color:#8a5a10;background:#fff;box-shadow:0 0 0 1px #f0c15e inset}
+.dd-week-btn.is-today{color:#5a3a00;font-weight:1000}
+.dd-week-btn img,.dd-week-ph{
+  display:block;width:100%;height:36px;object-fit:cover;border-radius:7px;background:#3a2816;margin:0 0 3px
+}
+.dd-week-ph{display:grid;place-items:center;font-size:15px}
+.dd-title{margin:0 0 8px;font-size:clamp(18px,5.2vw,24px);font-weight:1000;line-height:1.2;text-align:center;color:#1a0a00}
+.dd-list{list-style:none;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:6px}
 .dd-list li{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:11px;background:#fff9;border:1px solid #a0641428;font-size:13px;font-weight:900;line-height:1.3}
 .dd-list .dd-label{flex:0 0 auto;min-width:4.2em;font-size:11px;color:#8a5a10}
 .dd-list .dd-val{flex:1;word-break:break-word}
-.dd-week{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
-.dd-week::-webkit-scrollbar{display:none}
-.dd-week-btn{flex:0 0 auto;width:58px;padding:4px;border:1px solid #c4892e66;border-radius:10px;background:#fff8;color:#1a0a00;font-size:10px;font-weight:900;cursor:pointer}
-.dd-week-btn.is-active{border-color:#8a5a10;box-shadow:0 0 0 1px #f0c15e inset}
-.dd-week-btn.is-today{color:#5a3a00}
-.dd-week-btn img,.dd-week-ph{display:block;width:100%;height:40px;object-fit:cover;border-radius:7px;background:#3a2816}
-.dd-week-ph{display:grid;place-items:center;font-size:16px}
-.dd-price{margin:10px 0 0;text-align:center;font-size:26px;font-weight:1000;color:#8a5a10}
-.dd-actions{margin-top:12px;display:grid;grid-template-columns:1fr 72px;gap:8px}
+.dd-choose{margin:0 0 8px}
+.dd-choose[hidden]{display:none!important}
+.dd-choose-label{margin:0 0 6px;font-size:12px;font-weight:1000;color:#8a5a10;text-align:right}
+.dd-choose-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.dd-opt{
+  min-height:44px;padding:8px 10px;border:2px solid #c4892e66;border-radius:13px;
+  background:#fff9;color:#1a0a00;font-size:13px;font-weight:1000;cursor:pointer;text-align:center;line-height:1.25
+}
+.dd-opt.is-on{border-color:#8a5a10;background:linear-gradient(145deg,#ffe08a,#f0c15e);box-shadow:0 0 0 1px #f0c15e55 inset}
+.dd-opt:active{transform:scale(.98)}
+.dd-price{margin:8px 0 0;text-align:center;font-size:26px;font-weight:1000;color:#8a5a10}
+.dd-actions{margin-top:10px;display:grid;grid-template-columns:1fr 72px;gap:8px}
 .dd-order{border:0;border-radius:14px;padding:13px 10px;font-size:15px;font-weight:1000;color:#1a0a00;background:linear-gradient(145deg,#ffd54f,#f0b820);cursor:pointer}
 .dd-order:disabled{opacity:.45;cursor:not-allowed}
 .dd-order.in-cart{background:linear-gradient(145deg,#b8df1b,#8bb80f)}
@@ -671,10 +699,20 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   </section>
   <section id="dailyDishScreen" aria-label="الطبق اليومي" aria-live="polite">
     <p class="dd-kicker" id="ddKicker">الطبق اليومي · Günün Yemeği</p>
-    <div class="dd-photo is-empty" id="ddPhoto"><img id="ddPhotoImg" alt="" draggable="false" decoding="async" /></div>
+    <div class="dd-hero">
+      <div class="dd-photo is-empty" id="ddPhoto"><img id="ddPhotoImg" alt="" draggable="false" decoding="async" /></div>
+      <div class="dd-week" id="ddWeek" hidden aria-label="أيام الأسبوع"></div>
+    </div>
     <h2 class="dd-title" id="ddTitle">—</h2>
-    <div class="dd-week" id="ddWeek" hidden></div>
     <ul class="dd-list" id="ddList"></ul>
+    <div class="dd-choose" id="ddChooseDessert" hidden>
+      <p class="dd-choose-label" id="ddDessertLabel">اختر التحلية</p>
+      <div class="dd-choose-opts" id="ddDessertOpts" role="group" aria-labelledby="ddDessertLabel"></div>
+    </div>
+    <div class="dd-choose" id="ddChooseDrink" hidden>
+      <p class="dd-choose-label" id="ddDrinkLabel">اختر المشروب</p>
+      <div class="dd-choose-opts" id="ddDrinkOpts" role="group" aria-labelledby="ddDrinkLabel"></div>
+    </div>
     <p class="dd-price" id="ddPrice" hidden></p>
     <div class="dd-actions">
       <button type="button" class="dd-order" id="ddOrder">أضف للسلة</button>
@@ -736,6 +774,8 @@ window.TONINO_CONFIG = Object.freeze({
   let todayDailyDish = null;
   let weeklyDishes = [];
   let ddPreviewIdx = -1;
+  let ddSelectedDessert = "";
+  let ddSelectedDrink = "";
   let guestMenuApiBase = "";
   const DAILY_DISH_PAGE = "dd";
   const DAILY_DISH_KEY = "guest-daily-dish";
@@ -1190,7 +1230,25 @@ window.TONINO_CONFIG = Object.freeze({
     if (ddPreviewIdx >= 0 && weeklyDishes[ddPreviewIdx]) return weeklyDishes[ddPreviewIdx];
     return todayDailyDish;
   }
-  function dailyDishExtrasLines(dish) {
+  function dailyDishOptionList() {
+    const seen = new Set();
+    const out = [];
+    for (let i = 0; i < arguments.length; i++) {
+      const s = String(arguments[i] || "").trim();
+      if (!s) continue;
+      const key = s.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(s);
+    }
+    return out;
+  }
+  function dailyDishCanOrderPreview(dish) {
+    if (!todayDailyDish || !dish) return false;
+    const previewRow = weeklyDishes[ddPreviewIdx];
+    return !previewRow || previewRow.isToday === true || previewRow.orderable === true || dish === todayDailyDish;
+  }
+  function dailyDishExtrasLines(dish, opts) {
     if (!dish) return [];
     const lines = [];
     const push = (label, val) => {
@@ -1199,16 +1257,23 @@ window.TONINO_CONFIG = Object.freeze({
     };
     push("شوربة", dish.soup);
     push("غارني", dish.sides);
-    const desserts = [dish.dessert, dish.dessert2].map(x => String(x || "").trim()).filter(Boolean);
-    if (desserts.length) push("تحلية", desserts.join(" / "));
-    const drinks = [dish.drink, dish.drink2].map(x => String(x || "").trim()).filter(Boolean);
-    if (drinks.length) push("مشروب", drinks.join(" / "));
+    const dessertPick = opts && opts.dessert != null ? opts.dessert : "";
+    const drinkPick = opts && opts.drink != null ? opts.drink : "";
+    if (dessertPick) push("تحلية", dessertPick);
+    if (drinkPick) push("مشروب", drinkPick);
     const tea = String(dish.teaOffer || "").trim();
     if (tea && tea !== "لا" && tea.toLowerCase() !== "no") push("شاي", tea === "نعم" || tea.toLowerCase() === "yes" ? "مع الطبق" : tea);
     return lines;
   }
-  function buildDailyDishNote(dish) {
-    return dailyDishExtrasLines(dish).map(l => `${l.label}: ${l.val}`).join(" · ");
+  function buildDailyDishNote(dish, dessert, drink) {
+    return dailyDishExtrasLines(dish, { dessert, drink }).map(l => `${l.label}: ${l.val}`).join(" · ");
+  }
+  function renderChoiceGroup(host, options, selected, kind) {
+    if (!host) return;
+    host.innerHTML = options.map(opt => {
+      const on = selected === opt ? " is-on" : "";
+      return `<button type="button" class="dd-opt${on}" data-dd-choice="${kind}" data-dd-val="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`;
+    }).join("");
   }
   function dailyDishInCartQty() {
     return cart
@@ -1230,10 +1295,35 @@ window.TONINO_CONFIG = Object.freeze({
       img.removeAttribute("src");
       photo.classList.add("is-empty");
     }
+    const desserts = dailyDishOptionList(dish.dessert, dish.dessert2);
+    const drinks = dailyDishOptionList(dish.drink, dish.drink2);
+    if (!desserts.includes(ddSelectedDessert)) {
+      ddSelectedDessert = desserts.length === 1 ? desserts[0] : "";
+    }
+    if (!drinks.includes(ddSelectedDrink)) {
+      ddSelectedDrink = drinks.length === 1 ? drinks[0] : "";
+    }
     const list = $("ddList");
-    list.innerHTML = dailyDishExtrasLines(dish)
-      .map(l => `<li><span class="dd-label">${escapeHtml(l.label)}</span><span class="dd-val">${escapeHtml(l.val)}</span></li>`)
-      .join("");
+    list.innerHTML = dailyDishExtrasLines(dish, {
+      dessert: desserts.length <= 1 ? (ddSelectedDessert || desserts[0] || "") : "",
+      drink: drinks.length <= 1 ? (ddSelectedDrink || drinks[0] || "") : "",
+    }).map(l => `<li><span class="dd-label">${escapeHtml(l.label)}</span><span class="dd-val">${escapeHtml(l.val)}</span></li>`).join("");
+    const dessertBox = $("ddChooseDessert");
+    const drinkBox = $("ddChooseDrink");
+    if (desserts.length >= 2) {
+      dessertBox.hidden = false;
+      renderChoiceGroup($("ddDessertOpts"), desserts, ddSelectedDessert, "dessert");
+    } else {
+      dessertBox.hidden = true;
+      $("ddDessertOpts").innerHTML = "";
+    }
+    if (drinks.length >= 2) {
+      drinkBox.hidden = false;
+      renderChoiceGroup($("ddDrinkOpts"), drinks, ddSelectedDrink, "drink");
+    } else {
+      drinkBox.hidden = true;
+      $("ddDrinkOpts").innerHTML = "";
+    }
     const rawPrice = String(dish.price || (todayDailyDish && todayDailyDish.price) || "").replace(",", ".");
     const numPrice = Number(rawPrice);
     const priceEl = $("ddPrice");
@@ -1245,35 +1335,44 @@ window.TONINO_CONFIG = Object.freeze({
       priceEl.textContent = "";
     }
     const week = $("ddWeek");
-    if (weeklyDishes.length > 1) {
+    if (weeklyDishes.length > 0) {
       week.hidden = false;
       week.innerHTML = weeklyDishes.map((row, i) => {
         const thumb = absMenuUrl(guestMenuApiBase, row.imageUrl || "");
         const media = thumb
           ? `<img alt="" draggable="false" decoding="async" src="${escapeHtml(thumb)}" />`
           : `<span class="dd-week-ph" aria-hidden="true">🍽</span>`;
-        return `<button type="button" class="dd-week-btn${i === ddPreviewIdx ? " is-active" : ""}${row.isToday ? " is-today" : ""}" data-dd-rail="${i}">${media}<span>${escapeHtml(row.day || "")}</span></button>`;
+        const dayLabel = escapeHtml(row.day || ("يوم " + (i + 1)));
+        return `<button type="button" class="dd-week-btn${i === ddPreviewIdx ? " is-active" : ""}${row.isToday ? " is-today" : ""}" data-dd-rail="${i}">${media}<span>${dayLabel}</span></button>`;
       }).join("");
     } else {
       week.hidden = true;
       week.innerHTML = "";
     }
-    const previewRow = weeklyDishes[ddPreviewIdx];
-    const canOrder = !!todayDailyDish && (
-      !previewRow || previewRow.isToday === true || previewRow.orderable === true || dish === todayDailyDish
-    );
+    const canOrder = dailyDishCanOrderPreview(dish);
+    const needDessert = desserts.length >= 2;
+    const needDrink = drinks.length >= 2;
+    const choicesOk = (!needDessert || !!ddSelectedDessert) && (!needDrink || !!ddSelectedDrink);
     const orderBtn = $("ddOrder");
     const qty = dailyDishInCartQty();
-    orderBtn.disabled = !canOrder;
-    orderBtn.classList.toggle("in-cart", qty > 0 && canOrder);
-    orderBtn.textContent = !canOrder
-      ? (dish.day ? `قريباً · ${dish.day}` : "قريباً")
-      : (qty > 0 ? `✓ في السلة (${qty}) — أضف` : "أضف للسلة");
+    orderBtn.disabled = !canOrder || !choicesOk;
+    orderBtn.classList.toggle("in-cart", qty > 0 && canOrder && choicesOk);
+    if (!canOrder) {
+      orderBtn.textContent = dish.day ? `قريباً · ${dish.day}` : "قريباً";
+    } else if (!choicesOk) {
+      orderBtn.textContent = needDessert && needDrink
+        ? "اختر التحلية والمشروب"
+        : (needDessert ? "اختر التحلية" : "اختر المشروب");
+    } else {
+      orderBtn.textContent = qty > 0 ? `✓ في السلة (${qty}) — أضف` : "أضف للسلة";
+    }
   }
   function openDailyDishScreen() {
     if (!todayDailyDish) { toast("لا يوجد طبق يومي اليوم"); return; }
     ddPreviewIdx = Math.max(0, weeklyDishes.findIndex(w => w && w.isToday));
     if (ddPreviewIdx < 0) ddPreviewIdx = 0;
+    ddSelectedDessert = "";
+    ddSelectedDrink = "";
     renderDailyDishScreen();
     closeVariants();
     $("shade").classList.add("show");
@@ -1287,20 +1386,26 @@ window.TONINO_CONFIG = Object.freeze({
   function addDailyDishToCart() {
     if (!todayDailyDish) return;
     const preview = dailyDishPreview() || todayDailyDish;
-    const canOrder = ddPreviewIdx < 0 || !!(weeklyDishes[ddPreviewIdx] && weeklyDishes[ddPreviewIdx].isToday) || preview.orderable === true || preview === todayDailyDish;
-    if (!canOrder) { toast("يمكن طلب طبق اليوم فقط"); return; }
+    if (!dailyDishCanOrderPreview(preview)) { toast("يمكن طلب طبق اليوم فقط"); return; }
     const dish = todayDailyDish;
+    const desserts = dailyDishOptionList(dish.dessert, dish.dessert2);
+    const drinks = dailyDishOptionList(dish.drink, dish.drink2);
+    if (desserts.length >= 2 && !ddSelectedDessert) { toast("اختر التحلية"); return; }
+    if (drinks.length >= 2 && !ddSelectedDrink) { toast("اختر المشروب"); return; }
+    const dessert = ddSelectedDessert || desserts[0] || "";
+    const drink = ddSelectedDrink || drinks[0] || "";
     const rawPrice = String(dish.price || "0").replace(",", ".");
     const numPrice = Number(rawPrice);
     const mainName = String(dish.mainAr || dish.main || dish.mainTr || "Günün Yemeği").trim();
+    const choiceBits = [dessert, drink].filter(Boolean).join(" / ");
     addItem({
       page: DAILY_DISH_PAGE,
       hotspotName: DAILY_DISH_KEY,
       itemId: DAILY_DISH_KEY,
-      name: `Günün Yemeği · ${mainName}`,
+      name: choiceBits ? `Günün Yemeği · ${mainName} (${choiceBits})` : `Günün Yemeği · ${mainName}`,
       category: "Günün Yemeği",
       price: Number.isFinite(numPrice) && numPrice > 0 ? Math.round(numPrice) : 0,
-      note: buildDailyDishNote(dish),
+      note: buildDailyDishNote(dish, dessert, drink),
     });
     renderDailyDishScreen();
   }
@@ -1603,8 +1708,24 @@ window.TONINO_CONFIG = Object.freeze({
     if (!btn) return;
     ddPreviewIdx = Number(btn.dataset.ddRail);
     if (!Number.isFinite(ddPreviewIdx)) return;
+    ddSelectedDessert = "";
+    ddSelectedDrink = "";
     renderDailyDishScreen();
   });
+  function onDailyDishChoiceClick(event) {
+    const btn = event.target.closest("[data-dd-choice]");
+    if (!btn) return;
+    const kind = btn.dataset.ddChoice;
+    const val = btn.dataset.ddVal || "";
+    if (!val) return;
+    if (kind === "dessert") ddSelectedDessert = val;
+    else if (kind === "drink") ddSelectedDrink = val;
+    else return;
+    renderDailyDishScreen();
+    if (navigator.vibrate) navigator.vibrate(8);
+  }
+  $("ddDessertOpts").addEventListener("click", onDailyDishChoiceClick);
+  $("ddDrinkOpts").addEventListener("click", onDailyDishChoiceClick);
   window.addEventListener("resize",updateGeometry,{passive:true});
   window.addEventListener("orientationchange",()=>setTimeout(updateGeometry,160),{passive:true});
   if(window.visualViewport)visualViewport.addEventListener("resize",updateGeometry,{passive:true});
