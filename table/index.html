@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v240 --><!-- order-story-v240 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v240 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v241 --><!-- order-story-v241 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v241 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -144,62 +144,95 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 }
 .amb-story svg{display:block;width:100%;height:100%;overflow:visible}
 .amb-tag{
-  position:absolute;left:6%;right:6%;bottom:3%;z-index:3;margin:0;
+  position:absolute;left:4%;right:4%;bottom:2%;z-index:3;margin:0;
   text-align:center;direction:rtl;
-  font-size:clamp(10px,2.7vw,12px);font-weight:900;color:#cdb27acc
+  font-size:clamp(9px,2.5vw,11px);font-weight:900;color:#e0c48ecc;
+  animation:ambTagCycle 12s ease-in-out infinite
 }
-/* SVG timeline ~9s — order → cashier → waiter from afar */
-.amb-phone-glow{animation:ambPhoneTap 9s ease-in-out infinite}
-.amb-signal{animation:ambSignal 9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
-.amb-cashier-ping{animation:ambCashierPing 9s ease-in-out infinite}
-.amb-cashier-check{animation:ambCashierCheck 9s ease-in-out infinite}
-.amb-waiter-g{animation:ambWaiterWalk 9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
-.amb-plate{animation:ambPlateDrop 9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
-.amb-steam-p{animation:ambSteamPuff 9s ease-in-out infinite}
+/* SVG timeline ~12s — QR on table → scan → browse/order → cashier → waiter */
+.amb-qr{animation:ambQrPulse 12s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.amb-scan-beam{animation:ambScanBeam 12s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.amb-phone-arm{animation:ambPhoneArm 12s ease-in-out infinite;transform-box:fill-box;transform-origin:310px 52px}
+.amb-phone-glow{animation:ambPhoneTap 12s ease-in-out infinite}
+.amb-phone-scr-qr{animation:ambScrQr 12s ease-in-out infinite}
+.amb-phone-scr-menu{animation:ambScrMenu 12s ease-in-out infinite}
+.amb-phone-scr-plus{animation:ambScrPlus 12s ease-in-out infinite}
+.amb-signal{animation:ambSignal 12s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.amb-cashier-ping{animation:ambCashierPing 12s ease-in-out infinite}
+.amb-cashier-check{animation:ambCashierCheck 12s ease-in-out infinite}
+.amb-waiter-g{animation:ambWaiterWalk 12s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.amb-plate{animation:ambPlateDrop 12s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.amb-steam-p{animation:ambSteamPuff 12s ease-in-out infinite}
 @keyframes ambPulse{0%,100%{opacity:.5;transform:translate(-50%,-20%) scale(1)}50%{opacity:1;transform:translate(-50%,-20%) scale(1.06)}}
 @keyframes ambLogoShine{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
+@keyframes ambTagCycle{
+  0%,14%{opacity:1}16%,28%{opacity:.35}30%,48%{opacity:1}50%,68%{opacity:.35}70%,88%{opacity:1}90%,100%{opacity:.55}
+}
+@keyframes ambQrPulse{
+  0%,8%{opacity:.85;transform:scale(1)}
+  12%,22%{opacity:1;transform:scale(1.08);filter:drop-shadow(0 0 6px #f0c15ecc)}
+  28%,100%{opacity:.9;transform:scale(1);filter:none}
+}
+@keyframes ambScanBeam{
+  0%,10%{opacity:0}
+  14%,24%{opacity:1}
+  30%,100%{opacity:0}
+}
+@keyframes ambPhoneArm{
+  0%,8%{transform:translate(0,0) rotate(0)}
+  14%,24%{transform:translate(-18px,10px) rotate(-18deg)}
+  32%,100%{transform:translate(0,0) rotate(0)}
+}
 @keyframes ambPhoneTap{
-  0%,12%{opacity:.35}16%{opacity:1}22%{opacity:.95}30%,100%{opacity:.4}
+  0%,30%{opacity:.4}36%{opacity:1}42%{opacity:.95}50%,100%{opacity:.45}
+}
+@keyframes ambScrQr{
+  0%,8%{opacity:0}12%,24%{opacity:1}28%,100%{opacity:0}
+}
+@keyframes ambScrMenu{
+  0%,28%{opacity:0}32%,48%{opacity:1}52%,100%{opacity:0}
+}
+@keyframes ambScrPlus{
+  0%,34%{opacity:.3}38%{opacity:1}46%{opacity:1}52%,100%{opacity:.35}
 }
 @keyframes ambSignal{
-  0%,14%{opacity:0;transform:translate(0,0) scale(.3)}
-  18%{opacity:1;transform:translate(-20px,-8px) scale(1)}
-  28%{opacity:1;transform:translate(-160px,-18px) scale(.85)}
-  34%{opacity:0;transform:translate(-175px,-22px) scale(.5)}
+  0%,46%{opacity:0;transform:translate(0,0) scale(.3)}
+  50%{opacity:1;transform:translate(-20px,-8px) scale(1)}
+  58%{opacity:1;transform:translate(-160px,-18px) scale(.85)}
+  64%{opacity:0;transform:translate(-175px,-22px) scale(.5)}
   100%{opacity:0}
 }
 @keyframes ambCashierPing{
-  0%,26%{opacity:.45;filter:brightness(1)}
-  30%,40%{opacity:1;filter:brightness(1.35)}
-  48%,100%{opacity:.55;filter:brightness(1)}
+  0%,54%{opacity:.4;filter:brightness(1)}
+  58%,68%{opacity:1;filter:brightness(1.35)}
+  74%,100%{opacity:.5;filter:brightness(1)}
 }
 @keyframes ambCashierCheck{
-  0%,28%{opacity:0;transform:scale(.4)}
-  32%{opacity:1;transform:scale(1.15)}
-  42%{opacity:1;transform:scale(1)}
-  52%,100%{opacity:0;transform:scale(.8)}
+  0%,56%{opacity:0;transform:scale(.4)}
+  60%{opacity:1;transform:scale(1.15)}
+  68%{opacity:1;transform:scale(1)}
+  76%,100%{opacity:0;transform:scale(.8)}
 }
 @keyframes ambWaiterWalk{
-  0%,36%{transform:translateX(-95px) scale(.72);opacity:0}
-  40%{opacity:.85;transform:translateX(-70px) scale(.78)}
-  58%{opacity:1;transform:translateX(55px) scale(1)}
-  72%{opacity:1;transform:translateX(55px) scale(1)}
-  88%,100%{opacity:0;transform:translateX(70px) scale(1)}
+  0%,66%{transform:translateX(-95px) scale(.72);opacity:0}
+  70%{opacity:.85;transform:translateX(-70px) scale(.78)}
+  82%{opacity:1;transform:translateX(55px) scale(1)}
+  90%{opacity:1;transform:translateX(55px) scale(1)}
+  96%,100%{opacity:0;transform:translateX(70px) scale(1)}
 }
 @keyframes ambPlateDrop{
-  0%,56%{opacity:0;transform:translateY(-10px) scale(.5)}
-  64%{opacity:1;transform:translateY(0) scale(1.05)}
-  72%{opacity:1;transform:translateY(0) scale(1)}
-  84%{opacity:1}
-  92%,100%{opacity:0;transform:translateY(4px) scale(.9)}
+  0%,80%{opacity:0;transform:translateY(-10px) scale(.5)}
+  86%{opacity:1;transform:translateY(0) scale(1.05)}
+  92%{opacity:1;transform:translateY(0) scale(1)}
+  97%,100%{opacity:0;transform:translateY(4px) scale(.9)}
 }
 @keyframes ambSteamPuff{
-  0%,62%{opacity:0}68%{opacity:.7}82%{opacity:.35}92%,100%{opacity:0}
+  0%,84%{opacity:0}88%{opacity:.7}94%{opacity:.35}98%,100%{opacity:0}
 }
 @media(prefers-reduced-motion:reduce){
-  .amb-glow,.amb-logo,.amb-phone-glow,.amb-signal,.amb-cashier-ping,.amb-cashier-check,.amb-waiter-g,.amb-plate,.amb-steam-p{animation:none!important}
+  .amb-glow,.amb-logo,.amb-tag,.amb-qr,.amb-scan-beam,.amb-phone-arm,.amb-phone-glow,.amb-phone-scr-qr,.amb-phone-scr-menu,.amb-phone-scr-plus,.amb-signal,.amb-cashier-ping,.amb-cashier-check,.amb-waiter-g,.amb-plate,.amb-steam-p{animation:none!important}
   .amb-waiter-g{transform:translateX(40px);opacity:1}.amb-plate{opacity:1}.amb-phone-glow{opacity:.8}
-  .amb-cashier-check{opacity:1}
+  .amb-cashier-check{opacity:1}.amb-qr{opacity:1}
 }
 #logoScene{position:absolute;inset:0;transform-style:preserve-3d;overflow:hidden}
 .logo-page{
@@ -376,7 +409,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
           </defs>
           <ellipse cx="250" cy="128" rx="130" ry="7" fill="#0005"/>
 
-          <!-- cashier POS (left) — receives order -->
+          <!-- cashier POS (left) -->
           <g class="amb-cashier-ping" transform="translate(8 28)">
             <rect x="0" y="18" width="52" height="36" rx="5" fill="#1a1510" stroke="#d7982e88" stroke-width="1.3"/>
             <rect x="4" y="22" width="44" height="22" rx="2" fill="#243018"/>
@@ -391,37 +424,54 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
             </g>
           </g>
 
-          <!-- table (center) — chair is NOT on the table -->
+          <!-- table -->
           <g class="amb-table">
             <rect x="175" y="78" width="110" height="14" rx="6" fill="url(#ambWood)" stroke="#d7982e99" stroke-width="1.3"/>
             <rect x="218" y="92" width="14" height="22" rx="2" fill="#3d2410"/>
             <ellipse cx="230" cy="78" rx="48" ry="2.5" fill="#0003"/>
           </g>
 
-          <!-- chair to the RIGHT of the table (beside, not above) -->
+          <!-- QR sticker ON the table (story start) -->
+          <g class="amb-qr" transform="translate(198 52)">
+            <rect x="0" y="0" width="28" height="28" rx="3" fill="#fffef8" stroke="#d7982e" stroke-width="1.4"/>
+            <rect x="3" y="3" width="8" height="8" fill="#1a1510"/>
+            <rect x="5" y="5" width="4" height="4" fill="#fffef8"/>
+            <rect x="17" y="3" width="8" height="8" fill="#1a1510"/>
+            <rect x="19" y="5" width="4" height="4" fill="#fffef8"/>
+            <rect x="3" y="17" width="8" height="8" fill="#1a1510"/>
+            <rect x="5" y="19" width="4" height="4" fill="#fffef8"/>
+            <rect x="13" y="13" width="3" height="3" fill="#1a1510"/>
+            <rect x="18" y="14" width="2" height="2" fill="#1a1510"/>
+            <rect x="14" y="18" width="2" height="2" fill="#1a1510"/>
+            <rect x="20" y="20" width="4" height="4" fill="#1a1510"/>
+            <text x="14" y="-4" text-anchor="middle" font-size="8" font-weight="800" fill="#f0c15e">QR</text>
+          </g>
+
+          <!-- scan beam: phone → QR -->
+          <g class="amb-scan-beam" opacity="0">
+            <path d="M255 70 L220 66" stroke="#b8df1bcc" stroke-width="2" stroke-linecap="round"/>
+            <path d="M252 66 L218 62" stroke="#f0c15e88" stroke-width="1.2" stroke-linecap="round"/>
+            <rect x="196" y="50" width="32" height="32" fill="none" stroke="#b8df1b" stroke-width="1.6" stroke-dasharray="4 3" rx="2"/>
+          </g>
+
+          <!-- chair RIGHT of table -->
           <g class="amb-chair">
-            <!-- backrest behind seat, to the right -->
             <path d="M318 48c14 0 22 10 22 24v10h-10V70c0-8-3-14-10-16z" fill="url(#ambChairWood)" stroke="#d7982e55" stroke-width="1.1"/>
-            <!-- seat at table height, right of table edge -->
             <ellipse cx="308" cy="76" rx="20" ry="6" fill="#6b3f1c" stroke="#d7982e66" stroke-width="1.1"/>
             <ellipse cx="308" cy="74" rx="16" ry="3.8" fill="#8a5528"/>
-            <!-- legs down to floor -->
             <path d="M294 78 L290 112" stroke="#3d2410" stroke-width="3.2" stroke-linecap="round"/>
             <path d="M318 78 L326 112" stroke="#3d2410" stroke-width="3.2" stroke-linecap="round"/>
             <path d="M302 78 L300 112" stroke="#2a1808" stroke-width="2.2" stroke-linecap="round"/>
             <path d="M314 78 L318 112" stroke="#2a1808" stroke-width="2.2" stroke-linecap="round"/>
           </g>
 
-          <!-- guest sitting ON the chair, facing table -->
+          <!-- guest on chair: scans QR then browses/orders -->
           <g class="amb-guest">
-            <!-- thighs on seat -->
             <path d="M292 74c8 1 20 1 28-2" stroke="#2a3548" stroke-width="9" stroke-linecap="round" fill="none"/>
-            <!-- lower legs under table -->
             <path d="M292 76c-6 10-10 18-12 26" stroke="#2a3548" stroke-width="5.5" stroke-linecap="round" fill="none"/>
             <path d="M300 76c-4 12-6 20-6 28" stroke="#2a3548" stroke-width="5.5" stroke-linecap="round" fill="none"/>
             <ellipse cx="278" cy="104" rx="7" ry="3" fill="#1a1510"/>
             <ellipse cx="292" cy="106" rx="7" ry="3" fill="#1a1510"/>
-            <!-- torso above seat, beside table -->
             <path d="M296 42c1 20 8 30 16 30s15-10 16-30c-4 4-10 6-16 6s-12-2-16-6z" fill="url(#ambShirt)"/>
             <rect x="306" y="36" width="7" height="8" rx="2" fill="url(#ambSkin)"/>
             <circle cx="310" cy="28" r="12" fill="url(#ambSkin)" stroke="#0003"/>
@@ -429,24 +479,37 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
             <circle cx="306" cy="28" r="1.4" fill="#2a1a10"/>
             <circle cx="314" cy="28" r="1.4" fill="#2a1a10"/>
             <path d="M307 33c2 2 5 2 7 0" stroke="#b07a4a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-            <!-- arm to phone over table -->
             <path d="M296 52c-14 4-24 10-28 16" stroke="url(#ambSkin)" stroke-width="5" stroke-linecap="round" fill="none"/>
-            <g transform="translate(248 58) rotate(-8)">
+            <!-- phone: lean to QR then show menu/+ -->
+            <g class="amb-phone-arm" transform="translate(248 58) rotate(-8)">
               <rect x="0" y="0" width="15" height="24" rx="3" fill="#12100e" stroke="#d7982ecc" stroke-width="1.3"/>
               <rect x="2" y="3" width="11" height="14" rx="1.5" fill="#3a2a18"/>
+              <!-- screen: QR scan -->
+              <g class="amb-phone-scr-qr" opacity="0">
+                <rect x="3.5" y="4.5" width="8" height="8" fill="#fffef8"/>
+                <rect x="4.2" y="5.2" width="2.2" height="2.2" fill="#1a1510"/>
+                <rect x="7.8" y="5.2" width="2.2" height="2.2" fill="#1a1510"/>
+                <rect x="4.2" y="8.8" width="2.2" height="2.2" fill="#1a1510"/>
+              </g>
+              <!-- screen: menu lines (browse) -->
+              <g class="amb-phone-scr-menu" opacity="0">
+                <rect x="3.5" y="5" width="8" height="1.4" rx=".5" fill="#d7982e"/>
+                <rect x="3.5" y="8" width="7" height="1.2" rx=".5" fill="#cdb27a"/>
+                <rect x="3.5" y="11" width="6" height="1.2" rx=".5" fill="#cdb27a99"/>
+              </g>
               <rect class="amb-phone-glow" x="3" y="19" width="9" height="3.5" rx="1" fill="#b8df1b"/>
-              <text x="7.5" y="12" text-anchor="middle" font-size="7" font-weight="800" fill="#f0c15e">+</text>
+              <text class="amb-phone-scr-plus" x="7.5" y="12" text-anchor="middle" font-size="7" font-weight="800" fill="#f0c15e">+</text>
             </g>
           </g>
 
-          <!-- order signal: phone → cashier -->
+          <!-- order signal → cashier -->
           <g class="amb-signal" opacity="0">
             <circle cx="256" cy="62" r="5" fill="none" stroke="#f0c15e" stroke-width="1.6"/>
             <circle cx="256" cy="62" r="9" fill="none" stroke="#d7982e66" stroke-width="1.2"/>
             <path d="M250 60 L210 48" stroke="url(#ambGold)" stroke-width="2.2" stroke-linecap="round"/>
           </g>
 
-          <!-- waiter starts far left (animation moves him in) -->
+          <!-- waiter from afar -->
           <g class="amb-waiter-g" opacity="0">
             <path d="M78 86 L72 116" stroke="#111" stroke-width="5.5" stroke-linecap="round"/>
             <path d="M90 86 L98 116" stroke="#111" stroke-width="5.5" stroke-linecap="round"/>
@@ -474,7 +537,6 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
             </g>
           </g>
 
-          <!-- food arrives on table after waiter -->
           <g class="amb-plate" opacity="0">
             <ellipse cx="220" cy="74" rx="18" ry="6.5" fill="#f5ead0" stroke="#c9a45a" stroke-width="1.2"/>
             <ellipse cx="220" cy="72" rx="11" ry="4.2" fill="#d7982e"/>
@@ -484,7 +546,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
           </g>
         </svg>
       </div>
-      <p class="amb-tag">اطلب ← يصل للكاشير ← الجرسون يأتي من بعيد</p>
+      <p class="amb-tag">QR على الطاولة ← امسح ← ابحث واطلب ← الكاشير ← الجرسون</p>
     </div>
     <div id="logoScene"></div>
     <div id="orderCloud"><div id="orderGrid"></div></div>
