@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- natural-menu-orders-v241 --><!-- order-story-v241 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v241 -->
+<title>Tonino QR Menu</title><!-- natural-menu-orders-v242 --><!-- order-story-v242 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v242 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -152,7 +152,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 /* SVG timeline ~12s — QR on table → scan → browse/order → cashier → waiter */
 .amb-qr{animation:ambQrPulse 12s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 .amb-scan-beam{animation:ambScanBeam 12s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
-.amb-phone-arm{animation:ambPhoneArm 12s ease-in-out infinite;transform-box:fill-box;transform-origin:310px 52px}
+.amb-phone-arm{animation:ambPhoneArm 12s ease-in-out infinite;transform-box:fill-box;transform-origin:270px 70px}
 .amb-phone-glow{animation:ambPhoneTap 12s ease-in-out infinite}
 .amb-phone-scr-qr{animation:ambScrQr 12s ease-in-out infinite}
 .amb-phone-scr-menu{animation:ambScrMenu 12s ease-in-out infinite}
@@ -180,7 +180,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 }
 @keyframes ambPhoneArm{
   0%,8%{transform:translate(0,0) rotate(0)}
-  14%,24%{transform:translate(-18px,10px) rotate(-18deg)}
+  14%,24%{transform:translate(-10px,6px) rotate(-12deg)}
   32%,100%{transform:translate(0,0) rotate(0)}
 }
 @keyframes ambPhoneTap{
@@ -431,27 +431,30 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
             <ellipse cx="230" cy="78" rx="48" ry="2.5" fill="#0003"/>
           </g>
 
-          <!-- QR sticker ON the table (story start) -->
-          <g class="amb-qr" transform="translate(198 52)">
-            <rect x="0" y="0" width="28" height="28" rx="3" fill="#fffef8" stroke="#d7982e" stroke-width="1.4"/>
-            <rect x="3" y="3" width="8" height="8" fill="#1a1510"/>
-            <rect x="5" y="5" width="4" height="4" fill="#fffef8"/>
-            <rect x="17" y="3" width="8" height="8" fill="#1a1510"/>
-            <rect x="19" y="5" width="4" height="4" fill="#fffef8"/>
-            <rect x="3" y="17" width="8" height="8" fill="#1a1510"/>
-            <rect x="5" y="19" width="4" height="4" fill="#fffef8"/>
-            <rect x="13" y="13" width="3" height="3" fill="#1a1510"/>
-            <rect x="18" y="14" width="2" height="2" fill="#1a1510"/>
-            <rect x="14" y="18" width="2" height="2" fill="#1a1510"/>
-            <rect x="20" y="20" width="4" height="4" fill="#1a1510"/>
-            <text x="14" y="-4" text-anchor="middle" font-size="8" font-weight="800" fill="#f0c15e">QR</text>
+          <!-- QR lying FLAT on the table surface (not floating) -->
+          <g class="amb-qr">
+            <ellipse cx="218" cy="79" rx="18" ry="4.5" fill="#0005"/>
+            <g transform="translate(200 68) scale(1,0.48)">
+              <rect x="0" y="0" width="36" height="36" rx="3" fill="#fffef8" stroke="#d7982e" stroke-width="2"/>
+              <rect x="4" y="4" width="10" height="10" fill="#1a1510"/>
+              <rect x="6.5" y="6.5" width="5" height="5" fill="#fffef8"/>
+              <rect x="22" y="4" width="10" height="10" fill="#1a1510"/>
+              <rect x="24.5" y="6.5" width="5" height="5" fill="#fffef8"/>
+              <rect x="4" y="22" width="10" height="10" fill="#1a1510"/>
+              <rect x="6.5" y="24.5" width="5" height="5" fill="#fffef8"/>
+              <rect x="16" y="16" width="4" height="4" fill="#1a1510"/>
+              <rect x="22" y="18" width="3" height="3" fill="#1a1510"/>
+              <rect x="18" y="24" width="3" height="3" fill="#1a1510"/>
+              <rect x="26" y="26" width="5" height="5" fill="#1a1510"/>
+            </g>
+            <text x="218" y="64" text-anchor="middle" font-size="8" font-weight="800" fill="#f0c15e">QR</text>
           </g>
 
-          <!-- scan beam: phone → QR -->
+          <!-- scan beam: phone in hand → QR on table -->
           <g class="amb-scan-beam" opacity="0">
-            <path d="M255 70 L220 66" stroke="#b8df1bcc" stroke-width="2" stroke-linecap="round"/>
-            <path d="M252 66 L218 62" stroke="#f0c15e88" stroke-width="1.2" stroke-linecap="round"/>
-            <rect x="196" y="50" width="32" height="32" fill="none" stroke="#b8df1b" stroke-width="1.6" stroke-dasharray="4 3" rx="2"/>
+            <path d="M268 62 L230 74" stroke="#b8df1bcc" stroke-width="2" stroke-linecap="round"/>
+            <path d="M266 58 L228 72" stroke="#f0c15e88" stroke-width="1.2" stroke-linecap="round"/>
+            <ellipse cx="218" cy="76" rx="20" ry="8" fill="none" stroke="#b8df1b" stroke-width="1.5" stroke-dasharray="4 3"/>
           </g>
 
           <!-- chair RIGHT of table -->
@@ -465,7 +468,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
             <path d="M314 78 L318 112" stroke="#2a1808" stroke-width="2.2" stroke-linecap="round"/>
           </g>
 
-          <!-- guest on chair: scans QR then browses/orders -->
+          <!-- guest on chair — phone clearly IN HAND -->
           <g class="amb-guest">
             <path d="M292 74c8 1 20 1 28-2" stroke="#2a3548" stroke-width="9" stroke-linecap="round" fill="none"/>
             <path d="M292 76c-6 10-10 18-12 26" stroke="#2a3548" stroke-width="5.5" stroke-linecap="round" fill="none"/>
@@ -479,26 +482,32 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
             <circle cx="306" cy="28" r="1.4" fill="#2a1a10"/>
             <circle cx="314" cy="28" r="1.4" fill="#2a1a10"/>
             <path d="M307 33c2 2 5 2 7 0" stroke="#b07a4a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-            <path d="M296 52c-14 4-24 10-28 16" stroke="url(#ambSkin)" stroke-width="5" stroke-linecap="round" fill="none"/>
-            <!-- phone: lean to QR then show menu/+ -->
-            <g class="amb-phone-arm" transform="translate(248 58) rotate(-8)">
-              <rect x="0" y="0" width="15" height="24" rx="3" fill="#12100e" stroke="#d7982ecc" stroke-width="1.3"/>
-              <rect x="2" y="3" width="11" height="14" rx="1.5" fill="#3a2a18"/>
-              <!-- screen: QR scan -->
-              <g class="amb-phone-scr-qr" opacity="0">
-                <rect x="3.5" y="4.5" width="8" height="8" fill="#fffef8"/>
-                <rect x="4.2" y="5.2" width="2.2" height="2.2" fill="#1a1510"/>
-                <rect x="7.8" y="5.2" width="2.2" height="2.2" fill="#1a1510"/>
-                <rect x="4.2" y="8.8" width="2.2" height="2.2" fill="#1a1510"/>
+            <!-- forearm from body to hand -->
+            <path d="M298 54 C286 56 278 60 272 68" stroke="url(#ambSkin)" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <!-- hand holding phone -->
+            <g class="amb-phone-arm">
+              <ellipse cx="270" cy="72" rx="8" ry="5.5" fill="url(#ambSkin)" stroke="#0002"/>
+              <path d="M264 70c-2 2-3 5-2 7" stroke="url(#ambSkin)" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+              <path d="M268 69c-1 3-1 6 0 8" stroke="url(#ambSkin)" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <path d="M274 69c1 3 2 6 1 8" stroke="url(#ambSkin)" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <!-- phone upright in the hand -->
+              <g transform="translate(258 48) rotate(-6)">
+                <rect x="0" y="0" width="16" height="26" rx="3.5" fill="#12100e" stroke="#d7982ecc" stroke-width="1.4"/>
+                <rect x="2" y="3" width="12" height="15" rx="1.5" fill="#3a2a18"/>
+                <g class="amb-phone-scr-qr" opacity="0">
+                  <rect x="3.5" y="4.5" width="9" height="9" fill="#fffef8"/>
+                  <rect x="4.3" y="5.3" width="2.4" height="2.4" fill="#1a1510"/>
+                  <rect x="8.3" y="5.3" width="2.4" height="2.4" fill="#1a1510"/>
+                  <rect x="4.3" y="9.3" width="2.4" height="2.4" fill="#1a1510"/>
+                </g>
+                <g class="amb-phone-scr-menu" opacity="0">
+                  <rect x="3.5" y="5" width="9" height="1.5" rx=".5" fill="#d7982e"/>
+                  <rect x="3.5" y="8.2" width="8" height="1.3" rx=".5" fill="#cdb27a"/>
+                  <rect x="3.5" y="11.2" width="7" height="1.3" rx=".5" fill="#cdb27a99"/>
+                </g>
+                <rect class="amb-phone-glow" x="3.5" y="20" width="9" height="3.5" rx="1" fill="#b8df1b"/>
+                <text class="amb-phone-scr-plus" x="8" y="13" text-anchor="middle" font-size="8" font-weight="800" fill="#f0c15e">+</text>
               </g>
-              <!-- screen: menu lines (browse) -->
-              <g class="amb-phone-scr-menu" opacity="0">
-                <rect x="3.5" y="5" width="8" height="1.4" rx=".5" fill="#d7982e"/>
-                <rect x="3.5" y="8" width="7" height="1.2" rx=".5" fill="#cdb27a"/>
-                <rect x="3.5" y="11" width="6" height="1.2" rx=".5" fill="#cdb27a99"/>
-              </g>
-              <rect class="amb-phone-glow" x="3" y="19" width="9" height="3.5" rx="1" fill="#b8df1b"/>
-              <text class="amb-phone-scr-plus" x="7.5" y="12" text-anchor="middle" font-size="7" font-weight="800" fill="#f0c15e">+</text>
             </g>
           </g>
 
