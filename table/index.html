@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v261 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v262 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -326,34 +326,54 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 }
 #dailyDishScreen.show{transform:translateY(0);visibility:visible;pointer-events:auto}
 .dd-kicker{margin:0 0 6px;font-size:11px;font-weight:1000;letter-spacing:.06em;color:#8a5a10;text-align:center}
-.dd-hero{
-  display:grid;grid-template-columns:minmax(0,1fr) 76px;gap:8px;align-items:stretch;margin:0 0 10px
-}
-.dd-photo{
-  position:relative;min-height:210px;height:min(42vh,280px);border-radius:16px;overflow:hidden;
+.dd-stage{
+  position:relative;margin:0 0 8px;border-radius:16px;overflow:hidden;
   background:linear-gradient(160deg,#4a3218,#2a1a0e);border:1px solid #c4892e66
 }
-.dd-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.dd-photo{
+  position:relative;width:100%;min-height:180px;max-height:min(48vh,360px);
+  display:flex;align-items:center;justify-content:center;background:transparent
+}
+.dd-photo img{
+  display:block;width:100%;height:auto;max-height:min(48vh,360px);
+  object-fit:contain;object-position:center center;background:#2a1a0e
+}
+.dd-photo.is-empty{min-height:200px}
 .dd-photo.is-empty::after{
   content:"🍽";position:absolute;inset:0;display:grid;place-items:center;font-size:54px;opacity:.55
 }
 .dd-photo.is-empty img{display:none}
+.dd-nav{
+  position:absolute;top:50%;z-index:3;transform:translateY(-50%);
+  width:40px;height:40px;border:1px solid #f0c15ecc;border-radius:999px;
+  background:linear-gradient(145deg,#2a1a0eee,#17100af0);color:#ffe08a;
+  font-size:26px;font-weight:1000;line-height:1;cursor:pointer;
+  display:grid;place-items:center;box-shadow:0 4px 14px #0008;padding:0
+}
+.dd-nav:disabled{opacity:.28;cursor:default}
+.dd-nav:not(:disabled):active{transform:translateY(-50%) scale(.96)}
+.dd-nav-prev{right:8px}
+.dd-nav-next{left:8px}
+.dd-week-wrap{margin:0 0 10px}
 .dd-week{
-  display:flex;flex-direction:column;gap:5px;overflow-y:auto;overflow-x:hidden;
-  max-height:min(42vh,280px);padding:0;scrollbar-width:none
+  display:flex;flex-direction:row;gap:8px;overflow-x:auto;overflow-y:hidden;
+  padding:2px 2px 6px;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;
+  scroll-snap-type:x proximity
 }
 .dd-week::-webkit-scrollbar{display:none}
 .dd-week[hidden]{display:none!important}
 .dd-week-btn{
-  flex:0 0 auto;width:100%;padding:5px 4px 4px;border:1px solid #c4892e66;border-radius:11px;
-  background:#fff8;color:#1a0a00;font-size:10px;font-weight:900;cursor:pointer;text-align:center;line-height:1.15
+  flex:0 0 auto;width:72px;padding:5px 4px 5px;border:1px solid #c4892e66;border-radius:12px;
+  background:#fff8;color:#1a0a00;font-size:10px;font-weight:900;cursor:pointer;text-align:center;line-height:1.15;
+  scroll-snap-align:center
 }
 .dd-week-btn.is-active{border-color:#8a5a10;background:#fff;box-shadow:0 0 0 1px #f0c15e inset}
 .dd-week-btn.is-today{color:#5a3a00;font-weight:1000}
 .dd-week-btn img,.dd-week-ph{
-  display:block;width:100%;height:36px;object-fit:cover;border-radius:7px;background:#3a2816;margin:0 0 3px
+  display:block;width:100%;height:44px;object-fit:cover;border-radius:8px;background:#3a2816;margin:0 0 3px
 }
-.dd-week-ph{display:grid;place-items:center;font-size:15px}
+.dd-week-ph{display:grid;place-items:center;font-size:16px}
+.dd-page-hint{margin:0 0 8px;text-align:center;font-size:11px;font-weight:900;color:#8a5a10}
 .dd-title{margin:0 0 8px;font-size:clamp(18px,5.2vw,24px);font-weight:1000;line-height:1.2;text-align:center;color:#1a0a00}
 .dd-list{list-style:none;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:6px}
 .dd-list li{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:11px;background:#fff9;border:1px solid #a0641428;font-size:13px;font-weight:900;line-height:1.3}
@@ -699,8 +719,13 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   </section>
   <section id="dailyDishScreen" aria-label="الطبق اليومي" aria-live="polite">
     <p class="dd-kicker" id="ddKicker">الطبق اليومي · Günün Yemeği</p>
-    <div class="dd-hero">
+    <div class="dd-stage">
+      <button type="button" class="dd-nav dd-nav-prev" id="ddPrev" aria-label="اليوم السابق">‹</button>
       <div class="dd-photo is-empty" id="ddPhoto"><img id="ddPhotoImg" alt="" draggable="false" decoding="async" /></div>
+      <button type="button" class="dd-nav dd-nav-next" id="ddNext" aria-label="اليوم التالي">›</button>
+    </div>
+    <p class="dd-page-hint" id="ddPageHint" hidden></p>
+    <div class="dd-week-wrap">
       <div class="dd-week" id="ddWeek" hidden aria-label="أيام الأسبوع"></div>
     </div>
     <h2 class="dd-title" id="ddTitle">—</h2>
@@ -1342,7 +1367,12 @@ window.TONINO_CONFIG = Object.freeze({
       priceEl.textContent = "";
     }
     const week = $("ddWeek");
-    if (weeklyDishes.length > 0) {
+    const hint = $("ddPageHint");
+    const prevBtn = $("ddPrev");
+    const nextBtn = $("ddNext");
+    const totalDays = weeklyDishes.length;
+    if (totalDays > 0) {
+      if (ddPreviewIdx < 0 || ddPreviewIdx >= totalDays) ddPreviewIdx = 0;
       week.hidden = false;
       week.innerHTML = weeklyDishes.map((row, i) => {
         const thumb = absMenuUrl(guestMenuApiBase, row.imageUrl || "");
@@ -1352,9 +1382,24 @@ window.TONINO_CONFIG = Object.freeze({
         const dayLabel = escapeHtml(row.day || ("يوم " + (i + 1)));
         return `<button type="button" class="dd-week-btn${i === ddPreviewIdx ? " is-active" : ""}${row.isToday ? " is-today" : ""}" data-dd-rail="${i}">${media}<span>${dayLabel}</span></button>`;
       }).join("");
+      if (hint) {
+        hint.hidden = false;
+        hint.textContent = `${ddPreviewIdx + 1} / ${totalDays} · اسحب الأيام أو استخدم الأسهم`;
+      }
+      if (prevBtn) prevBtn.disabled = ddPreviewIdx <= 0;
+      if (nextBtn) nextBtn.disabled = ddPreviewIdx >= totalDays - 1;
+      requestAnimationFrame(() => {
+        const active = week.querySelector(".dd-week-btn.is-active");
+        if (active && typeof active.scrollIntoView === "function") {
+          active.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        }
+      });
     } else {
       week.hidden = true;
       week.innerHTML = "";
+      if (hint) { hint.hidden = true; hint.textContent = ""; }
+      if (prevBtn) prevBtn.disabled = true;
+      if (nextBtn) nextBtn.disabled = true;
     }
     const canOrder = dailyDishCanOrderPreview(dish);
     const needDessert = desserts.length >= 2;
@@ -1373,6 +1418,16 @@ window.TONINO_CONFIG = Object.freeze({
     } else {
       orderBtn.textContent = qty > 0 ? `✓ في السلة (${qty}) — أضف` : "أضف للسلة";
     }
+  }
+  function stepDailyDishDay(delta) {
+    if (!weeklyDishes.length) return;
+    const next = Math.max(0, Math.min(weeklyDishes.length - 1, ddPreviewIdx + delta));
+    if (next === ddPreviewIdx) return;
+    ddPreviewIdx = next;
+    ddSelectedDessert = "";
+    ddSelectedDrink = "";
+    renderDailyDishScreen();
+    if (navigator.vibrate) navigator.vibrate(8);
   }
   function openDailyDishScreen() {
     if (!todayDailyDish) { toast("لا يوجد طبق يومي اليوم"); return; }
@@ -1710,6 +1765,8 @@ window.TONINO_CONFIG = Object.freeze({
   $("ddClose").addEventListener("click", closeDailyDishScreen);
   $("ddOrder").addEventListener("click", addDailyDishToCart);
   $("ddFab").addEventListener("click", openDailyDishScreen);
+  $("ddPrev").addEventListener("click", () => stepDailyDishDay(-1));
+  $("ddNext").addEventListener("click", () => stepDailyDishDay(1));
   $("ddWeek").addEventListener("click", event => {
     const btn = event.target.closest("[data-dd-rail]");
     if (!btn) return;
@@ -1719,6 +1776,26 @@ window.TONINO_CONFIG = Object.freeze({
     ddSelectedDrink = "";
     renderDailyDishScreen();
   });
+  /* Swipe on photo like a menu page */
+  (function dailyDishSwipe(){
+    const stage = document.querySelector(".dd-stage");
+    if (!stage) return;
+    let x0 = 0, y0 = 0, active = false;
+    stage.addEventListener("pointerdown", e => {
+      if (e.target.closest(".dd-nav")) return;
+      active = true; x0 = e.clientX; y0 = e.clientY;
+      try { stage.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    stage.addEventListener("pointerup", e => {
+      if (!active) return;
+      active = false;
+      const dx = e.clientX - x0, dy = e.clientY - y0;
+      if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+      /* RTL sheet: swipe right → previous day, swipe left → next day */
+      stepDailyDishDay(dx > 0 ? -1 : 1);
+    });
+    stage.addEventListener("pointercancel", () => { active = false; });
+  })();
   function onDailyDishChoiceClick(event) {
     const btn = event.target.closest("[data-dd-choice]");
     if (!btn) return;
