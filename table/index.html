@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v258 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -88,6 +88,8 @@ html.coach-locked #viewer,
 html.coach-locked #footer,
 html.coach-locked #shade,
 html.coach-locked #variantSheet,
+html.coach-locked #dailyDishScreen,
+html.coach-locked #ddFab,
 html.coach-locked #toast{visibility:hidden!important;pointer-events:none!important}
 html:fullscreen,html:-webkit-full-screen,
 html:fullscreen body,html:-webkit-full-screen body,
@@ -270,8 +272,10 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 #orderCloud.active{opacity:1;pointer-events:auto;padding-top:4px;padding-bottom:4px}
 #orderGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;direction:rtl;align-content:start}
 .order{height:28px;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 26px;border:1px solid #e1aa456e;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#503820f4,#281a10f4);box-shadow:0 2px 5px #0008,0 0 0 1px #fff05 inset}
-.order-main{min-width:0;border:0;background:transparent;color:#fff;padding:2px 4px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr 1fr;column-gap:3px;text-align:right;cursor:pointer}
-.order-main .quantity{grid-row:1/3;align-self:center;color:#caed38;font-size:9px;font-weight:1000}.order-main .name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px;font-weight:1000}.order-main .price{font-size:8px;color:#f4c96e}
+.order-main{min-width:0;border:0;background:transparent;color:#fff;padding:1px 4px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr 1fr;column-gap:3px;text-align:right;cursor:pointer;align-content:center}
+.order-main .quantity{grid-row:1/3;align-self:center;color:#caed38;font-size:12px;font-weight:1000;line-height:1}
+.order-main .name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:1000;line-height:1.05}
+.order-main .price{font-size:9px;color:#f4c96e;line-height:1}
 .order-action{border:0;border-right:1px solid #e0aa4538;background:#ffffff08;color:#ffd46c;font-size:15px;font-weight:1000;cursor:pointer}.order-action.trash{font-size:12px}.order-action:active{background:#c78922;color:#171008}
 
 /* Quick jumps ABOVE categories — tea/coffee guests skip flipping */
@@ -293,6 +297,56 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 }
 .quick-jump.active{border-color:#b8df1b;background:linear-gradient(180deg,#4a3518,#2c1e10);color:#d7ff3d;box-shadow:0 0 0 1px #b8df1b44 inset}
 .quick-jump:active{transform:scale(.97)}
+.quick-jump.daily-dish-jump{
+  border-color:#f0c15ecc;background:linear-gradient(180deg,#7a4a14,#3a220c);color:#ffe08a;
+  box-shadow:0 0 0 1px #ffd36a55 inset,0 0 12px #d7982e55;font-size:clamp(12px,3.4vw,14px)
+}
+#ddFab{
+  display:none;position:absolute;z-index:1080;left:10px;right:10px;
+  bottom:calc(var(--footer-h) + var(--safe-bottom) + 10px);
+  min-height:48px;padding:10px 14px;border:1px solid #f0c15ecc;border-radius:16px;
+  background:linear-gradient(145deg,#a9670c,#f0b747);color:#181006;
+  font-size:clamp(14px,3.8vw,17px);font-weight:1000;cursor:pointer;direction:rtl;
+  box-shadow:0 10px 28px #000a,0 0 0 1px #fff3 inset;text-align:center;line-height:1.25
+}
+#ddFab.show{display:block}
+#ddFab:active{transform:scale(.98)}
+#ddFab small{display:block;margin-top:2px;font-size:11px;font-weight:900;opacity:.85}
+
+/* Daily dish sheet — does not touch menu pages / hotspots */
+#dailyDishScreen:not(.show){visibility:hidden;pointer-events:none}
+#dailyDishScreen{
+  position:absolute;z-index:1100;left:6px;right:6px;
+  bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);
+  max-height:min(78vh,640px);overflow:auto;padding:14px 14px 12px;
+  border:1px solid #d99a34;border-radius:20px;
+  background:linear-gradient(165deg,#fff8e8,#f3dfb0 55%,#e8c984);
+  box-shadow:0 -10px 45px #000c;color:#1a0a00;
+  transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1);direction:rtl
+}
+#dailyDishScreen.show{transform:translateY(0);visibility:visible;pointer-events:auto}
+.dd-kicker{margin:0 0 4px;font-size:11px;font-weight:1000;letter-spacing:.06em;color:#8a5a10;text-align:center}
+.dd-title{margin:0 0 10px;font-size:clamp(18px,5.2vw,24px);font-weight:1000;line-height:1.2;text-align:center;color:#1a0a00}
+.dd-photo{width:100%;max-height:180px;border-radius:14px;overflow:hidden;background:#3a2816;margin:0 0 10px;border:1px solid #c4892e66}
+.dd-photo img{display:block;width:100%;height:180px;object-fit:cover}
+.dd-photo.is-empty{display:none}
+.dd-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.dd-list li{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:11px;background:#fff9;border:1px solid #a0641428;font-size:13px;font-weight:900;line-height:1.3}
+.dd-list .dd-label{flex:0 0 auto;min-width:4.2em;font-size:11px;color:#8a5a10}
+.dd-list .dd-val{flex:1;word-break:break-word}
+.dd-week{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.dd-week::-webkit-scrollbar{display:none}
+.dd-week-btn{flex:0 0 auto;width:58px;padding:4px;border:1px solid #c4892e66;border-radius:10px;background:#fff8;color:#1a0a00;font-size:10px;font-weight:900;cursor:pointer}
+.dd-week-btn.is-active{border-color:#8a5a10;box-shadow:0 0 0 1px #f0c15e inset}
+.dd-week-btn.is-today{color:#5a3a00}
+.dd-week-btn img,.dd-week-ph{display:block;width:100%;height:40px;object-fit:cover;border-radius:7px;background:#3a2816}
+.dd-week-ph{display:grid;place-items:center;font-size:16px}
+.dd-price{margin:10px 0 0;text-align:center;font-size:26px;font-weight:1000;color:#8a5a10}
+.dd-actions{margin-top:12px;display:grid;grid-template-columns:1fr 72px;gap:8px}
+.dd-order{border:0;border-radius:14px;padding:13px 10px;font-size:15px;font-weight:1000;color:#1a0a00;background:linear-gradient(145deg,#ffd54f,#f0b820);cursor:pointer}
+.dd-order:disabled{opacity:.45;cursor:not-allowed}
+.dd-order.in-cart{background:linear-gradient(145deg,#b8df1b,#8bb80f)}
+.dd-close{border:2px solid #a0641473;border-radius:14px;background:#fff6;color:#5a3a00;font-size:14px;font-weight:1000;cursor:pointer}
 
 /* Category strip ABOVE the menu (own row) — never covers menu art */
 #categoryBand{
@@ -335,9 +389,43 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 .page-edge{position:absolute;z-index:20;top:0;bottom:0;width:12px;opacity:0;pointer-events:none;background:linear-gradient(90deg,#fff1ad,#da952e66,transparent);box-shadow:0 0 27px #ffd96c}
 .page-shade{position:absolute;z-index:19;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent 42%,#000b 100%)}
 .menu-page[data-dir="prev"] .page-edge{right:0;left:auto;transform:scaleX(-1)}.menu-page[data-dir="prev"] .page-shade{background:linear-gradient(-90deg,transparent 42%,#000b 100%)}
-.hotspot{position:absolute;width:46px;height:46px;transform:translate(-50%,-50%);border:0;border-radius:12px;background:#ffffff01;cursor:pointer;z-index:30;touch-action:manipulation}
-.hotspot::after{content:"";position:absolute;inset:4px;border-radius:9px;border:1px solid transparent;opacity:0}.hotspot.ping::after{animation:ring .42s ease}@keyframes ring{0%{opacity:1;transform:scale(.4);border-color:#f4ffab;box-shadow:0 0 0 0 #c8ed4588}100%{opacity:0;transform:scale(1.55);border-color:transparent;box-shadow:0 0 0 13px transparent}}
-.qty-badge{position:absolute;top:-2px;right:-2px;min-width:15px;height:15px;padding:0 3px;border-radius:9px;display:none;place-items:center;background:#d62e39;color:#fff;border:1px solid #fff;font-size:8px;font-weight:1000;box-shadow:0 2px 4px #0007}.hotspot.has-qty .qty-badge{display:grid}
+.hotspot{position:absolute;width:34px;height:34px;transform:translate(-50%,-50%);border:0;border-radius:50%;background:transparent;cursor:pointer;z-index:30;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+/* Idle shimmer so guests see press marks over the printed + */
+.hotspot::before{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle at 50% 45%,#fff7c8cc 0 18%,#f0c15e88 34%,#b8df1b33 58%,transparent 72%);
+  box-shadow:0 0 0 1px #ffe49aee,0 0 5px 1px #f0c15ecc,0 0 9px 1px #b8df1b55;
+  animation:hotspotGlow 1.7s ease-in-out infinite;
+  animation-delay:var(--glow-delay,0s);
+  transition:opacity .18s ease,transform .18s ease;
+}
+.hotspot::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid transparent;opacity:0;pointer-events:none}
+.hotspot.ping::after{animation:ring .42s ease}
+@keyframes hotspotGlow{
+  0%,100%{opacity:.42;transform:scale(.78);filter:brightness(.95)}
+  50%{opacity:1;transform:scale(1);filter:brightness(1.25)}
+}
+@keyframes ring{0%{opacity:1;transform:scale(.45);border-color:#f4ffab;box-shadow:0 0 0 0 #c8ed4588}100%{opacity:0;transform:scale(1.7);border-color:transparent;box-shadow:0 0 0 14px transparent}}
+/* Quantity replaces the glow mark in the center (not a corner badge) */
+.qty-badge{
+  position:absolute;inset:7px;display:none;place-items:center;
+  border-radius:50%;
+  background:linear-gradient(160deg,#e23b45,#b91c28);
+  color:#fff;border:1px solid #fff8e8;
+  font-size:10px;font-weight:1000;line-height:1;
+  box-shadow:0 1px 4px #0008,0 0 6px #e23b4588;
+  z-index:2;
+}
+.hotspot.has-qty::before{opacity:0;animation:none;transform:scale(.5)}
+.hotspot.has-qty .qty-badge{display:grid}
+/* Dense pages (e.g. Sıcak Kahve ~20 spots) — smaller so numbers don't stack */
+.menu-page.dense-spots .hotspot{width:26px;height:26px}
+.menu-page.dense-spots .hotspot::before{inset:6px;box-shadow:0 0 0 1px #ffe49add,0 0 4px 1px #f0c15ebb}
+.menu-page.dense-spots .qty-badge{inset:5px;font-size:8px;border-width:1px;box-shadow:0 1px 3px #0007}
 
 /* 5 — clear fixed footer guidance */
 #footer{position:absolute;z-index:950;left:0;right:0;bottom:0;height:calc(var(--footer-h) + var(--safe-bottom));padding:0 6px var(--safe-bottom);display:grid;grid-template-columns:56px 1fr 72px;gap:4px;align-items:center;direction:ltr;background:linear-gradient(180deg,#2a1c10,#17100a);border-top:2px solid #d7982e;color:#ffe9b1;box-shadow:0 -6px 18px #000a}
@@ -348,19 +436,24 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 
 /* Variant sheet for the single ice-cream button. */
 #shade{position:absolute;z-index:1080;inset:0;background:#000b;opacity:0;pointer-events:none;transition:.2s}#shade.show{opacity:1;pointer-events:auto}
-#variantSheet:not(.show){visibility:hidden;pointer-events:none}#variantSheet{position:absolute;z-index:1100;left:6px;right:6px;bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);padding:15px;border:1px solid #d99a34;border-radius:20px;background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1)}#variantSheet.show{transform:translateY(0)}#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.variant{min-height:42px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:11px;font-weight:1000;cursor:pointer}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
+#variantSheet:not(.show){visibility:hidden;pointer-events:none}#variantSheet{position:absolute;z-index:1100;left:6px;right:6px;bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);padding:15px;border:1px solid #d99a34;border-radius:20px;background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1)}#variantSheet.show{transform:translateY(0)}#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#variantGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.variant{min-height:46px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:12px;font-weight:1000;cursor:pointer;padding:6px 8px;line-height:1.25}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
 
 @media(max-width:350px){
   :root{--top-h:43px;--quick-h:34px;--cats-h:46px;--footer-h:46px}
   #topbar{grid-template-columns:72px minmax(0,1fr) 91px;gap:4px;padding-left:4px;padding-right:4px}.top-button{min-height:30px}
-  .order{height:26px;grid-template-columns:minmax(0,1fr) 24px}.order-main .price{display:none}.hotspot{width:42px;height:42px}
+  .order{height:26px;grid-template-columns:minmax(0,1fr) 24px}.order-main .price{display:none}.hotspot{width:30px;height:30px}.menu-page.dense-spots .hotspot{width:24px;height:24px}
   #footer{grid-template-columns:48px 1fr 66px}.footer-side{font-size:11px}#hint{font-size:12px}
 }
 @media(orientation:landscape) and (max-height:520px){
   :root{--top-h:40px;--quick-h:32px;--cats-h:42px;--footer-h:36px}
   #topbar{grid-template-columns:70px minmax(0,1fr) 90px}.top-button{min-height:28px}#titleBox small{display:none}.category{font-size:8px}.order{height:25px}.order-main .price{display:none}
 }
-@media(prefers-reduced-motion:reduce){#viewer::before{animation:none}.logo-page,.menu-page,#toast,#variantSheet{transition-duration:.01ms!important}}
+@media(prefers-reduced-motion:reduce){
+  #viewer::before{animation:none}
+  .hotspot::before{animation:none;opacity:.85;transform:scale(1);filter:none}
+  .logo-page,.menu-page,#toast,#variantSheet{transition-duration:.01ms!important}
+}
 
 /* Seamless invariant: categories touch the menu at the exact same pixel row. */
 #categoryBand + #viewer{margin:0;padding:0}
@@ -573,9 +666,22 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   </footer>
 
   <div id="shade"></div>
-  <section id="variantSheet" aria-label="اختيار نكهة الآيس كريم">
-    <h3>اختر نكهة الآيس كريم</h3><div id="variantGrid"></div><button id="closeVariants" type="button">إغلاق</button>
+  <section id="variantSheet" aria-label="خيارات الصنف">
+    <h3 id="variantTitle">اختر الخيار</h3><div id="variantGrid"></div><button id="closeVariants" type="button">إغلاق</button>
   </section>
+  <section id="dailyDishScreen" aria-label="الطبق اليومي" aria-live="polite">
+    <p class="dd-kicker" id="ddKicker">الطبق اليومي · Günün Yemeği</p>
+    <div class="dd-photo is-empty" id="ddPhoto"><img id="ddPhotoImg" alt="" draggable="false" decoding="async" /></div>
+    <h2 class="dd-title" id="ddTitle">—</h2>
+    <div class="dd-week" id="ddWeek" hidden></div>
+    <ul class="dd-list" id="ddList"></ul>
+    <p class="dd-price" id="ddPrice" hidden></p>
+    <div class="dd-actions">
+      <button type="button" class="dd-order" id="ddOrder">أضف للسلة</button>
+      <button type="button" class="dd-close" id="ddClose">إغلاق</button>
+    </div>
+  </section>
+  <button type="button" id="ddFab" aria-label="الطبق اليومي"></button>
   <div id="toast" role="status" aria-live="polite"></div>
   <div id="startGate" role="dialog" aria-modal="true" aria-label="تعليمات الطلب">
     <div class="start-card">
@@ -627,6 +733,12 @@ window.TONINO_CONFIG = Object.freeze({
   let turning = false;
   let cart = [];
   let toastTimer = null;
+  let todayDailyDish = null;
+  let weeklyDishes = [];
+  let ddPreviewIdx = -1;
+  let guestMenuApiBase = "";
+  const DAILY_DISH_PAGE = "dd";
+  const DAILY_DISH_KEY = "guest-daily-dish";
 
   function peekTokenPayload(token) {
     try {
@@ -852,6 +964,7 @@ window.TONINO_CONFIG = Object.freeze({
     const layer = document.createElement("section");
     layer.className = "menu-page";
     layer.dataset.page = index;
+    if ((HOTSPOTS[index] || []).length >= 12) layer.classList.add("dense-spots");
 
     const ambient = document.createElement("div");
     ambient.className = "ambient";
@@ -866,12 +979,13 @@ window.TONINO_CONFIG = Object.freeze({
     image.draggable = false;
     paper.appendChild(image);
 
-    (HOTSPOTS[index] || []).forEach(item => {
+    (HOTSPOTS[index] || []).forEach((item, spotIndex) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "hotspot";
       button.style.left = `${item.x}%`;
       button.style.top = `${item.y}%`;
+      button.style.setProperty("--glow-delay", `${(spotIndex % 6) * 0.22}s`);
       button.dataset.key = `${index}|${item.name}`;
       button.setAttribute("aria-label", `أضف ${item.name}`);
       button.innerHTML = '<span class="qty-badge">0</span>';
@@ -879,7 +993,9 @@ window.TONINO_CONFIG = Object.freeze({
         event.stopPropagation();
         button.classList.remove("ping"); void button.offsetWidth; button.classList.add("ping");
         const fullItem = {...item, page:index};
-        item.variants ? openVariants(fullItem) : addItem(fullItem);
+        if (needsTurkishCoffeeSugar(item.name)) openTurkishCoffeeVariants(fullItem);
+        else if (item.variants) openVariants(fullItem);
+        else addItem(fullItem);
       });
       paper.appendChild(button);
     });
@@ -1008,7 +1124,10 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function buildQuickJumps() {
     const host = $("quickRow");
-    if (!host || host.dataset.ready === "1") return;
+    if (!host) return;
+    host.innerHTML = "";
+    host.dataset.ready = "1";
+    syncDailyDishQuickJump();
     const jumps = [
       { label: "Çay", match: "Çay" },
       { label: "Türk Kahvesi", match: "Sıcak Kahve" },
@@ -1026,7 +1145,200 @@ window.TONINO_CONFIG = Object.freeze({
       button.addEventListener("click", () => goTo(page));
       host.appendChild(button);
     });
-    host.dataset.ready = "1";
+  }
+  function dailyDishMainLabel(dish) {
+    return String((dish && (dish.mainAr || dish.main || dish.mainTr)) || "").trim();
+  }
+  function syncDailyDishEntry() {
+    const host = $("quickRow");
+    const fab = $("ddFab");
+    const has = !!(todayDailyDish && dailyDishMainLabel(todayDailyDish));
+    if (host) {
+      const old = host.querySelector(".daily-dish-jump");
+      if (old) old.remove();
+      if (has) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "quick-jump daily-dish-jump";
+        button.textContent = "🍽 الطبق اليومي";
+        button.addEventListener("click", () => openDailyDishScreen());
+        host.insertBefore(button, host.firstChild);
+      }
+    }
+    if (fab) {
+      if (has) {
+        const name = dailyDishMainLabel(todayDailyDish);
+        fab.innerHTML = `🍽 الطبق اليومي · Günün Yemeği<small>${escapeHtml(name)}</small>`;
+        fab.classList.add("show");
+      } else {
+        fab.classList.remove("show");
+        fab.textContent = "";
+      }
+    }
+  }
+  function syncDailyDishQuickJump() { syncDailyDishEntry(); }
+  function maybeAutoOpenDailyDish() {
+    if (!todayDailyDish || !dailyDishMainLabel(todayDailyDish)) return;
+    if (document.documentElement.classList.contains("coach-locked")) return;
+    try {
+      if (sessionStorage.getItem("ddAutoOpened") === "1") return;
+      sessionStorage.setItem("ddAutoOpened", "1");
+    } catch (_) {}
+    setTimeout(() => { try { openDailyDishScreen(); } catch (_) {} }, 420);
+  }
+  function dailyDishPreview() {
+    if (ddPreviewIdx >= 0 && weeklyDishes[ddPreviewIdx]) return weeklyDishes[ddPreviewIdx];
+    return todayDailyDish;
+  }
+  function dailyDishExtrasLines(dish) {
+    if (!dish) return [];
+    const lines = [];
+    const push = (label, val) => {
+      const v = String(val || "").trim();
+      if (v) lines.push({ label, val: v });
+    };
+    push("شوربة", dish.soup);
+    push("غارني", dish.sides);
+    const desserts = [dish.dessert, dish.dessert2].map(x => String(x || "").trim()).filter(Boolean);
+    if (desserts.length) push("تحلية", desserts.join(" / "));
+    const drinks = [dish.drink, dish.drink2].map(x => String(x || "").trim()).filter(Boolean);
+    if (drinks.length) push("مشروب", drinks.join(" / "));
+    const tea = String(dish.teaOffer || "").trim();
+    if (tea && tea !== "لا" && tea.toLowerCase() !== "no") push("شاي", tea === "نعم" || tea.toLowerCase() === "yes" ? "مع الطبق" : tea);
+    return lines;
+  }
+  function buildDailyDishNote(dish) {
+    return dailyDishExtrasLines(dish).map(l => `${l.label}: ${l.val}`).join(" · ");
+  }
+  function dailyDishInCartQty() {
+    return cart
+      .filter(x => x.hotspotName === DAILY_DISH_KEY || String(x.itemId || "") === DAILY_DISH_KEY)
+      .reduce((s, x) => s + (Number(x.qty) || 0), 0);
+  }
+  function renderDailyDishScreen() {
+    const dish = dailyDishPreview() || todayDailyDish;
+    if (!dish) return;
+    const title = String(dish.mainAr || dish.main || dish.mainTr || "").trim() || "الطبق اليومي";
+    $("ddTitle").textContent = title;
+    const photo = $("ddPhoto");
+    const img = $("ddPhotoImg");
+    const src = absMenuUrl(guestMenuApiBase, dish.imageUrl || (todayDailyDish && todayDailyDish.imageUrl) || "");
+    if (src) {
+      img.src = src;
+      photo.classList.remove("is-empty");
+    } else {
+      img.removeAttribute("src");
+      photo.classList.add("is-empty");
+    }
+    const list = $("ddList");
+    list.innerHTML = dailyDishExtrasLines(dish)
+      .map(l => `<li><span class="dd-label">${escapeHtml(l.label)}</span><span class="dd-val">${escapeHtml(l.val)}</span></li>`)
+      .join("");
+    const rawPrice = String(dish.price || (todayDailyDish && todayDailyDish.price) || "").replace(",", ".");
+    const numPrice = Number(rawPrice);
+    const priceEl = $("ddPrice");
+    if (Number.isFinite(numPrice) && numPrice > 0) {
+      priceEl.hidden = false;
+      priceEl.textContent = money(numPrice);
+    } else {
+      priceEl.hidden = true;
+      priceEl.textContent = "";
+    }
+    const week = $("ddWeek");
+    if (weeklyDishes.length > 1) {
+      week.hidden = false;
+      week.innerHTML = weeklyDishes.map((row, i) => {
+        const thumb = absMenuUrl(guestMenuApiBase, row.imageUrl || "");
+        const media = thumb
+          ? `<img alt="" draggable="false" decoding="async" src="${escapeHtml(thumb)}" />`
+          : `<span class="dd-week-ph" aria-hidden="true">🍽</span>`;
+        return `<button type="button" class="dd-week-btn${i === ddPreviewIdx ? " is-active" : ""}${row.isToday ? " is-today" : ""}" data-dd-rail="${i}">${media}<span>${escapeHtml(row.day || "")}</span></button>`;
+      }).join("");
+    } else {
+      week.hidden = true;
+      week.innerHTML = "";
+    }
+    const previewRow = weeklyDishes[ddPreviewIdx];
+    const canOrder = !!todayDailyDish && (
+      !previewRow || previewRow.isToday === true || previewRow.orderable === true || dish === todayDailyDish
+    );
+    const orderBtn = $("ddOrder");
+    const qty = dailyDishInCartQty();
+    orderBtn.disabled = !canOrder;
+    orderBtn.classList.toggle("in-cart", qty > 0 && canOrder);
+    orderBtn.textContent = !canOrder
+      ? (dish.day ? `قريباً · ${dish.day}` : "قريباً")
+      : (qty > 0 ? `✓ في السلة (${qty}) — أضف` : "أضف للسلة");
+  }
+  function openDailyDishScreen() {
+    if (!todayDailyDish) { toast("لا يوجد طبق يومي اليوم"); return; }
+    ddPreviewIdx = Math.max(0, weeklyDishes.findIndex(w => w && w.isToday));
+    if (ddPreviewIdx < 0) ddPreviewIdx = 0;
+    renderDailyDishScreen();
+    closeVariants();
+    $("shade").classList.add("show");
+    $("dailyDishScreen").classList.add("show");
+    if (navigator.vibrate) navigator.vibrate(12);
+  }
+  function closeDailyDishScreen() {
+    $("dailyDishScreen").classList.remove("show");
+    if (!$("variantSheet").classList.contains("show")) $("shade").classList.remove("show");
+  }
+  function addDailyDishToCart() {
+    if (!todayDailyDish) return;
+    const preview = dailyDishPreview() || todayDailyDish;
+    const canOrder = ddPreviewIdx < 0 || !!(weeklyDishes[ddPreviewIdx] && weeklyDishes[ddPreviewIdx].isToday) || preview.orderable === true || preview === todayDailyDish;
+    if (!canOrder) { toast("يمكن طلب طبق اليوم فقط"); return; }
+    const dish = todayDailyDish;
+    const rawPrice = String(dish.price || "0").replace(",", ".");
+    const numPrice = Number(rawPrice);
+    const mainName = String(dish.mainAr || dish.main || dish.mainTr || "Günün Yemeği").trim();
+    addItem({
+      page: DAILY_DISH_PAGE,
+      hotspotName: DAILY_DISH_KEY,
+      itemId: DAILY_DISH_KEY,
+      name: `Günün Yemeği · ${mainName}`,
+      category: "Günün Yemeği",
+      price: Number.isFinite(numPrice) && numPrice > 0 ? Math.round(numPrice) : 0,
+      note: buildDailyDishNote(dish),
+    });
+    renderDailyDishScreen();
+  }
+  function applyDailyDishPayload(data, apiBase) {
+    if (apiBase) guestMenuApiBase = String(apiBase || "").replace(/\/+$/, "");
+    todayDailyDish = null;
+    weeklyDishes = [];
+    ddPreviewIdx = -1;
+    if (data && data.dailyDishGuestVisible !== false && data.dailyDish && String(data.dailyDish.main || "").trim()) {
+      todayDailyDish = { ...data.dailyDish, isToday: true, orderable: true };
+    }
+    if (Array.isArray(data && data.weeklyDishes)) {
+      weeklyDishes = data.weeklyDishes.filter(w => w && String(w.main || "").trim());
+    }
+    syncDailyDishEntry();
+    if ($("dailyDishScreen") && $("dailyDishScreen").classList.contains("show")) renderDailyDishScreen();
+  }
+  function applyDailyDishFromShop(shop, apiBase) {
+    if (!shop || shop.dailySoupEnabled === false) return false;
+    const main = String(shop.dailyDishMain || "").trim();
+    if (!main) return false;
+    applyDailyDishPayload({
+      dailyDishGuestVisible: true,
+      dailyDish: {
+        main,
+        soup: shop.dailySoupName || "",
+        sides: shop.dailyDishSides || "",
+        dessert: shop.dailyDishDessert || "",
+        dessert2: shop.dailyDishDessert2 || "",
+        drink: shop.dailyDishDrink || "",
+        drink2: shop.dailyDishDrink2 || "",
+        teaOffer: shop.dailyDishTeaOffer || "",
+        price: shop.dailyDishPrice || "",
+        imageUrl: shop.dailyDishImageUrl || "",
+      },
+      weeklyDishes: null,
+    }, apiBase);
+    return !!todayDailyDish;
   }
   function buildCategories() {
     const host = $("categories");
@@ -1090,17 +1402,89 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function updateBadges() {
     document.querySelectorAll(".hotspot").forEach(button=>{
-      const found=cart.find(x=>itemKey(x)===button.dataset.key), quantity=found?found.qty:0;
-      button.classList.toggle("has-qty",quantity>0); button.querySelector(".qty-badge").textContent=quantity;
+      const baseKey = button.dataset.key;
+      const quantity = cart
+        .filter(x => {
+          const hk = `${x.page}|${x.hotspotName || x.name}`;
+          return hk === baseKey || itemKey(x) === baseKey;
+        })
+        .reduce((sum, x) => sum + (Number(x.qty) || 0), 0);
+      button.classList.toggle("has-qty", quantity > 0);
+      const badge = button.querySelector(".qty-badge");
+      if (badge) badge.textContent = quantity;
+    });
+  }
+  function normGuestName(s) {
+    return String(s || "").toLowerCase()
+      .replace(/ı/g, "i").replace(/İ/g, "i").replace(/ğ/g, "g").replace(/Ğ/g, "g")
+      .replace(/ş/g, "s").replace(/Ş/g, "s").replace(/ö/g, "o").replace(/Ö/g, "o")
+      .replace(/ü/g, "u").replace(/Ü/g, "u").replace(/ç/g, "c").replace(/Ç/g, "c")
+      .replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+  }
+  /** Türk Kahvesi + Damla Sakız + Antep Fıstık + Menengiç (+ Dibek) → sugar / duble choices */
+  function needsTurkishCoffeeSugar(name) {
+    const n = normGuestName(name);
+    if (!n) return false;
+    if (/\bturk\s+kahve/.test(n)) return true;
+    if (/\bdamla\s+sak/.test(n)) return true;
+    if (/\bantep\s+fist/.test(n)) return true;
+    if (/\bmenengic/.test(n)) return true;
+    if (/\bdibek\s+kahve/.test(n)) return true;
+    return false;
+  }
+  const TURKISH_COFFEE_OPTS = [
+    { id: "sade", label: "سادة · Sade", note: "Sade", priceMul: 1 },
+    { id: "orta", label: "وسط سكر · Orta", note: "Orta şekerli", priceMul: 1 },
+    { id: "sekerli", label: "سكر · Şekerli", note: "Şekerli", priceMul: 1 },
+    { id: "duble", label: "دابل دوبل · Duble", note: "Duble", priceMul: 2 },
+  ];
+  function openChoiceSheet(title, choices, onPick) {
+    closeDailyDishScreen();
+    const titleEl = $("variantTitle");
+    if (titleEl) titleEl.textContent = title;
+    const sheet = $("variantSheet");
+    if (sheet) sheet.setAttribute("aria-label", title);
+    const grid = $("variantGrid");
+    grid.innerHTML = "";
+    choices.forEach(choice => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "variant";
+      button.textContent = choice.label;
+      button.addEventListener("click", () => {
+        onPick(choice);
+        closeVariants();
+      });
+      grid.appendChild(button);
+    });
+    $("shade").classList.add("show");
+    $("variantSheet").classList.add("show");
+  }
+  function openTurkishCoffeeVariants(item) {
+    const baseName = String(item.name || "").trim();
+    const basePrice = Number(item.price) || 0;
+    openChoiceSheet("اختر السكر / الحجم — " + baseName, TURKISH_COFFEE_OPTS, choice => {
+      const price = Math.round(basePrice * (choice.priceMul || 1));
+      addItem({
+        ...item,
+        hotspotName: baseName,
+        name: `${baseName} (${choice.note})`,
+        price,
+        variants: undefined,
+      });
     });
   }
   function openVariants(item) {
-    const grid=$("variantGrid"); grid.innerHTML="";
-    item.variants.forEach(variant=>{
-      const button=document.createElement("button");button.type="button";button.className="variant";button.textContent=variant;
-      button.addEventListener("click",()=>{addItem({...item,name:`Dondurma - ${variant}`,variants:undefined});closeVariants();});grid.appendChild(button);
+    const flavors = Array.isArray(item.variants) ? item.variants : [];
+    const baseName = String(item.name || "Dondurma").trim();
+    openChoiceSheet("اختر نكهة الآيس كريم", flavors.map(v => ({ label: v, note: v, priceMul: 1 })), choice => {
+      addItem({
+        ...item,
+        hotspotName: baseName,
+        name: /dondurma/i.test(baseName) ? `Dondurma - ${choice.note}` : `${baseName} - ${choice.note}`,
+        variants: undefined,
+      });
     });
-    $("shade").classList.add("show");$("variantSheet").classList.add("show");
   }
   function closeVariants() { $("shade").classList.remove("show");$("variantSheet").classList.remove("show"); }
   function orderText() {
@@ -1140,7 +1524,7 @@ window.TONINO_CONFIG = Object.freeze({
           token: session.token,
           items: cart.map(item => ({
             name: String(item.name || "").trim() || "صنف",
-            category: CATEGORIES[item.page] || undefined,
+            category: item.category || CATEGORIES[item.page] || undefined,
             price: String(item.price),
             qty: String(Math.max(1, Number(item.qty) || 1)),
             notes: item.note ? String(item.note) : undefined,
@@ -1200,11 +1584,27 @@ window.TONINO_CONFIG = Object.freeze({
 
   $("orderGrid").addEventListener("click",event=>{
     const action=event.target.closest(".order-action");if(action){reduceItem(decodeURIComponent(action.dataset.key));return;}
-    const main=event.target.closest(".order-main");if(main)goTo(Number(main.dataset.page));
+    const main=event.target.closest(".order-main");
+    if(main){
+      const p = main.dataset.page;
+      if (p === DAILY_DISH_PAGE) openDailyDishScreen();
+      else goTo(Number(p));
+    }
   });
   $("sendButton").addEventListener("click",sendOrder);
   $("summaryButton").addEventListener("click",()=>$("orderCloud").scrollTo({top:0,behavior:"smooth"}));
-  $("shade").addEventListener("click",closeVariants);$("closeVariants").addEventListener("click",closeVariants);
+  $("shade").addEventListener("click",()=>{ closeVariants(); closeDailyDishScreen(); });
+  $("closeVariants").addEventListener("click",closeVariants);
+  $("ddClose").addEventListener("click", closeDailyDishScreen);
+  $("ddOrder").addEventListener("click", addDailyDishToCart);
+  $("ddFab").addEventListener("click", openDailyDishScreen);
+  $("ddWeek").addEventListener("click", event => {
+    const btn = event.target.closest("[data-dd-rail]");
+    if (!btn) return;
+    ddPreviewIdx = Number(btn.dataset.ddRail);
+    if (!Number.isFinite(ddPreviewIdx)) return;
+    renderDailyDishScreen();
+  });
   window.addEventListener("resize",updateGeometry,{passive:true});
   window.addEventListener("orientationchange",()=>setTimeout(updateGeometry,160),{passive:true});
   if(window.visualViewport)visualViewport.addEventListener("resize",updateGeometry,{passive:true});
@@ -1279,6 +1679,8 @@ window.TONINO_CONFIG = Object.freeze({
           unlockMenu();
           btn.disabled = false;
           try { updateGeometry(); } catch(_){}
+          try { syncDailyDishEntry(); } catch(_){}
+          try { maybeAutoOpenDailyDish(); } catch(_){}
         });
       });
     }
@@ -1395,6 +1797,15 @@ window.TONINO_CONFIG = Object.freeze({
     CATEGORIES = cats;
     return true;
   }
+  async function loadDailyDishFallback(apiBase) {
+    if (!apiBase || todayDailyDish) return;
+    try {
+      const res = await fetch(String(apiBase).replace(/\/+$/, "") + "/api/health", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && data.shop) applyDailyDishFromShop(data.shop, apiBase);
+    } catch (_) {}
+  }
   async function loadLiveMenuBook() {
     try {
       const params = readQueryParams();
@@ -1403,22 +1814,38 @@ window.TONINO_CONFIG = Object.freeze({
         const apiBase = (location.origin || "").replace(/\/+$/, "");
         if (!apiBase || /github\.io$/i.test(location.hostname)) return { ok: false };
         const res = await fetch(apiBase + "/api/guest/v1/menu-studio", { cache: "no-store", credentials: "include" });
-        if (!res.ok) return { ok: false };
+        if (!res.ok) {
+          await loadDailyDishFallback(apiBase);
+          return { ok: false };
+        }
         const data = await res.json();
-        if (!(await applyLiveBook(data, apiBase))) return { ok: false };
-        return { ok: true, guestLanguage: data.guestLanguage };
+        applyDailyDishPayload(data, apiBase);
+        if (!todayDailyDish) await loadDailyDishFallback(apiBase);
+        const bookOk = await applyLiveBook(data, apiBase);
+        return { ok: true, guestLanguage: data.guestLanguage, bookOk };
       }
       const apiBase = await resolveApiBase();
       const session = guestSession();
-      if (!apiBase || !session.token) return { ok: false };
+      if (!apiBase) return { ok: false };
+      if (!session.token) {
+        await loadDailyDishFallback(apiBase);
+        return { ok: false };
+      }
       const url = apiBase + "/api/guest/v1/menu?t=" + encodeURIComponent(session.token)
         + (session.shop ? "&shop=" + encodeURIComponent(session.shop) : "");
       const res = await fetch(url, { cache: "no-store" });
-      if (!res.ok) return { ok: false };
-      const data = await res.json();
-      if (!(await applyLiveBook(data, apiBase))) return { ok: false };
-      return { ok: true, guestLanguage: data.guestLanguage };
+      let data = null;
+      try { data = await res.json(); } catch (_) { data = null; }
+      if (data) applyDailyDishPayload(data, apiBase);
+      if (!todayDailyDish) await loadDailyDishFallback(apiBase);
+      if (!res.ok || !data) return { ok: false };
+      const bookOk = await applyLiveBook(data, apiBase);
+      return { ok: true, guestLanguage: data.guestLanguage, bookOk };
     } catch (_) {
+      try {
+        const apiBase = await resolveApiBase();
+        await loadDailyDishFallback(apiBase);
+      } catch (__){}
       return { ok: false };
     }
   }
@@ -1465,7 +1892,10 @@ window.TONINO_CONFIG = Object.freeze({
         if (lang) paintTable(applyAmbientLang(lang));
       });
     }
-    buildCategories();loadCart();updateGeometry();mountInitial(initialPage());renderCart();
+    buildCategories();
+    syncDailyDishEntry();
+    loadCart();updateGeometry();mountInitial(initialPage());renderCart();
+    if (!document.documentElement.classList.contains("coach-locked")) maybeAutoOpenDailyDish();
   })();
 })();
 
