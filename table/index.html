@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v270 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v271 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -324,98 +324,76 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   position:relative;z-index:1;width:100%;height:auto;margin:0;margin-top:auto;
   flex:0 0 auto;padding:0;box-sizing:border-box;direction:rtl;color:#1a0a00;
   display:flex;flex-direction:column;gap:0;overflow:hidden;min-height:0;
-  background:#2a1a0e;box-shadow:none
+  background:#1a1008;box-shadow:none
 }
 .dd-panel .dd-close{display:none!important}
-.dd-panel .dd-actions{grid-template-columns:1fr!important;margin-top:auto}
+.dd-panel .dd-actions{grid-template-columns:1fr!important}
 #ddFab{display:none!important}
-/* Clean page: image + week + one order/price bar. Choices open after tap (like Türk Kahvesi). */
+/* Full-bleed dish: image fills edges; week + اطلب/price docked at bottom */
 .dd-panel .dd-kicker,
 .dd-panel .dd-page-hint,
 .dd-panel .dd-title,
 .dd-panel .dd-list,
 .dd-panel .dd-choose,
 .dd-panel .dd-price{display:none!important}
-.dd-kicker{margin:0 0 4px;font-size:10px;font-weight:1000;letter-spacing:.04em;color:#8a5a10;text-align:center;flex:0 0 auto;line-height:1.1}
 .dd-stage{
-  position:relative;margin:0;border-radius:0;overflow:hidden;flex:1 1 auto;min-height:0;height:100%;
-  display:flex;flex-direction:column;
-  background:linear-gradient(160deg,#4a3218,#2a1a0e);border:0
+  position:absolute;inset:0;z-index:1;margin:0;border-radius:0;overflow:hidden;
+  background:#1a1008;border:0
 }
 .dd-photo{
-  position:relative;width:100%;flex:1 1 auto;min-height:0;
-  display:flex;align-items:flex-start;justify-content:center;background:transparent;overflow:hidden
+  position:absolute;inset:0;z-index:0;width:100%;height:100%;
+  display:block;background:#1a1008;overflow:hidden
 }
 .dd-photo img{
-  display:block;width:100%;height:100%;max-height:100%;
-  object-fit:contain;object-position:top center;background:#2a1a0e
+  display:block;width:100%;height:100%;
+  object-fit:cover;object-position:center top;background:#1a1008
 }
-.dd-photo.is-empty{min-height:120px}
+.dd-photo.is-empty{background:linear-gradient(160deg,#4a3218,#2a1a0e)}
 .dd-photo.is-empty::after{
-  content:"🍽";position:absolute;inset:0;display:grid;place-items:center;font-size:48px;opacity:.55
+  content:"🍽";position:absolute;inset:0;display:grid;place-items:center;font-size:54px;opacity:.55
 }
 .dd-photo.is-empty img{display:none}
-/* Week slots under the dish — all days visible, fixed (no horizontal scroll → no book glitch) */
 .dd-nav{display:none!important}
 .dd-week-cloud{display:none!important}
 .dd-week-wrap{
-  margin:0;flex:0 0 auto;position:relative;z-index:4;
-  background:linear-gradient(180deg,#1a1008ee,#120c08f2);border-top:1px solid #c4892e55;
+  position:absolute;left:0;right:0;bottom:52px;z-index:4;margin:0;
+  padding:0;background:linear-gradient(180deg,transparent,#120c08ee 35%,#0e0a07f5);
   touch-action:manipulation;-webkit-user-select:none;user-select:none
 }
 .dd-week{
-  display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;justify-content:space-between;
-  gap:4px;overflow:hidden;padding:6px 6px 7px;touch-action:manipulation
+  display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;justify-content:center;
+  gap:3px;overflow:hidden;padding:8px 4px 6px;touch-action:manipulation
 }
 .dd-week[hidden]{display:none!important}
 .dd-week-btn{
-  flex:1 1 0;min-width:0;max-width:none;width:auto;padding:3px 2px 4px;border:1px solid #c4892e88;border-radius:10px;
-  background:#fff2;color:#ffe8b0;font-size:9px;font-weight:900;cursor:pointer;text-align:center;line-height:1.1;
+  flex:1 1 0;min-width:0;max-width:56px;padding:2px 2px 3px;border:1px solid #c4892e88;border-radius:9px;
+  background:#120c08cc;color:#ffe8b0;font-size:8px;font-weight:900;cursor:pointer;text-align:center;line-height:1.05;
   touch-action:manipulation;-webkit-user-select:none;user-select:none
 }
-.dd-week-btn.is-active{border-color:#f0c15e;background:#fff3;box-shadow:0 0 0 1px #f0c15e inset;color:#fff}
+.dd-week-btn.is-active{border-color:#f0c15e;background:#2a1a0eee;box-shadow:0 0 0 1px #f0c15e inset;color:#fff;max-width:64px;flex:1.15 1 0}
 .dd-week-btn.is-today{color:#ffe08a;font-weight:1000}
 .dd-week-btn img,.dd-week-ph{
-  display:block;width:100%;height:34px;object-fit:cover;border-radius:7px;background:#3a2816;margin:0 0 2px;pointer-events:none
+  display:block;width:100%;height:28px;object-fit:cover;border-radius:6px;background:#3a2816;margin:0 0 2px;pointer-events:none
 }
-.dd-week-ph{display:grid;place-items:center;font-size:14px}
+.dd-week-ph{display:grid;place-items:center;font-size:12px}
 .dd-week-btn span{pointer-events:none;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dd-page-hint{display:none!important}
-.dd-title{margin:6px 0 3px;font-size:clamp(15px,4.2vw,19px);font-weight:1000;line-height:1.15;text-align:center;color:#1a0a00;flex:0 0 auto}
-.dd-list{
-  list-style:none;margin:0 0 4px;padding:0 2px;flex:0 0 auto;
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:2px 8px;align-items:start
-}
-.dd-list li{
-  display:flex;flex-direction:column;gap:0;align-items:center;justify-content:flex-start;
-  padding:2px 0;border:0;border-radius:0;background:transparent;font-size:11px;font-weight:900;line-height:1.15;text-align:center
-}
-.dd-list .dd-label{flex:0 0 auto;min-width:0;font-size:9px;font-weight:1000;color:#8a5a10;letter-spacing:.02em}
-.dd-list .dd-val{flex:0 0 auto;word-break:break-word;max-width:100%;font-size:11px;color:#1a0a00}
-.dd-choose{margin:0 0 4px;flex:0 0 auto}
-.dd-choose[hidden]{display:none!important}
-.dd-choose-label{margin:0 0 3px;font-size:10px;font-weight:1000;color:#8a5a10;text-align:right}
-.dd-choose-opts{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.dd-opt{
-  min-height:36px;padding:6px 8px;border:2px solid #c4892e66;border-radius:11px;
-  background:#fff9;color:#1a0a00;font-size:12px;font-weight:1000;cursor:pointer;text-align:center;line-height:1.2
-}
-.dd-opt.is-on{border-color:#8a5a10;background:linear-gradient(145deg,#ffe08a,#f0c15e);box-shadow:0 0 0 1px #f0c15e55 inset}
-.dd-opt:active{transform:scale(.98)}
-.dd-price{margin:2px 0 0;text-align:center;font-size:20px;font-weight:1000;color:#8a5a10;flex:0 0 auto;line-height:1.1}
 .dd-panel .dd-actions{
-  display:grid!important;grid-template-columns:1fr!important;gap:0;margin:0;flex:0 0 auto;
-  padding:6px 8px 8px;background:linear-gradient(180deg,#1a1008f2,#120c08)
+  position:absolute;left:0;right:0;bottom:0;z-index:5;
+  display:grid!important;grid-template-columns:1fr!important;gap:0;margin:0;
+  padding:6px 8px 8px;background:linear-gradient(180deg,#120c08f0,#0a0705)
 }
 .dd-order{
-  border:0;border-radius:12px;padding:12px 12px;font-size:15px;font-weight:1000;color:#1a0a00;
+  border:0;border-radius:12px;padding:12px 12px;font-size:16px;font-weight:1000;color:#1a0a00;
   background:linear-gradient(145deg,#ffd54f,#f0b820);cursor:pointer;width:100%;
   display:flex;align-items:center;justify-content:center;gap:8px;line-height:1.2
 }
-.dd-order:disabled{opacity:.45;cursor:not-allowed}
+.dd-order:disabled{opacity:.72;cursor:not-allowed;background:linear-gradient(145deg,#c4a46a,#a88848);color:#2a1a0e}
 .dd-order.in-cart{background:linear-gradient(145deg,#b8df1b,#8bb80f)}
-.dd-order .dd-order-price{opacity:.92;font-size:14px;font-weight:1000;white-space:nowrap}
+.dd-order.is-soon{background:linear-gradient(145deg,#d4b06a,#b8924a)}
+.dd-order .dd-order-price{opacity:.95;font-size:15px;font-weight:1000;white-space:nowrap}
 .dd-close{display:none!important}
+.dd-choose[hidden]{display:none!important}
 
 /* Category strip ABOVE the menu (own row) — never covers menu art */
 #categoryBand{
@@ -1000,6 +978,7 @@ window.TONINO_CONFIG = Object.freeze({
   let lastArtMenuHeight = 0;
   function fitDailyMenuPage(layer) {
     const phone = $("phone");
+    const viewer = $("viewer");
     const paper = layer && layer.querySelector(".dd-panel.paper, .dd-panel");
     if (!layer || !paper || !phone) return;
     layer.style.paddingTop = "0px";
@@ -1017,7 +996,6 @@ window.TONINO_CONFIG = Object.freeze({
     const applyH = (menuH) => {
       const h = Math.max(0, menuH | 0);
       if (h > 0) {
-        lastArtMenuHeight = h;
         paper.style.height = h + "px";
         paper.style.maxHeight = "none";
       } else {
@@ -1027,21 +1005,23 @@ window.TONINO_CONFIG = Object.freeze({
       if (layer === currentMenu || !currentMenu) applyOrdersSpace(h || (paper.offsetHeight | 0));
       placeCategoryBand();
     };
-    /* Match exact natural menu paper height (same as art pages) */
+    /* Bigger than art page: fill the viewer — no empty side/top bands */
+    const viewerH = (viewer && viewer.clientHeight) || 0;
+    const natural = lastArtMenuHeight > 0
+      ? lastArtMenuHeight
+      : Math.round(phone.clientWidth * 1.28);
+    const h = Math.max(natural, viewerH > 0 ? viewerH : natural);
+    applyH(h);
+    /* Keep natural art height cached for when user flips to menu pages */
     const src = PAGES[0] || "";
-    if (!src) {
-      applyH(lastArtMenuHeight || Math.round(phone.clientWidth * 1.28));
-      return;
+    if (src && lastArtMenuHeight <= 0) {
+      const probe = new Image();
+      probe.onload = () => {
+        const nh = menuNaturalHeight(probe, phone.clientWidth);
+        if (nh > 0) lastArtMenuHeight = nh;
+      };
+      probe.src = src;
     }
-    const probe = new Image();
-    const sync = () => {
-      const h = menuNaturalHeight(probe, phone.clientWidth) || lastArtMenuHeight || Math.round(phone.clientWidth * 1.28);
-      applyH(h);
-    };
-    probe.addEventListener("load", sync, { once: true });
-    probe.src = src;
-    if (probe.complete && probe.naturalWidth) sync();
-    else if (lastArtMenuHeight > 0) applyH(lastArtMenuHeight);
   }
   function fitMenuPage(layer, index) {
     if (!layer) return;
@@ -1498,18 +1478,18 @@ window.TONINO_CONFIG = Object.freeze({
     if (!orderBtn) return;
     const qty = dailyDishInCartQty();
     const priceLabel = Number.isFinite(numPrice) && numPrice > 0 ? money(numPrice) : "";
+    const withPrice = (label) => priceLabel
+      ? `${label} <span class="dd-order-price">· ${escapeHtml(priceLabel)}</span>`
+      : label;
     orderBtn.disabled = !canOrder;
     orderBtn.classList.toggle("in-cart", qty > 0 && canOrder);
+    orderBtn.classList.toggle("is-soon", !canOrder);
     if (!canOrder) {
-      orderBtn.textContent = dish.day ? `قريباً · ${dish.day}` : "قريباً";
+      orderBtn.innerHTML = withPrice(dish.day ? `قريباً · ${escapeHtml(String(dish.day))}` : "قريباً");
     } else if (qty > 0) {
-      orderBtn.innerHTML = priceLabel
-        ? `✓ أضف مرة أخرى <span class="dd-order-price">· ${escapeHtml(priceLabel)}</span>`
-        : "✓ أضف مرة أخرى";
+      orderBtn.innerHTML = withPrice("✓ اطلب مرة أخرى");
     } else {
-      orderBtn.innerHTML = priceLabel
-        ? `أضف للسلة <span class="dd-order-price">· ${escapeHtml(priceLabel)}</span>`
-        : "أضف للسلة";
+      orderBtn.innerHTML = withPrice("اطلب");
     }
   }
   function stepDailyDishDay(delta) {
