@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v266 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v267 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -329,14 +329,13 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 .dd-panel .dd-close{display:none!important}
 .dd-panel .dd-actions{grid-template-columns:1fr!important;margin-top:auto}
 #ddFab{display:none!important}
-/* Layout preview v266: hide texts/choices — image + week rail only */
+/* Clean page: image + week + one order/price bar. Choices open after tap (like Türk Kahvesi). */
 .dd-panel .dd-kicker,
 .dd-panel .dd-page-hint,
 .dd-panel .dd-title,
 .dd-panel .dd-list,
 .dd-panel .dd-choose,
-.dd-panel .dd-price,
-.dd-panel .dd-actions{display:none!important}
+.dd-panel .dd-price{display:none!important}
 .dd-kicker{margin:0 0 4px;font-size:10px;font-weight:1000;letter-spacing:.04em;color:#8a5a10;text-align:center;flex:0 0 auto;line-height:1.1}
 .dd-stage{
   position:relative;margin:0;border-radius:0;overflow:hidden;flex:1 1 auto;min-height:0;height:100%;
@@ -409,11 +408,19 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 .dd-opt.is-on{border-color:#8a5a10;background:linear-gradient(145deg,#ffe08a,#f0c15e);box-shadow:0 0 0 1px #f0c15e55 inset}
 .dd-opt:active{transform:scale(.98)}
 .dd-price{margin:2px 0 0;text-align:center;font-size:20px;font-weight:1000;color:#8a5a10;flex:0 0 auto;line-height:1.1}
-.dd-actions{margin-top:6px;display:grid;grid-template-columns:1fr 72px;gap:6px;flex:0 0 auto}
-.dd-order{border:0;border-radius:12px;padding:11px 10px;font-size:14px;font-weight:1000;color:#1a0a00;background:linear-gradient(145deg,#ffd54f,#f0b820);cursor:pointer}
+.dd-panel .dd-actions{
+  display:grid!important;grid-template-columns:1fr!important;gap:0;margin:0;flex:0 0 auto;
+  padding:6px 8px 8px;background:linear-gradient(180deg,#1a1008f2,#120c08)
+}
+.dd-order{
+  border:0;border-radius:12px;padding:12px 12px;font-size:15px;font-weight:1000;color:#1a0a00;
+  background:linear-gradient(145deg,#ffd54f,#f0b820);cursor:pointer;width:100%;
+  display:flex;align-items:center;justify-content:center;gap:8px;line-height:1.2
+}
 .dd-order:disabled{opacity:.45;cursor:not-allowed}
 .dd-order.in-cart{background:linear-gradient(145deg,#b8df1b,#8bb80f)}
-.dd-close{border:2px solid #a0641473;border-radius:12px;background:#fff6;color:#5a3a00;font-size:13px;font-weight:1000;cursor:pointer}
+.dd-order .dd-order-price{opacity:.92;font-size:14px;font-weight:1000;white-space:nowrap}
+.dd-close{display:none!important}
 
 /* Category strip ABOVE the menu (own row) — never covers menu art */
 #categoryBand{
@@ -760,7 +767,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
     <p class="dd-price" id="ddPrice" hidden></p>
     <div class="dd-actions">
       <button type="button" class="dd-order" id="ddOrder">أضف للسلة</button>
-      <button type="button" class="dd-close" id="ddClose">إغلاق</button>
+      <button type="button" class="dd-close" id="ddClose" hidden tabindex="-1" aria-hidden="true">إغلاق</button>
     </div>
   </section>
   <button type="button" id="ddFab" aria-label="الطبق اليومي"></button>
@@ -1438,42 +1445,18 @@ window.TONINO_CONFIG = Object.freeze({
       img.removeAttribute("src");
       photo.classList.add("is-empty");
     }
-    const desserts = dailyDishOptionList(...dailyDishSplitPair(dish.dessert, dish.dessert2));
-    const drinks = dailyDishOptionList(...dailyDishSplitPair(dish.drink, dish.drink2));
-    if (!desserts.includes(ddSelectedDessert)) {
-      ddSelectedDessert = desserts.length === 1 ? desserts[0] : "";
-    }
-    if (!drinks.includes(ddSelectedDrink)) {
-      ddSelectedDrink = drinks.length === 1 ? drinks[0] : "";
-    }
     const list = q("ddList");
-    list.innerHTML = dailyDishExtrasLines(dish, {
-      dessert: desserts.length <= 1 ? (ddSelectedDessert || desserts[0] || "") : "",
-      drink: drinks.length <= 1 ? (ddSelectedDrink || drinks[0] || "") : "",
-    }).map(l => `<li><span class="dd-label">${escapeHtml(l.label)}</span><span class="dd-val">${escapeHtml(l.val)}</span></li>`).join("");
+    if (list) list.innerHTML = "";
     const dessertBox = q("ddChooseDessert");
     const drinkBox = q("ddChooseDrink");
-    if (desserts.length >= 2) {
-      dessertBox.hidden = false;
-      renderChoiceGroup(q("ddDessertOpts"), desserts, ddSelectedDessert, "dessert");
-    } else {
-      dessertBox.hidden = true;
-      if (q("ddDessertOpts")) q("ddDessertOpts").innerHTML = "";
-    }
-    if (drinks.length >= 2) {
-      drinkBox.hidden = false;
-      renderChoiceGroup(q("ddDrinkOpts"), drinks, ddSelectedDrink, "drink");
-    } else {
-      drinkBox.hidden = true;
-      if (q("ddDrinkOpts")) q("ddDrinkOpts").innerHTML = "";
-    }
+    if (dessertBox) dessertBox.hidden = true;
+    if (drinkBox) drinkBox.hidden = true;
+    if (q("ddDessertOpts")) q("ddDessertOpts").innerHTML = "";
+    if (q("ddDrinkOpts")) q("ddDrinkOpts").innerHTML = "";
     const rawPrice = String(dish.price || (todayDailyDish && todayDailyDish.price) || "").replace(",", ".");
     const numPrice = Number(rawPrice);
     const priceEl = q("ddPrice");
-    if (Number.isFinite(numPrice) && numPrice > 0) {
-      priceEl.hidden = false;
-      priceEl.textContent = money(numPrice);
-    } else {
+    if (priceEl) {
       priceEl.hidden = true;
       priceEl.textContent = "";
     }
@@ -1513,21 +1496,22 @@ window.TONINO_CONFIG = Object.freeze({
       if (nextBtn) nextBtn.disabled = true;
     }
     const canOrder = dailyDishCanOrderPreview(dish);
-    const needDessert = desserts.length >= 2;
-    const needDrink = drinks.length >= 2;
-    const choicesOk = (!needDessert || !!ddSelectedDessert) && (!needDrink || !!ddSelectedDrink);
     const orderBtn = q("ddOrder");
+    if (!orderBtn) return;
     const qty = dailyDishInCartQty();
-    orderBtn.disabled = !canOrder || !choicesOk;
-    orderBtn.classList.toggle("in-cart", qty > 0 && canOrder && choicesOk);
+    const priceLabel = Number.isFinite(numPrice) && numPrice > 0 ? money(numPrice) : "";
+    orderBtn.disabled = !canOrder;
+    orderBtn.classList.toggle("in-cart", qty > 0 && canOrder);
     if (!canOrder) {
       orderBtn.textContent = dish.day ? `قريباً · ${dish.day}` : "قريباً";
-    } else if (!choicesOk) {
-      orderBtn.textContent = needDessert && needDrink
-        ? "اختر التحلية والمشروب"
-        : (needDessert ? "اختر التحلية" : "اختر المشروب");
+    } else if (qty > 0) {
+      orderBtn.innerHTML = priceLabel
+        ? `✓ أضف مرة أخرى <span class="dd-order-price">· ${escapeHtml(priceLabel)}</span>`
+        : "✓ أضف مرة أخرى";
     } else {
-      orderBtn.textContent = qty > 0 ? `✓ في السلة (${qty}) — أضف` : "أضف للسلة";
+      orderBtn.innerHTML = priceLabel
+        ? `أضف للسلة <span class="dd-order-price">· ${escapeHtml(priceLabel)}</span>`
+        : "أضف للسلة";
     }
   }
   function stepDailyDishDay(delta) {
@@ -1557,17 +1541,11 @@ window.TONINO_CONFIG = Object.freeze({
     /* Book page — closing means flip to first menu art page */
     if (hasDailyBookPage() && PAGES.length) goTo(bookIndexFromArt(0), 1);
   }
-  function addDailyDishToCart() {
-    if (!todayDailyDish) return;
-    const preview = dailyDishPreview() || todayDailyDish;
-    if (!dailyDishCanOrderPreview(preview)) { toast("يمكن طلب طبق اليوم فقط"); return; }
+  function commitDailyDishToCart(dessert, drink) {
     const dish = todayDailyDish;
-    const desserts = dailyDishOptionList(...dailyDishSplitPair(dish.dessert, dish.dessert2));
-    const drinks = dailyDishOptionList(...dailyDishSplitPair(dish.drink, dish.drink2));
-    if (desserts.length >= 2 && !ddSelectedDessert) { toast("اختر التحلية"); return; }
-    if (drinks.length >= 2 && !ddSelectedDrink) { toast("اختر المشروب"); return; }
-    const dessert = ddSelectedDessert || desserts[0] || "";
-    const drink = ddSelectedDrink || drinks[0] || "";
+    if (!dish) return;
+    ddSelectedDessert = dessert || "";
+    ddSelectedDrink = drink || "";
     const rawPrice = String(dish.price || "0").replace(",", ".");
     const numPrice = Number(rawPrice);
     const mainName = String(dish.mainAr || dish.main || dish.mainTr || "Günün Yemeği").trim();
@@ -1582,6 +1560,36 @@ window.TONINO_CONFIG = Object.freeze({
       note: buildDailyDishNote(dish, dessert, drink),
     });
     renderDailyDishScreen(currentMenu);
+  }
+  function addDailyDishToCart() {
+    if (!todayDailyDish) return;
+    const preview = dailyDishPreview() || todayDailyDish;
+    if (!dailyDishCanOrderPreview(preview)) { toast("يمكن طلب طبق اليوم فقط"); return; }
+    const dish = todayDailyDish;
+    const desserts = dailyDishOptionList(...dailyDishSplitPair(dish.dessert, dish.dessert2));
+    const drinks = dailyDishOptionList(...dailyDishSplitPair(dish.drink, dish.drink2));
+    const askDrink = (dessertPick) => {
+      if (drinks.length >= 2) {
+        openChoiceSheet(
+          "اختر المشروب",
+          drinks.map(v => ({ label: v, note: v, priceMul: 1 })),
+          choice => commitDailyDishToCart(dessertPick, choice.note),
+          { keepPage: true }
+        );
+        return;
+      }
+      commitDailyDishToCart(dessertPick, drinks[0] || "");
+    };
+    if (desserts.length >= 2) {
+      openChoiceSheet(
+        "اختر التحلية",
+        desserts.map(v => ({ label: v, note: v, priceMul: 1 })),
+        choice => askDrink(choice.note),
+        { keepPage: true }
+      );
+      return;
+    }
+    askDrink(desserts[0] || "");
   }
   function applyDailyDishPayload(data, apiBase) {
     if (apiBase) guestMenuApiBase = String(apiBase || "").replace(/\/+$/, "");
@@ -1754,8 +1762,9 @@ window.TONINO_CONFIG = Object.freeze({
     { id: "sekerli", label: "سكر · Şekerli", note: "Şekerli", priceMul: 1 },
     { id: "duble", label: "دابل دوبل · Duble", note: "Duble", priceMul: 2 },
   ];
-  function openChoiceSheet(title, choices, onPick) {
-    closeDailyDishScreen();
+  function openChoiceSheet(title, choices, onPick, opts) {
+    /* Do not flip the menu book — overlay only (Türk Kahvesi + daily dish). */
+    void opts;
     const titleEl = $("variantTitle");
     if (titleEl) titleEl.textContent = title;
     const sheet = $("variantSheet");
@@ -1768,8 +1777,8 @@ window.TONINO_CONFIG = Object.freeze({
       button.className = "variant";
       button.textContent = choice.label;
       button.addEventListener("click", () => {
-        onPick(choice);
         closeVariants();
+        onPick(choice);
       });
       grid.appendChild(button);
     });
