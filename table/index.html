@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v259 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v260 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -1230,17 +1230,26 @@ window.TONINO_CONFIG = Object.freeze({
     if (ddPreviewIdx >= 0 && weeklyDishes[ddPreviewIdx]) return weeklyDishes[ddPreviewIdx];
     return todayDailyDish;
   }
+  function dailyDishSplitPair(primary, secondary) {
+    const b = String(secondary || "").trim();
+    const a = String(primary || "").trim();
+    if (b) return [a, b].filter(Boolean);
+    const m = a.match(/^(.+?)\s+(?:veya|أو|or|\/)\s+(.+)$/i);
+    if (m) return [m[1].trim(), m[2].trim()].filter(Boolean);
+    return a ? [a] : [];
+  }
   function dailyDishOptionList() {
     const seen = new Set();
     const out = [];
-    for (let i = 0; i < arguments.length; i++) {
-      const s = String(arguments[i] || "").trim();
-      if (!s) continue;
-      const key = s.toLowerCase();
-      if (seen.has(key)) continue;
+    const push = (s) => {
+      const v = String(s || "").trim();
+      if (!v) return;
+      const key = v.toLowerCase();
+      if (seen.has(key)) return;
       seen.add(key);
-      out.push(s);
-    }
+      out.push(v);
+    };
+    for (let i = 0; i < arguments.length; i++) push(arguments[i]);
     return out;
   }
   function dailyDishCanOrderPreview(dish) {
@@ -1295,8 +1304,8 @@ window.TONINO_CONFIG = Object.freeze({
       img.removeAttribute("src");
       photo.classList.add("is-empty");
     }
-    const desserts = dailyDishOptionList(dish.dessert, dish.dessert2);
-    const drinks = dailyDishOptionList(dish.drink, dish.drink2);
+    const desserts = dailyDishOptionList(...dailyDishSplitPair(dish.dessert, dish.dessert2));
+    const drinks = dailyDishOptionList(...dailyDishSplitPair(dish.drink, dish.drink2));
     if (!desserts.includes(ddSelectedDessert)) {
       ddSelectedDessert = desserts.length === 1 ? desserts[0] : "";
     }
@@ -1388,8 +1397,8 @@ window.TONINO_CONFIG = Object.freeze({
     const preview = dailyDishPreview() || todayDailyDish;
     if (!dailyDishCanOrderPreview(preview)) { toast("يمكن طلب طبق اليوم فقط"); return; }
     const dish = todayDailyDish;
-    const desserts = dailyDishOptionList(dish.dessert, dish.dessert2);
-    const drinks = dailyDishOptionList(dish.drink, dish.drink2);
+    const desserts = dailyDishOptionList(...dailyDishSplitPair(dish.dessert, dish.dessert2));
+    const drinks = dailyDishOptionList(...dailyDishSplitPair(dish.drink, dish.drink2));
     if (desserts.length >= 2 && !ddSelectedDessert) { toast("اختر التحلية"); return; }
     if (drinks.length >= 2 && !ddSelectedDrink) { toast("اختر المشروب"); return; }
     const dessert = ddSelectedDessert || desserts[0] || "";
