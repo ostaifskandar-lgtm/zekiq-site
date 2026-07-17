@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v268 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v269 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -355,40 +355,51 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   content:"🍽";position:absolute;inset:0;display:grid;place-items:center;font-size:48px;opacity:.55
 }
 .dd-photo.is-empty img{display:none}
-/* Day arrows removed — press-hold on day chip reveals the week (avoids book-swipe conflict) */
+/* Bottom day chip stays fixed. Other days float in a temporary cloud — menu book stays normal. */
 .dd-nav{display:none!important}
 .dd-week-wrap{
-  margin:0;flex:0 0 auto;position:relative;z-index:4;
+  margin:0;flex:0 0 auto;position:relative;z-index:5;
   background:linear-gradient(180deg,#1a1008ee,#120c08f2);border-top:1px solid #c4892e55;
   touch-action:none;-webkit-user-select:none;user-select:none
 }
 .dd-week{
-  display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;justify-content:center;
-  gap:6px;overflow:hidden;padding:6px 8px;scrollbar-width:none;touch-action:none
+  display:flex;flex-direction:row;align-items:center;justify-content:center;
+  gap:0;overflow:hidden;padding:6px 8px;touch-action:none
 }
-.dd-week::-webkit-scrollbar{display:none}
 .dd-week[hidden]{display:none!important}
-/* Collapsed: only the selected day — no horizontal rail */
-.dd-week:not(.is-peeking) .dd-week-btn:not(.is-active){display:none!important}
-.dd-week:not(.is-peeking) .dd-week-btn.is-active{width:min(72%,220px)}
-.dd-week.is-peeking{
-  justify-content:space-between;gap:4px;padding:7px 6px;
-  background:linear-gradient(180deg,#2a1a0ef5,#17100af8);box-shadow:0 -8px 22px #000a
-}
-.dd-week.is-peeking .dd-week-btn{display:block!important;flex:1 1 0;width:auto;min-width:0;max-width:64px}
+.dd-week .dd-week-btn:not(.is-active){display:none!important}
+.dd-week .dd-week-btn.is-active{width:min(70%,210px)}
 .dd-week-btn{
-  flex:0 0 auto;width:64px;padding:3px 3px 4px;border:1px solid #c4892e88;border-radius:10px;
+  flex:0 0 auto;width:58px;padding:3px 3px 4px;border:1px solid #c4892e88;border-radius:10px;
   background:#fff2;color:#ffe8b0;font-size:9px;font-weight:900;cursor:pointer;text-align:center;line-height:1.1;
   touch-action:none;-webkit-user-select:none;user-select:none
 }
 .dd-week-btn.is-active{border-color:#f0c15e;background:#fff3;box-shadow:0 0 0 1px #f0c15e inset;color:#fff}
 .dd-week-btn.is-today{color:#ffe08a;font-weight:1000}
-.dd-week-btn.is-hover{border-color:#ffe08a;transform:scale(1.04)}
+.dd-week-btn.is-hover{border-color:#ffe08a;box-shadow:0 0 0 1px #ffe08a inset;transform:scale(1.05)}
 .dd-week-btn img,.dd-week-ph{
   display:block;width:100%;height:36px;object-fit:cover;border-radius:7px;background:#3a2816;margin:0 0 2px;pointer-events:none
 }
 .dd-week-ph{display:grid;place-items:center;font-size:14px}
 .dd-week-btn span{pointer-events:none}
+/* Temporary floating cloud — does not move the bottom bar or menu layout */
+.dd-week-cloud{
+  position:absolute;left:8px;right:8px;bottom:calc(100% + 8px);z-index:50;
+  display:none;flex-direction:row;flex-wrap:nowrap;align-items:stretch;justify-content:space-between;
+  gap:4px;padding:8px 7px;border-radius:18px;
+  background:linear-gradient(165deg,#2c1c10f7,#17100af5 70%,#120c08f8);
+  border:1px solid #f0c15e99;box-shadow:0 10px 28px #000c,0 0 0 1px #0006 inset;
+  touch-action:none;pointer-events:auto;
+  animation:ddCloudIn .14s ease-out
+}
+.dd-week-cloud.is-open{display:flex}
+.dd-week-cloud::after{
+  content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;
+  transform:translateX(-50%) rotate(45deg);
+  background:#17100a;border-right:1px solid #f0c15e99;border-bottom:1px solid #f0c15e99
+}
+.dd-week-cloud .dd-week-btn{display:block!important;flex:1 1 0;width:auto;min-width:0;max-width:62px}
+@keyframes ddCloudIn{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 .dd-page-hint{display:none!important}
 .dd-title{margin:6px 0 3px;font-size:clamp(15px,4.2vw,19px);font-weight:1000;line-height:1.15;text-align:center;color:#1a0a00;flex:0 0 auto}
 .dd-list{
@@ -754,7 +765,8 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
       <div class="dd-photo is-empty" id="ddPhoto"><img id="ddPhotoImg" alt="" draggable="false" decoding="async" /></div>
       <button type="button" class="dd-nav dd-nav-next" id="ddNext" aria-label="اليوم التالي">›</button>
       <div class="dd-week-wrap">
-        <div class="dd-week" id="ddWeek" hidden aria-label="أيام الأسبوع"></div>
+        <div class="dd-week-cloud" id="ddWeekCloud" hidden aria-hidden="true"></div>
+        <div class="dd-week" id="ddWeek" hidden aria-label="اليوم المختار — اضغط لعرض الأيام"></div>
       </div>
     </div>
     <p class="dd-page-hint" id="ddPageHint" hidden></p>
@@ -1465,22 +1477,31 @@ window.TONINO_CONFIG = Object.freeze({
       priceEl.textContent = "";
     }
     const week = q("ddWeek");
+    const cloud = q("ddWeekCloud");
     const hint = q("ddPageHint");
     const prevBtn = q("ddPrev");
     const nextBtn = q("ddNext");
     const totalDays = weeklyDishes.length;
+    const dayBtnHtml = (row, i, forceActive) => {
+      const thumb = absMenuUrl(guestMenuApiBase, row.imageUrl || "");
+      const media = thumb
+        ? `<img alt="" draggable="false" decoding="async" src="${escapeHtml(thumb)}" />`
+        : `<span class="dd-week-ph" aria-hidden="true">🍽</span>`;
+      const dayLabel = escapeHtml(row.day || ("يوم " + (i + 1)));
+      const active = forceActive || i === ddPreviewIdx;
+      return `<button type="button" class="dd-week-btn${active ? " is-active" : ""}${row.isToday ? " is-today" : ""}" data-dd-rail="${i}">${media}<span>${dayLabel}</span></button>`;
+    };
+    if (cloud) {
+      cloud.classList.remove("is-open");
+      cloud.hidden = true;
+      cloud.setAttribute("aria-hidden", "true");
+      cloud.innerHTML = "";
+    }
     if (totalDays > 0) {
       if (ddPreviewIdx < 0 || ddPreviewIdx >= totalDays) ddPreviewIdx = 0;
       week.hidden = false;
-      week.classList.remove("is-peeking");
-      week.innerHTML = weeklyDishes.map((row, i) => {
-        const thumb = absMenuUrl(guestMenuApiBase, row.imageUrl || "");
-        const media = thumb
-          ? `<img alt="" draggable="false" decoding="async" src="${escapeHtml(thumb)}" />`
-          : `<span class="dd-week-ph" aria-hidden="true">🍽</span>`;
-        const dayLabel = escapeHtml(row.day || ("يوم " + (i + 1)));
-        return `<button type="button" class="dd-week-btn${i === ddPreviewIdx ? " is-active" : ""}${row.isToday ? " is-today" : ""}" data-dd-rail="${i}">${media}<span>${dayLabel}</span></button>`;
-      }).join("");
+      /* Bottom chip stays fixed — only the selected day lives here */
+      week.innerHTML = dayBtnHtml(weeklyDishes[ddPreviewIdx], ddPreviewIdx, true);
       if (hint) {
         hint.hidden = true;
         hint.textContent = "";
@@ -1489,7 +1510,6 @@ window.TONINO_CONFIG = Object.freeze({
       if (nextBtn) nextBtn.disabled = true;
     } else {
       week.hidden = true;
-      week.classList.remove("is-peeking");
       week.innerHTML = "";
       if (hint) { hint.hidden = true; hint.textContent = ""; }
       if (prevBtn) prevBtn.disabled = true;
@@ -1920,34 +1940,53 @@ window.TONINO_CONFIG = Object.freeze({
   $("summaryButton").addEventListener("click",()=>$("orderCloud").scrollTo({top:0,behavior:"smooth"}));
   $("shade").addEventListener("click",()=>{ closeVariants(); });
   $("closeVariants").addEventListener("click",closeVariants);
-  /* Press-hold week peek: other days appear while finger is down, hide on release */
-  let ddWeekPeek = { active: false, hoverIdx: -1, moved: false, startX: 0, startY: 0 };
-  function ddWeekFromEvent(event) {
-    const page = event.target.closest && event.target.closest(".dd-book-page");
-    if (!page || page !== currentMenu) return null;
-    return page.querySelector(".dd-week");
+  /* Week cloud: bottom chip never moves; other days float above while finger is down */
+  let ddWeekPeek = { active: false, hoverIdx: -1, wrap: null, cloud: null };
+  function ddWeekParts(fromEl) {
+    const page = (fromEl && fromEl.closest) ? fromEl.closest(".dd-book-page") : null;
+    const root = page && page === currentMenu ? page : currentMenu;
+    if (!root) return { wrap: null, week: null, cloud: null };
+    return {
+      wrap: root.querySelector(".dd-week-wrap"),
+      week: root.querySelector(".dd-week"),
+      cloud: root.querySelector(".dd-week-cloud"),
+    };
   }
-  function ddWeekBtnAtPoint(week, x, y) {
-    if (!week) return null;
-    const el = document.elementFromPoint(x, y);
-    return el && el.closest ? el.closest("[data-dd-rail]") : null;
+  function buildDdWeekCloudHtml(hoverIdx) {
+    return weeklyDishes.map((row, i) => {
+      const thumb = absMenuUrl(guestMenuApiBase, row.imageUrl || "");
+      const media = thumb
+        ? `<img alt="" draggable="false" decoding="async" src="${escapeHtml(thumb)}" />`
+        : `<span class="dd-week-ph" aria-hidden="true">🍽</span>`;
+      const dayLabel = escapeHtml(row.day || ("يوم " + (i + 1)));
+      const active = i === ddPreviewIdx ? " is-active" : "";
+      const hover = i === hoverIdx ? " is-hover" : "";
+      const today = row.isToday ? " is-today" : "";
+      return `<button type="button" class="dd-week-btn${active}${hover}${today}" data-dd-rail="${i}">${media}<span>${dayLabel}</span></button>`;
+    }).join("");
   }
-  function setDdWeekHover(week, idx) {
-    if (!week) return;
-    week.querySelectorAll(".dd-week-btn").forEach(btn => {
+  function setDdCloudHover(cloud, idx) {
+    if (!cloud) return;
+    cloud.querySelectorAll(".dd-week-btn").forEach(btn => {
       btn.classList.toggle("is-hover", Number(btn.dataset.ddRail) === idx);
     });
   }
+  function hideDdWeekCloud(cloud) {
+    if (!cloud) return;
+    cloud.classList.remove("is-open");
+    cloud.hidden = true;
+    cloud.setAttribute("aria-hidden", "true");
+    cloud.innerHTML = "";
+  }
   function endDdWeekPeek(event, commit) {
     if (!ddWeekPeek.active) return;
-    const week = ddWeekFromEvent(event) || (currentMenu && currentMenu.querySelector(".dd-week"));
     const idx = ddWeekPeek.hoverIdx;
+    const cloud = ddWeekPeek.cloud || ddWeekParts().cloud;
     ddWeekPeek.active = false;
     ddWeekPeek.hoverIdx = -1;
-    if (week) {
-      week.classList.remove("is-peeking");
-      setDdWeekHover(week, -1);
-    }
+    ddWeekPeek.wrap = null;
+    ddWeekPeek.cloud = null;
+    hideDdWeekCloud(cloud);
     gesture.active = false;
     if (commit && Number.isFinite(idx) && idx >= 0 && idx < weeklyDishes.length && idx !== ddPreviewIdx) {
       ddPreviewIdx = idx;
@@ -1958,47 +1997,44 @@ window.TONINO_CONFIG = Object.freeze({
     }
   }
   $("menuScene").addEventListener("pointerdown", event => {
-    const week = event.target.closest(".dd-week");
-    if (!week || !currentMenu || !currentMenu.contains(week)) return;
-    if (week.hidden || weeklyDishes.length < 2) return;
+    const wrap = event.target.closest(".dd-week-wrap");
+    if (!wrap || !currentMenu || !currentMenu.contains(wrap)) return;
+    if (weeklyDishes.length < 2) return;
+    const { week, cloud } = ddWeekParts(wrap);
+    if (!week || week.hidden || !cloud) return;
     event.preventDefault();
     event.stopPropagation();
     gesture.active = false;
-    ddWeekPeek = {
-      active: true,
-      hoverIdx: ddPreviewIdx,
-      moved: false,
-      startX: event.clientX,
-      startY: event.clientY,
-    };
-    week.classList.add("is-peeking");
-    setDdWeekHover(week, ddPreviewIdx);
-    try { week.setPointerCapture(event.pointerId); } catch (_) {}
+    ddWeekPeek = { active: true, hoverIdx: ddPreviewIdx, wrap, cloud };
+    cloud.innerHTML = buildDdWeekCloudHtml(ddPreviewIdx);
+    cloud.hidden = false;
+    cloud.setAttribute("aria-hidden", "false");
+    cloud.classList.add("is-open");
+    try { wrap.setPointerCapture(event.pointerId); } catch (_) {}
     if (navigator.vibrate) navigator.vibrate(6);
   }, { passive: false });
   $("menuScene").addEventListener("pointermove", event => {
     if (!ddWeekPeek.active) return;
     event.preventDefault();
     event.stopPropagation();
-    const week = ddWeekFromEvent(event) || (currentMenu && currentMenu.querySelector(".dd-week"));
-    if (!week) return;
-    if (Math.abs(event.clientX - ddWeekPeek.startX) > 6 || Math.abs(event.clientY - ddWeekPeek.startY) > 6) {
-      ddWeekPeek.moved = true;
-    }
-    const btn = ddWeekBtnAtPoint(week, event.clientX, event.clientY);
-    if (!btn) return;
+    const cloud = ddWeekPeek.cloud;
+    if (!cloud) return;
+    const el = document.elementFromPoint(event.clientX, event.clientY);
+    const btn = el && el.closest ? el.closest(".dd-week-cloud [data-dd-rail], [data-dd-rail]") : null;
+    if (!btn || !cloud.contains(btn)) return;
     const idx = Number(btn.dataset.ddRail);
     if (!Number.isFinite(idx) || idx === ddWeekPeek.hoverIdx) return;
     ddWeekPeek.hoverIdx = idx;
-    setDdWeekHover(week, idx);
+    setDdCloudHover(cloud, idx);
   }, { passive: false });
   $("menuScene").addEventListener("pointerup", event => {
     if (!ddWeekPeek.active) return;
     event.preventDefault();
     event.stopPropagation();
-    const week = ddWeekFromEvent(event) || (currentMenu && currentMenu.querySelector(".dd-week"));
-    const btn = week ? ddWeekBtnAtPoint(week, event.clientX, event.clientY) : null;
-    if (btn) ddWeekPeek.hoverIdx = Number(btn.dataset.ddRail);
+    const cloud = ddWeekPeek.cloud;
+    const el = document.elementFromPoint(event.clientX, event.clientY);
+    const btn = el && el.closest ? el.closest("[data-dd-rail]") : null;
+    if (btn && cloud && cloud.contains(btn)) ddWeekPeek.hoverIdx = Number(btn.dataset.ddRail);
     endDdWeekPeek(event, true);
   }, { passive: false });
   $("menuScene").addEventListener("pointercancel", event => {
@@ -2007,7 +2043,7 @@ window.TONINO_CONFIG = Object.freeze({
   $("menuScene").addEventListener("click", event => {
     const page = event.target.closest(".dd-book-page");
     if (!page || page !== currentMenu) return;
-    if (event.target.closest(".dd-week,.dd-week-btn,.dd-week-wrap")) {
+    if (event.target.closest(".dd-week,.dd-week-btn,.dd-week-wrap,.dd-week-cloud")) {
       event.preventDefault();
       event.stopPropagation();
       return;
