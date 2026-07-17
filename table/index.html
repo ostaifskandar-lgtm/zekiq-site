@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v260 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v261 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -1220,11 +1220,9 @@ window.TONINO_CONFIG = Object.freeze({
   function maybeAutoOpenDailyDish() {
     if (!todayDailyDish || !dailyDishMainLabel(todayDailyDish)) return;
     if (document.documentElement.classList.contains("coach-locked")) return;
-    try {
-      if (sessionStorage.getItem("ddAutoOpened") === "1") return;
-      sessionStorage.setItem("ddAutoOpened", "1");
-    } catch (_) {}
-    setTimeout(() => { try { openDailyDishScreen(); } catch (_) {} }, 420);
+    if ($("dailyDishScreen") && $("dailyDishScreen").classList.contains("show")) return;
+    /* First screen after welcome — always open today's dish. */
+    setTimeout(() => { try { openDailyDishScreen(); } catch (_) {} }, 280);
   }
   function dailyDishPreview() {
     if (ddPreviewIdx >= 0 && weeklyDishes[ddPreviewIdx]) return weeklyDishes[ddPreviewIdx];
@@ -1810,7 +1808,8 @@ window.TONINO_CONFIG = Object.freeze({
           btn.disabled = false;
           try { updateGeometry(); } catch(_){}
           try { syncDailyDishEntry(); } catch(_){}
-          try { maybeAutoOpenDailyDish(); } catch(_){}
+          /* Landing page after welcome = daily dish (not menu page 1). */
+          setTimeout(() => { try { maybeAutoOpenDailyDish(); } catch(_){} }, 60);
         });
       });
     }
