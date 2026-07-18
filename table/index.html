@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v281 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v282 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -342,17 +342,14 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 .dd-photo{
   position:relative;width:100%;flex:1 1 auto;min-height:0;
   display:flex;align-items:center;justify-content:center;overflow:hidden;
-  /* Side fill = same dish (cover). Foreground img = full dish (contain). */
-  background-color:#1a1008;background-size:cover;background-position:center top;background-repeat:no-repeat
+  /* Single full dish — no cover crop / no second blurred layer */
+  background:#1a1008;background-image:none!important
 }
-.dd-photo::before{
-  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:inherit;background-size:cover;background-position:center top;
-  filter:blur(22px) saturate(.9) brightness(.45);transform:scale(1.18);opacity:.85
-}
+.dd-photo::before{display:none!important;content:none!important}
 .dd-photo img{
   position:relative;z-index:1;display:block;width:100%;height:100%;
-  object-fit:contain;object-position:center center;background:transparent
+  max-width:100%;max-height:100%;object-fit:contain;object-position:center center;
+  background:transparent
 }
 .dd-photo.is-empty{min-height:140px;background:linear-gradient(160deg,#4a3218,#2a1a0e)}
 .dd-photo.is-empty::before{display:none}
@@ -413,7 +410,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   letter-spacing:.02em;text-shadow:0 2px 14px #000c;background:linear-gradient(180deg,#1a1008aa,#1a1008cc)
 }
 .dd-photo.is-day-off img{
-  opacity:.28;filter:grayscale(.55) brightness(1.05);object-fit:cover;object-position:center center
+  opacity:.28;filter:grayscale(.55) brightness(1.05);object-fit:contain;object-position:center center
 }
 .dd-page-hint{display:none!important}
 .dd-dock .dd-actions{
@@ -1506,7 +1503,7 @@ window.TONINO_CONFIG = Object.freeze({
     const src = absMenuUrl(guestMenuApiBase, dish.imageUrl || (todayDailyDish && todayDailyDish.imageUrl) || "");
     if (src) {
       img.src = src;
-      photo.style.backgroundImage = `url("${src}")`;
+      photo.style.backgroundImage = "";
       photo.classList.remove("is-empty");
     } else {
       img.removeAttribute("src");
