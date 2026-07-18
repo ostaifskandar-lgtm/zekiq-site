@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v282 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v283 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -387,12 +387,32 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   opacity:.34;filter:grayscale(.55) brightness(1.15);background:#2a2118aa
 }
 .dd-week-btn.is-press{
-  z-index:6;transform:scale(1.42);opacity:1!important;
-  box-shadow:0 8px 18px #000a,0 0 0 1px #f0c15e88
+  z-index:2;transform:scale(1.06);opacity:1!important;
+  box-shadow:0 0 0 1px #f0c15e88
 }
 .dd-week-btn.is-press img,.dd-week-btn.is-press .dd-week-ph{
   opacity:1;filter:none
 }
+/* Floating day preview — rises from the small thumb, does not change main photo */
+.dd-thumb-pop{
+  position:fixed;z-index:6200;pointer-events:none;box-sizing:border-box;
+  width:min(72vw,300px);aspect-ratio:1/1;border-radius:20px;overflow:hidden;
+  background:#1a1008;border:1px solid #f0c15ecc;
+  box-shadow:0 18px 48px #000c,0 0 0 1px #fff2 inset;
+  opacity:0;transform:scale(.18);transform-origin:center bottom;
+  transition:opacity .15s ease,transform .18s cubic-bezier(.2,1.2,.3,1);
+  display:none
+}
+.dd-thumb-pop.is-on{display:block;opacity:1;transform:scale(1)}
+.dd-thumb-pop img{
+  display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:#1a1008
+}
+.dd-thumb-pop .dd-thumb-pop-cap{
+  position:absolute;left:0;right:0;bottom:0;padding:8px 10px;text-align:center;
+  font-size:13px;font-weight:1000;color:#ffe8b0;background:linear-gradient(180deg,transparent,#1a1008ee)
+}
+.dd-thumb-pop.is-day-off img{opacity:.3;filter:grayscale(.55)}
+.dd-thumb-pop.is-day-off .dd-thumb-pop-cap{color:#ffd36a}
 .dd-week-btn img,.dd-week-ph{
   display:block;width:100%;height:26px;object-fit:cover;border-radius:5px;background:#3a2816;margin:0 0 1px;pointer-events:none;
   transition:opacity .18s ease,filter .18s ease
@@ -780,6 +800,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
     <p class="dd-price" id="ddPrice" hidden></p>
   </section>
   <button type="button" id="ddFab" aria-label="الطبق اليومي"></button>
+  <div id="ddThumbPop" class="dd-thumb-pop" hidden aria-hidden="true"><img alt="" draggable="false" decoding="async" /><span class="dd-thumb-pop-cap"></span></div>
   <div id="toast" role="status" aria-live="polite"></div>
   <div id="startGate" role="dialog" aria-modal="true" aria-label="تعليمات الطلب">
     <div class="start-card">
@@ -1491,7 +1512,10 @@ window.TONINO_CONFIG = Object.freeze({
         : $("dailyDishScreen"));
     if (!panel) return;
     const q = (id) => panel.querySelector("#" + id);
-    const dish = dailyDishPreview() || todayDailyDish;
+    /* Main photo = today only; week thumbs use popup, never swap main */
+    const todayIdx = Math.max(0, weeklyDishes.findIndex(w => w && w.isToday));
+    if (weeklyDishes.length) ddPreviewIdx = todayIdx >= 0 ? todayIdx : 0;
+    const dish = todayDailyDish || weeklyDishes[ddPreviewIdx] || dailyDishPreview();
     if (!dish) return;
     const title = String(dish.mainAr || dish.main || dish.mainTr || "").trim() || "الطبق اليومي";
     if (q("ddTitle")) q("ddTitle").textContent = title;
@@ -1551,12 +1575,12 @@ window.TONINO_CONFIG = Object.freeze({
         const dayOff = dailyDishIsDayOff(row);
         const cls = [
           "dd-week-btn",
-          i === ddPreviewIdx ? "is-active" : "",
-          row.isToday ? "is-today" : "",
+          row.isToday ? "is-active is-today" : "",
           dayOff ? "is-locked" : "",
         ].filter(Boolean).join(" ");
         const key = escapeHtml(String(row.dayKey || ""));
-        return `<button type="button" class="${cls}" data-dd-rail="${i}" data-dd-key="${key}" aria-pressed="${i === ddPreviewIdx ? "true" : "false"}">${media}<span>${dayLabel}</span></button>`;
+        const thumbSrc = thumb ? escapeHtml(thumb) : "";
+        return `<button type="button" class="${cls}" data-dd-rail="${i}" data-dd-key="${key}" data-dd-thumb="${thumbSrc}" data-dd-day="${dayLabel}" data-dd-off="${dayOff ? "1" : "0"}" aria-pressed="${row.isToday ? "true" : "false"}">${media}<span>${dayLabel}</span></button>`;
       }).join("");
       if (hint) {
         hint.hidden = true;
@@ -1997,21 +2021,60 @@ window.TONINO_CONFIG = Object.freeze({
   $("summaryButton").addEventListener("click",()=>$("orderCloud").scrollTo({top:0,behavior:"smooth"}));
   $("shade").addEventListener("click",()=>{ closeVariants(); });
   $("closeVariants").addEventListener("click",closeVariants);
-  function clearDdWeekPress() {
+  function hideDdThumbPop() {
+    const pop = $("ddThumbPop");
+    if (!pop) return;
+    pop.classList.remove("is-on", "is-day-off");
+    pop.hidden = true;
+    pop.setAttribute("aria-hidden", "true");
     document.querySelectorAll(".dd-week-btn.is-press").forEach(el => el.classList.remove("is-press"));
   }
+  function showDdThumbPop(dayBtn) {
+    const pop = $("ddThumbPop");
+    if (!pop || !dayBtn) return;
+    const img = pop.querySelector("img");
+    const cap = pop.querySelector(".dd-thumb-pop-cap");
+    const src = String(dayBtn.dataset.ddThumb || "").trim();
+    const day = String(dayBtn.dataset.ddDay || "").trim();
+    const off = dayBtn.dataset.ddOff === "1";
+    if (img) {
+      if (src) { img.src = src; img.style.display = ""; }
+      else { img.removeAttribute("src"); img.style.display = "none"; }
+    }
+    if (cap) cap.textContent = off ? (day ? day + " · اليوم أوف" : "اليوم أوف") : day;
+    pop.classList.toggle("is-day-off", off);
+    const r = dayBtn.getBoundingClientRect();
+    const w = Math.min(window.innerWidth * 0.72, 300);
+    const hgt = w;
+    let left = r.left + r.width / 2 - w / 2;
+    left = Math.max(10, Math.min(left, window.innerWidth - w - 10));
+    let top = r.top - hgt - 14;
+    if (top < 10) top = r.bottom + 12;
+    pop.style.width = w + "px";
+    pop.style.left = left + "px";
+    pop.style.top = top + "px";
+    pop.hidden = false;
+    pop.setAttribute("aria-hidden", "false");
+    requestAnimationFrame(() => pop.classList.add("is-on"));
+  }
+  function clearDdWeekPress() { hideDdThumbPop(); }
   $("menuScene").addEventListener("pointerdown", event => {
     const page = event.target.closest(".dd-book-page");
     if (!page || page !== currentMenu) return;
     const dayBtn = event.target.closest(".dd-week-btn[data-dd-rail]");
     if (!dayBtn) return;
-    clearDdWeekPress();
+    event.preventDefault();
+    event.stopPropagation();
+    hideDdThumbPop();
     dayBtn.classList.add("is-press");
+    showDdThumbPop(dayBtn);
     if (navigator.vibrate) navigator.vibrate(6);
   });
   $("menuScene").addEventListener("pointerup", clearDdWeekPress);
   $("menuScene").addEventListener("pointercancel", clearDdWeekPress);
+  $("menuScene").addEventListener("pointerleave", clearDdWeekPress);
   document.addEventListener("pointerup", clearDdWeekPress);
+  document.addEventListener("pointercancel", clearDdWeekPress);
   $("menuScene").addEventListener("click", event => {
     const page = event.target.closest(".dd-book-page");
     if (!page || page !== currentMenu) return;
@@ -2021,14 +2084,9 @@ window.TONINO_CONFIG = Object.freeze({
     if (event.target.closest(".dd-nav-next")) { stepDailyDishDay(1); return; }
     const dayBtn = event.target.closest("[data-dd-rail]");
     if (dayBtn) {
-      clearDdWeekPress();
-      const idx = Number(dayBtn.dataset.ddRail);
-      if (!Number.isFinite(idx) || idx === ddPreviewIdx) return;
-      ddPreviewIdx = idx;
-      ddSelectedDessert = "";
-      ddSelectedDrink = "";
-      renderDailyDishScreen(currentMenu);
-      if (navigator.vibrate) navigator.vibrate(8);
+      /* Thumbs only preview via hold-popup — never swap main photo */
+      event.preventDefault();
+      event.stopPropagation();
       return;
     }
     const choice = event.target.closest("[data-dd-choice]");
