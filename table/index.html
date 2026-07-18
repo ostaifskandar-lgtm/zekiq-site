@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v275 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v276 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -377,15 +377,40 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 .dd-week-btn{
   flex:1 1 0;min-width:0;max-width:52px;padding:2px 2px 3px;border:1px solid #c4892e88;border-radius:8px;
   background:#fff2;color:#ffe8b0;font-size:8px;font-weight:900;cursor:pointer;text-align:center;line-height:1.05;
-  touch-action:manipulation;-webkit-user-select:none;user-select:none
+  touch-action:manipulation;-webkit-user-select:none;user-select:none;
+  transform:scale(1);transform-origin:center bottom;transition:transform .14s ease,opacity .18s ease,filter .18s ease,box-shadow .14s ease;
+  position:relative;z-index:1
 }
 .dd-week-btn.is-active{border-color:#f0c15e;background:#fff3;box-shadow:0 0 0 1px #f0c15e inset;color:#fff;max-width:58px;flex:1.12 1 0}
-.dd-week-btn.is-today{color:#ffe08a;font-weight:1000}
+.dd-week-btn.is-today:not(.is-locked){color:#ffe08a;font-weight:1000}
+.dd-week-btn.is-locked{
+  opacity:.72;border-color:#ffffff22;background:#0003;color:#d9c7a088
+}
+.dd-week-btn.is-locked img,.dd-week-btn.is-locked .dd-week-ph{
+  opacity:.34;filter:grayscale(.55) brightness(1.15);background:#2a2118aa
+}
+.dd-week-btn.is-press{
+  z-index:6;transform:scale(1.42);opacity:1!important;
+  box-shadow:0 8px 18px #000a,0 0 0 1px #f0c15e88
+}
+.dd-week-btn.is-press img,.dd-week-btn.is-press .dd-week-ph{
+  opacity:1;filter:none
+}
 .dd-week-btn img,.dd-week-ph{
-  display:block;width:100%;height:26px;object-fit:cover;border-radius:5px;background:#3a2816;margin:0 0 1px;pointer-events:none
+  display:block;width:100%;height:26px;object-fit:cover;border-radius:5px;background:#3a2816;margin:0 0 1px;pointer-events:none;
+  transition:opacity .18s ease,filter .18s ease
 }
 .dd-week-ph{display:grid;place-items:center;font-size:12px}
 .dd-week-btn span{pointer-events:none;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Main dish photo when browsing a locked / closed day */
+.dd-photo.is-locked-day img{
+  opacity:.32;filter:grayscale(.4) brightness(1.08)
+}
+.dd-photo.is-locked-day::before{opacity:.45;filter:blur(16px) saturate(.7) brightness(.5)}
+.dd-photo.is-locked-day::after{
+  content:"🔒";position:absolute;z-index:2;inset:auto 10px 10px auto;font-size:18px;opacity:.75;
+  text-shadow:0 2px 8px #000c;pointer-events:none
+}
 .dd-page-hint{display:none!important}
 .dd-dock .dd-actions{
   display:grid!important;grid-template-columns:1fr!important;gap:0;margin:0;padding:0;background:transparent
@@ -1410,10 +1435,25 @@ window.TONINO_CONFIG = Object.freeze({
     for (let i = 0; i < arguments.length; i++) push(arguments[i]);
     return out;
   }
+  function dailyDishRowLocked(row) {
+    if (!row) return true;
+    if (row.locked === true) return true;
+    if (row.orderable === true || row.isToday === true) return false;
+    return true;
+  }
+  /** Visual ghost — locked days + Saturday example (even if open today). */
+  function dailyDishRowGhost(row) {
+    if (dailyDishRowLocked(row)) return true;
+    const key = String(row.dayKey || "").toLowerCase();
+    const day = String(row.day || "");
+    return key === "sat" || /سبت|Cumartesi|^Sat(urday)?$/i.test(day);
+  }
   function dailyDishCanOrderPreview(dish) {
     if (!todayDailyDish || !dish) return false;
     const previewRow = weeklyDishes[ddPreviewIdx];
-    return !previewRow || previewRow.isToday === true || previewRow.orderable === true || dish === todayDailyDish;
+    if (!previewRow) return true;
+    /* Saturday forced ghost for look — still orderable only if server says so */
+    return previewRow.orderable === true || previewRow.isToday === true;
   }
   function dailyDishExtrasLines(dish, opts) {
     if (!dish) return [];
@@ -1462,6 +1502,8 @@ window.TONINO_CONFIG = Object.freeze({
     const photo = q("ddPhoto");
     const img = q("ddPhotoImg");
     if (!photo || !img) return;
+    const previewRow = weeklyDishes[ddPreviewIdx];
+    const ghostDay = dailyDishRowGhost(previewRow);
     const src = absMenuUrl(guestMenuApiBase, dish.imageUrl || (todayDailyDish && todayDailyDish.imageUrl) || "");
     if (src) {
       img.src = src;
@@ -1472,6 +1514,7 @@ window.TONINO_CONFIG = Object.freeze({
       photo.style.backgroundImage = "";
       photo.classList.add("is-empty");
     }
+    photo.classList.toggle("is-locked-day", ghostDay && !photo.classList.contains("is-empty"));
     const list = q("ddList");
     if (list) list.innerHTML = "";
     const dessertBox = q("ddChooseDessert");
@@ -1508,7 +1551,15 @@ window.TONINO_CONFIG = Object.freeze({
           ? `<img alt="" draggable="false" decoding="async" src="${escapeHtml(thumb)}" />`
           : `<span class="dd-week-ph" aria-hidden="true">🍽</span>`;
         const dayLabel = escapeHtml(row.day || ("يوم " + (i + 1)));
-        return `<button type="button" class="dd-week-btn${i === ddPreviewIdx ? " is-active" : ""}${row.isToday ? " is-today" : ""}" data-dd-rail="${i}">${media}<span>${dayLabel}</span></button>`;
+        const ghost = dailyDishRowGhost(row);
+        const cls = [
+          "dd-week-btn",
+          i === ddPreviewIdx ? "is-active" : "",
+          row.isToday ? "is-today" : "",
+          ghost ? "is-locked" : "",
+        ].filter(Boolean).join(" ");
+        const key = escapeHtml(String(row.dayKey || ""));
+        return `<button type="button" class="${cls}" data-dd-rail="${i}" data-dd-key="${key}" aria-pressed="${i === ddPreviewIdx ? "true" : "false"}">${media}<span>${dayLabel}</span></button>`;
       }).join("");
       if (hint) {
         hint.hidden = true;
@@ -1948,6 +1999,23 @@ window.TONINO_CONFIG = Object.freeze({
   $("summaryButton").addEventListener("click",()=>$("orderCloud").scrollTo({top:0,behavior:"smooth"}));
   $("shade").addEventListener("click",()=>{ closeVariants(); });
   $("closeVariants").addEventListener("click",closeVariants);
+  function clearDdWeekPress() {
+    document.querySelectorAll(".dd-week-btn.is-press").forEach(el => el.classList.remove("is-press"));
+  }
+  $("menuScene").addEventListener("pointerdown", event => {
+    const page = event.target.closest(".dd-book-page");
+    if (!page || page !== currentMenu) return;
+    const dayBtn = event.target.closest(".dd-week-btn[data-dd-rail]");
+    if (!dayBtn) return;
+    clearDdWeekPress();
+    dayBtn.classList.add("is-press");
+    if (navigator.vibrate) navigator.vibrate(6);
+  });
+  $("menuScene").addEventListener("pointerup", clearDdWeekPress);
+  $("menuScene").addEventListener("pointercancel", clearDdWeekPress);
+  $("menuScene").addEventListener("pointerleave", event => {
+    if (!event.target.closest || !event.target.closest(".dd-week-btn")) clearDdWeekPress();
+  }, true);
   $("menuScene").addEventListener("click", event => {
     const page = event.target.closest(".dd-book-page");
     if (!page || page !== currentMenu) return;
@@ -1957,6 +2025,7 @@ window.TONINO_CONFIG = Object.freeze({
     if (event.target.closest(".dd-nav-next")) { stepDailyDishDay(1); return; }
     const dayBtn = event.target.closest("[data-dd-rail]");
     if (dayBtn) {
+      clearDdWeekPress();
       const idx = Number(dayBtn.dataset.ddRail);
       if (!Number.isFinite(idx) || idx === ddPreviewIdx) return;
       ddPreviewIdx = idx;
