@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v274 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v275 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -857,11 +857,53 @@ window.TONINO_CONFIG = Object.freeze({
     return { token, shop, api, section, tableNum };
   }
   let cachedApiBase = "";
+  function isDevTunnelHost(h) {
+    const x = String(h || "").toLowerCase();
+    return x === "zekiq-dev.zekiqmenu.com" || x.startsWith("zekiq-dev.");
+  }
+  function isCashierTunnelHost(h) {
+    return String(h || "").toLowerCase() === "tonino.zekiqmenu.com";
+  }
+  function hostOfUrl(u) {
+    try { return new URL(u).hostname.toLowerCase(); } catch (_) { return ""; }
+  }
+  /** Never mix developer ↔ cashier tunnels (radical isolation). */
+  function refuseCrossEnvironmentApi(base) {
+    const b = String(base || "").trim().replace(/\/+$/, "");
+    if (!b || !/^https:\/\//i.test(b)) return "";
+    const apiHost = hostOfUrl(b);
+    const pageHost = String(location.hostname || "").toLowerCase();
+    const shopKey = String(guestSession().shop || "").trim().toLowerCase();
+    if (isDevTunnelHost(pageHost) || isDevTunnelHost(shopKey)) {
+      if (isCashierTunnelHost(apiHost)) return "";
+      if (!isDevTunnelHost(apiHost)) return "";
+    }
+    if (isCashierTunnelHost(pageHost) || shopKey === "tonino" || shopKey === "tonino.zekiqmenu.com") {
+      if (isDevTunnelHost(apiHost)) return "";
+    }
+    return b;
+  }
   async function resolveApiBase() {
     if (cachedApiBase) return cachedApiBase;
     const session = guestSession();
+    const pageHost = String(location.hostname || "").toLowerCase();
+    /* Named tunnel page = same origin only. Never fall through to GitHub tonino. */
+    if (isDevTunnelHost(pageHost) || isCashierTunnelHost(pageHost)) {
+      cachedApiBase = String(location.origin || "").replace(/\/+$/, "");
+      return cachedApiBase;
+    }
     if (session.api && /^https?:\/\//i.test(session.api)) {
-      cachedApiBase = session.api.replace(/\/+$/, "");
+      const locked = refuseCrossEnvironmentApi(session.api);
+      if (locked) { cachedApiBase = locked; return cachedApiBase; }
+    }
+    /* Explicit shop on GitHub: pin the matching tunnel — never use the other environment's default. */
+    const shopKey = String(session.shop || "").trim().toLowerCase();
+    if (isDevTunnelHost(shopKey) || shopKey === "zekiq-dev") {
+      cachedApiBase = "https://zekiq-dev.zekiqmenu.com";
+      return cachedApiBase;
+    }
+    if (shopKey === "tonino" || shopKey === "tonino.zekiqmenu.com") {
+      cachedApiBase = "https://tonino.zekiqmenu.com";
       return cachedApiBase;
     }
     const candidates = [];
@@ -875,9 +917,7 @@ window.TONINO_CONFIG = Object.freeze({
           if (!res.ok) continue;
           const j = await res.json();
           let base = String(j.apiUrl || j.tunnelUrl || "").trim().replace(/\/+$/, "");
-          /* Prefer shops[shop] so GitHub QR can target zekiq-dev without stale default tonino. */
           try {
-            const shopKey = String(session.shop || "").trim().toLowerCase();
             const shops = j.shops && typeof j.shops === "object" ? j.shops : null;
             if (shopKey && shops) {
               const row = shops[shopKey] || shops[shopKey.replace(/\.zekiqmenu\.com$/i, "")] || shops[shopKey + ".zekiqmenu.com"];
@@ -885,10 +925,11 @@ window.TONINO_CONFIG = Object.freeze({
               if (shopTunnel && /^https:\/\//i.test(shopTunnel)) base = shopTunnel;
             }
           } catch (_) {}
-          if (base && /^https?:\/\//i.test(base)) { cachedApiBase = base; return cachedApiBase; }
+          base = refuseCrossEnvironmentApi(base);
+          if (base) { cachedApiBase = base; return cachedApiBase; }
         } else {
-          cachedApiBase = url.replace(/\/+$/, "");
-          return cachedApiBase;
+          const locked = refuseCrossEnvironmentApi(url);
+          if (locked) { cachedApiBase = locked; return cachedApiBase; }
         }
       } catch (_) {}
     }
