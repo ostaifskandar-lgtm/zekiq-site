@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v286 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v287 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -277,6 +277,19 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 .order-main .name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:1000;line-height:1.05}
 .order-main .price{font-size:9px;color:#f4c96e;line-height:1}
 .order-action{border:0;border-right:1px solid #e0aa4538;background:#ffffff08;color:#ffd46c;font-size:15px;font-weight:1000;cursor:pointer}.order-action.trash{font-size:12px}.order-action:active{background:#c78922;color:#171008}
+/* 3 flashes when guest picks an item — draws eye to top cart line */
+@keyframes orderPickFlash{
+  0%,100%{filter:brightness(1);box-shadow:0 2px 5px #0008,0 0 0 1px #fff05 inset;transform:scale(1)}
+  10%,36%,62%{filter:brightness(1.45);box-shadow:0 0 0 2px #caed38,0 0 18px #caed38cc,0 2px 8px #000a;transform:scale(1.04);background:linear-gradient(180deg,#6e5024f8,#3a2812f8)}
+  23%,49%,75%{filter:brightness(1);box-shadow:0 2px 5px #0008,0 0 0 1px #fff05 inset;transform:scale(1)}
+}
+.order.just-added{
+  animation:orderPickFlash 1.05s ease-in-out 1;
+  z-index:5;position:relative
+}
+#cartCount.just-added{
+  animation:orderPickFlash 1.05s ease-in-out 1
+}
 
 /* Quick jumps ABOVE categories — tea/coffee guests skip flipping */
 #quickBand{
@@ -1807,10 +1820,36 @@ window.TONINO_CONFIG = Object.freeze({
       });
   }
 
+  function flashOrderInCart(key) {
+    const grid = $("orderGrid");
+    if (!grid) return;
+    const enc = encodeURIComponent(key);
+    const row = [...grid.querySelectorAll(".order")].find((el) => {
+      const btn = el.querySelector(".order-action[data-key]");
+      return btn && btn.dataset.key === enc;
+    });
+    const bump = (el) => {
+      if (!el) return;
+      el.classList.remove("just-added");
+      void el.offsetWidth;
+      el.classList.add("just-added");
+      window.setTimeout(() => { try { el.classList.remove("just-added"); } catch (_) {} }, 1100);
+    };
+    if (row) {
+      try { row.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" }); } catch (_) {}
+      bump(row);
+    }
+    bump($("cartCount"));
+  }
   function addItem(item) {
     const key=itemKey(item), found=cart.find(x=>itemKey(x)===key);
     found ? found.qty++ : cart.push({...item,qty:1});
-    saveCart(); renderCart(); updateBadges(); if(navigator.vibrate) navigator.vibrate(12); toast(`تمت إضافة ${item.name}`);
+    saveCart(); renderCart(); updateBadges();
+    flashOrderInCart(key);
+    if(navigator.vibrate) navigator.vibrate([12, 40, 12, 40, 12]);
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag;
+    const prefix = (bag && bag.addedPrefix) || "تمت إضافة";
+    toast(`${prefix} ${item.name}`);
   }
   function reduceItem(key) {
     const index=cart.findIndex(x=>itemKey(x)===key); if(index<0)return;
