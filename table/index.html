@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v284 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v285 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -771,8 +771,8 @@ html[lang="en"] .dd-photo.is-day-off::after{content:"Closed today"}
   <section id="variantSheet" aria-label="خيارات الصنف">
     <h3 id="variantTitle">اختر الخيار</h3><div id="variantGrid"></div><button id="closeVariants" type="button">إغلاق</button>
   </section>
-  <section id="dailyDishScreen" aria-label="الطبق اليومي" aria-live="polite">
-    <p class="dd-kicker" id="ddKicker">الطبق اليومي · Günün Yemeği</p>
+  <section id="dailyDishScreen" aria-label="Günün Yemeği" aria-live="polite">
+    <p class="dd-kicker" id="ddKicker">Günün Yemeği</p>
     <div class="dd-stage">
       <button type="button" class="dd-nav dd-nav-prev" id="ddPrev" aria-label="اليوم السابق">‹</button>
       <div class="dd-photo is-empty" id="ddPhoto"><img id="ddPhotoImg" alt="" draggable="false" decoding="async" /></div>
@@ -801,7 +801,7 @@ html[lang="en"] .dd-photo.is-day-off::after{content:"Closed today"}
     </div>
     <p class="dd-price" id="ddPrice" hidden></p>
   </section>
-  <button type="button" id="ddFab" aria-label="الطبق اليومي"></button>
+  <button type="button" id="ddFab" aria-label="Günün Yemeği"></button>
   <div id="ddThumbPop" class="dd-thumb-pop" hidden aria-hidden="true"><img alt="" draggable="false" decoding="async" /><span class="dd-thumb-pop-cap"></span></div>
   <div id="toast" role="status" aria-live="polite"></div>
   <div id="startGate" role="dialog" aria-modal="true" aria-label="order guide">
@@ -1400,7 +1400,11 @@ window.TONINO_CONFIG = Object.freeze({
     });
   }
   function dailyDishMainLabel(dish) {
-    return String((dish && (dish.mainAr || dish.main || dish.mainTr)) || "").trim();
+    if (!dish) return "";
+    const lang = window.__zekiqGuestLang || "ar";
+    if (lang === "tr") return String(dish.mainTr || dish.main || dish.mainAr || "").trim();
+    if (lang === "en") return String(dish.main || dish.mainTr || dish.mainAr || "").trim();
+    return String(dish.mainAr || dish.main || dish.mainTr || "").trim();
   }
   function syncDailyDishEntry() {
     const host = $("quickRow");
@@ -1413,7 +1417,7 @@ window.TONINO_CONFIG = Object.freeze({
         const button = document.createElement("button");
         button.type = "button";
         button.className = "quick-jump daily-dish-jump";
-        button.textContent = "🍽 الطبق اليومي";
+        button.textContent = guestBag().dailyDishJump;
         button.addEventListener("click", () => goToDailyBookPage());
         host.insertBefore(button, host.firstChild);
       }
@@ -1421,7 +1425,8 @@ window.TONINO_CONFIG = Object.freeze({
     if (fab) {
       if (has) {
         const name = dailyDishMainLabel(todayDailyDish);
-        fab.innerHTML = `🍽 الطبق اليومي · Günün Yemeği<small>${escapeHtml(name)}</small>`;
+        const label = guestBag().dailyDish;
+        fab.innerHTML = `🍽 ${escapeHtml(label)}<small>${escapeHtml(name)}</small>`;
         fab.classList.add("show");
       } else {
         fab.classList.remove("show");
@@ -1485,8 +1490,8 @@ window.TONINO_CONFIG = Object.freeze({
     push("غارني", dish.sides);
     const dessertPick = opts && opts.dessert != null ? opts.dessert : "";
     const drinkPick = opts && opts.drink != null ? opts.drink : "";
-    if (dessertPick) push("تحلية", dessertPick);
-    if (drinkPick) push("مشروب", drinkPick);
+    if (dessertPick) push(guestBag().noteDessert, dessertPick);
+    if (drinkPick) push(guestBag().noteDrink, drinkPick);
     const tea = String(dish.teaOffer || "").trim();
     if (tea && tea !== "لا" && tea.toLowerCase() !== "no") push("شاي", tea === "نعم" || tea.toLowerCase() === "yes" ? "مع الطبق" : tea);
     return lines;
@@ -1519,7 +1524,7 @@ window.TONINO_CONFIG = Object.freeze({
     if (weeklyDishes.length) ddPreviewIdx = todayIdx >= 0 ? todayIdx : 0;
     const dish = todayDailyDish || weeklyDishes[ddPreviewIdx] || dailyDishPreview();
     if (!dish) return;
-    const title = String(dish.mainAr || dish.main || dish.mainTr || "").trim() || "الطبق اليومي";
+    const title = dailyDishMainLabel(dish) || guestBag().dailyDish;
     if (q("ddTitle")) q("ddTitle").textContent = title;
     const photo = q("ddPhoto");
     const img = q("ddPhotoImg");
@@ -1658,8 +1663,8 @@ window.TONINO_CONFIG = Object.freeze({
       page: DAILY_DISH_PAGE,
       hotspotName: DAILY_DISH_KEY,
       itemId: DAILY_DISH_KEY,
-      name: choiceBits ? `Günün Yemeği · ${mainName} (${choiceBits})` : `Günün Yemeği · ${mainName}`,
-      category: "Günün Yemeği",
+      name: choiceBits ? `${guestBag().dailyDish} · ${mainName} (${choiceBits})` : `${guestBag().dailyDish} · ${mainName}`,
+      category: guestBag().dailyDish,
       price: Number.isFinite(numPrice) && numPrice > 0 ? Math.round(numPrice) : 0,
       note: buildDailyDishNote(dish, dessert, drink),
     });
@@ -1668,14 +1673,14 @@ window.TONINO_CONFIG = Object.freeze({
   function addDailyDishToCart() {
     if (!todayDailyDish) return;
     const preview = dailyDishPreview() || todayDailyDish;
-    if (!dailyDishCanOrderPreview(preview)) { toast("يمكن طلب طبق اليوم فقط"); return; }
+    if (!dailyDishCanOrderPreview(preview)) { toast(guestBag().dailyOnly); return; }
     const dish = todayDailyDish;
     const desserts = dailyDishOptionList(...dailyDishSplitPair(dish.dessert, dish.dessert2));
     const drinks = dailyDishOptionList(...dailyDishSplitPair(dish.drink, dish.drink2));
     const askDrink = (dessertPick) => {
       if (drinks.length >= 2) {
         openChoiceSheet(
-          "اختر المشروب",
+          guestBag().pickDrink,
           drinks.map(v => ({ label: v, note: v, priceMul: 1 })),
           choice => commitDailyDishToCart(dessertPick, choice.note),
           { keepPage: true }
@@ -1686,7 +1691,7 @@ window.TONINO_CONFIG = Object.freeze({
     };
     if (desserts.length >= 2) {
       openChoiceSheet(
-        "اختر التحلية",
+        guestBag().pickDessert,
         desserts.map(v => ({ label: v, note: v, priceMul: 1 })),
         choice => askDrink(choice.note),
         { keepPage: true }
@@ -1738,7 +1743,7 @@ window.TONINO_CONFIG = Object.freeze({
       const button = document.createElement("button");
       button.type = "button";
       button.className = "category";
-      button.textContent = "الطبق اليومي";
+      button.textContent = guestBag().dailyDish;
       button.dataset.book = "0";
       button.addEventListener("click", () => goTo(0));
       host.appendChild(button);
@@ -1759,7 +1764,7 @@ window.TONINO_CONFIG = Object.freeze({
     const art = artIndexFromBook(currentIndex);
     if (titleEl) {
       titleEl.textContent = isDailyBookIndex(currentIndex)
-        ? "الطبق اليومي"
+        ? guestBag().dailyDish
         : (CATEGORIES[art] || "");
     }
     $("pageNumber").textContent = `${currentIndex + 1} / ${bookPageCount()}`;
@@ -1783,9 +1788,12 @@ window.TONINO_CONFIG = Object.freeze({
     });
     const hint = $("hint");
     if (hint) {
-      hint.innerHTML = isDailyBookIndex(currentIndex)
-        ? 'اسحب يمين / يسار ككتاب <em>‹‹ ››</em><br><span style="color:#ffda7d;font-size:11px">صفحة الطبق اليومي — اختر ثم أضف للسلة</span>'
-        : 'اسحب يمين / يسار ككتاب <em>‹‹ ››</em><br><span style="color:#ffda7d;font-size:11px">اضغط زر + الأخضر للطلب</span>';
+      {
+        const b = guestBag();
+        hint.innerHTML = isDailyBookIndex(currentIndex)
+          ? `${b.hintSwipe}<br><span style="color:#ffda7d;font-size:11px">${b.hintDaily}</span>`
+          : `${b.hintSwipe}<br><span style="color:#ffda7d;font-size:11px">${b.hintPlus}</span>`;
+      }
     }
     placeCategoryBand();
   }
@@ -2207,7 +2215,19 @@ window.TONINO_CONFIG = Object.freeze({
       orderAgain: "✓ اطلب مرة أخرى",
       sendBtn: "إرسال ✓",
       dayOff: "اليوم أوف",
-      soon: "قريباً"
+      soon: "قريباً",
+      dailyDish: "الطبق اليومي",
+      dailyDishJump: "🍽 الطبق اليومي",
+      dailyOnly: "يمكن طلب طبق اليوم فقط",
+      pickDessert: "اختر التحلية",
+      pickDrink: "اختر المشروب",
+      noteDessert: "تحلية",
+      noteDrink: "مشروب",
+      close: "إغلاق",
+      hintSwipe: "اسحب يمين / يسار ككتاب <em>‹‹ ››</em>",
+      hintDaily: "صفحة الطبق اليومي — اختر ثم أضف للسلة",
+      hintPlus: "اضغط زر + الأخضر للطلب",
+      addedPrefix: "تمت إضافة"
     },
     tr: {
       cashierLabel: "Kasiyer",
@@ -2223,7 +2243,19 @@ window.TONINO_CONFIG = Object.freeze({
       orderAgain: "✓ Tekrar sipariş ver",
       sendBtn: "Gönder ✓",
       dayOff: "Bugün kapalı",
-      soon: "Yakında"
+      soon: "Yakında",
+      dailyDish: "Günün Yemeği",
+      dailyDishJump: "🍽 Günün Yemeği",
+      dailyOnly: "Sadece bugünün yemeği sipariş edilebilir",
+      pickDessert: "Tatlı seçin",
+      pickDrink: "İçecek seçin",
+      noteDessert: "Tatlı",
+      noteDrink: "İçecek",
+      close: "Kapat",
+      hintSwipe: "Sayfalar için sağa / sola kaydırın <em>‹‹ ››</em>",
+      hintDaily: "Günün yemeği sayfası — seçin ve sepete ekleyin",
+      hintPlus: "Sipariş için yeşil + düğmesine basın",
+      addedPrefix: "Eklendi"
     },
     en: {
       cashierLabel: "Cashier",
@@ -2239,9 +2271,24 @@ window.TONINO_CONFIG = Object.freeze({
       orderAgain: "✓ Order again",
       sendBtn: "Send ✓",
       dayOff: "Closed today",
-      soon: "Soon"
+      soon: "Soon",
+      dailyDish: "Daily dish",
+      dailyDishJump: "🍽 Daily dish",
+      dailyOnly: "Only today's dish can be ordered",
+      pickDessert: "Choose dessert",
+      pickDrink: "Choose drink",
+      noteDessert: "Dessert",
+      noteDrink: "Drink",
+      close: "Close",
+      hintSwipe: "Swipe left / right like a book <em>‹‹ ››</em>",
+      hintDaily: "Daily dish page — pick then add to cart",
+      hintPlus: "Tap the green + to order",
+      addedPrefix: "Added"
     }
   };
+  function guestBag() {
+    return window.__zekiqGuestBag || AMB_I18N[window.__zekiqGuestLang] || AMB_I18N.ar;
+  }
   function normalizeGuestLang(raw) {
     const v = String(raw || "").trim().toLowerCase();
     if (v === "tr" || v.startsWith("tr") || v === "turkish") return "tr";
@@ -2276,6 +2323,30 @@ window.TONINO_CONFIG = Object.freeze({
     const send = document.getElementById("sendButton");
     if (send) send.textContent = bag.sendBtn;
   }
+  function paintDailyDishChrome(bag) {
+    const b = bag || guestBag();
+    const screen = document.getElementById("dailyDishScreen");
+    if (screen) screen.setAttribute("aria-label", b.dailyDish);
+    const kicker = document.getElementById("ddKicker");
+    if (kicker) kicker.textContent = b.dailyDish;
+    const fab = document.getElementById("ddFab");
+    if (fab) fab.setAttribute("aria-label", b.dailyDish);
+    const dLab = document.getElementById("ddDessertLabel");
+    if (dLab) dLab.textContent = b.pickDessert;
+    const drLab = document.getElementById("ddDrinkLabel");
+    if (drLab) drLab.textContent = b.pickDrink;
+    const close = document.getElementById("ddClose");
+    if (close) close.textContent = b.close;
+    document.querySelectorAll(".category").forEach((btn) => {
+      if (btn.dataset.book === "0") btn.textContent = b.dailyDish;
+    });
+    if (typeof syncDailyDishEntry === "function") {
+      try { syncDailyDishEntry(); } catch (_) {}
+    }
+    if (typeof syncNavigation === "function") {
+      try { syncNavigation(); } catch (_) {}
+    }
+  }
   function applyAmbientLang(langCode) {
     const lang = normalizeGuestLang(langCode) || "ar";
     const bag = AMB_I18N[lang] || AMB_I18N.ar;
@@ -2288,6 +2359,7 @@ window.TONINO_CONFIG = Object.freeze({
     const tag = document.getElementById("ambStoryTag");
     if (tag) tag.textContent = bag.ambStoryTag;
     paintStartGate(bag);
+    paintDailyDishChrome(bag);
     if (typeof window.applyGuestLanguage === "function") {
       try { window.applyGuestLanguage(lang); } catch (_) {}
     }
