@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v280 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v281 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -402,14 +402,18 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 }
 .dd-week-ph{display:grid;place-items:center;font-size:12px}
 .dd-week-btn span{pointer-events:none;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* Locked day: ONE faded photo only — no blur layer under transparent img */
-.dd-photo.is-locked-day{
+/* POS settings day-off: faded photo + label (open days stay normal) */
+.dd-photo.is-day-off{
   background-image:none!important;background-color:#1a1008
 }
-.dd-photo.is-locked-day::before,
-.dd-photo.is-locked-day::after{display:none!important;content:none!important}
-.dd-photo.is-locked-day img{
-  opacity:.42;filter:grayscale(.5) brightness(1.05);object-fit:cover;object-position:center center
+.dd-photo.is-day-off::before{display:none!important;content:none!important}
+.dd-photo.is-day-off::after{
+  content:"اليوم أوف";position:absolute;z-index:3;inset:0;display:grid;place-items:center;
+  pointer-events:none;font-size:clamp(22px,6.5vw,32px);font-weight:1000;color:#ffe8b0;
+  letter-spacing:.02em;text-shadow:0 2px 14px #000c;background:linear-gradient(180deg,#1a1008aa,#1a1008cc)
+}
+.dd-photo.is-day-off img{
+  opacity:.28;filter:grayscale(.55) brightness(1.05);object-fit:cover;object-position:center center
 }
 .dd-page-hint{display:none!important}
 .dd-dock .dd-actions{
@@ -1438,24 +1442,17 @@ window.TONINO_CONFIG = Object.freeze({
     for (let i = 0; i < arguments.length; i++) push(arguments[i]);
     return out;
   }
-  function dailyDishRowLocked(row) {
-    if (!row) return true;
-    if (row.locked === true) return true;
-    if (row.orderable === true || row.isToday === true) return false;
-    return true;
-  }
-  function dailyDishRowGhost(row) {
-    if (!row) return true;
-    /* Never ghost today's orderable dish — that stacked two faded layers on the main photo */
-    if (row.orderable === true || row.isToday === true) return false;
-    return dailyDishRowLocked(row);
+  /** Closed weekday in POS settings (openDays) only. */
+  function dailyDishIsDayOff(row) {
+    if (!row) return false;
+    return row.dayOff === true || row.locked === true;
   }
   function dailyDishCanOrderPreview(dish) {
     if (!todayDailyDish || !dish) return false;
     const previewRow = weeklyDishes[ddPreviewIdx];
-    if (!previewRow) return true;
-    if (dailyDishRowGhost(previewRow)) return false;
-    return previewRow.orderable === true || previewRow.isToday === true;
+    if (!previewRow) return !!todayDailyDish;
+    if (dailyDishIsDayOff(previewRow)) return false;
+    return previewRow.orderable === true;
   }
   function dailyDishExtrasLines(dish, opts) {
     if (!dish) return [];
@@ -1505,7 +1502,7 @@ window.TONINO_CONFIG = Object.freeze({
     const img = q("ddPhotoImg");
     if (!photo || !img) return;
     const previewRow = weeklyDishes[ddPreviewIdx];
-    const ghostDay = dailyDishRowGhost(previewRow);
+    const dayOff = dailyDishIsDayOff(previewRow);
     const src = absMenuUrl(guestMenuApiBase, dish.imageUrl || (todayDailyDish && todayDailyDish.imageUrl) || "");
     if (src) {
       img.src = src;
@@ -1516,7 +1513,8 @@ window.TONINO_CONFIG = Object.freeze({
       photo.style.backgroundImage = "";
       photo.classList.add("is-empty");
     }
-    photo.classList.toggle("is-locked-day", ghostDay && !photo.classList.contains("is-empty"));
+    photo.classList.toggle("is-day-off", !!dayOff);
+    photo.classList.remove("is-locked-day");
     const list = q("ddList");
     if (list) list.innerHTML = "";
     const dessertBox = q("ddChooseDessert");
@@ -1553,12 +1551,12 @@ window.TONINO_CONFIG = Object.freeze({
           ? `<img alt="" draggable="false" decoding="async" src="${escapeHtml(thumb)}" />`
           : `<span class="dd-week-ph" aria-hidden="true">🍽</span>`;
         const dayLabel = escapeHtml(row.day || ("يوم " + (i + 1)));
-        const ghost = dailyDishRowGhost(row);
+        const dayOff = dailyDishIsDayOff(row);
         const cls = [
           "dd-week-btn",
           i === ddPreviewIdx ? "is-active" : "",
           row.isToday ? "is-today" : "",
-          ghost ? "is-locked" : "",
+          dayOff ? "is-locked" : "",
         ].filter(Boolean).join(" ");
         const key = escapeHtml(String(row.dayKey || ""));
         return `<button type="button" class="${cls}" data-dd-rail="${i}" data-dd-key="${key}" aria-pressed="${i === ddPreviewIdx ? "true" : "false"}">${media}<span>${dayLabel}</span></button>`;
@@ -1588,7 +1586,8 @@ window.TONINO_CONFIG = Object.freeze({
     orderBtn.classList.toggle("in-cart", qty > 0 && canOrder);
     orderBtn.classList.toggle("is-soon", !canOrder);
     if (!canOrder) {
-      orderBtn.innerHTML = withPrice(dish.day ? `قريباً · ${escapeHtml(String(dish.day))}` : "قريباً");
+      const off = dailyDishIsDayOff(weeklyDishes[ddPreviewIdx]);
+      orderBtn.innerHTML = withPrice(off ? "اليوم أوف" : (dish.day ? `قريباً · ${escapeHtml(String(dish.day))}` : "قريباً"));
     } else if (qty > 0) {
       orderBtn.innerHTML = withPrice("✓ اطلب مرة أخرى");
     } else {
