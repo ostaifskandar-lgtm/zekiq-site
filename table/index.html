@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v287 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v288 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -88,6 +88,7 @@ html.coach-locked #viewer,
 html.coach-locked #footer,
 html.coach-locked #shade,
 html.coach-locked #variantSheet,
+html.coach-locked #ice-cream-sheet,
 html.coach-locked #dailyDishScreen,
 html.coach-locked #ddFab,
 html.coach-locked #toast{visibility:hidden!important;pointer-events:none!important}
@@ -554,6 +555,47 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
 #shade{position:absolute;z-index:1080;inset:0;background:#000b;opacity:0;pointer-events:none;transition:.2s}#shade.show{opacity:1;pointer-events:auto}
 #variantSheet:not(.show){visibility:hidden;pointer-events:none}#variantSheet{position:absolute;z-index:1100;left:6px;right:6px;bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);padding:15px;border:1px solid #d99a34;border-radius:20px;background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1)}#variantSheet.show{transform:translateY(0)}#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#variantGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .variant{min-height:46px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:12px;font-weight:1000;cursor:pointer;padding:6px 8px;line-height:1.25}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
+/* Ice cream builder — vessel + scoops + flavors */
+#ice-cream-sheet{
+  position:absolute;z-index:1105;inset:0;display:flex;align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .22s
+}
+#ice-cream-sheet.show{opacity:1;pointer-events:auto}
+#ice-cream-sheet .ice-sheet-card{
+  width:min(420px,100%);max-height:min(88dvh,680px);
+  display:flex;flex-direction:column;
+  background:linear-gradient(165deg,#2a1608,#4a2a12 45%,#1a0e04);
+  border:1.5px solid #c8860a;border-radius:22px 22px 0 0;
+  padding:16px 14px calc(14px + var(--safe-bottom));
+  transform:translateY(110%);transition:transform .32s cubic-bezier(.34,1.2,.64,1);
+  box-shadow:0 -10px 50px #c8860a40;color:#fff8e8;pointer-events:auto
+}
+#ice-cream-sheet.show .ice-sheet-card{transform:translateY(0)}
+.ice-sheet-title{text-align:center;font-size:clamp(18px,5vw,22px);font-weight:1000;color:#ffd54f;margin:0 0 8px}
+.ice-sheet-list{flex:1;overflow-y:auto;min-height:0;display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.ice-serving-card{border:1.5px solid #ffd54f59;border-radius:14px;padding:10px 12px;background:#0000002e}
+.ice-serving-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.ice-serving-label{font-size:13px;font-weight:1000;color:#ffd54f}
+.ice-serving-remove{border:0;background:#ff645026;color:#ffb4a8;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:900;cursor:pointer}
+.ice-sec{margin-bottom:10px}
+.ice-sec-label{font-size:12px;font-weight:900;opacity:.88;margin-bottom:6px}
+.ice-flavors,.ice-scoops,.ice-vessel{display:flex;flex-wrap:wrap;gap:6px}
+.ice-chip{
+  border:1.5px solid #ffd54f73;background:#ffffff14;color:#fff8e8;border-radius:999px;
+  padding:7px 11px;font-size:12px;font-weight:900;cursor:pointer
+}
+.ice-chip.active{background:linear-gradient(145deg,#ffd54f,#f0b820);color:#1a0a00;border-color:#c8860a}
+.ice-sheet-add-serving{
+  width:100%;border:1.5px dashed #ffd54f80;background:#ffffff0f;color:#ffd54f;
+  border-radius:12px;padding:10px 12px;font-size:13px;font-weight:900;cursor:pointer;margin-bottom:8px
+}
+.ice-sheet-total{text-align:center;font-size:16px;font-weight:1000;color:#ffd54f;margin:4px 0 10px}
+.ice-sheet-actions{display:grid;grid-template-columns:1fr 1.4fr;gap:8px}
+.ice-sheet-actions button{
+  min-height:44px;border-radius:12px;font-weight:1000;font-size:14px;cursor:pointer;border:1px solid #9d7642
+}
+#iceSheetCancel{background:#ffffff08;color:#e9d2a2}
+#iceSheetConfirm{background:linear-gradient(145deg,#ffd54f,#f0b820);color:#1a0a00;border-color:#c8860a}
 
 @media(max-width:350px){
   :root{--top-h:43px;--quick-h:34px;--cats-h:46px;--footer-h:46px}
@@ -785,6 +827,18 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
   <section id="variantSheet" aria-label="خيارات الصنف">
     <h3 id="variantTitle">اختر الخيار</h3><div id="variantGrid"></div><button id="closeVariants" type="button">إغلاق</button>
   </section>
+  <div id="ice-cream-sheet" aria-hidden="true">
+    <div class="ice-sheet-card" role="dialog" aria-modal="true" aria-labelledby="iceSheetTitle">
+      <div class="ice-sheet-title" id="iceSheetTitle">البوظة</div>
+      <div class="ice-sheet-list" id="iceSheetList"></div>
+      <button type="button" class="ice-sheet-add-serving" id="iceAddServingBtn">+ أضف كاسة أخرى</button>
+      <div class="ice-sheet-total" id="iceSheetTotal"></div>
+      <div class="ice-sheet-actions">
+        <button type="button" id="iceSheetCancel">إلغاء</button>
+        <button type="button" id="iceSheetConfirm">أضف للطلب</button>
+      </div>
+    </div>
+  </div>
   <section id="dailyDishScreen" aria-label="Günün Yemeği" aria-live="polite">
     <p class="dd-kicker" id="ddKicker">Günün Yemeği</p>
     <div class="dd-stage">
@@ -1255,7 +1309,8 @@ window.TONINO_CONFIG = Object.freeze({
         event.stopPropagation();
         button.classList.remove("ping"); void button.offsetWidth; button.classList.add("ping");
         const fullItem = {...item, page:art};
-        if (needsTurkishCoffeeSugar(item.name)) openTurkishCoffeeVariants(fullItem);
+        if (isIceCreamOrderSpot(item) || isStandaloneIceCreamItem(item)) openIceCreamSheet(fullItem);
+        else if (needsTurkishCoffeeSugar(item.name)) openTurkishCoffeeVariants(fullItem);
         else if (item.variants) openVariants(fullItem);
         else addItem(fullItem);
       });
@@ -1951,6 +2006,237 @@ window.TONINO_CONFIG = Object.freeze({
       });
     });
   }
+
+  const ICE_CREAM_SCOOP_FALLBACK = 60;
+  const ICE_CREAM_FLAVORS = [
+    "Çikolata", "Vanilya", "Muz", "Böğürtlen", "Yaban Mersini",
+    "Limon", "Antep Fıstığı", "Karamelli"
+  ];
+  let iceSheetServings = [];
+  let iceSheetBase = null;
+  function isStandaloneIceCreamItem(it) {
+    const n = normGuestName(it && it.name);
+    if (!n) return false;
+    if (/dondurmali/.test(n)) return false;
+    return n === "dondurma top" || n === "dondurma" || /^dondurma\s*top/.test(n);
+  }
+  function isIceCreamOrderSpot(spot) {
+    if (spot && spot.kind === "ice-cream") return true;
+    if (spot && isStandaloneIceCreamItem(spot)) return true;
+    const sn = normGuestName(spot && spot.name);
+    return sn === "dondurma top" || sn === "dondurma" || /^dondurma\s*top/.test(sn);
+  }
+  function findIceCreamMenuItem() {
+    const menu = window.__zekiqGuestMenuItems || [];
+    return menu.find(isStandaloneIceCreamItem) ||
+      menu.find(it => {
+        const n = normGuestName(it && it.name);
+        return n.includes("dondurma") && !n.includes("dondurmali");
+      }) ||
+      null;
+  }
+  function iceScoopUnitPrice(base) {
+    const p = Number(base && base.price);
+    return Number.isFinite(p) && p > 0 ? Math.round(p) : ICE_CREAM_SCOOP_FALLBACK;
+  }
+  function newIceServing() {
+    return { vessel: "cup", scoops: 1, flavors: [ICE_CREAM_FLAVORS[0]] };
+  }
+  function normalizeIceServing(serving) {
+    if (!serving) return newIceServing();
+    serving.vessel = serving.vessel === "cone" ? "cone" : "cup";
+    serving.scoops = Math.max(1, Math.min(4, Number(serving.scoops) || 1));
+    if (!Array.isArray(serving.flavors)) serving.flavors = [];
+    while (serving.flavors.length < serving.scoops) {
+      serving.flavors.push(ICE_CREAM_FLAVORS[serving.flavors.length % ICE_CREAM_FLAVORS.length]);
+    }
+    serving.flavors = serving.flavors.slice(0, serving.scoops);
+    return serving;
+  }
+  function iceServingTotal(serving) {
+    return iceScoopUnitPrice(iceSheetBase) * (Number(serving && serving.scoops) || 1);
+  }
+  function iceSheetGrandTotal() {
+    return iceSheetServings.reduce((sum, s) => sum + iceServingTotal(s), 0);
+  }
+  function closeIceCreamSheet() {
+    const sheet = document.getElementById("ice-cream-sheet");
+    if (sheet) {
+      sheet.classList.remove("show");
+      sheet.setAttribute("aria-hidden", "true");
+    }
+    $("shade") && $("shade").classList.remove("show");
+    iceSheetServings = [];
+    iceSheetBase = null;
+  }
+  function renderIceCreamSheet() {
+    const bag = guestBag();
+    const list = document.getElementById("iceSheetList");
+    const totalEl = document.getElementById("iceSheetTotal");
+    const title = document.getElementById("iceSheetTitle");
+    const addBtn = document.getElementById("iceAddServingBtn");
+    const cancelBtn = document.getElementById("iceSheetCancel");
+    const confirmBtn = document.getElementById("iceSheetConfirm");
+    if (title) title.textContent = bag.iceTitle;
+    if (addBtn) addBtn.textContent = bag.iceAddServing;
+    if (cancelBtn) cancelBtn.textContent = bag.iceCancel || bag.close;
+    if (confirmBtn) {
+      confirmBtn.textContent = iceSheetServings.length > 1 ? bag.iceAddAll : bag.iceAdd;
+    }
+    if (totalEl) totalEl.textContent = bag.iceTotal + ": " + money(iceSheetGrandTotal());
+    if (!list) return;
+    list.innerHTML = "";
+    iceSheetServings.forEach((serving, si) => {
+      normalizeIceServing(serving);
+      const card = document.createElement("div");
+      card.className = "ice-serving-card";
+      const head = document.createElement("div");
+      head.className = "ice-serving-head";
+      const label = document.createElement("div");
+      label.className = "ice-serving-label";
+      label.textContent = bag.iceServing + " " + (si + 1);
+      head.appendChild(label);
+      if (iceSheetServings.length > 1) {
+        const rm = document.createElement("button");
+        rm.type = "button";
+        rm.className = "ice-serving-remove";
+        rm.textContent = bag.iceRemoveServing;
+        rm.onclick = (e) => {
+          e.stopPropagation();
+          iceSheetServings.splice(si, 1);
+          renderIceCreamSheet();
+        };
+        head.appendChild(rm);
+      }
+      card.appendChild(head);
+      const vesselSec = document.createElement("div");
+      vesselSec.className = "ice-sec";
+      vesselSec.innerHTML =
+        '<div class="ice-sec-label">' + escapeHtml(bag.iceVessel) + "</div>" +
+        '<div class="ice-vessel">' +
+        '<button type="button" class="ice-chip' + (serving.vessel === "cup" ? " active" : "") +
+        '" data-vessel="cup">' + escapeHtml(bag.iceCup) + "</button>" +
+        '<button type="button" class="ice-chip' + (serving.vessel === "cone" ? " active" : "") +
+        '" data-vessel="cone">' + escapeHtml(bag.iceCone) + "</button>" +
+        "</div>";
+      card.appendChild(vesselSec);
+      const scoopSec = document.createElement("div");
+      scoopSec.className = "ice-sec";
+      scoopSec.innerHTML =
+        '<div class="ice-sec-label">' + escapeHtml(bag.iceScoops) + "</div>" +
+        '<div class="ice-scoops">' +
+        [1, 2, 3, 4].map((n) =>
+          '<button type="button" class="ice-chip' + (n === serving.scoops ? " active" : "") +
+          '" data-scoops="' + n + '">' + n + " " + escapeHtml(bag.iceScoopUnit) + "</button>"
+        ).join("") +
+        "</div>";
+      card.appendChild(scoopSec);
+      const flavorList = Array.isArray(iceSheetBase && iceSheetBase.variants) && iceSheetBase.variants.length
+        ? iceSheetBase.variants.map(String)
+        : ICE_CREAM_FLAVORS;
+      for (let fi = 0; fi < serving.scoops; fi++) {
+        const flavorSec = document.createElement("div");
+        flavorSec.className = "ice-sec";
+        const scoopLabel = serving.scoops > 1
+          ? (bag.iceScoopN + " " + (fi + 1))
+          : bag.iceFlavor;
+        flavorSec.innerHTML =
+          '<div class="ice-sec-label">' + escapeHtml(scoopLabel) + "</div>" +
+          '<div class="ice-flavors">' +
+          flavorList.map((f) =>
+            '<button type="button" class="ice-chip' + (f === serving.flavors[fi] ? " active" : "") +
+            '" data-flavor="' + escapeHtml(f) + '">' + escapeHtml(f) + "</button>"
+          ).join("") +
+          "</div>";
+        flavorSec.querySelectorAll("[data-flavor]").forEach((btn) => {
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            serving.flavors[fi] = btn.getAttribute("data-flavor") || serving.flavors[fi];
+            renderIceCreamSheet();
+          };
+        });
+        card.appendChild(flavorSec);
+      }
+      card.querySelectorAll("[data-scoops]").forEach((btn) => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          serving.scoops = Number(btn.getAttribute("data-scoops")) || 1;
+          normalizeIceServing(serving);
+          renderIceCreamSheet();
+        };
+      });
+      card.querySelectorAll("[data-vessel]").forEach((btn) => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          serving.vessel = btn.getAttribute("data-vessel") === "cone" ? "cone" : "cup";
+          renderIceCreamSheet();
+        };
+      });
+      list.appendChild(card);
+    });
+  }
+  function openIceCreamSheet(baseItem) {
+    iceSheetBase = baseItem || findIceCreamMenuItem() || {
+      name: "Dondurma Top",
+      price: ICE_CREAM_SCOOP_FALLBACK,
+      category: "DONDURMA",
+      page: baseItem && baseItem.page
+    };
+    iceSheetServings = [newIceServing()];
+    renderIceCreamSheet();
+    const sheet = document.getElementById("ice-cream-sheet");
+    if (sheet) {
+      sheet.classList.add("show");
+      sheet.setAttribute("aria-hidden", "false");
+    }
+    $("shade") && $("shade").classList.add("show");
+    if (navigator.vibrate) navigator.vibrate(12);
+  }
+  function addIceCreamToCart(serving) {
+    if (!serving) return;
+    const bag = guestBag();
+    let base = iceSheetBase || findIceCreamMenuItem();
+    if (!base) {
+      base = { name: "Dondurma Top", price: ICE_CREAM_SCOOP_FALLBACK, category: "DONDURMA" };
+    }
+    normalizeIceServing(serving);
+    const n = serving.scoops;
+    const vesselLabel = serving.vessel === "cone" ? bag.iceCone : bag.iceCup;
+    const flavorNote = n === 1 ? serving.flavors[0] : serving.flavors.join(" + ");
+    const note = flavorNote + " · " + n + " " + bag.iceScoopUnit + " · " + vesselLabel;
+    const displayName = "Dondurma · " + note;
+    const price = iceScoopUnitPrice(base) * n;
+    addItem({
+      ...base,
+      hotspotName: String(base.name || "Dondurma Top"),
+      name: displayName,
+      price,
+      note,
+      variants: undefined,
+      kind: undefined
+    });
+  }
+  function confirmIceCreamSheet() {
+    if (!iceSheetServings.length) return;
+    iceSheetServings.forEach((s) => addIceCreamToCart(s));
+    closeIceCreamSheet();
+  }
+  (function wireIceCreamSheet() {
+    const addBtn = document.getElementById("iceAddServingBtn");
+    const cancelBtn = document.getElementById("iceSheetCancel");
+    const confirmBtn = document.getElementById("iceSheetConfirm");
+    const sheet = document.getElementById("ice-cream-sheet");
+    if (addBtn) addBtn.addEventListener("click", () => {
+      iceSheetServings.push(newIceServing());
+      renderIceCreamSheet();
+    });
+    if (cancelBtn) cancelBtn.addEventListener("click", closeIceCreamSheet);
+    if (confirmBtn) confirmBtn.addEventListener("click", confirmIceCreamSheet);
+    if (sheet) sheet.addEventListener("click", (e) => {
+      if (e.target === sheet) closeIceCreamSheet();
+    });
+  })();
+
   function openVariants(item) {
     const flavors = Array.isArray(item.variants) ? item.variants : [];
     const baseName = String(item.name || "Dondurma").trim();
@@ -2267,7 +2553,22 @@ window.TONINO_CONFIG = Object.freeze({
       hintSwipe: "اسحب يمين / يسار ككتاب <em>‹‹ ››</em>",
       hintDaily: "صفحة الطبق اليومي — اختر ثم أضف للسلة",
       hintPlus: "اضغط زر + الأخضر للطلب",
-      addedPrefix: "تمت إضافة"
+      addedPrefix: "تمت إضافة",
+      iceTitle: "البوظة",
+      iceCup: "كاسة",
+      iceCone: "كلاح",
+      iceVessel: "الوعاء",
+      iceScoops: "عدد الطابات",
+      iceScoopUnit: "طابة",
+      iceScoopN: "طابة",
+      iceFlavor: "النكهة",
+      iceServing: "كاسة",
+      iceAddServing: "+ أضف كاسة أخرى",
+      iceRemoveServing: "حذف",
+      iceAdd: "أضف للطلب",
+      iceAddAll: "أضف الكل للطلب",
+      iceTotal: "المجموع",
+      iceCancel: "إلغاء"
     },
     tr: {
       cashierLabel: "Kasiyer",
@@ -2295,7 +2596,22 @@ window.TONINO_CONFIG = Object.freeze({
       hintSwipe: "Sayfalar için sağa / sola kaydırın <em>‹‹ ››</em>",
       hintDaily: "Günün yemeği sayfası — seçin ve sepete ekleyin",
       hintPlus: "Sipariş için yeşil + düğmesine basın",
-      addedPrefix: "Eklendi"
+      addedPrefix: "Eklendi",
+      iceTitle: "Dondurma",
+      iceCup: "Kase",
+      iceCone: "Külah",
+      iceVessel: "Kap",
+      iceScoops: "Top sayısı",
+      iceScoopUnit: "top",
+      iceScoopN: "Top",
+      iceFlavor: "Lezzet",
+      iceServing: "Kase",
+      iceAddServing: "+ Başka kase ekle",
+      iceRemoveServing: "Sil",
+      iceAdd: "Siparişe ekle",
+      iceAddAll: "Hepsini ekle",
+      iceTotal: "Toplam",
+      iceCancel: "İptal"
     },
     en: {
       cashierLabel: "Cashier",
@@ -2323,7 +2639,22 @@ window.TONINO_CONFIG = Object.freeze({
       hintSwipe: "Swipe left / right like a book <em>‹‹ ››</em>",
       hintDaily: "Daily dish page — pick then add to cart",
       hintPlus: "Tap the green + to order",
-      addedPrefix: "Added"
+      addedPrefix: "Added",
+      iceTitle: "Ice cream",
+      iceCup: "Cup",
+      iceCone: "Cone",
+      iceVessel: "Vessel",
+      iceScoops: "Scoops",
+      iceScoopUnit: "scoop",
+      iceScoopN: "Scoop",
+      iceFlavor: "Flavor",
+      iceServing: "Serving",
+      iceAddServing: "+ Add another cup",
+      iceRemoveServing: "Remove",
+      iceAdd: "Add to order",
+      iceAddAll: "Add all to order",
+      iceTotal: "Total",
+      iceCancel: "Cancel"
     }
   };
   function guestBag() {
@@ -2442,11 +2773,16 @@ window.TONINO_CONFIG = Object.freeze({
         /* editor stores 0–1; legacy baked hotspots used 0–100 */
         if (x <= 1.5 && y <= 1.5) { x *= 100; y *= 100; }
         const price = Number(item && item.price != null ? item.price : (s.price != null ? s.price : 0));
+        const variants = Array.isArray(item && item.variants)
+          ? item.variants
+          : (Array.isArray(s.variants) ? s.variants : undefined);
         return {
           name: String(s.name || (item && item.name) || "?").trim() || "?",
           price: Number.isFinite(price) ? price : 0,
           x, y,
-          menuItemId: s.menuItemId != null ? Number(s.menuItemId) : undefined
+          menuItemId: s.menuItemId != null ? Number(s.menuItemId) : undefined,
+          kind: s.kind || undefined,
+          variants
         };
       }).filter(Boolean);
     }
@@ -2472,6 +2808,7 @@ window.TONINO_CONFIG = Object.freeze({
     const isNew = await probeLockedNewMenuPage(livePages[0]);
     if (!isNew) return false;
     PAGES = livePages;
+    window.__zekiqGuestMenuItems = Array.isArray(data.items) ? data.items : [];
     HOTSPOTS = spotsToHotspots(data.book.manualSpots, data.items);
     const cats = [];
     for (let i = 0; i < livePages.length; i++) {
