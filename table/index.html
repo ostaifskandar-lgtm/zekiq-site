@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v279 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v280 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -348,7 +348,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 .dd-photo::before{
   content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
   background:inherit;background-size:cover;background-position:center top;
-  filter:blur(14px) saturate(1.05) brightness(.62);transform:scale(1.12)
+  filter:blur(22px) saturate(.9) brightness(.45);transform:scale(1.18);opacity:.85
 }
 .dd-photo img{
   position:relative;z-index:1;display:block;width:100%;height:100%;
@@ -402,13 +402,14 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
 }
 .dd-week-ph{display:grid;place-items:center;font-size:12px}
 .dd-week-btn span{pointer-events:none;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dd-photo.is-locked-day img{
-  opacity:.32;filter:grayscale(.4) brightness(1.08)
+/* Locked day: ONE faded photo only — no blur layer under transparent img */
+.dd-photo.is-locked-day{
+  background-image:none!important;background-color:#1a1008
 }
-.dd-photo.is-locked-day::before{opacity:.45;filter:blur(16px) saturate(.7) brightness(.5)}
-.dd-photo.is-locked-day::after{
-  content:"";position:absolute;z-index:2;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,#1a100866,#1a1008aa)
+.dd-photo.is-locked-day::before,
+.dd-photo.is-locked-day::after{display:none!important;content:none!important}
+.dd-photo.is-locked-day img{
+  opacity:.42;filter:grayscale(.5) brightness(1.05);object-fit:cover;object-position:center center
 }
 .dd-page-hint{display:none!important}
 .dd-dock .dd-actions{
@@ -1444,10 +1445,10 @@ window.TONINO_CONFIG = Object.freeze({
     return true;
   }
   function dailyDishRowGhost(row) {
-    if (dailyDishRowLocked(row)) return true;
-    const key = String(row.dayKey || "").toLowerCase();
-    const day = String(row.day || "");
-    return key === "sat" || /سبت|Cumartesi|^Sat(urday)?$/i.test(day);
+    if (!row) return true;
+    /* Never ghost today's orderable dish — that stacked two faded layers on the main photo */
+    if (row.orderable === true || row.isToday === true) return false;
+    return dailyDishRowLocked(row);
   }
   function dailyDishCanOrderPreview(dish) {
     if (!todayDailyDish || !dish) return false;
