@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v283 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v284 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -429,6 +429,8 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   pointer-events:none;font-size:clamp(22px,6.5vw,32px);font-weight:1000;color:#ffe8b0;
   letter-spacing:.02em;text-shadow:0 2px 14px #000c;background:linear-gradient(180deg,#1a1008aa,#1a1008cc)
 }
+html[lang="tr"] .dd-photo.is-day-off::after{content:"Bugün kapalı"}
+html[lang="en"] .dd-photo.is-day-off::after{content:"Closed today"}
 .dd-photo.is-day-off img{
   opacity:.28;filter:grayscale(.55) brightness(1.05);object-fit:contain;object-position:center center
 }
@@ -802,14 +804,14 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   <button type="button" id="ddFab" aria-label="الطبق اليومي"></button>
   <div id="ddThumbPop" class="dd-thumb-pop" hidden aria-hidden="true"><img alt="" draggable="false" decoding="async" /><span class="dd-thumb-pop-cap"></span></div>
   <div id="toast" role="status" aria-live="polite"></div>
-  <div id="startGate" role="dialog" aria-modal="true" aria-label="تعليمات الطلب">
+  <div id="startGate" role="dialog" aria-modal="true" aria-label="order guide">
     <div class="start-card">
-      <h2>كيف تطلب؟</h2>
-      <p class="start-sub">اضغط «فهمت» لفتح المينو على كامل الشاشة</p>
-      <ol>
-        <li><b>1</b><span>اسحب يمين / يسار ككتاب لقلب الصفحات</span></li>
-        <li><b>2</b><span>اضغط زر + الأخضر لإضافة صنف</span></li>
-        <li><b>3</b><span>راجع طلبك في الأعلى ثم اضغط إرسال</span></li>
+      <h2 id="startGateTitle">كيف تطلب؟</h2>
+      <p class="start-sub" id="startGateSub">اضغط «فهمت» لفتح المينو على كامل الشاشة</p>
+      <ol id="startGateSteps">
+        <li><b>1</b><span data-start-step="1">اسحب يمين / يسار ككتاب لقلب الصفحات</span></li>
+        <li><b>2</b><span data-start-step="2">اضغط زر + الأخضر لإضافة صنف</span></li>
+        <li><b>3</b><span data-start-step="3">راجع طلبك في الأعلى ثم اضغط إرسال</span></li>
       </ol>
       <button type="button" id="startGo">فهمت — ابدأ الطلب ✓</button>
     </div>
@@ -1608,11 +1610,12 @@ window.TONINO_CONFIG = Object.freeze({
     orderBtn.classList.toggle("is-soon", !canOrder);
     if (!canOrder) {
       const off = dailyDishIsDayOff(weeklyDishes[ddPreviewIdx]);
-      orderBtn.innerHTML = withPrice(off ? "اليوم أوف" : (dish.day ? `قريباً · ${escapeHtml(String(dish.day))}` : "قريباً"));
+      const bagL = window.__zekiqGuestBag || AMB_I18N[window.__zekiqGuestLang] || AMB_I18N.ar;
+      orderBtn.innerHTML = withPrice(off ? bagL.dayOff : (dish.day ? `${bagL.soon} · ${escapeHtml(String(dish.day))}` : bagL.soon));
     } else if (qty > 0) {
-      orderBtn.innerHTML = withPrice("✓ اطلب مرة أخرى");
+      orderBtn.innerHTML = withPrice((window.__zekiqGuestBag || AMB_I18N.ar).orderAgain);
     } else {
-      orderBtn.innerHTML = withPrice("اطلب");
+      orderBtn.innerHTML = withPrice((window.__zekiqGuestBag || AMB_I18N.ar).orderBtn);
     }
   }
   function stepDailyDishDay(delta) {
@@ -2193,17 +2196,50 @@ window.TONINO_CONFIG = Object.freeze({
     ar: {
       cashierLabel: "كاشير",
       ambStoryTag: "QR على الطاولة ← امسح ← ابحث واطلب ← الكاشير ← الجرسون",
-      tableWord: "طاولة"
+      tableWord: "طاولة",
+      startTitle: "كيف تطلب؟",
+      startSub: "اضغط «فهمت» لفتح المينو على كامل الشاشة",
+      start1: "اسحب يمين / يسار ككتاب لقلب الصفحات",
+      start2: "اضغط زر + الأخضر لإضافة صنف",
+      start3: "راجع طلبك في الأعلى ثم اضغط إرسال",
+      startGo: "فهمت — ابدأ الطلب ✓",
+      orderBtn: "اطلب",
+      orderAgain: "✓ اطلب مرة أخرى",
+      sendBtn: "إرسال ✓",
+      dayOff: "اليوم أوف",
+      soon: "قريباً"
     },
     tr: {
       cashierLabel: "Kasiyer",
       ambStoryTag: "Masada QR ← okut ← ara ve sipariş ver ← kasiyer ← garson",
-      tableWord: "Masa"
+      tableWord: "Masa",
+      startTitle: "Nasıl sipariş verilir?",
+      startSub: "Tam ekran menü için «Anladım»a basın",
+      start1: "Sayfaları çevirmek için sağa / sola kaydırın",
+      start2: "Ürün eklemek için yeşil + düğmesine basın",
+      start3: "Üstten siparişinizi kontrol edin, sonra Gönder",
+      startGo: "Anladım — siparişe başla ✓",
+      orderBtn: "Sipariş ver",
+      orderAgain: "✓ Tekrar sipariş ver",
+      sendBtn: "Gönder ✓",
+      dayOff: "Bugün kapalı",
+      soon: "Yakında"
     },
     en: {
       cashierLabel: "Cashier",
       ambStoryTag: "QR on table ← scan ← browse & order ← cashier ← waiter",
-      tableWord: "Table"
+      tableWord: "Table",
+      startTitle: "How to order?",
+      startSub: "Tap «Got it» to open the full-screen menu",
+      start1: "Swipe left / right like a book to flip pages",
+      start2: "Tap the green + to add an item",
+      start3: "Check your order at the top, then tap Send",
+      startGo: "Got it — start ordering ✓",
+      orderBtn: "Order",
+      orderAgain: "✓ Order again",
+      sendBtn: "Send ✓",
+      dayOff: "Closed today",
+      soon: "Soon"
     }
   };
   function normalizeGuestLang(raw) {
@@ -2213,16 +2249,45 @@ window.TONINO_CONFIG = Object.freeze({
     if (v === "ar" || v.startsWith("ar") || v === "arabic") return "ar";
     return "";
   }
+  function paintStartGate(bag) {
+    const title = document.getElementById("startGateTitle");
+    const sub = document.getElementById("startGateSub");
+    const go = document.getElementById("startGo");
+    const gate = document.getElementById("startGate");
+    if (title) title.textContent = bag.startTitle;
+    if (sub) sub.textContent = bag.startSub;
+    if (go) go.textContent = bag.startGo;
+    if (gate) gate.setAttribute("aria-label", bag.startTitle);
+    const s1 = document.querySelector('[data-start-step="1"]');
+    const s2 = document.querySelector('[data-start-step="2"]');
+    const s3 = document.querySelector('[data-start-step="3"]');
+    if (s1) s1.textContent = bag.start1;
+    if (s2) s2.textContent = bag.start2;
+    if (s3) s3.textContent = bag.start3;
+    const ol = document.getElementById("startGateSteps");
+    if (ol) ol.style.textAlign = document.documentElement.dir === "rtl" ? "right" : "left";
+    const orderBtn = document.getElementById("ddOrder");
+    if (orderBtn && !orderBtn.disabled && !orderBtn.classList.contains("in-cart") && !orderBtn.classList.contains("is-soon")) {
+      /* leave dynamic labels to renderDailyDishScreen; only seed default */
+      if (/^(اطلب|Sipariş ver|Order)$/i.test(String(orderBtn.textContent || "").trim())) {
+        orderBtn.textContent = bag.orderBtn;
+      }
+    }
+    const send = document.getElementById("sendButton");
+    if (send) send.textContent = bag.sendBtn;
+  }
   function applyAmbientLang(langCode) {
     const lang = normalizeGuestLang(langCode) || "ar";
     const bag = AMB_I18N[lang] || AMB_I18N.ar;
     window.__zekiqGuestLang = lang;
+    window.__zekiqGuestBag = bag;
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
     const cash = document.getElementById("ambCashierLabel");
     if (cash) cash.textContent = bag.cashierLabel;
     const tag = document.getElementById("ambStoryTag");
     if (tag) tag.textContent = bag.ambStoryTag;
+    paintStartGate(bag);
     if (typeof window.applyGuestLanguage === "function") {
       try { window.applyGuestLanguage(lang); } catch (_) {}
     }
@@ -2370,22 +2435,30 @@ window.TONINO_CONFIG = Object.freeze({
       const label = info.zone ? `${info.zone} • ${word} ${info.table}` : `${word} ${info.table}`;
       $("tableTop").textContent = label;
       $("tableFooter").textContent = label;
-      const startSub = document.querySelector("#startGate .start-sub");
+      const startSub = document.getElementById("startGateSub") || document.querySelector("#startGate .start-sub");
       if (startSub && info.table != null && String(info.table) !== "?" && String(info.table) !== "") {
-        const go = window.__zekiqGuestLang === "tr"
-          ? `${label} — Tam ekran için «Anladım»a basın`
-          : window.__zekiqGuestLang === "en"
-            ? `${label} — Tap «Got it» for full screen`
-            : `${label} — اضغط «فهمت» لفتح المينو على كامل الشاشة`;
-        startSub.textContent = go;
+        const subBag = bag || window.__zekiqGuestBag || AMB_I18N[window.__zekiqGuestLang] || AMB_I18N.ar;
+        startSub.textContent = `${label} — ${subBag.startSub}`;
       }
     };
-    paintTable(applyAmbientLang("ar"));
+    let bootLang = "ar";
+    try {
+      bootLang = normalizeGuestLang(sessionStorage.getItem("zekiqGuestLang") || "")
+        || normalizeGuestLang(new URLSearchParams(location.search).get("lang") || "")
+        || "ar";
+    } catch (_) { bootLang = "ar"; }
+    paintTable(applyAmbientLang(bootLang));
     const live = await loadLiveMenuBook();
-    if (live && live.ok && live.guestLanguage) paintTable(applyAmbientLang(live.guestLanguage));
-    else {
+    if (live && live.ok && live.guestLanguage) {
+      const lang = normalizeGuestLang(live.guestLanguage) || bootLang;
+      try { sessionStorage.setItem("zekiqGuestLang", lang); } catch (_) {}
+      paintTable(applyAmbientLang(lang));
+    } else {
       resolveGuestLangFromShop().then((lang) => {
-        if (lang) paintTable(applyAmbientLang(lang));
+        if (lang) {
+          try { sessionStorage.setItem("zekiqGuestLang", lang); } catch (_) {}
+          paintTable(applyAmbientLang(lang));
+        }
       });
     }
     syncDailyDishEntry();
