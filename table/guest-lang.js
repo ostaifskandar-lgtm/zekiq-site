@@ -76,6 +76,8 @@
       toastAdded: "→ السلة",
       menuNotReady: "المينو غير جاهز",
       menuNotReadyD: "من الكاشير: استورد PDF المينو ثم شغّل export-guest-menu-book",
+      cashierLabel: "كاشير",
+      ambStoryTag: "QR على الطاولة ← امسح ← ابحث واطلب ← الكاشير ← الجرسون",
     },
     tr: {
       pageTitle: "Masadan sipariş — ZEKiQ",
@@ -140,6 +142,8 @@
       toastAdded: "→ sepet",
       menuNotReady: "Menü hazır değil",
       menuNotReadyD: "Kasadan PDF menüyü içe aktarın",
+      cashierLabel: "Kasiyer",
+      ambStoryTag: "Masada QR ← okut ← ara ve sipariş ver ← kasiyer ← garson",
     },
     en: {
       pageTitle: "Table order — ZEKiQ",
@@ -204,6 +208,8 @@
       toastAdded: "→ cart",
       menuNotReady: "Menu not ready",
       menuNotReadyD: "Import PDF menu from cashier",
+      cashierLabel: "Cashier",
+      ambStoryTag: "QR on table ← scan ← browse & order ← cashier ← waiter",
     },
   };
 
@@ -260,6 +266,10 @@
     if (note) note.placeholder = t("notePh");
     var search = document.getElementById("menuSearch");
     if (search) search.placeholder = t("menuSearch");
+    var cashLbl = document.getElementById("ambCashierLabel");
+    if (cashLbl) cashLbl.textContent = t("cashierLabel");
+    var ambTag = document.getElementById("ambStoryTag");
+    if (ambTag) ambTag.textContent = t("ambStoryTag");
     if (typeof global.__zekiqOnGuestLang === "function") global.__zekiqOnGuestLang(lang);
   }
 
