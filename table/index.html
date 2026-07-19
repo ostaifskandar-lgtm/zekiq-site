@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v290 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v291 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -141,6 +141,35 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   color:#ffe2a0;text-shadow:0 0 16px #f0b747aa,0 0 28px #d7982e55,0 2px 0 #0008;
   animation:ambLogoShine 4s ease-in-out infinite
 }
+.amb-hours{
+  position:absolute;left:50%;top:calc(6% + clamp(22px,6.2vw,32px));z-index:4;
+  transform:translateX(-50%);
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:3px 12px 4px;border-radius:999px;
+  background:linear-gradient(180deg,#2a1c10f0,#1a120af0);
+  border:1px solid #d7982e99;
+  box-shadow:0 0 0 1px #0006 inset,0 4px 14px #0007,0 0 18px #d7982e33;
+  white-space:nowrap;pointer-events:none;
+  animation:ambHoursGlow 4.2s ease-in-out infinite
+}
+.amb-hours-ico{
+  font-size:clamp(10px,2.8vw,12px);line-height:1;color:#b8df1b;
+  filter:drop-shadow(0 0 4px #b8df1b66)
+}
+.amb-hours-text{
+  font-size:clamp(10px,2.7vw,12px);font-weight:1000;letter-spacing:.04em;
+  color:#ffe9b1;text-shadow:0 1px 0 #0009;font-variant-numeric:tabular-nums
+}
+.amb-hours-label{
+  font-size:clamp(8px,2.2vw,10px);font-weight:900;color:#e0c48ecc;
+  letter-spacing:.02em
+}
+.amb-hours-sep{opacity:.45;color:#d7982e;font-weight:700}
+@keyframes ambHoursGlow{
+  0%,100%{box-shadow:0 0 0 1px #0006 inset,0 4px 14px #0007,0 0 12px #d7982e28}
+  50%{box-shadow:0 0 0 1px #0006 inset,0 4px 14px #0007,0 0 20px #f0c15e55}
+}
+
 .amb-story{
   position:absolute;left:50%;bottom:10%;width:min(98%,420px);height:70%;
   transform:translateX(-50%);max-height:155px;z-index:2
@@ -654,6 +683,12 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
             <div id="ambientStage" aria-hidden="true" data-mode="order-story">
       <div class="amb-glow"></div>
       <div class="amb-logo">TONINO</div>
+      <div class="amb-hours" id="ambHours" dir="ltr" aria-label="hours">
+        <span class="amb-hours-ico" aria-hidden="true">◷</span>
+        <span class="amb-hours-label" id="ambHoursLabel">Açık</span>
+        <span class="amb-hours-sep" aria-hidden="true">·</span>
+        <span class="amb-hours-text" id="ambHoursText">09:00 – 23:00</span>
+      </div>
       <div class="amb-story">
         <svg viewBox="0 0 440 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
@@ -2661,6 +2696,9 @@ window.TONINO_CONFIG = Object.freeze({
     ar: {
       cashierLabel: "كاشير",
       ambStoryTag: "QR على الطاولة ← امسح ← ابحث واطلب ← الكاشير ← الجرسون",
+      ambHoursLabel: "مفتوح",
+      ambHoursText: "09:00 – 23:00",
+      ambHoursAria: "ساعات العمل من 9 صباحاً حتى 11 ليلاً",
       tableWord: "طاولة",
       startTitle: "كيف تطلب؟",
       startSub: "اضغط «فهمت» لفتح المينو على كامل الشاشة",
@@ -2705,6 +2743,9 @@ window.TONINO_CONFIG = Object.freeze({
     tr: {
       cashierLabel: "Kasiyer",
       ambStoryTag: "Masada QR ← okut ← ara ve sipariş ver ← kasiyer ← garson",
+      ambHoursLabel: "Açık",
+      ambHoursText: "09:00 – 23:00",
+      ambHoursAria: "Açık 09:00 – 23:00",
       tableWord: "Masa",
       startTitle: "Nasıl sipariş verilir?",
       startSub: "Tam ekran menü için «Anladım»a basın",
@@ -2749,6 +2790,9 @@ window.TONINO_CONFIG = Object.freeze({
     en: {
       cashierLabel: "Cashier",
       ambStoryTag: "QR on table ← scan ← browse & order ← cashier ← waiter",
+      ambHoursLabel: "Open",
+      ambHoursText: "09:00 – 23:00",
+      ambHoursAria: "Open 9 AM – 11 PM",
       tableWord: "Table",
       startTitle: "How to order?",
       startSub: "Tap «Got it» to open the full-screen menu",
@@ -2878,6 +2922,12 @@ window.TONINO_CONFIG = Object.freeze({
     if (cash) cash.textContent = bag.cashierLabel;
     const tag = document.getElementById("ambStoryTag");
     if (tag) tag.textContent = bag.ambStoryTag;
+    const hours = document.getElementById("ambHours");
+    const hoursLabel = document.getElementById("ambHoursLabel");
+    const hoursText = document.getElementById("ambHoursText");
+    if (hoursLabel) hoursLabel.textContent = bag.ambHoursLabel || "";
+    if (hoursText) hoursText.textContent = bag.ambHoursText || "09:00 – 23:00";
+    if (hours) hours.setAttribute("aria-label", bag.ambHoursAria || bag.ambHoursText || "");
     paintStartGate(bag);
     paintDailyDishChrome(bag);
     if (typeof window.applyGuestLanguage === "function") {
