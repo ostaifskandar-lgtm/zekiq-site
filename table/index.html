@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v292 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v293 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -383,10 +383,25 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   display:flex;flex-direction:column;background:#1a1008;border:0
 }
 .dd-schedule-note{
-  flex:0 0 auto;z-index:6;margin:0;padding:5px 10px 4px;text-align:center;
-  font-size:clamp(10px,2.8vw,12px);font-weight:900;letter-spacing:.15px;line-height:1.25;
-  color:#ffe7a6;background:linear-gradient(180deg,#24180ef2,#1a1008e6);
-  border-bottom:1px solid #c4892e44;text-shadow:0 1px 0 #0008;pointer-events:none
+  position:absolute;left:0;right:0;top:0;z-index:12;margin:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  padding:10px 12px 14px;text-align:center;pointer-events:none;
+  background:linear-gradient(180deg,#120c08f5 0%,#1a1008e8 55%,#1a100800 100%);
+  border:0;border-bottom:0
+}
+.dd-schedule-note .dd-note-main{
+  display:inline-block;max-width:96%;
+  padding:7px 14px 8px;border-radius:999px;
+  font-size:clamp(13px,3.9vw,17px);font-weight:1000;letter-spacing:.2px;line-height:1.25;
+  color:#1a1008;
+  background:linear-gradient(145deg,#ffe08a,#f0b747 55%,#d7982e);
+  border:1.5px solid #fff3;
+  box-shadow:0 4px 16px #000a,0 0 0 1px #c4892e88,0 0 18px #f0c15e55;
+  text-shadow:0 1px 0 #fff6
+}
+.dd-schedule-note .dd-note-sub{
+  font-size:clamp(11px,3.1vw,13px);font-weight:900;letter-spacing:.15px;
+  color:#ffe9b1;text-shadow:0 1px 2px #000c
 }
 
 .dd-photo{
@@ -897,8 +912,11 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
   </div>
   <section id="dailyDishScreen" aria-label="Günün Yemeği" aria-live="polite">
     <p class="dd-kicker" id="ddKicker">Günün Yemeği</p>
-    <p class="dd-schedule-note" id="ddScheduleNote">كل يوم طبق يومي · عدا السبت والأحد</p>
     <div class="dd-stage">
+      <p class="dd-schedule-note" id="ddScheduleNote" aria-live="polite">
+        <span class="dd-note-main" id="ddScheduleNoteMain">كل يوم طبق يومي</span>
+        <span class="dd-note-sub" id="ddScheduleNoteSub">عدا السبت والأحد</span>
+      </p>
       <button type="button" class="dd-nav dd-nav-prev" id="ddPrev" aria-label="اليوم السابق">‹</button>
       <div class="dd-photo is-empty" id="ddPhoto"><img id="ddPhotoImg" alt="" draggable="false" decoding="async" /></div>
       <button type="button" class="dd-nav dd-nav-next" id="ddNext" aria-label="اليوم التالي">›</button>
@@ -1652,7 +1670,19 @@ window.TONINO_CONFIG = Object.freeze({
     if (!dish) return;
     const title = dailyDishMainLabel(dish) || guestBag().dailyDish;
     if (q("ddTitle")) q("ddTitle").textContent = title;
-    if (q("ddScheduleNote")) q("ddScheduleNote").textContent = guestBag().dailyScheduleNote || "";
+    if (q("ddScheduleNote")) {
+      const bagN = guestBag();
+      const mainEl = q("ddScheduleNoteMain") || q("ddScheduleNote").querySelector(".dd-note-main");
+      const subEl = q("ddScheduleNoteSub") || q("ddScheduleNote").querySelector(".dd-note-sub");
+      const mainT = bagN.dailyScheduleNoteMain || bagN.dailyScheduleNote || "";
+      const subT = bagN.dailyScheduleNoteSub || "";
+      if (mainEl || subEl) {
+        if (mainEl) mainEl.textContent = mainT;
+        if (subEl) { subEl.textContent = subT; subEl.hidden = !subT; }
+      } else {
+        q("ddScheduleNote").textContent = subT ? (mainT + " · " + subT) : mainT;
+      }
+    }
     const photo = q("ddPhoto");
     const img = q("ddPhotoImg");
     if (!photo || !img) return;
@@ -2713,6 +2743,8 @@ window.TONINO_CONFIG = Object.freeze({
       soon: "قريباً",
       dailyDish: "الطبق اليومي",
       dailyScheduleNote: "كل يوم طبق يومي · عدا السبت والأحد",
+      dailyScheduleNoteMain: "كل يوم طبق يومي",
+      dailyScheduleNoteSub: "عدا السبت والأحد",
       dailyDishJump: "🍽 الطبق اليومي",
       dailyOnly: "يمكن طلب طبق اليوم فقط",
       pickDessert: "اختر التحلية",
@@ -2891,8 +2923,18 @@ window.TONINO_CONFIG = Object.freeze({
     if (screen) screen.setAttribute("aria-label", b.dailyDish);
     const kicker = document.getElementById("ddKicker");
     if (kicker) kicker.textContent = b.dailyDish;
-    const noteText = b.dailyScheduleNote || "";
-    document.querySelectorAll(".dd-schedule-note").forEach((el) => { el.textContent = noteText; });
+    const noteMain = b.dailyScheduleNoteMain || b.dailyScheduleNote || "";
+    const noteSub = b.dailyScheduleNoteSub || "";
+    document.querySelectorAll(".dd-schedule-note").forEach((el) => {
+      const main = el.querySelector(".dd-note-main") || el.querySelector("#ddScheduleNoteMain");
+      const sub = el.querySelector(".dd-note-sub") || el.querySelector("#ddScheduleNoteSub");
+      if (main || sub) {
+        if (main) main.textContent = noteMain;
+        if (sub) { sub.textContent = noteSub; sub.hidden = !noteSub; }
+      } else {
+        el.textContent = noteSub ? (noteMain + " · " + noteSub) : noteMain;
+      }
+    });
     const fab = document.getElementById("ddFab");
     if (fab) fab.setAttribute("aria-label", b.dailyDish);
     const dLab = document.getElementById("ddDessertLabel");
