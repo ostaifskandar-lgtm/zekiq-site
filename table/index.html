@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v303 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v304 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -187,27 +187,48 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   transform-origin:50% 10%;z-index:3
 }
 .amb-flip-stage{
-  width:58px;height:48px;perspective:520px;perspective-origin:50% 50%;
+  width:62px;height:50px;perspective:560px;perspective-origin:50% 45%;
   display:grid;place-items:center;z-index:2;margin-top:-2px
 }
 .amb-flip-book3d{
-  width:50px;height:42px;position:relative;
+  width:54px;height:44px;position:relative;
   transform-style:preserve-3d;
   animation:ambBookFlip 1.55s ease-in-out infinite
 }
+/* Mini restaurant menu card (no emoji) — gold cover + menu lines */
 .amb-flip-leaf{
-  position:absolute;inset:0;border-radius:3px 7px 7px 3px;
-  background:linear-gradient(145deg,#fff8e8 0%,#f3d9a0 55%,#e8c078 100%);
-  border:2px solid #c4892a;box-shadow:2px 3px 0 #8a5a18,0 6px 14px #0008;
-  display:grid;place-items:center;transform-origin:12% 50%;
-  backface-visibility:hidden
+  position:absolute;inset:0;border-radius:5px;
+  background:
+    linear-gradient(180deg,#2a1c12 0%,#1a120c 100%);
+  border:1.5px solid #e0a84a;
+  box-shadow:
+    3px 0 0 #8b5a1e,
+    0 5px 14px #000a,
+    inset 0 1px 0 #ffd98a44;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:5px 6px 6px;
+  transform-origin:10% 50%;
+  backface-visibility:hidden;overflow:hidden
 }
 .amb-flip-leaf::before{
-  content:"";position:absolute;left:10%;top:10%;bottom:10%;width:2px;
-  background:#c4892a66;border-radius:2px
+  content:"";position:absolute;inset:3px;border-radius:3px;
+  border:1px solid #d7982e55;pointer-events:none
 }
-.amb-flip-emoji{
-  font-size:26px;line-height:1;margin-left:4px;
+.amb-flip-menu-mark{
+  font-size:8px;font-weight:1000;letter-spacing:.14em;line-height:1;
+  color:#ffe2a0;text-shadow:0 0 6px #f0b74766
+}
+.amb-flip-menu-lines{
+  display:flex;flex-direction:column;gap:2.5px;width:78%;margin-top:1px
+}
+.amb-flip-menu-lines i{
+  display:block;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,#e8b34f99,#e8b34f33);
+}
+.amb-flip-menu-lines i:nth-child(2){width:86%;align-self:flex-start}
+.amb-flip-menu-lines i:nth-child(3){width:70%;align-self:flex-start}
+.amb-flip-menu-fork{
+  font-size:11px;line-height:1;opacity:.92;margin-top:1px;
   font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif
 }
 .amb-flip-label{
@@ -963,7 +984,11 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
     <span class="amb-flip-finger" aria-hidden="true">👇</span>
     <div class="amb-flip-stage" aria-hidden="true">
       <div class="amb-flip-book3d">
-        <div class="amb-flip-leaf"><span class="amb-flip-emoji">📖</span></div>
+        <div class="amb-flip-leaf">
+          <span class="amb-flip-menu-mark">MENU</span>
+          <span class="amb-flip-menu-lines" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="amb-flip-menu-fork" aria-hidden="true">🍴</span>
+        </div>
       </div>
     </div>
     <p class="amb-flip-label" id="ambSwipeCoachLabel">اسحب لقلب الصفحة</p>
