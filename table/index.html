@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v306 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v307 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -1061,8 +1061,8 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
     <p class="dd-kicker" id="ddKicker">Günün Yemeği</p>
     <div class="dd-stage">
       <p class="dd-schedule-note" id="ddScheduleNote" aria-live="polite">
-        <span class="dd-note-main" id="ddScheduleNoteMain">كل يوم طبق يومي</span>
-        <span class="dd-note-sub" id="ddScheduleNoteSub">عدا السبت والأحد</span>
+        <span class="dd-note-main" id="ddScheduleNoteMain">Her gün var</span>
+        <span class="dd-note-sub" id="ddScheduleNoteSub">Cmt–Pzr hariç</span>
       </p>
       <button type="button" class="dd-nav dd-nav-prev" id="ddPrev" aria-label="اليوم السابق">‹</button>
       <div class="dd-photo is-empty" id="ddPhoto"><img id="ddPhotoImg" alt="" draggable="false" decoding="async" /></div>
@@ -1073,7 +1073,7 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
           <div class="dd-week" id="ddWeek" hidden aria-label="أيام الأسبوع"></div>
         </div>
         <div class="dd-actions">
-          <button type="button" class="dd-order" id="ddOrder">اطلب</button>
+          <button type="button" class="dd-order" id="ddOrder">Sipariş ver</button>
           <button type="button" class="dd-close" id="ddClose" hidden tabindex="-1" aria-hidden="true">إغلاق</button>
         </div>
       </div>
@@ -1705,9 +1705,17 @@ window.TONINO_CONFIG = Object.freeze({
   function dailyDishMainLabel(dish) {
     if (!dish) return "";
     const lang = window.__zekiqGuestLang || "ar";
-    if (lang === "tr") return String(dish.mainTr || dish.main || dish.mainAr || "").trim();
-    if (lang === "en") return String(dish.main || dish.mainTr || dish.mainAr || "").trim();
-    return String(dish.mainAr || dish.main || dish.mainTr || "").trim();
+    const tr = String(dish.mainTr || "").trim();
+    const en = String(dish.main || "").trim();
+    const ar = String(dish.mainAr || "").trim();
+    const looksAr = (s) => /[\u0600-\u06FF]/.test(s || "");
+    if (lang === "tr") {
+      if (tr) return tr;
+      if (en && !looksAr(en)) return en;
+      return tr || en || ar;
+    }
+    if (lang === "en") return en || tr || ar;
+    return ar || en || tr;
   }
   function syncDailyDishEntry() {
     const host = $("quickRow");
@@ -3027,6 +3035,8 @@ window.TONINO_CONFIG = Object.freeze({
       soon: "Yakında",
       dailyDish: "Günün Yemeği",
       dailyScheduleNote: "Her gün var · Cmt–Pzr hariç",
+      dailyScheduleNoteMain: "Her gün var",
+      dailyScheduleNoteSub: "Cmt–Pzr hariç",
       dailyDishJump: "🍽 Günün Yemeği",
       dailyOnly: "Sadece bugünün yemeği sipariş edilebilir",
       pickDessert: "Tatlı seçin",
@@ -3079,6 +3089,8 @@ window.TONINO_CONFIG = Object.freeze({
       soon: "Soon",
       dailyDish: "Daily dish",
       dailyScheduleNote: "Every day · except Sat–Sun",
+      dailyScheduleNoteMain: "Every day",
+      dailyScheduleNoteSub: "except Sat–Sun",
       dailyDishJump: "🍽 Daily dish",
       dailyOnly: "Only today's dish can be ordered",
       pickDessert: "Choose dessert",
@@ -3378,12 +3390,12 @@ window.TONINO_CONFIG = Object.freeze({
         startSub.textContent = `${label} — ${subBag.startSub}`;
       }
     };
-    let bootLang = "ar";
+    let bootLang = "tr";
     try {
-      bootLang = normalizeGuestLang(sessionStorage.getItem("zekiqGuestLang") || "")
-        || normalizeGuestLang(new URLSearchParams(location.search).get("lang") || "")
-        || "ar";
-    } catch (_) { bootLang = "ar"; }
+      bootLang = normalizeGuestLang(new URLSearchParams(location.search).get("lang") || "")
+        || normalizeGuestLang(sessionStorage.getItem("zekiqGuestLang") || "")
+        || "tr";
+    } catch (_) { bootLang = "tr"; }
     paintTable(applyAmbientLang(bootLang));
     const live = await loadLiveMenuBook();
     if (live && live.ok && live.guestLanguage) {
