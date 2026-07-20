@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v305 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v306 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -170,30 +170,31 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   50%{box-shadow:0 0 0 1px #0006 inset,0 4px 14px #0007,0 0 20px #f0c15e55}
 }
 
-/* Finger 👇 + menu under it that flips (above cats; z > chrome) */
+/* Finger 👇 + menu — parked behind sitting guest inside amb-story */
 .amb-flip-coach{
-  position:absolute;z-index:980;pointer-events:none;
-  left:50%;transform:translateX(-50%);
-  top:calc(var(--top-h) + var(--safe-top) + var(--cats-h) + var(--quick-h) + 10px);
+  position:absolute;z-index:1;pointer-events:none;
+  /* Guest sits ~right; his back faces the right edge */
+  right:0%;left:auto;top:2%;
+  transform:scale(.72);transform-origin:top right;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-  gap:2px;width:max-content;max-width:78vw;
-  filter:drop-shadow(0 4px 12px #000c);
+  gap:1px;width:max-content;max-width:42%;
+  filter:drop-shadow(0 3px 8px #000b);
   transition:opacity .3s ease,visibility .3s ease
 }
 .amb-flip-finger{
-  font-size:clamp(34px,9vw,42px);line-height:1;display:block;
+  font-size:clamp(26px,7vw,34px);line-height:1;display:block;
   font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
   /* Same timeline as page turn — finger drag ↔ page flip */
   animation:ambFingerDownSwipe 1.6s ease-in-out infinite;
   transform-origin:50% 10%;z-index:3
 }
 .amb-flip-stage{
-  width:64px;height:50px;perspective:640px;perspective-origin:18% 50%;
+  width:54px;height:42px;perspective:640px;perspective-origin:18% 50%;
   display:grid;place-items:center;z-index:2;margin-top:-2px
 }
 /* Fixed menu body — only the front page leaf moves */
 .amb-flip-book3d{
-  width:54px;height:44px;position:relative;
+  width:46px;height:38px;position:relative;
   transform-style:preserve-3d;
   transform:none!important;animation:none!important
 }
@@ -244,11 +245,11 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif
 }
 .amb-flip-label{
-  margin:4px 0 0;padding:4px 10px 5px;border-radius:999px;
-  font-size:clamp(10px,2.6vw,12px);font-weight:1000;letter-spacing:.02em;
+  margin:3px 0 0;padding:2px 7px 3px;border-radius:999px;
+  font-size:clamp(8px,2.1vw,10px);font-weight:1000;letter-spacing:.02em;
   color:#ffe9b1;white-space:nowrap;direction:rtl;
   background:linear-gradient(180deg,#2a1c10f5,#1a120af5);
-  border:1px solid #d7982e99;box-shadow:0 2px 10px #0008
+  border:1px solid #d7982e99;box-shadow:0 2px 8px #0008
 }
 html[lang="tr"] .amb-flip-label,
 html[lang="en"] .amb-flip-label{direction:ltr}
@@ -271,9 +272,10 @@ html.coach-locked .amb-flip-coach{opacity:0;visibility:hidden}
   position:absolute;left:50%;bottom:9%;z-index:2;
   height:min(148px,62%);width:auto;aspect-ratio:440/140;
   max-width:min(96%,400px);
-  transform:translateX(-50%)
+  transform:translateX(-50%);overflow:visible
 }
-.amb-story svg{display:block;width:100%;height:100%;overflow:visible}
+/* SVG above coach → guest body covers finger (finger sits “behind” him) */
+.amb-story svg{display:block;width:100%;height:100%;overflow:visible;position:relative;z-index:2}
 .amb-tag{
   position:absolute;left:4%;right:4%;bottom:2%;z-index:3;margin:0;
   text-align:center;direction:rtl;
@@ -816,6 +818,24 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
         <span class="amb-hours-text" id="ambHoursText">09:00 – 23:00</span>
       </div>
       <div class="amb-story">
+  <div class="amb-flip-coach" id="ambFlipCoach" aria-hidden="true">
+    <span class="amb-flip-finger" aria-hidden="true">👇</span>
+    <div class="amb-flip-stage" aria-hidden="true">
+      <div class="amb-flip-book3d">
+        <div class="amb-flip-page amb-flip-page-back">
+          <span class="amb-flip-menu-mark">MENU</span>
+          <span class="amb-flip-menu-lines" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="amb-flip-menu-fork" aria-hidden="true">🍴</span>
+        </div>
+        <div class="amb-flip-page amb-flip-page-front">
+          <span class="amb-flip-menu-mark">MENU</span>
+          <span class="amb-flip-menu-lines" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="amb-flip-menu-fork" aria-hidden="true">🍴</span>
+        </div>
+      </div>
+    </div>
+    <p class="amb-flip-label" id="ambSwipeCoachLabel">اسحب لقلب الصفحة</p>
+  </div>
         <svg viewBox="0 0 440 140" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
             <linearGradient id="ambWood" x1="0" y1="0" x2="0" y2="1">
@@ -992,25 +1012,6 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
     <div id="logoScene"></div>
     <div id="orderCloud"><div id="orderGrid"></div></div>
   </section>
-
-  <div class="amb-flip-coach" id="ambFlipCoach" aria-hidden="true">
-    <span class="amb-flip-finger" aria-hidden="true">👇</span>
-    <div class="amb-flip-stage" aria-hidden="true">
-      <div class="amb-flip-book3d">
-        <div class="amb-flip-page amb-flip-page-back">
-          <span class="amb-flip-menu-mark">MENU</span>
-          <span class="amb-flip-menu-lines" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="amb-flip-menu-fork" aria-hidden="true">🍴</span>
-        </div>
-        <div class="amb-flip-page amb-flip-page-front">
-          <span class="amb-flip-menu-mark">MENU</span>
-          <span class="amb-flip-menu-lines" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="amb-flip-menu-fork" aria-hidden="true">🍴</span>
-        </div>
-      </div>
-    </div>
-    <p class="amb-flip-label" id="ambSwipeCoachLabel">اسحب لقلب الصفحة</p>
-  </div>
 
   <nav id="quickBand" aria-label="اختصارات سريعة"><div id="quickRow"></div></nav>
   <nav id="categoryBand" aria-label="عنوان الصفحة والمجموعات"><div id="categories"></div></nav>
@@ -1336,14 +1337,12 @@ window.TONINO_CONFIG = Object.freeze({
     document.documentElement.style.setProperty("--logo-h", "0px");
     const band = $("logoBand");
     if (band) band.classList.toggle("ambient-tiny", ordersH > 0 && ordersH < 72);
+    /* Flip coach lives in amb-story (behind guest) — no phone-level top */
     const flip = $("ambFlipCoach");
     if (flip) {
-      /* Below cats/quick so finger isn't covered; under table when ambient is tall */
-      if (ordersH >= 100) {
-        flip.style.top = `calc(var(--top-h) + var(--safe-top) + ${Math.round(ordersH * 0.58)}px)`;
-      } else {
-        flip.style.top = "calc(var(--top-h) + var(--safe-top) + var(--cats-h) + var(--quick-h) + 10px)";
-      }
+      flip.style.top = "";
+      flip.style.right = "";
+      flip.classList.toggle("amb-flip-compact", ordersH > 0 && ordersH < 110);
     }
   }
   function updateGeometry() {
