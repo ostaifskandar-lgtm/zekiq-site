@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v307 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v308 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -2289,19 +2289,25 @@ window.TONINO_CONFIG = Object.freeze({
     if (/\bdibek\s+kahve/.test(n)) return true;
     return false;
   }
-  const TURKISH_COFFEE_OPTS = [
-    { id: "sade", label: "سادة · Sade", note: "Sade", priceMul: 1 },
-    { id: "orta", label: "وسط سكر · Orta", note: "Orta şekerli", priceMul: 1 },
-    { id: "sekerli", label: "سكر · Şekerli", note: "Şekerli", priceMul: 1 },
-    { id: "duble", label: "دابل دوبل · Duble", note: "Duble", priceMul: 2 },
-  ];
+  function turkishCoffeeOpts() {
+    const b = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    return [
+      { id: "sade", label: b.coffeeSade || "Sade", note: "Sade", priceMul: 1 },
+      { id: "orta", label: b.coffeeOrta || "Orta şekerli", note: "Orta şekerli", priceMul: 1 },
+      { id: "sekerli", label: b.coffeeSekerli || "Şekerli", note: "Şekerli", priceMul: 1 },
+      { id: "duble", label: b.coffeeDuble || "Duble", note: "Duble", priceMul: 2 },
+    ];
+  }
   function openChoiceSheet(title, choices, onPick, opts) {
     /* Do not flip the menu book — overlay only (Türk Kahvesi + daily dish). */
     void opts;
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
     const titleEl = $("variantTitle");
     if (titleEl) titleEl.textContent = title;
     const sheet = $("variantSheet");
     if (sheet) sheet.setAttribute("aria-label", title);
+    const closeBtn = $("closeVariants");
+    if (closeBtn) closeBtn.textContent = bag.close || "إغلاق";
     const grid = $("variantGrid");
     grid.innerHTML = "";
     choices.forEach(choice => {
@@ -2321,7 +2327,9 @@ window.TONINO_CONFIG = Object.freeze({
   function openTurkishCoffeeVariants(item) {
     const baseName = String(item.name || "").trim();
     const basePrice = Number(item.price) || 0;
-    openChoiceSheet("اختر السكر / الحجم — " + baseName, TURKISH_COFFEE_OPTS, choice => {
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    const head = bag.pickSugarSize || bag.pickOption || "Şeker / boyut";
+    openChoiceSheet(head + " — " + baseName, turkishCoffeeOpts(), choice => {
       const price = Math.round(basePrice * (choice.priceMul || 1));
       addItem({
         ...item,
@@ -2566,7 +2574,9 @@ window.TONINO_CONFIG = Object.freeze({
   function openVariants(item) {
     const flavors = Array.isArray(item.variants) ? item.variants : [];
     const baseName = String(item.name || "Dondurma").trim();
-    openChoiceSheet("اختر نكهة الآيس كريم", flavors.map(v => ({ label: v, note: v, priceMul: 1 })), choice => {
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    const title = bag.pickIceFlavor || bag.iceFlavor || bag.pickOption || "Lezzet seçin";
+    openChoiceSheet(title, flavors.map(v => ({ label: v, note: v, priceMul: 1 })), choice => {
       addItem({
         ...item,
         hotspotName: baseName,
@@ -2987,6 +2997,13 @@ window.TONINO_CONFIG = Object.freeze({
       dailyOnly: "يمكن طلب طبق اليوم فقط",
       pickDessert: "اختر التحلية",
       pickDrink: "اختر المشروب",
+      pickOption: "اختر الخيار",
+      pickSugarSize: "اختر السكر / الحجم",
+      pickIceFlavor: "اختر نكهة الآيس كريم",
+      coffeeSade: "سادة",
+      coffeeOrta: "وسط سكر",
+      coffeeSekerli: "سكر",
+      coffeeDuble: "دابل دوبل",
       noteDessert: "تحلية",
       noteDrink: "مشروب",
       dailyNoteTitle: "ملاحظة قصيرة",
@@ -3041,6 +3058,13 @@ window.TONINO_CONFIG = Object.freeze({
       dailyOnly: "Sadece bugünün yemeği sipariş edilebilir",
       pickDessert: "Tatlı seçin",
       pickDrink: "İçecek seçin",
+      pickOption: "Seçenek seçin",
+      pickSugarSize: "Şeker / boyut seçin",
+      pickIceFlavor: "Dondurma aroması seçin",
+      coffeeSade: "Sade",
+      coffeeOrta: "Orta şekerli",
+      coffeeSekerli: "Şekerli",
+      coffeeDuble: "Duble",
       noteDessert: "Tatlı",
       noteDrink: "İçecek",
       dailyNoteTitle: "Kısa not",
@@ -3095,6 +3119,13 @@ window.TONINO_CONFIG = Object.freeze({
       dailyOnly: "Only today's dish can be ordered",
       pickDessert: "Choose dessert",
       pickDrink: "Choose drink",
+      pickOption: "Choose option",
+      pickSugarSize: "Choose sugar / size",
+      pickIceFlavor: "Choose ice cream flavor",
+      coffeeSade: "Plain",
+      coffeeOrta: "Medium sugar",
+      coffeeSekerli: "Sweet",
+      coffeeDuble: "Double",
       noteDessert: "Dessert",
       noteDrink: "Drink",
       dailyNoteTitle: "Short note",
@@ -3202,6 +3233,13 @@ window.TONINO_CONFIG = Object.freeze({
     if (drLab) drLab.textContent = b.pickDrink;
     const close = document.getElementById("ddClose");
     if (close) close.textContent = b.close;
+    const variantClose = document.getElementById("closeVariants");
+    if (variantClose) variantClose.textContent = b.close;
+    const variantTitle = document.getElementById("variantTitle");
+    const variantSheet = document.getElementById("variantSheet");
+    if (variantTitle && variantSheet && !variantSheet.classList.contains("show")) {
+      variantTitle.textContent = b.pickOption || variantTitle.textContent;
+    }
     document.querySelectorAll(".category").forEach((btn) => {
       if (btn.dataset.book === "0") btn.textContent = b.dailyDish;
     });
