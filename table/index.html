@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v293 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v298 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -170,9 +170,47 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   50%{box-shadow:0 0 0 1px #0006 inset,0 4px 14px #0007,0 0 20px #f0c15e55}
 }
 
+/* Swipe coach — real finger emoji on the MENU (not logoBand; logoBand height is often 0 → distortion) */
+#viewer .menu-swipe-coach{
+  position:absolute;z-index:40;pointer-events:none;
+  left:50%;bottom:max(10px,2.5%);
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  width:max-content;max-width:86%;
+  transition:opacity .35s ease,visibility .35s ease;
+}
+#viewer .menu-swipe-coach-hand{
+  font-size:clamp(34px,10vw,44px);line-height:1;
+  display:block;
+  animation:menuFingerSwipe 1.55s ease-in-out infinite;
+  filter:drop-shadow(0 3px 10px #000a);
+  transform-origin:center 85%;
+  will-change:transform;
+}
+#viewer .menu-swipe-coach-label{
+  margin:0;padding:4px 10px 5px;border-radius:999px;
+  font-size:clamp(10px,2.8vw,12px);font-weight:1000;letter-spacing:.02em;
+  color:#3a2808;text-align:center;line-height:1.25;white-space:nowrap;
+  background:rgba(255,252,240,.92);
+  border:1px solid rgba(180,140,60,.45);
+  box-shadow:0 4px 14px #0005;
+  direction:rtl;
+}
+html[lang="tr"] #viewer .menu-swipe-coach-label,
+html[lang="en"] #viewer .menu-swipe-coach-label{direction:ltr}
+@keyframes menuFingerSwipe{
+  0%,100%{transform:translateX(-14px) rotate(-12deg)}
+  50%{transform:translateX(14px) rotate(12deg)}
+}
+html.swipe-learned #viewer .menu-swipe-coach,
+html.coach-locked #viewer .menu-swipe-coach{opacity:0;visibility:hidden}
+
+/* Story keeps 440×140 — never stretch into a tall/short band */
 .amb-story{
-  position:absolute;left:50%;bottom:10%;width:min(98%,420px);height:70%;
-  transform:translateX(-50%);max-height:155px;z-index:2
+  position:absolute;left:50%;bottom:9%;z-index:2;
+  height:min(148px,62%);width:auto;aspect-ratio:440/140;
+  max-width:min(96%,400px);
+  transform:translateX(-50%)
 }
 .amb-story svg{display:block;width:100%;height:100%;overflow:visible}
 .amb-tag{
@@ -262,7 +300,7 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   0%,84%{opacity:0}88%{opacity:.7}94%{opacity:.35}98%,100%{opacity:0}
 }
 @media(prefers-reduced-motion:reduce){
-  .amb-glow,.amb-logo,.amb-tag,.amb-qr,.amb-scan-beam,.amb-phone-arm,.amb-phone-glow,.amb-phone-scr-qr,.amb-phone-scr-menu,.amb-phone-scr-plus,.amb-signal,.amb-cashier-ping,.amb-cashier-check,.amb-waiter-g,.amb-plate,.amb-steam-p{animation:none!important}
+  .amb-glow,.amb-logo,.amb-tag,.amb-qr,.amb-scan-beam,.amb-phone-arm,.amb-phone-glow,.amb-phone-scr-qr,.amb-phone-scr-menu,.amb-phone-scr-plus,.amb-signal,.amb-cashier-ping,.amb-cashier-check,.amb-waiter-g,.amb-plate,.amb-steam-p,#viewer .menu-swipe-coach-hand{animation:none!important}
   .amb-waiter-g{transform:translateX(40px);opacity:1}.amb-plate{opacity:1}.amb-phone-glow{opacity:.8}
   .amb-cashier-check{opacity:1}.amb-qr{opacity:1}
 }
@@ -552,7 +590,7 @@ html[lang="en"] .dd-photo.is-day-off::after{content:"Closed today"}
 .menu-page::-webkit-scrollbar{display:none}.menu-page.under{filter:saturate(.97);transform:scale(.988);opacity:.83}
 .ambient{position:absolute;inset:0;z-index:0;background-position:center bottom;background-size:cover;filter:blur(28px) saturate(.85) brightness(.4);transform:scale(1.12);opacity:.7;pointer-events:none}.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 20%,#160c04aa 90%)}
 .paper{position:relative;z-index:1;width:100%;height:auto;margin:0;margin-top:auto;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:0 0 auto}
-.paper img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
+.paper img{display:block;width:100%;height:auto;aspect-ratio:auto;object-fit:contain;object-position:center bottom;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
 /* Pinch-to-peek: enlarge with 2 fingers, snap back when released */
 .menu-page.is-pinching{overflow:visible!important;z-index:45}
 .paper.is-pinch-zoom{
@@ -684,6 +722,18 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
 #categoryBand{border:0;border-bottom:2px solid #b8df1b!important;border-radius:0;background:#17100a}
 #viewer{background:#684108}
 
+
+/*ZEKIQ_DD_NOTE*/
+#ddNoteSheet{display:none;position:fixed;inset:0;z-index:1200;align-items:flex-end;justify-content:center;padding:12px;padding-bottom:calc(12px + var(--safe-bottom,0px) + var(--dd-kb-inset,0px));background:#000a;transition:padding-bottom .18s ease}
+#ddNoteSheet.show{display:flex}
+#ddNoteCard{width:min(440px,100%);max-height:min(70dvh,420px);overflow:auto;background:linear-gradient(160deg,#21170f,#3b2716);border:1px solid #d99a34;border-radius:18px;padding:14px 14px 12px;box-shadow:0 -8px 40px #000c}
+#ddNoteCard h3{margin:0 0 8px;text-align:center;color:#ffe5a1;font-size:15px}
+#ddNoteInput{width:100%;min-height:72px;resize:vertical;border-radius:12px;border:1px solid #c8860a88;background:#140e09;color:#fff8e7;padding:10px;font-size:16px;font-family:inherit}
+#ddNoteActions{display:flex;gap:8px;margin-top:10px}
+#ddNoteActions button{flex:1;min-height:44px;border-radius:12px;border:1px solid #c8860a66;font-weight:700;font-size:14px}
+#ddNoteSkip{background:#ffffff10;color:#e9d2a2}
+#ddNoteOk{background:linear-gradient(145deg,#ffd54f,#f0b820);color:#1a0a00;border-color:#c8860a}
+
 </style>
 </head>
 <body>
@@ -705,7 +755,7 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
         <span class="amb-hours-text" id="ambHoursText">09:00 – 23:00</span>
       </div>
       <div class="amb-story">
-        <svg viewBox="0 0 440 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg viewBox="0 0 440 140" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
             <linearGradient id="ambWood" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#a06630"/><stop offset="100%" stop-color="#4a2a10"/>
@@ -877,7 +927,7 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
           </g>
         </svg>
       </div>
-      <p class="amb-tag" id="ambStoryTag">QR على الطاولة ← امسح ← ابحث واطلب ← الكاشير ← الجرسون</p>
+<p class="amb-tag" id="ambStoryTag">QR على الطاولة ← امسح ← ابحث واطلب ← الكاشير ← الجرسون</p>
     </div>
     <div id="logoScene"></div>
     <div id="orderCloud"><div id="orderGrid"></div></div>
@@ -886,7 +936,13 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
   <nav id="quickBand" aria-label="اختصارات سريعة"><div id="quickRow"></div></nav>
   <nav id="categoryBand" aria-label="عنوان الصفحة والمجموعات"><div id="categories"></div></nav>
 
-  <main id="viewer" aria-label="صفحات المنيو"><div id="menuScene"></div></main>
+  <main id="viewer" aria-label="صفحات المنيو">
+    <div id="menuScene"></div>
+    <div class="menu-swipe-coach" id="menuSwipeCoach" aria-hidden="true">
+      <span class="menu-swipe-coach-hand" aria-hidden="true">👆</span>
+      <p class="menu-swipe-coach-label" id="menuSwipeCoachLabel">اسحب لقلب الصفحة</p>
+    </div>
+  </main>
 
   <footer id="footer">
     <div id="pageNumber" class="footer-side">1 / 21</div>
@@ -910,6 +966,18 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
       </div>
     </div>
   </div>
+  
+  <div id="ddNoteSheet" aria-hidden="true">
+    <div id="ddNoteCard" role="dialog" aria-modal="true" aria-labelledby="ddNoteTitle">
+      <h3 id="ddNoteTitle">ملاحظة للمطبخ</h3>
+      <textarea id="ddNoteInput" maxlength="160" rows="3" placeholder="…"></textarea>
+      <div id="ddNoteActions">
+        <button type="button" id="ddNoteSkip">تخطي</button>
+        <button type="button" id="ddNoteOk">أضف للطلب</button>
+      </div>
+    </div>
+  </div>
+
   <section id="dailyDishScreen" aria-label="Günün Yemeği" aria-live="polite">
     <p class="dd-kicker" id="ddKicker">Günün Yemeği</p>
     <div class="dd-stage">
@@ -1486,6 +1554,7 @@ window.TONINO_CONFIG = Object.freeze({
       currentMenu.remove(); currentLogo.remove();
       currentMenu = underMenu; currentLogo = underLogo; underMenu = null; underLogo = null;
       currentIndex = target; clearLayer(currentMenu); clearLayer(currentLogo); turning = false;
+      try { document.documentElement.classList.add("swipe-learned"); } catch (_) {}
       syncNavigation(); preloadNeighbors(); updateBadges(); fitMenuPage(currentMenu,currentIndex);
       if (isDailyBookIndex(currentIndex)) renderDailyDishScreen(currentMenu);
     },duration+35);
@@ -1640,8 +1709,80 @@ window.TONINO_CONFIG = Object.freeze({
     if (tea && tea !== "لا" && tea.toLowerCase() !== "no") push("شاي", tea === "نعم" || tea.toLowerCase() === "yes" ? "مع الطبق" : tea);
     return lines;
   }
-  function buildDailyDishNote(dish, dessert, drink) {
-    return dailyDishExtrasLines(dish, { dessert, drink }).map(l => `${l.label}: ${l.val}`).join(" · ");
+  /*ZEKIQ_DD_NOTE*/
+  function buildDailyDishNote(dish, dessert, drink, customerNote) {
+    /* Stable keys for kitchen/bar expand — customer free text → kitchen only */
+    const parts = [];
+    const d = String(dessert || "").trim();
+    const dr = String(drink || "").trim();
+    if (d) parts.push("Tatlı: " + d);
+    if (dr) parts.push("İçecek: " + dr);
+    const tea = String(dish && dish.teaOffer || "").trim();
+    if (tea && tea !== "لا" && tea.toLowerCase() !== "no") {
+      parts.push(tea === "نعم" || tea.toLowerCase() === "yes" ? "Çay: menü ile" : ("Çay: " + tea));
+    }
+    const cn = String(customerNote || "").trim();
+    if (cn) parts.push("Not: " + cn.slice(0, 160));
+    return parts.join(" · ");
+  }
+  function syncDdNoteKeyboardInset() {
+    const sheet = $("ddNoteSheet");
+    if (!sheet || !sheet.classList.contains("show")) {
+      document.documentElement.style.setProperty("--dd-kb-inset", "0px");
+      return;
+    }
+    const vv = window.visualViewport;
+    if (!vv) {
+      document.documentElement.style.setProperty("--dd-kb-inset", "0px");
+      return;
+    }
+    /* Lift note card above the soft keyboard */
+    const covered = Math.max(0, (window.innerHeight || 0) - vv.height - (vv.offsetTop || 0));
+    document.documentElement.style.setProperty("--dd-kb-inset", (covered > 60 ? covered + 12 : 0) + "px");
+  }
+  function closeDailyDishNoteSheet() {
+    const sheet = $("ddNoteSheet");
+    if (sheet) { sheet.classList.remove("show"); sheet.setAttribute("aria-hidden", "true"); }
+    const input = $("ddNoteInput");
+    if (input) input.value = "";
+    document.documentElement.style.setProperty("--dd-kb-inset", "0px");
+    if (window.visualViewport && window.__ddNoteKbBound) {
+      try {
+        visualViewport.removeEventListener("resize", syncDdNoteKeyboardInset);
+        visualViewport.removeEventListener("scroll", syncDdNoteKeyboardInset);
+      } catch (_) {}
+      window.__ddNoteKbBound = false;
+    }
+  }
+  function openDailyDishNoteSheet(onDone) {
+    const sheet = $("ddNoteSheet");
+    const input = $("ddNoteInput");
+    const title = $("ddNoteTitle");
+    const skip = $("ddNoteSkip");
+    const ok = $("ddNoteOk");
+    if (!sheet || !input || !ok) { onDone(""); return; }
+    const b = guestBag();
+    if (title) title.textContent = b.dailyNoteTitle || "ملاحظة للمطبخ";
+    input.placeholder = b.dailyNotePh || "…";
+    if (skip) skip.textContent = b.dailyNoteSkip || b.close || "تخطي";
+    ok.textContent = b.dailyNoteOk || b.orderBtn || "أضف للطلب";
+    input.value = "";
+    sheet.classList.add("show");
+    sheet.setAttribute("aria-hidden", "false");
+    if (window.visualViewport && !window.__ddNoteKbBound) {
+      visualViewport.addEventListener("resize", syncDdNoteKeyboardInset, { passive: true });
+      visualViewport.addEventListener("scroll", syncDdNoteKeyboardInset, { passive: true });
+      window.__ddNoteKbBound = true;
+    }
+    syncDdNoteKeyboardInset();
+    const finish = (text) => { closeDailyDishNoteSheet(); onDone(String(text || "").trim()); };
+    if (skip) skip.onclick = () => finish("");
+    ok.onclick = () => finish(input.value);
+    setTimeout(() => {
+      try { input.focus({ preventScroll: true }); } catch (_) { try { input.focus(); } catch (__) {} }
+      syncDdNoteKeyboardInset();
+      setTimeout(syncDdNoteKeyboardInset, 280);
+    }, 80);
   }
   function renderChoiceGroup(host, options, selected, kind) {
     if (!host) return;
@@ -1807,25 +1948,28 @@ window.TONINO_CONFIG = Object.freeze({
     /* Book page — closing means flip to first menu art page */
     if (hasDailyBookPage() && PAGES.length) goTo(bookIndexFromArt(0), 1);
   }
-  function commitDailyDishToCart(dessert, drink) {
+  function commitDailyDishToCart(dessert, drink, customerNote) {
     const dish = todayDailyDish;
     if (!dish) return;
     ddSelectedDessert = dessert || "";
     ddSelectedDrink = drink || "";
     const rawPrice = String(dish.price || "0").replace(",", ".");
     const numPrice = Number(rawPrice);
-    const mainName = String(dish.mainAr || dish.main || dish.mainTr || "Günün Yemeği").trim();
-    const choiceBits = [dessert, drink].filter(Boolean).join(" / ");
+    const mainName = dailyDishMainLabel(dish) || "Günün Yemeği";
+    /* Name = dish for kitchen only; choices stay in notes → bar gets generic label + options */
     addItem({
       page: DAILY_DISH_PAGE,
       hotspotName: DAILY_DISH_KEY,
       itemId: DAILY_DISH_KEY,
-      name: choiceBits ? `${guestBag().dailyDish} · ${mainName} (${choiceBits})` : `${guestBag().dailyDish} · ${mainName}`,
+      name: `${guestBag().dailyDish} · ${mainName}`,
       category: guestBag().dailyDish,
       price: Number.isFinite(numPrice) && numPrice > 0 ? Math.round(numPrice) : 0,
-      note: buildDailyDishNote(dish, dessert, drink),
+      note: buildDailyDishNote(dish, dessert, drink, customerNote),
     });
     renderDailyDishScreen(currentMenu);
+  }
+  function finishDailyDishChoices(dessertPick, drinkPick) {
+    openDailyDishNoteSheet(note => commitDailyDishToCart(dessertPick, drinkPick, note));
   }
   function addDailyDishToCart() {
     if (!todayDailyDish) return;
@@ -1839,12 +1983,12 @@ window.TONINO_CONFIG = Object.freeze({
         openChoiceSheet(
           guestBag().pickDrink,
           drinks.map(v => ({ label: v, note: v, priceMul: 1 })),
-          choice => commitDailyDishToCart(dessertPick, choice.note),
+          choice => finishDailyDishChoices(dessertPick, choice.note),
           { keepPage: true }
         );
         return;
       }
-      commitDailyDishToCart(dessertPick, drinks[0] || "");
+      finishDailyDishChoices(dessertPick, drinks[0] || "");
     };
     if (desserts.length >= 2) {
       openChoiceSheet(
@@ -2751,8 +2895,13 @@ window.TONINO_CONFIG = Object.freeze({
       pickDrink: "اختر المشروب",
       noteDessert: "تحلية",
       noteDrink: "مشروب",
+      dailyNoteTitle: "ملاحظة للمطبخ",
+      dailyNotePh: "مثال: بدون بصل، سريع…",
+      dailyNoteSkip: "تخطي",
+      dailyNoteOk: "أضف للطلب",
       close: "إغلاق",
       hintSwipe: "اسحب يمين / يسار ككتاب <em>‹‹ ››</em>",
+      ambSwipeCoach: "اسحب لقلب الصفحة",
       hintDaily: "صفحة الطبق اليومي — اختر ثم أضف للسلة",
       hintPlus: "اضغط زر + الأخضر للطلب",
       addedPrefix: "تمت إضافة",
@@ -2798,8 +2947,13 @@ window.TONINO_CONFIG = Object.freeze({
       pickDrink: "İçecek seçin",
       noteDessert: "Tatlı",
       noteDrink: "İçecek",
+      dailyNoteTitle: "Mutfak notu",
+      dailyNotePh: "Örn: soğansız, hızlı…",
+      dailyNoteSkip: "Atla",
+      dailyNoteOk: "Siparişe ekle",
       close: "Kapat",
       hintSwipe: "Sayfalar için sağa / sola kaydırın <em>‹‹ ››</em>",
+      ambSwipeCoach: "Kaydır — sayfa çevir",
       hintDaily: "Günün yemeği sayfası — seçin ve sepete ekleyin",
       hintPlus: "Sipariş için yeşil + düğmesine basın",
       addedPrefix: "Eklendi",
@@ -2845,8 +2999,13 @@ window.TONINO_CONFIG = Object.freeze({
       pickDrink: "Choose drink",
       noteDessert: "Dessert",
       noteDrink: "Drink",
+      dailyNoteTitle: "Kitchen note",
+      dailyNotePh: "e.g. no onion, hurry…",
+      dailyNoteSkip: "Skip",
+      dailyNoteOk: "Add to order",
       close: "Close",
       hintSwipe: "Swipe left / right like a book <em>‹‹ ››</em>",
+      ambSwipeCoach: "Swipe to turn page",
       hintDaily: "Daily dish page — pick then add to cart",
       hintPlus: "Tap the green + to order",
       addedPrefix: "Added",
@@ -2906,6 +3065,8 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function paintFooterHint(bag) {
     const b = bag || guestBag();
+    const menuSwipeLab = document.getElementById("menuSwipeCoachLabel");
+    if (menuSwipeLab) menuSwipeLab.textContent = b.ambSwipeCoach || guestT("ambSwipeCoach");
     const hint = document.getElementById("hint");
     if (!hint) return;
     const onDaily = typeof isDailyBookIndex === "function" && typeof currentIndex !== "undefined"
