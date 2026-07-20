@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v302 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v303 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -170,45 +170,64 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   50%{box-shadow:0 0 0 1px #0006 inset,0 4px 14px #0007,0 0 20px #f0c15e55}
 }
 
-/* Finger ↓ + menu emoji 📖 under it — always visible HTML coach */
+/* Finger 👇 + menu under it that flips (above cats; z > chrome) */
 .amb-flip-coach{
-  position:absolute;z-index:860;pointer-events:none;
+  position:absolute;z-index:980;pointer-events:none;
   left:50%;transform:translateX(-50%);
-  top:calc(var(--top-h) + var(--safe-top) + max(6px, calc(var(--orders-h, 0px) * 0.38)));
+  top:calc(var(--top-h) + var(--safe-top) + var(--cats-h) + var(--quick-h) + 10px);
   display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-  gap:0;width:max-content;max-width:70vw;
-  filter:drop-shadow(0 3px 10px #000a);
+  gap:2px;width:max-content;max-width:78vw;
+  filter:drop-shadow(0 4px 12px #000c);
   transition:opacity .3s ease,visibility .3s ease
 }
 .amb-flip-finger{
-  font-size:clamp(28px,8vw,36px);line-height:1;display:block;
+  font-size:clamp(34px,9vw,42px);line-height:1;display:block;
+  font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
   animation:ambFingerDownSwipe 1.55s ease-in-out infinite;
-  transform-origin:50% 15%;z-index:2
+  transform-origin:50% 10%;z-index:3
 }
-.amb-flip-book{
-  font-size:clamp(34px,9.5vw,44px);line-height:1;display:block;
-  margin-top:-4px;
-  animation:ambBookFlip 1.55s ease-in-out infinite;
-  transform-origin:20% 50%;z-index:1
+.amb-flip-stage{
+  width:58px;height:48px;perspective:520px;perspective-origin:50% 50%;
+  display:grid;place-items:center;z-index:2;margin-top:-2px
+}
+.amb-flip-book3d{
+  width:50px;height:42px;position:relative;
+  transform-style:preserve-3d;
+  animation:ambBookFlip 1.55s ease-in-out infinite
+}
+.amb-flip-leaf{
+  position:absolute;inset:0;border-radius:3px 7px 7px 3px;
+  background:linear-gradient(145deg,#fff8e8 0%,#f3d9a0 55%,#e8c078 100%);
+  border:2px solid #c4892a;box-shadow:2px 3px 0 #8a5a18,0 6px 14px #0008;
+  display:grid;place-items:center;transform-origin:12% 50%;
+  backface-visibility:hidden
+}
+.amb-flip-leaf::before{
+  content:"";position:absolute;left:10%;top:10%;bottom:10%;width:2px;
+  background:#c4892a66;border-radius:2px
+}
+.amb-flip-emoji{
+  font-size:26px;line-height:1;margin-left:4px;
+  font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif
 }
 .amb-flip-label{
-  margin:4px 0 0;padding:3px 9px 4px;border-radius:999px;
-  font-size:clamp(9px,2.4vw,11px);font-weight:1000;letter-spacing:.02em;
+  margin:4px 0 0;padding:4px 10px 5px;border-radius:999px;
+  font-size:clamp(10px,2.6vw,12px);font-weight:1000;letter-spacing:.02em;
   color:#ffe9b1;white-space:nowrap;direction:rtl;
-  background:linear-gradient(180deg,#2a1c10f0,#1a120af0);
-  border:1px solid #d7982e88;box-shadow:0 2px 8px #0006
+  background:linear-gradient(180deg,#2a1c10f5,#1a120af5);
+  border:1px solid #d7982e99;box-shadow:0 2px 10px #0008
 }
 html[lang="tr"] .amb-flip-label,
 html[lang="en"] .amb-flip-label{direction:ltr}
 @keyframes ambFingerDownSwipe{
-  0%,100%{transform:translate(-14px,0) rotate(-8deg)}
-  50%{transform:translate(14px,3px) rotate(8deg)}
+  0%,100%{transform:translate(-12px,0)}
+  50%{transform:translate(12px,2px)}
 }
 @keyframes ambBookFlip{
-  0%,12%{transform:rotate(-4deg) scaleX(1)}
-  45%{transform:rotate(2deg) scaleX(.22)}
-  55%{transform:rotate(2deg) scaleX(.22)}
-  88%,100%{transform:rotate(-4deg) scaleX(1)}
+  0%,14%{transform:rotateY(0deg)}
+  48%{transform:rotateY(-158deg)}
+  56%{transform:rotateY(-158deg)}
+  90%,100%{transform:rotateY(0deg)}
 }
 html.swipe-learned .amb-flip-coach,
 html.coach-locked .amb-flip-coach{opacity:0;visibility:hidden}
@@ -942,7 +961,11 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
 
   <div class="amb-flip-coach" id="ambFlipCoach" aria-hidden="true">
     <span class="amb-flip-finger" aria-hidden="true">👇</span>
-    <span class="amb-flip-book" aria-hidden="true">📖</span>
+    <div class="amb-flip-stage" aria-hidden="true">
+      <div class="amb-flip-book3d">
+        <div class="amb-flip-leaf"><span class="amb-flip-emoji">📖</span></div>
+      </div>
+    </div>
     <p class="amb-flip-label" id="ambSwipeCoachLabel">اسحب لقلب الصفحة</p>
   </div>
 
@@ -1272,11 +1295,11 @@ window.TONINO_CONFIG = Object.freeze({
     if (band) band.classList.toggle("ambient-tiny", ordersH > 0 && ordersH < 72);
     const flip = $("ambFlipCoach");
     if (flip) {
-      /* When ambient is tall, sit under the table; else float under topbar */
-      if (ordersH >= 90) {
-        flip.style.top = `calc(var(--top-h) + var(--safe-top) + ${Math.round(ordersH * 0.52)}px)`;
+      /* Below cats/quick so finger isn't covered; under table when ambient is tall */
+      if (ordersH >= 100) {
+        flip.style.top = `calc(var(--top-h) + var(--safe-top) + ${Math.round(ordersH * 0.58)}px)`;
       } else {
-        flip.style.top = `calc(var(--top-h) + var(--safe-top) + 10px)`;
+        flip.style.top = "calc(var(--top-h) + var(--safe-top) + var(--cats-h) + var(--quick-h) + 10px)";
       }
     }
   }
