@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v298 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v299 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -170,40 +170,41 @@ html:fullscreen #phone,html:-webkit-full-screen #phone{
   50%{box-shadow:0 0 0 1px #0006 inset,0 4px 14px #0007,0 0 20px #f0c15e55}
 }
 
-/* Swipe coach — real finger emoji on the MENU (not logoBand; logoBand height is often 0 → distortion) */
-#viewer .menu-swipe-coach{
-  position:absolute;z-index:40;pointer-events:none;
-  left:50%;bottom:max(10px,2.5%);
-  transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  width:max-content;max-width:86%;
-  transition:opacity .35s ease,visibility .35s ease;
+/* Finger under the table (inside amb-story) — page-flip emotion; locked aspect = no distort */
+.amb-swipe-finger{
+  transform-box:fill-box;transform-origin:50% 90%;
+  animation:ambFingerFlip 1.6s ease-in-out infinite;
+  filter:drop-shadow(0 2px 5px #0009);
+  pointer-events:none
 }
-#viewer .menu-swipe-coach-hand{
-  font-size:clamp(34px,10vw,44px);line-height:1;
-  display:block;
-  animation:menuFingerSwipe 1.55s ease-in-out infinite;
-  filter:drop-shadow(0 3px 10px #000a);
-  transform-origin:center 85%;
-  will-change:transform;
+.amb-swipe-finger-emoji{font-size:26px;user-select:none}
+.amb-swipe-finger-trail{
+  animation:ambFingerTrail 1.6s ease-in-out infinite;
+  opacity:.55
 }
-#viewer .menu-swipe-coach-label{
-  margin:0;padding:4px 10px 5px;border-radius:999px;
-  font-size:clamp(10px,2.8vw,12px);font-weight:1000;letter-spacing:.02em;
-  color:#3a2808;text-align:center;line-height:1.25;white-space:nowrap;
-  background:rgba(255,252,240,.92);
-  border:1px solid rgba(180,140,60,.45);
-  box-shadow:0 4px 14px #0005;
-  direction:rtl;
+@keyframes ambFingerFlip{
+  0%,100%{transform:translate(-11px,0) rotate(-10deg)}
+  50%{transform:translate(11px,0) rotate(10deg)}
 }
-html[lang="tr"] #viewer .menu-swipe-coach-label,
-html[lang="en"] #viewer .menu-swipe-coach-label{direction:ltr}
-@keyframes menuFingerSwipe{
-  0%,100%{transform:translateX(-14px) rotate(-12deg)}
-  50%{transform:translateX(14px) rotate(12deg)}
+@keyframes ambFingerTrail{
+  0%,15%{opacity:0}
+  40%,60%{opacity:.7}
+  85%,100%{opacity:0}
 }
-html.swipe-learned #viewer .menu-swipe-coach,
-html.coach-locked #viewer .menu-swipe-coach{opacity:0;visibility:hidden}
+.amb-swipe-coach-label{
+  position:absolute;z-index:6;pointer-events:none;
+  left:50%;bottom:1%;transform:translateX(-50%);
+  margin:0;padding:2px 8px 3px;border-radius:999px;
+  font-size:clamp(8px,2.1vw,10px);font-weight:1000;
+  color:#ffe9b1;white-space:nowrap;direction:rtl;
+  background:linear-gradient(180deg,#2a1c10f0,#1a120af0);
+  border:1px solid #d7982e88;box-shadow:0 2px 8px #0006
+}
+html[lang="tr"] .amb-swipe-coach-label,
+html[lang="en"] .amb-swipe-coach-label{direction:ltr}
+#logoBand.ambient-tiny .amb-swipe-finger{opacity:.45}
+html.swipe-learned .amb-swipe-finger,
+html.swipe-learned .amb-swipe-coach-label{opacity:.22}
 
 /* Story keeps 440×140 — never stretch into a tall/short band */
 .amb-story{
@@ -300,7 +301,7 @@ html.coach-locked #viewer .menu-swipe-coach{opacity:0;visibility:hidden}
   0%,84%{opacity:0}88%{opacity:.7}94%{opacity:.35}98%,100%{opacity:0}
 }
 @media(prefers-reduced-motion:reduce){
-  .amb-glow,.amb-logo,.amb-tag,.amb-qr,.amb-scan-beam,.amb-phone-arm,.amb-phone-glow,.amb-phone-scr-qr,.amb-phone-scr-menu,.amb-phone-scr-plus,.amb-signal,.amb-cashier-ping,.amb-cashier-check,.amb-waiter-g,.amb-plate,.amb-steam-p,#viewer .menu-swipe-coach-hand{animation:none!important}
+  .amb-glow,.amb-logo,.amb-tag,.amb-swipe-finger,.amb-swipe-finger-trail,.amb-qr,.amb-scan-beam,.amb-phone-arm,.amb-phone-glow,.amb-phone-scr-qr,.amb-phone-scr-menu,.amb-phone-scr-plus,.amb-signal,.amb-cashier-ping,.amb-cashier-check,.amb-waiter-g,.amb-plate,.amb-steam-p{animation:none!important}
   .amb-waiter-g{transform:translateX(40px);opacity:1}.amb-plate{opacity:1}.amb-phone-glow{opacity:.8}
   .amb-cashier-check{opacity:1}.amb-qr{opacity:1}
 }
@@ -802,6 +803,11 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
             <rect x="218" y="92" width="14" height="22" rx="2" fill="#3d2410"/>
             <ellipse cx="230" cy="78" rx="48" ry="2.5" fill="#0003"/>
           </g>
+          <!-- finger under table — page-flip emotion -->
+          <g class="amb-swipe-finger" aria-hidden="true">
+            <line class="amb-swipe-finger-trail" x1="218" y1="118" x2="252" y2="118" stroke="#f0c15e" stroke-width="2.4" stroke-linecap="round"/>
+            <text class="amb-swipe-finger-emoji" x="235" y="128" text-anchor="middle">👆</text>
+          </g>
 
           <!-- QR raised slightly at the TOP/back of the table -->
           <g class="amb-qr">
@@ -927,6 +933,7 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
           </g>
         </svg>
       </div>
+<p class="amb-swipe-coach-label" id="ambSwipeCoachLabel">اسحب لقلب الصفحة</p>
 <p class="amb-tag" id="ambStoryTag">QR على الطاولة ← امسح ← ابحث واطلب ← الكاشير ← الجرسون</p>
     </div>
     <div id="logoScene"></div>
@@ -936,13 +943,7 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
   <nav id="quickBand" aria-label="اختصارات سريعة"><div id="quickRow"></div></nav>
   <nav id="categoryBand" aria-label="عنوان الصفحة والمجموعات"><div id="categories"></div></nav>
 
-  <main id="viewer" aria-label="صفحات المنيو">
-    <div id="menuScene"></div>
-    <div class="menu-swipe-coach" id="menuSwipeCoach" aria-hidden="true">
-      <span class="menu-swipe-coach-hand" aria-hidden="true">👆</span>
-      <p class="menu-swipe-coach-label" id="menuSwipeCoachLabel">اسحب لقلب الصفحة</p>
-    </div>
-  </main>
+  <main id="viewer" aria-label="صفحات المنيو"><div id="menuScene"></div></main>
 
   <footer id="footer">
     <div id="pageNumber" class="footer-side">1 / 21</div>
@@ -3065,8 +3066,8 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function paintFooterHint(bag) {
     const b = bag || guestBag();
-    const menuSwipeLab = document.getElementById("menuSwipeCoachLabel");
-    if (menuSwipeLab) menuSwipeLab.textContent = b.ambSwipeCoach || guestT("ambSwipeCoach");
+    const ambSwipeLab = document.getElementById("ambSwipeCoachLabel");
+    if (ambSwipeLab) ambSwipeLab.textContent = b.ambSwipeCoach || guestT("ambSwipeCoach");
     const hint = document.getElementById("hint");
     if (!hint) return;
     const onDaily = typeof isDailyBookIndex === "function" && typeof currentIndex !== "undefined"
