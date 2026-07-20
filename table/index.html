@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v299 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v254 --><!-- turk-coffee-sugar-v255 --><!-- cart-font-v256 --><!-- daily-dish-phone-v300 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -971,7 +971,7 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
   <div id="ddNoteSheet" aria-hidden="true">
     <div id="ddNoteCard" role="dialog" aria-modal="true" aria-labelledby="ddNoteTitle">
       <h3 id="ddNoteTitle">ملاحظة للمطبخ</h3>
-      <textarea id="ddNoteInput" maxlength="160" rows="3" placeholder="…"></textarea>
+      <textarea id="ddNoteInput" maxlength="60" rows="2" placeholder="…"></textarea>
       <div id="ddNoteActions">
         <button type="button" id="ddNoteSkip">تخطي</button>
         <button type="button" id="ddNoteOk">أضف للطلب</button>
@@ -1712,18 +1712,14 @@ window.TONINO_CONFIG = Object.freeze({
   }
   /*ZEKIQ_DD_NOTE*/
   function buildDailyDishNote(dish, dessert, drink, customerNote) {
-    /* Stable keys for kitchen/bar expand — customer free text → kitchen only */
+    /* Short note: only guest picks (+ brief kitchen note). Bar expands these alone. */
     const parts = [];
     const d = String(dessert || "").trim();
     const dr = String(drink || "").trim();
     if (d) parts.push("Tatlı: " + d);
     if (dr) parts.push("İçecek: " + dr);
-    const tea = String(dish && dish.teaOffer || "").trim();
-    if (tea && tea !== "لا" && tea.toLowerCase() !== "no") {
-      parts.push(tea === "نعم" || tea.toLowerCase() === "yes" ? "Çay: menü ile" : ("Çay: " + tea));
-    }
     const cn = String(customerNote || "").trim();
-    if (cn) parts.push("Not: " + cn.slice(0, 160));
+    if (cn) parts.push("Not: " + cn.slice(0, 60));
     return parts.join(" · ");
   }
   function syncDdNoteKeyboardInset() {
