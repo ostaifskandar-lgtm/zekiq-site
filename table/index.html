@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v256 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v310 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -3367,6 +3367,29 @@ window.TONINO_CONFIG = Object.freeze({
       if (data && data.shop) applyDailyDishFromShop(data.shop, apiBase);
     } catch (_) {}
   }
+  /** Load THIS cashier's spots (same JSON as Settings) — no QR token needed. */
+  async function loadLocalBookSpots(apiBase) {
+    if (!apiBase) return false;
+    try {
+      const res = await fetch(String(apiBase).replace(/\/+$/, "") + "/api/guest/v1/book-spots", { cache: "no-store" });
+      if (!res.ok) return false;
+      const data = await res.json();
+      if (!data || !data.ok || !data.manualSpots) return false;
+      return await applyLiveBook({
+        ok: true,
+        book: {
+          manualSpots: data.manualSpots,
+          pages: data.pages,
+          pageCategories: data.pageCategories,
+          version: data.version,
+          updatedAt: data.updatedAt,
+        },
+        items: window.__zekiqGuestMenuItems || [],
+      }, apiBase);
+    } catch (_) {
+      return false;
+    }
+  }
   async function loadLiveMenuBook() {
     try {
       const params = readQueryParams();
@@ -3374,23 +3397,27 @@ window.TONINO_CONFIG = Object.freeze({
       if (studio) {
         const apiBase = (location.origin || "").replace(/\/+$/, "");
         if (!apiBase || /github\.io$/i.test(location.hostname)) return { ok: false };
+        /* Studio preview: spots from this POS first (matches Settings). */
+        const spotsOk = await loadLocalBookSpots(apiBase);
         const res = await fetch(apiBase + "/api/guest/v1/menu-studio", { cache: "no-store", credentials: "include" });
         if (!res.ok) {
           await loadDailyDishFallback(apiBase);
-          return { ok: false };
+          return { ok: true, bookOk: spotsOk };
         }
         const data = await res.json();
         applyDailyDishPayload(data, apiBase);
         if (!todayDailyDish) await loadDailyDishFallback(apiBase);
-        const bookOk = await applyLiveBook(data, apiBase);
+        const bookOk = (await applyLiveBook(data, apiBase)) || spotsOk;
         return { ok: true, guestLanguage: data.guestLanguage, bookOk };
       }
       const apiBase = await resolveApiBase();
       const session = guestSession();
       if (!apiBase) return { ok: false };
+      /* ALWAYS pull spots from the cashier that serves this QR (dev or shop). */
+      const spotsOk = await loadLocalBookSpots(apiBase);
       if (!session.token) {
         await loadDailyDishFallback(apiBase);
-        return { ok: false };
+        return { ok: spotsOk, bookOk: spotsOk };
       }
       const url = apiBase + "/api/guest/v1/menu?t=" + encodeURIComponent(session.token)
         + (session.shop ? "&shop=" + encodeURIComponent(session.shop) : "");
@@ -3399,13 +3426,15 @@ window.TONINO_CONFIG = Object.freeze({
       try { data = await res.json(); } catch (_) { data = null; }
       if (data) applyDailyDishPayload(data, apiBase);
       if (!todayDailyDish) await loadDailyDishFallback(apiBase);
-      if (!res.ok || !data) return { ok: false };
-      const bookOk = await applyLiveBook(data, apiBase);
+      if (!res.ok || !data) return { ok: spotsOk, bookOk: spotsOk };
+      const bookOk = (await applyLiveBook(data, apiBase)) || spotsOk;
       return { ok: true, guestLanguage: data.guestLanguage, bookOk };
     } catch (_) {
       try {
         const apiBase = await resolveApiBase();
+        const spotsOk = await loadLocalBookSpots(apiBase);
         await loadDailyDishFallback(apiBase);
+        return { ok: spotsOk, bookOk: spotsOk };
       } catch (__){}
       return { ok: false };
     }
