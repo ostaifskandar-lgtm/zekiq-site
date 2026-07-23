@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="tr" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-fullbleed-v337 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -50,36 +50,189 @@ html.is-phone #phone,html.is-android #phone{
   width:100%!important;max-width:none!important;height:var(--app-height,100dvh)!important;
   border:0!important;border-radius:0!important;box-shadow:none!important
 }
-/* Mandatory start gate — unlocks menu + Android fullscreen (hides browser chrome) */
+/* Mandatory start gate — visual loop + tap to start (fullscreen gesture). No reading list. */
 #startGate{
   position:absolute;z-index:5000;inset:0;display:none;align-items:stretch;justify-content:center;
   padding:calc(12px + var(--safe-top)) 16px calc(16px + var(--safe-bottom));
   background:radial-gradient(circle at 50% 18%,#3a2612 0%,#17100a 55%,#0c0805 100%);
-  color:#ffe9b1;direction:rtl;text-align:center;overflow:auto
+  color:#ffe9b1;direction:ltr;text-align:center;overflow:auto
 }
+html[lang="ar"] #startGate{direction:rtl}
 #startGate.show{display:flex}
 #startGate .start-card{
   margin:auto;width:min(100%,360px);padding:22px 18px 18px;border:1px solid #d7982e88;border-radius:22px;
   background:linear-gradient(165deg,#2a1c10ee,#17100af2);box-shadow:0 18px 50px #000c
 }
-#startGate h2{font-size:clamp(20px,5.5vw,26px);color:#ffda7d;margin:0 0 6px;font-weight:1000}
-#startGate .start-sub{font-size:12px;color:#cdb27a;margin:0 0 16px;line-height:1.45}
-#startGate ol{list-style:none;display:grid;gap:8px;margin:0 0 18px;padding:0;text-align:right}
-#startGate li{
-  display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:center;
-  padding:10px 10px;border:1px solid #e3aa4538;border-radius:12px;background:#ffffff08;
-  font-size:13px;font-weight:800;line-height:1.35;color:#fff6df
+#startGate h2{font-size:clamp(20px,5.4vw,26px);color:#ffda7d;margin:0 0 6px;font-weight:1000}
+#startGate .start-hero{
+  margin:0 0 10px;padding:0 4px;
+  font-size:clamp(17px,4.8vw,21px);font-weight:1000;line-height:1.35;
+  color:#fff6df;letter-spacing:.01em
 }
-#startGate li b{
-  width:28px;height:28px;border-radius:9px;display:grid;place-items:center;
-  background:linear-gradient(145deg,#a9670c,#f0b747);color:#181006;font-size:13px
+#startGate .start-sub{font-size:13px;color:#cdb27a;margin:0 0 14px;line-height:1.4;font-weight:700}
+#startGateSteps{display:none!important}
+.start-loop{display:none!important}
+/* CSS-driven teaching demo (9s loop) — tip lands on green + */
+.start-demo{margin:0 0 12px;direction:ltr}
+.start-demo-phone{
+  position:relative;width:min(100%,300px);margin:0 auto;border-radius:20px;overflow:visible;
+  border:1.5px solid #e3aa4577;background:#120c07;
+  box-shadow:0 14px 36px #000b,0 0 0 1px #fff1 inset
+}
+.start-demo-top,.start-demo-stage{border-radius:0;overflow:hidden}
+.start-demo-top{border-radius:18px 18px 0 0}
+.start-demo-stage{border-radius:0 0 18px 18px}
+.start-demo-top{
+  position:relative;z-index:8;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:8px 9px;background:linear-gradient(180deg,#30241bf2,#17100af5);border-bottom:1px solid #b77a25
+}
+.start-demo-send{
+  min-width:78px;padding:6px 10px;border-radius:11px;font-size:12px;font-weight:1000;
+  background:linear-gradient(145deg,#a9670c,#f0b747);color:#181006;text-align:center
+}
+.start-demo.playing .start-demo-send{animation:demoSendGlow 9s linear infinite}
+@keyframes demoSendGlow{
+  0%,58%{box-shadow:none;filter:none;transform:scale(1)}
+  62%,78%{box-shadow:0 0 0 2px #caed38,0 0 16px #caed38bb;filter:brightness(1.2);transform:scale(1.06)}
+  82%,100%{box-shadow:none;filter:none;transform:scale(1)}
+}
+.start-demo-tbl{font-size:11px;font-weight:900;color:#ffda7d}
+.start-demo-stage{position:relative;height:220px;overflow:hidden;background:#1a1008}
+.start-demo-pages{display:flex;width:200%;height:100%}
+.start-demo.playing .start-demo-pages{animation:demoPagesFlip 9s linear infinite}
+@keyframes demoPagesFlip{
+  0%,14%{transform:translateX(0)}
+  20%,100%{transform:translateX(-50%)}
+}
+.start-demo-page{position:relative;flex:0 0 50%;height:100%;overflow:hidden;background:#2a1a0e}
+.start-demo-page-img{
+  display:block;width:100%;height:100%;object-fit:cover;object-position:center top;
+  user-select:none;pointer-events:none;-webkit-user-drag:none
+}
+/* Teaching + — finger tip targets THIS button (same coords as hand keyframes) */
+.start-demo-plus{
+  position:absolute;z-index:8;left:87.5%;top:36%;width:28px;height:28px;margin:0;
+  transform:translate(-50%,-50%);border:0;border-radius:8px;padding:0;
+  background:linear-gradient(160deg,#45c456,#1f9a32);color:#fff;
+  font-size:22px;font-weight:1000;line-height:1;display:grid;place-items:center;
+  box-shadow:0 2px 8px #000a,0 0 0 1px #fff4 inset;pointer-events:none;opacity:0
+}
+.start-demo.playing .start-demo-plus{animation:demoPlusPulse 9s linear infinite}
+@keyframes demoPlusPulse{
+  0%,26%{opacity:0;transform:translate(-50%,-50%) scale(.55)}
+  30%,36%{opacity:1;transform:translate(-50%,-50%) scale(1.18);box-shadow:0 0 0 3px #caed38,0 0 14px #caed38cc}
+  40%,56%{opacity:1;transform:translate(-50%,-50%) scale(1);box-shadow:0 0 0 2px #caed38bb,0 2px 8px #000a}
+  60%,100%{opacity:.25;transform:translate(-50%,-50%) scale(.95);box-shadow:0 2px 6px #0008}
+}
+.start-demo-badge{
+  position:absolute;z-index:7;right:10px;top:10px;min-width:18px;height:18px;padding:0 4px;
+  border-radius:9px;background:#d4313d;color:#fff;font-size:10px;font-weight:1000;
+  display:grid;place-items:center;opacity:0;transform:scale(.4);pointer-events:none
+}
+.start-demo.playing .start-demo-badge{animation:demoBadgeIn 9s linear infinite}
+@keyframes demoBadgeIn{
+  0%,38%{opacity:0;transform:scale(.4)}
+  42%,100%{opacity:1;transform:scale(1)}
+}
+.start-demo-cart{
+  position:absolute;z-index:6;left:8px;right:8px;top:8px;height:30px;border-radius:9px;
+  background:linear-gradient(180deg,#503820f8,#281a10f8);border:1px solid #e1aa456e;
+  color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:space-between;
+  padding:0 10px;opacity:0;transform:translateY(-10px);direction:ltr
+}
+html[lang="ar"] .start-demo-cart{direction:rtl}
+.start-demo.playing .start-demo-cart{animation:demoCartIn 9s linear infinite}
+@keyframes demoCartIn{
+  0%,38%{opacity:0;transform:translateY(-10px)}
+  42%,100%{opacity:1;transform:translateY(0)}
+}
+/* Same 👆 that looked good on menu swipe — tip at top-center */
+.start-demo-finger{
+  position:absolute;z-index:12;width:40px;height:40px;pointer-events:none;
+  left:50%;top:50%;margin:0;display:grid;place-items:center;
+  font-size:34px;line-height:1;transform-origin:50% 12%;
+  filter:drop-shadow(0 3px 6px #000b);user-select:none
+}
+.start-demo-finger-emoji{display:block;transform-origin:50% 12%}
+.start-demo.playing .start-demo-finger{animation:demoHandMove 9s linear infinite}
+@keyframes demoHandMove{
+  0%{left:68%;top:68%;transform:translate(-50%,-8%) rotate(-26deg) scale(1)}
+  8%{left:28%;top:68%;transform:translate(-50%,-8%) rotate(-26deg) scale(1)}
+  16%{left:62%;top:68%;transform:translate(-50%,-8%) rotate(-26deg) scale(1)}
+  22%{left:32%;top:68%;transform:translate(-50%,-8%) rotate(-26deg) scale(1)}
+  /* tip on teaching + */
+  30%{left:87.5%;top:45.5%;transform:translate(-50%,-10%) rotate(0deg) scale(1)}
+  38%{left:87.5%;top:45.5%;transform:translate(-50%,-10%) rotate(0deg) scale(1)}
+  42%{left:87.5%;top:45.5%;transform:translate(-50%,-2%) rotate(0deg) scale(.88)}
+  46%{left:87.5%;top:45.5%;transform:translate(-50%,-10%) rotate(0deg) scale(1)}
+  54%{left:87.5%;top:45.5%;transform:translate(-50%,-10%) rotate(0deg) scale(1)}
+  /* tip on Gönder */
+  62%{left:16%;top:7%;transform:translate(-50%,-8%) rotate(0deg) scale(1)}
+  70%{left:16%;top:7%;transform:translate(-50%,-8%) rotate(0deg) scale(1)}
+  74%{left:16%;top:7%;transform:translate(-50%,0%) rotate(0deg) scale(.88)}
+  78%{left:16%;top:7%;transform:translate(-50%,-8%) rotate(0deg) scale(1)}
+  100%{left:16%;top:7%;transform:translate(-50%,-8%) rotate(0deg) scale(1)}
+}
+.start-demo-ripple{
+  position:absolute;z-index:11;width:34px;height:34px;margin:0;border-radius:50%;
+  border:2.5px solid #caed38;opacity:0;pointer-events:none;
+  transform:translate(-50%,-50%)
+}
+.start-demo.playing .start-demo-ripple{animation:demoRipple 9s linear infinite}
+@keyframes demoRipple{
+  0%,40%{left:87.5%;top:45.5%;opacity:0;transform:translate(-50%,-50%) scale(.4)}
+  42%{left:87.5%;top:45.5%;opacity:.95;transform:translate(-50%,-50%) scale(.4)}
+  48%{left:87.5%;top:45.5%;opacity:0;transform:translate(-50%,-50%) scale(2.2)}
+  49%,70%{left:16%;top:7%;opacity:0;transform:translate(-50%,-50%) scale(.4)}
+  74%{left:16%;top:7%;opacity:.95;transform:translate(-50%,-50%) scale(.4)}
+  80%{left:16%;top:7%;opacity:0;transform:translate(-50%,-50%) scale(2.2)}
+  81%,100%{opacity:0;transform:translate(-50%,-50%) scale(.4)}
+}
+.start-demo-captions{
+  position:relative;margin:10px 0 0;min-height:44px;direction:ltr
+}
+html[lang="ar"] .start-demo-captions{direction:rtl}
+.start-demo-captions p{
+  position:absolute;inset:0;margin:0;font-size:14px;font-weight:1000;color:#ffe9b1;
+  line-height:1.35;opacity:0;padding:0 4px
+}
+.start-demo.playing .cap-swipe{animation:demoCapSwipe 9s linear infinite}
+.start-demo.playing .cap-plus{animation:demoCapPlus 9s linear infinite}
+.start-demo.playing .cap-send{animation:demoCapSend 9s linear infinite}
+@keyframes demoCapSwipe{
+  0%,26%{opacity:1} 30%,100%{opacity:0}
+}
+@keyframes demoCapPlus{
+  0%,29%{opacity:0} 32%,56%{opacity:1} 60%,100%{opacity:0}
+}
+@keyframes demoCapSend{
+  0%,59%{opacity:0} 62%,100%{opacity:1}
+}
+.start-demo-dots{display:flex;justify-content:center;gap:7px;margin-top:8px}
+.start-demo-dot{
+  width:8px;height:8px;border-radius:50%;background:#ffffff33
+}
+.start-demo.playing .start-demo-dot[data-demo-dot="swipe"]{animation:demoDotSwipe 9s linear infinite}
+.start-demo.playing .start-demo-dot[data-demo-dot="plus"]{animation:demoDotPlus 9s linear infinite}
+.start-demo.playing .start-demo-dot[data-demo-dot="send"]{animation:demoDotSend 9s linear infinite}
+@keyframes demoDotSwipe{
+  0%,28%{background:#f0b747;transform:scale(1.3)} 32%,100%{background:#ffffff33;transform:scale(1)}
+}
+@keyframes demoDotPlus{
+  0%,30%{background:#ffffff33;transform:scale(1)} 34%,58%{background:#f0b747;transform:scale(1.3)} 62%,100%{background:#ffffff33;transform:scale(1)}
+}
+@keyframes demoDotSend{
+  0%,60%{background:#ffffff33;transform:scale(1)} 64%,100%{background:#f0b747;transform:scale(1.3)}
 }
 #startGo{
-  width:100%;min-height:52px;border:0;border-radius:16px;cursor:pointer;
+  width:100%;min-height:56px;border:0;border-radius:16px;cursor:pointer;
   background:linear-gradient(145deg,#a9670c,#f0b747);color:#181006;
-  font-size:clamp(15px,4.2vw,18px);font-weight:1000;box-shadow:0 8px 22px #0008
+  font-size:clamp(16px,4.4vw,19px);font-weight:1000;box-shadow:0 8px 22px #0008
 }
 #startGo:active{transform:scale(.98)}
+/* Live coach on real menu — disabled (welcome demo only; no rings after start) */
+#liveCoachPlusRing,#liveCoachTip{display:none!important}
+#sendButton.live-coach-send{animation:none!important;box-shadow:none!important}
 html.coach-locked #topbar,
 html.coach-locked #logoBand,
 html.coach-locked #quickBand,
@@ -268,8 +421,7 @@ html[lang="en"] .amb-flip-label{direction:ltr}
   transform:scale(.58);top:0;right:1%
 }
 .amb-flip-coach.amb-flip-compact .amb-flip-label{display:none}
-html.swipe-learned .amb-flip-coach,
-html.coach-locked .amb-flip-coach{opacity:0;visibility:hidden}
+/* Mini menu + finger behind guest stay visible (teach flip anytime) */
 #logoBand.ambient-tiny .amb-flip-coach{opacity:.85}
 
 /* Story keeps 440×140 — never stretch into a tall/short band */
@@ -407,12 +559,73 @@ html.coach-locked .amb-flip-coach{opacity:0;visibility:hidden}
 #orderCloud::-webkit-scrollbar{display:none}
 #orderCloud.active{opacity:1;pointer-events:auto;padding-top:4px;padding-bottom:4px}
 #orderGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;direction:rtl;align-content:start}
-.order{height:28px;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 26px;border:1px solid #e1aa456e;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#503820f4,#281a10f4);box-shadow:0 2px 5px #0008,0 0 0 1px #fff05 inset}
-.order-main{min-width:0;border:0;background:transparent;color:#fff;padding:1px 4px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr 1fr;column-gap:3px;text-align:right;cursor:pointer;align-content:center}
+.order{min-height:28px;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 26px 26px;grid-template-rows:auto auto;border:1px solid #e1aa456e;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#503820f4,#281a10f4);box-shadow:0 2px 5px #0008,0 0 0 1px #fff05 inset}
+.order-main{min-width:0;border:0;background:transparent;color:#fff;padding:1px 4px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr 1fr;column-gap:3px;text-align:right;cursor:pointer;align-content:center;grid-column:1;grid-row:1}
 .order-main .quantity{grid-row:1/3;align-self:center;color:#caed38;font-size:12px;font-weight:1000;line-height:1}
 .order-main .name{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:1000;line-height:1.05}
 .order-main .price{font-size:9px;color:#f4c96e;line-height:1}
-.order-action{border:0;border-right:1px solid #e0aa4538;background:#ffffff08;color:#ffd46c;font-size:15px;font-weight:1000;cursor:pointer}.order-action.trash{font-size:12px}.order-action:active{background:#c78922;color:#171008}
+.order-note-btn{border:0;border-right:1px solid #e0aa4538;background:#ffffff08;color:#9fd4ff;font-size:13px;font-weight:1000;cursor:pointer;grid-column:2;grid-row:1}.order-note-btn.has-note{color:#7dffb0;background:#1a6b4033}.order-note-btn:active{background:#2a6a9a;color:#fff}
+.order-action{border:0;border-right:1px solid #e0aa4538;background:#ffffff08;color:#ffd46c;font-size:15px;font-weight:1000;cursor:pointer;grid-column:3;grid-row:1}.order-action.trash{font-size:12px}.order-action:active{background:#c78922;color:#171008}
+.order-note-preview{grid-column:1/-1;grid-row:2;padding:2px 6px 3px;font-size:9px;line-height:1.2;color:#d7f5ff;background:#0d2438cc;border-top:1px solid #3a7a9a55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right}
+#orderNoteBar{display:none;margin-top:4px;padding:0 2px 2px}
+#orderNoteBar.show{display:block}
+#noteInp{width:100%;min-height:36px;resize:none;border-radius:8px;border:1px solid #e1aa456e;background:#1a120cf2;color:#fff8e7;padding:6px 8px;font-size:12px;font-family:inherit;box-sizing:border-box}
+#noteInp::placeholder{color:#c9a878aa}
+#line-note-sheet{display:none;position:fixed;inset:0;z-index:1210;align-items:flex-end;justify-content:center;padding:12px;padding-bottom:calc(12px + var(--safe-bottom,0px));background:#000a}
+#line-note-sheet.show{display:flex}
+.line-note-card{width:min(440px,100%);background:linear-gradient(160deg,#21170f,#3b2716);border:1px solid #d99a34;border-radius:18px;padding:14px;box-shadow:0 -8px 40px #000c}
+.line-note-title{margin:0 0 4px;text-align:center;color:#ffe5a1;font-size:15px;font-weight:800}
+.line-note-sub{margin:0 0 8px;text-align:center;color:#e9d2a2cc;font-size:12px;font-weight:700}
+#lineNoteInp{width:100%;min-height:72px;resize:vertical;border-radius:12px;border:1px solid #c8860a88;background:#140e09;color:#fff8e7;padding:10px;font-size:16px;font-family:inherit;box-sizing:border-box}
+.line-note-actions{display:flex;gap:8px;margin-top:10px}
+.line-note-actions button{flex:1;min-height:44px;border-radius:12px;border:1px solid #c8860a66;font-weight:700;font-size:14px}
+#lineNoteCancel{background:#ffffff10;color:#e9d2a2}
+#lineNoteSave{background:linear-gradient(145deg,#ffd54f,#f0b820);color:#1a0a00;border-color:#c8860a}
+/* Full notes review — opens on Send (old cart-panel flow) */
+#notesReviewSheet{display:none;position:fixed;inset:0;z-index:1220;align-items:stretch;justify-content:center;background:#000c;padding:0;padding-bottom:var(--safe-bottom,0px)}
+#notesReviewSheet.show{display:flex}
+.notes-review-card{width:min(440px,100%);margin:0 auto;display:flex;flex-direction:column;max-height:100%;background:linear-gradient(180deg,#fffaf0 0%,#fff3d6 42%,#ffe9b8 100%);color:#2a1600;box-shadow:0 0 40px #000a}
+.notes-review-hd{padding:14px 16px 10px;border-bottom:1.5px solid #c8860a59;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;background:linear-gradient(180deg,#fff8e4,#ffeec0);flex-shrink:0}
+.notes-review-title{margin:0;font-size:18px;font-weight:900;color:#8a5a08}
+.notes-review-sub{margin:4px 0 0;font-size:12px;font-weight:700;color:#785014b8;line-height:1.35}
+.notes-review-close{border:1.5px solid #c8860a;background:#c8860a2e;color:#8a5a08;border-radius:50%;width:36px;height:36px;font-size:20px;font-weight:900;cursor:pointer;flex-shrink:0;line-height:1}
+#notesReviewList{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.nr-item{background:linear-gradient(180deg,#fffef8,#fff6dc);border:1.5px solid #c8860a66;border-radius:14px;padding:12px 12px 10px;box-shadow:0 2px 10px #a064141a}
+.nr-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
+.nr-name{font-size:14px;font-weight:900;color:#2a1600;line-height:1.25}
+.nr-meta{font-size:12px;font-weight:800;color:#a66b08;margin-top:2px}
+.nr-hint{font-size:10px;font-weight:700;color:#8a5a08aa;margin:0 0 6px}
+.nr-note{width:100%;min-height:52px;resize:vertical;border:1.5px solid #e6a817;border-radius:12px;padding:10px 12px;font-size:14px;font-family:inherit;background:linear-gradient(180deg,#fffdf5,#fff6dc);color:#2a1600;box-sizing:border-box}
+.nr-note::placeholder{color:#4a2c009e}
+.notes-review-ft{flex-shrink:0;padding:10px 14px calc(12px + var(--safe-bottom,0px));border-top:1.5px solid #c8860a59;background:linear-gradient(180deg,#fff8e4,#ffeec0);display:flex;flex-direction:column;gap:8px}
+#notesReviewOrderNote{width:100%;min-height:44px;resize:none;border:1.5px solid #e6a817;border-radius:12px;padding:10px 12px;font-size:13px;font-family:inherit;background:#fffdf5;color:#2a1600;box-sizing:border-box}
+.notes-review-actions{display:flex;gap:8px}
+.notes-review-actions button{flex:1;min-height:48px;border-radius:14px;border:1px solid #c8860a66;font-weight:900;font-size:15px;cursor:pointer;font-family:inherit}
+#notesReviewBack{background:#ffffff66;color:#8a5a08}
+#notesReviewConfirm{background:linear-gradient(145deg,#ffd54f,#f0b820);color:#1a0a00;border-color:#c8860a;box-shadow:0 3px 12px #c8860a55}
+#notesReviewConfirm:disabled{opacity:.55;cursor:wait}
+/* Read-only table bill (checkout review) */
+#tableBillSheet{display:none;position:fixed;inset:0;z-index:1225;align-items:stretch;justify-content:center;background:#000c;padding:0;padding-bottom:var(--safe-bottom,0px)}
+#tableBillSheet.show{display:flex}
+.table-bill-card{width:min(440px,100%);margin:0 auto;display:flex;flex-direction:column;max-height:100%;background:linear-gradient(180deg,#fffaf0 0%,#fff3d6 42%,#ffe9b8 100%);color:#2a1600;box-shadow:0 0 40px #000a}
+.table-bill-hd{padding:14px 16px 10px;border-bottom:1.5px solid #c8860a59;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;background:linear-gradient(180deg,#fff8e4,#ffeec0);flex-shrink:0}
+.table-bill-title{margin:0;font-size:18px;font-weight:900;color:#8a5a08}
+.table-bill-sub{margin:4px 0 0;font-size:12px;font-weight:700;color:#785014b8;line-height:1.35}
+.table-bill-close{border:1.5px solid #c8860a;background:#c8860a2e;color:#8a5a08;border-radius:50%;width:36px;height:36px;font-size:20px;font-weight:900;cursor:pointer;flex-shrink:0;line-height:1}
+#tableBillList{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.tb-empty,.tb-err,.tb-load{padding:28px 12px;text-align:center;font-size:14px;font-weight:800;color:#8a5a08aa}
+.tb-row{display:grid;grid-template-columns:1fr auto;gap:4px 10px;background:linear-gradient(180deg,#fffef8,#fff6dc);border:1.5px solid #c8860a66;border-radius:12px;padding:10px 12px;box-shadow:0 2px 8px #a0641414}
+.tb-name{font-size:14px;font-weight:900;color:#2a1600;line-height:1.25}
+.tb-meta{grid-column:1/-1;font-size:11px;font-weight:700;color:#8a5a08aa}
+.tb-qty{font-size:13px;font-weight:800;color:#a66b08;white-space:nowrap}
+.tb-line{font-size:14px;font-weight:900;color:#2a1600;white-space:nowrap;text-align:right}
+.table-bill-ft{flex-shrink:0;padding:10px 14px calc(12px + var(--safe-bottom,0px));border-top:1.5px solid #c8860a59;background:linear-gradient(180deg,#fff8e4,#ffeec0);display:flex;flex-direction:column;gap:8px}
+.table-bill-total{display:flex;align-items:center;justify-content:space-between;font-size:17px;font-weight:1000;color:#2a1600;padding:4px 2px}
+.table-bill-actions{display:flex;gap:8px}
+.table-bill-actions button{flex:1;min-height:48px;border-radius:14px;border:1px solid #c8860a66;font-weight:900;font-size:15px;cursor:pointer;font-family:inherit}
+#tableBillRefresh{background:#ffffff66;color:#8a5a08}
+#tableBillCloseBtn{background:linear-gradient(145deg,#ffd54f,#f0b820);color:#1a0a00;border-color:#c8860a;box-shadow:0 3px 12px #c8860a55}
+#billBtnLabel{font-size:clamp(10px,2.8vw,12px);font-weight:1000;max-width:4.8em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* 3 flashes when guest picks an item — draws eye to top cart line */
 @keyframes orderPickFlash{
   0%,100%{filter:brightness(1);box-shadow:0 2px 5px #0008,0 0 0 1px #fff05 inset;transform:scale(1)}
@@ -446,7 +659,7 @@ html.coach-locked .amb-flip-coach{opacity:0;visibility:hidden}
 }
 .quick-jump.active{border-color:#b8df1b;background:linear-gradient(180deg,#4a3518,#2c1e10);color:#d7ff3d;box-shadow:0 0 0 1px #b8df1b44 inset}
 .quick-jump:active{transform:scale(.97)}
-.quick-jump.daily-dish-jump{
+.quick-jump.daily-soup-jump{
   border-color:#f0c15ecc;background:linear-gradient(180deg,#7a4a14,#3a220c);color:#ffe08a;
   box-shadow:0 0 0 1px #ffd36a55 inset,0 0 12px #d7982e55;font-size:clamp(12px,3.4vw,14px)
 }
@@ -486,41 +699,22 @@ html.coach-locked .amb-flip-coach{opacity:0;visibility:hidden}
 .dd-panel .dd-price{display:none!important}
 .dd-stage{
   position:relative;margin:0;border-radius:0;overflow:hidden;flex:1 1 auto;min-height:0;
-  display:flex;flex-direction:column;background:#1a1008;border:0
+  display:flex;flex-direction:column;background:#1a1008;border:0;width:100%;height:100%
 }
-.dd-schedule-note{
-  position:absolute;left:0;right:0;top:0;z-index:12;margin:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  padding:10px 12px 14px;text-align:center;pointer-events:none;
-  background:linear-gradient(180deg,#120c08f5 0%,#1a1008e8 55%,#1a100800 100%);
-  border:0;border-bottom:0
-}
-.dd-schedule-note .dd-note-main{
-  display:inline-block;max-width:96%;
-  padding:7px 14px 8px;border-radius:999px;
-  font-size:clamp(13px,3.9vw,17px);font-weight:1000;letter-spacing:.2px;line-height:1.25;
-  color:#1a1008;
-  background:linear-gradient(145deg,#ffe08a,#f0b747 55%,#d7982e);
-  border:1.5px solid #fff3;
-  box-shadow:0 4px 16px #000a,0 0 0 1px #c4892e88,0 0 18px #f0c15e55;
-  text-shadow:0 1px 0 #fff6
-}
-.dd-schedule-note .dd-note-sub{
-  font-size:clamp(11px,3.1vw,13px);font-weight:900;letter-spacing:.15px;
-  color:#ffe9b1;text-shadow:0 1px 2px #000c
-}
+/* Weekend schedule banner removed — guests do not need Sat/Sun note */
+.dd-schedule-note{display:none!important}
 
 .dd-photo{
-  position:relative;width:100%;flex:1 1 auto;min-height:0;
-  display:flex;align-items:center;justify-content:center;overflow:hidden;
-  /* Single full dish — no cover crop / no second blurred layer */
+  position:relative;width:100%;flex:1 1 auto;min-height:0;align-self:stretch;
+  display:block;overflow:hidden;
+  /* Edge-to-edge photo — no side letterbox */
   background:#1a1008;background-image:none!important
 }
 .dd-photo::before{display:none!important;content:none!important}
 .dd-photo img{
-  position:relative;z-index:1;display:block;width:100%;height:100%;
-  max-width:100%;max-height:100%;object-fit:contain;object-position:center center;
-  background:transparent
+  position:absolute;inset:0;z-index:1;display:block;width:100%;height:100%;
+  max-width:none;max-height:none;object-fit:cover;object-position:center center;
+  background:transparent!important
 }
 .dd-photo.is-empty{min-height:140px;background:linear-gradient(160deg,#4a3218,#2a1a0e)}
 .dd-photo.is-empty::before{display:none}
@@ -532,7 +726,7 @@ html.coach-locked .amb-flip-coach{opacity:0;visibility:hidden}
 .dd-week-cloud{display:none!important}
 /* Compact dock: days + اطلب/price tight together → more room for the photo */
 .dd-dock{
-  flex:0 0 auto;z-index:4;margin:0;padding:4px 5px 5px;display:flex;flex-direction:column;gap:4px;
+  flex:0 0 auto;z-index:4;margin:0;padding:4px 0 5px;display:flex;flex-direction:column;gap:4px;
   background:linear-gradient(180deg,#1a1008f5,#120c08);border-top:1px solid #c4892e55;
   touch-action:manipulation;-webkit-user-select:none;user-select:none
 }
@@ -603,7 +797,7 @@ html.coach-locked .amb-flip-coach{opacity:0;visibility:hidden}
 html[lang="tr"] .dd-photo.is-day-off::after{content:"Bugün kapalı"}
 html[lang="en"] .dd-photo.is-day-off::after{content:"Closed today"}
 .dd-photo.is-day-off img{
-  opacity:.28;filter:grayscale(.55) brightness(1.05);object-fit:contain;object-position:center center
+  opacity:.28;filter:grayscale(.55) brightness(1.05);object-fit:cover;object-position:center center
 }
 .dd-page-hint{display:none!important}
 .dd-dock .dd-actions{
@@ -621,17 +815,22 @@ html[lang="en"] .dd-photo.is-day-off::after{content:"Closed today"}
 .dd-close{display:none!important}
 .dd-choose[hidden]{display:none!important}
 
-/* Category strip ABOVE the menu (own row) — never covers menu art */
+/* Category strip ABOVE the menu — arrows + scrollable groups */
 #categoryBand{
   position:absolute;z-index:960;left:0;right:0;height:var(--cats-h);top:0;
-  display:flex;align-items:center;justify-content:center;
+  display:flex;align-items:center;justify-content:stretch;gap:2px;
+  padding:0 3px;
   background:#17100a;
   border:0;border-bottom:2px solid #b8df1b;
   box-shadow:none;direction:ltr;pointer-events:auto
 }
+.cats-scroll-wrap{
+  position:relative;flex:1 1 auto;min-width:0;height:100%;
+  display:flex;align-items:stretch
+}
 #categories{
   width:100%;height:100%;display:flex;align-items:center;justify-content:flex-start;gap:18px;
-  padding:0 50%;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;
+  padding:0 42%;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;
   overscroll-behavior-x:contain;touch-action:pan-x;-webkit-overflow-scrolling:touch
 }
 #categories::-webkit-scrollbar{display:none}
@@ -646,6 +845,51 @@ html[lang="en"] .dd-photo.is-day-off::after{content:"Closed today"}
   font-size:clamp(16px,4.6vw,20px);letter-spacing:.4px;transform:none;
   text-shadow:0 1px 0 #0007
 }
+/* Page arrows live in the category row (not mid-menu) */
+.page-nav{
+  position:relative;z-index:8;flex:0 0 auto;top:auto;left:auto;right:auto;
+  width:clamp(36px,10vw,44px);height:calc(var(--cats-h) - 8px);
+  margin:0;border:0;border-radius:10px;padding:0;cursor:pointer;
+  display:grid;place-items:center;
+  background:linear-gradient(160deg,#3a2816,#1a120a);
+  border:1.5px solid #e3aa45aa;
+  color:#ffe9b1;font-size:clamp(22px,6.5vw,30px);font-weight:1000;line-height:1;
+  box-shadow:0 2px 8px #0008,0 0 0 1px #fff1 inset;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  transition:opacity .2s ease,transform .12s ease,background .12s ease;
+  transform:none
+}
+.page-nav:active{transform:scale(.94);background:linear-gradient(160deg,#5a3c1e,#2a1a0e)}
+.page-nav[disabled],.page-nav.is-disabled{
+  opacity:.28;pointer-events:none;filter:grayscale(.35)
+}
+.page-nav span{display:block;transform:translateY(-1px)}
+html.coach-locked .page-nav{visibility:hidden!important;pointer-events:none!important}
+/* Once-per-session: teach swiping the category strip (does not touch welcome gate) */
+#catsSwipeCoach{
+  position:absolute;inset:0;z-index:6;display:none;align-items:center;justify-content:center;gap:7px;
+  pointer-events:none;
+  background:linear-gradient(90deg,#0c0806f0 0%,#0c0806aa 20%,#0c080655 50%,#0c0806aa 80%,#0c0806f0 100%)
+}
+#catsSwipeCoach.show{display:flex}
+#catsSwipeCoach .cats-swipe-hand{
+  font-size:clamp(20px,5.4vw,26px);line-height:1;display:block;
+  font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
+  animation:catsHandSwipe 1.35s ease-in-out infinite;
+  filter:drop-shadow(0 2px 5px #000b);transform-origin:50% 80%
+}
+#catsSwipeCoach .cats-swipe-label{
+  font-size:clamp(11px,3vw,13px);font-weight:1000;color:#ffe9b1;line-height:1.2;
+  padding:4px 9px;border-radius:999px;white-space:nowrap;direction:ltr;
+  background:linear-gradient(180deg,#2a1c10f5,#17100af5);border:1px solid #d7982eaa;
+  box-shadow:0 2px 8px #0009
+}
+html[lang="ar"] #catsSwipeCoach .cats-swipe-label{direction:rtl}
+@keyframes catsHandSwipe{
+  0%,100%{transform:translateX(-16px)}
+  50%{transform:translateX(16px)}
+}
+html.coach-locked #catsSwipeCoach{display:none!important}
 
 /* 4 — NATURAL menu size (full width, correct aspect). Pinned to bottom. No zoom/stretch. */
 #viewer{
@@ -659,6 +903,24 @@ html[lang="en"] .dd-photo.is-day-off::after{content:"Closed today"}
 .ambient{position:absolute;inset:0;z-index:0;background-position:center bottom;background-size:cover;filter:blur(28px) saturate(.85) brightness(.4);transform:scale(1.12);opacity:.7;pointer-events:none}.ambient::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 20%,#160c04aa 90%)}
 .paper{position:relative;z-index:1;width:100%;height:auto;margin:0;margin-top:auto;background:#684108;overflow:hidden;box-shadow:none;transform-style:preserve-3d;flex:0 0 auto}
 .paper img{display:block;width:100%;height:auto;aspect-ratio:auto;object-fit:contain;object-position:center bottom;user-select:none;-webkit-user-drag:none;pointer-events:none;background:#684108}
+/* Daily dish photo must beat .paper img (contain + brown letterbox) */
+.menu-page.dd-book-page .dd-panel.paper{
+  background:#1a1008!important;height:100%;max-height:none
+}
+.menu-page.dd-book-page .dd-stage{height:100%;min-height:0}
+.menu-page.dd-book-page .dd-photo{
+  position:relative;flex:1 1 auto;min-height:0;width:100%;overflow:hidden
+}
+.menu-page.dd-book-page .dd-photo img,
+.menu-page.dd-book-page .paper .dd-photo img{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  max-width:none!important;max-height:none!important;aspect-ratio:auto!important;
+  object-fit:cover!important;object-position:center center!important;
+  background:transparent!important
+}
+.menu-page.dd-book-page .dd-photo.is-day-off img{
+  object-fit:cover!important;opacity:.28;filter:grayscale(.55) brightness(1.05)
+}
 /* Pinch-to-peek: enlarge with 2 fingers, snap back when released */
 .menu-page.is-pinching{overflow:visible!important;z-index:45}
 .paper.is-pinch-zoom{
@@ -720,7 +982,9 @@ html[lang="en"] .dd-photo.is-day-off::after{content:"Closed today"}
 #hint{text-align:center;direction:rtl;font-size:clamp(13px,3.5vw,15px);font-weight:1000;line-height:1.3;white-space:normal;overflow:visible;color:#fff6df}
 html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:normal;color:#b8df1b;letter-spacing:1.5px;font-size:clamp(14px,3.8vw,16px)}
 #hint span{font-size:clamp(12px,3.3vw,14px)!important;color:#ffda7d}
-#toast{position:absolute;z-index:1200;left:50%;bottom:calc(var(--footer-h) + var(--safe-bottom) + 8px);transform:translate(-50%,58px);opacity:0;max-width:92%;padding:8px 13px;border-radius:12px;background:linear-gradient(135deg,#1f7f32,#31a347);color:#fff;font-size:10px;font-weight:1000;box-shadow:0 6px 24px #0009;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:.22s}#toast.show{transform:translate(-50%,0);opacity:1}
+#toast{position:fixed;z-index:1400;left:50%;bottom:calc(var(--footer-h) + var(--safe-bottom) + 14px);transform:translate(-50%,58px);opacity:0;max-width:min(92vw,360px);padding:12px 16px;border-radius:14px;background:linear-gradient(135deg,#1f7f32,#31a347);color:#fff;font-size:clamp(13px,3.6vw,15px);font-weight:1000;line-height:1.35;box-shadow:0 8px 28px #000b;white-space:normal;text-align:center;overflow:visible;pointer-events:none;transition:.22s}#toast.show{transform:translate(-50%,0);opacity:1}
+#summaryButton.bill-pulse{animation:billPulse 1.1s ease-in-out 2}
+@keyframes billPulse{0%,100%{box-shadow:0 0 0 0 #e1a73a00;filter:brightness(1)}40%{box-shadow:0 0 0 4px #e1a73a99;filter:brightness(1.25)}}
 
 /* Variant sheet for the single ice-cream button. */
 #shade{position:absolute;z-index:1080;inset:0;background:#000b;opacity:0;pointer-events:none;transition:.2s}#shade.show{opacity:1;pointer-events:auto}
@@ -809,7 +1073,7 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
   <header id="topbar">
     <button class="top-button" id="sendButton" type="button">✓ إرسال</button>
     <div id="titleBox"><b id="currentTitle">القائمة</b><small id="tableTop">طاولة ?</small></div>
-    <button class="top-button" id="summaryButton" type="button"><span>🧾</span><span id="cartCount">0</span><span id="cartTotal">0 TL</span></button>
+    <button class="top-button" id="summaryButton" type="button" aria-label="Hesabım"><span>🧾</span><span id="billBtnLabel">Hesabım</span><span id="cartCount">0</span><span id="cartTotal" hidden>0 TL</span></button>
   </header>
 
   <section id="logoBand" aria-label="شعار Tonino والطلبات المختارة">
@@ -1015,13 +1279,30 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
 <p class="amb-tag" id="ambStoryTag">QR على الطاولة ← امسح ← ابحث واطلب ← الكاشير ← الجرسون</p>
     </div>
     <div id="logoScene"></div>
-    <div id="orderCloud"><div id="orderGrid"></div></div>
+    <div id="orderCloud">
+      <div id="orderGrid"></div>
+      <div id="orderNoteBar" aria-label="order note">
+        <textarea id="noteInp" maxlength="200" rows="2" placeholder="ملاحظة عامة للطلب (اختياري)…"></textarea>
+      </div>
+    </div>
   </section>
 
   <nav id="quickBand" aria-label="اختصارات سريعة"><div id="quickRow"></div></nav>
-  <nav id="categoryBand" aria-label="عنوان الصفحة والمجموعات"><div id="categories"></div></nav>
+  <nav id="categoryBand" aria-label="عنوان الصفحة والمجموعات">
+    <button type="button" class="page-nav page-nav-prev" id="pageNavPrev" aria-label="previous page"><span>‹</span></button>
+    <div class="cats-scroll-wrap">
+      <div id="categories"></div>
+      <div id="catsSwipeCoach" aria-hidden="true">
+        <span class="cats-swipe-hand" aria-hidden="true">👆</span>
+        <span class="cats-swipe-label" id="catsSwipeLabel">Grupları kaydır ← →</span>
+      </div>
+    </div>
+    <button type="button" class="page-nav page-nav-next" id="pageNavNext" aria-label="next page"><span>›</span></button>
+  </nav>
 
-  <main id="viewer" aria-label="صفحات المنيو"><div id="menuScene"></div></main>
+  <main id="viewer" aria-label="صفحات المنيو">
+    <div id="menuScene"></div>
+  </main>
 
   <footer id="footer">
     <div id="pageNumber" class="footer-side">1 / 21</div>
@@ -1056,13 +1337,62 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
       </div>
     </div>
   </div>
+  <div id="line-note-sheet" aria-hidden="true">
+    <div class="line-note-card" role="dialog" aria-modal="true" aria-labelledby="lineNoteTitle">
+      <div class="line-note-title" id="lineNoteTitle">ملاحظة للصنف</div>
+      <div class="line-note-sub" id="lineNoteItemName"></div>
+      <textarea id="lineNoteInp" maxlength="120" rows="3" placeholder="ملاحظة لهذا الصنف (بدون بصل، نصف محمص…)"></textarea>
+      <div class="line-note-actions">
+        <button type="button" id="lineNoteCancel">إغلاق</button>
+        <button type="button" id="lineNoteSave">تم</button>
+      </div>
+    </div>
+  </div>
+  <div id="notesReviewSheet" aria-hidden="true">
+    <div class="notes-review-card" role="dialog" aria-modal="true" aria-labelledby="notesReviewTitle">
+      <div class="notes-review-hd">
+        <div>
+          <h2 class="notes-review-title" id="notesReviewTitle">راجع طلبك</h2>
+          <p class="notes-review-sub" id="notesReviewSub">عدّل الكمية وأضف ملاحظة تحت كل صنف — للمطبخ والبار</p>
+        </div>
+        <button type="button" class="notes-review-close" id="notesReviewClose" aria-label="إغلاق">×</button>
+      </div>
+      <div id="notesReviewList"></div>
+      <div class="notes-review-ft">
+        <textarea id="notesReviewOrderNote" maxlength="200" rows="2" placeholder="ملاحظة عامة للطلب (اختياري)…"></textarea>
+        <div class="notes-review-actions">
+          <button type="button" id="notesReviewBack">رجوع</button>
+          <button type="button" id="notesReviewConfirm">✓ تأكيد وإرسال للمطبخ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="tableBillSheet" aria-hidden="true">
+    <div class="table-bill-card" role="dialog" aria-modal="true" aria-labelledby="tableBillTitle">
+      <div class="table-bill-hd">
+        <div>
+          <h2 class="table-bill-title" id="tableBillTitle">Hesabım</h2>
+          <p class="table-bill-sub" id="tableBillSub">Masanızın açık hesabı — sadece görüntüleme</p>
+        </div>
+        <button type="button" class="table-bill-close" id="tableBillCloseX" aria-label="close">×</button>
+      </div>
+      <div id="tableBillList"></div>
+      <div class="table-bill-ft">
+        <div class="table-bill-total"><span id="tableBillTotalLabel">Toplam</span><span id="tableBillTotalVal">0 TL</span></div>
+        <div class="table-bill-actions">
+          <button type="button" id="tableBillRefresh">Yenile</button>
+          <button type="button" id="tableBillCloseBtn">Tamam</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <section id="dailyDishScreen" aria-label="Günün Yemeği" aria-live="polite">
     <p class="dd-kicker" id="ddKicker">Günün Yemeği</p>
     <div class="dd-stage">
-      <p class="dd-schedule-note" id="ddScheduleNote" aria-live="polite">
-        <span class="dd-note-main" id="ddScheduleNoteMain">Her gün var</span>
-        <span class="dd-note-sub" id="ddScheduleNoteSub">Cmt–Pzr hariç</span>
+      <p class="dd-schedule-note" id="ddScheduleNote" hidden aria-hidden="true">
+        <span class="dd-note-main" id="ddScheduleNoteMain"></span>
+        <span class="dd-note-sub" id="ddScheduleNoteSub"></span>
       </p>
       <button type="button" class="dd-nav dd-nav-prev" id="ddPrev" aria-label="اليوم السابق">‹</button>
       <div class="dd-photo is-empty" id="ddPhoto"><img id="ddPhotoImg" alt="" draggable="false" decoding="async" /></div>
@@ -1094,16 +1424,55 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
   <button type="button" id="ddFab" aria-label="Günün Yemeği"></button>
   <div id="ddThumbPop" class="dd-thumb-pop" hidden aria-hidden="true"><img alt="" draggable="false" decoding="async" /><span class="dd-thumb-pop-cap"></span></div>
   <div id="toast" role="status" aria-live="polite"></div>
+  <div id="liveCoachPlusRing" aria-hidden="true"></div>
+  <div id="liveCoachTip" aria-live="polite"></div>
   <div id="startGate" role="dialog" aria-modal="true" aria-label="order guide">
     <div class="start-card">
-      <h2 id="startGateTitle">كيف تطلب؟</h2>
-      <p class="start-sub" id="startGateSub">اضغط «فهمت» لفتح المينو على كامل الشاشة</p>
-      <ol id="startGateSteps">
-        <li><b>1</b><span data-start-step="1">اسحب يمين / يسار ككتاب لقلب الصفحات</span></li>
-        <li><b>2</b><span data-start-step="2">اضغط زر + الأخضر لإضافة صنف</span></li>
-        <li><b>3</b><span data-start-step="3">راجع طلبك في الأعلى ثم اضغط إرسال</span></li>
+      <p class="start-hero" id="startGateHero">Kalkmadan sipariş verin — size gelsin</p>
+      <h2 id="startGateTitle">Nasıl sipariş verilir?</h2>
+      <p class="start-sub" id="startGateSub">Kısa gösterim — sonra siparişe başla</p>
+      <div class="start-demo playing" id="startDemo" aria-hidden="true">
+        <div class="start-demo-phone">
+          <div class="start-demo-top">
+            <span class="start-demo-send" id="startDemoSendLabel">✓ Gönder</span>
+            <span class="start-demo-tbl" id="startDemoTableLabel">Masa</span>
+          </div>
+          <div class="start-demo-stage">
+            <div class="start-demo-cart"><span id="startDemoCartLabel">1× ürün</span><span>₺</span></div>
+            <div class="start-demo-pages" id="startDemoPages">
+              <div class="start-demo-page p1">
+                <img class="start-demo-page-img" id="startDemoImg1" alt="" draggable="false" decoding="async" />
+              </div>
+              <div class="start-demo-page p2">
+                <img class="start-demo-page-img" id="startDemoImg2" alt="" draggable="false" decoding="async" />
+                <button type="button" class="start-demo-plus" tabindex="-1" aria-hidden="true">+</button>
+                <span class="start-demo-badge">1</span>
+              </div>
+            </div>
+          </div>
+          <div class="start-demo-ripple" aria-hidden="true"></div>
+          <div class="start-demo-finger" id="startDemoFinger" aria-hidden="true">
+            <span class="start-demo-finger-emoji">👆</span>
+          </div>
+        </div>
+        <div class="start-demo-captions">
+          <p class="cap-swipe" id="startDemoCapSwipe">Sayfayı kaydır ← →</p>
+          <p class="cap-plus" id="startDemoCapPlus">Yeşil + düğmesine bas</p>
+          <p class="cap-send" id="startDemoCapSend">Gönder'e bas</p>
+        </div>
+        <div class="start-demo-dots" aria-hidden="true">
+          <span class="start-demo-dot" data-demo-dot="swipe"></span>
+          <span class="start-demo-dot" data-demo-dot="plus"></span>
+          <span class="start-demo-dot" data-demo-dot="send"></span>
+        </div>
+      </div>
+      <div class="start-loop" id="startLoop" hidden aria-hidden="true"></div>
+      <ol id="startGateSteps" hidden>
+        <li><b>1</b><span data-start-step="1"></span></li>
+        <li><b>2</b><span data-start-step="2"></span></li>
+        <li><b>3</b><span data-start-step="3"></span></li>
       </ol>
-      <button type="button" id="startGo">فهمت — ابدأ الطلب ✓</button>
+      <button type="button" id="startGo">Anladım — başla</button>
     </div>
   </div>
 </div>
@@ -1395,6 +1764,20 @@ window.TONINO_CONFIG = Object.freeze({
     paper.style.width = "100%";
     paper.style.marginTop = "auto";
     paper.style.flex = "0 0 auto";
+    paper.style.background = "#1a1008";
+    /* Beat .paper img contain/letterbox — fill the stage edge-to-edge */
+    const ddImg = paper.querySelector(".dd-photo img");
+    if (ddImg) {
+      ddImg.style.width = "100%";
+      ddImg.style.height = "100%";
+      ddImg.style.maxWidth = "none";
+      ddImg.style.maxHeight = "none";
+      ddImg.style.objectFit = "cover";
+      ddImg.style.objectPosition = "center center";
+      ddImg.style.background = "transparent";
+      ddImg.style.position = "absolute";
+      ddImg.style.inset = "0";
+    }
     const applyH = (menuH) => {
       const h = Math.max(0, menuH | 0);
       if (h > 0) {
@@ -1644,7 +2027,6 @@ window.TONINO_CONFIG = Object.freeze({
       currentMenu.remove(); currentLogo.remove();
       currentMenu = underMenu; currentLogo = underLogo; underMenu = null; underLogo = null;
       currentIndex = target; clearLayer(currentMenu); clearLayer(currentLogo); turning = false;
-      try { document.documentElement.classList.add("swipe-learned"); } catch (_) {}
       syncNavigation(); preloadNeighbors(); updateBadges(); fitMenuPage(currentMenu,currentIndex);
       if (isDailyBookIndex(currentIndex)) renderDailyDishScreen(currentMenu);
     },duration+35);
@@ -1672,6 +2054,47 @@ window.TONINO_CONFIG = Object.freeze({
   }
   const next = () => goTo(currentIndex+1,1);
   const previous = () => goTo(currentIndex-1,-1);
+  function syncPageNavButtons() {
+    const prevBtn = $("pageNavPrev");
+    const nextBtn = $("pageNavNext");
+    const total = bookPageCount();
+    if (prevBtn) {
+      const atStart = currentIndex <= 0;
+      prevBtn.disabled = atStart;
+      prevBtn.classList.toggle("is-disabled", atStart);
+    }
+    if (nextBtn) {
+      const atEnd = currentIndex >= total - 1;
+      nextBtn.disabled = atEnd;
+      nextBtn.classList.toggle("is-disabled", atEnd);
+    }
+  }
+  (function bindPageNavArrows(){
+    const bind = (btn, go) => {
+      if (!btn) return;
+      let armed = false;
+      btn.addEventListener("pointerdown", (e) => {
+        try { e.stopPropagation(); } catch (_) {}
+        if (btn.disabled || btn.classList.contains("is-disabled")) return;
+        armed = true;
+      });
+      btn.addEventListener("pointercancel", () => { armed = false; });
+      btn.addEventListener("pointerup", (e) => {
+        try { e.stopPropagation(); } catch (_) {}
+        if (!armed) return;
+        armed = false;
+        if (btn.disabled || btn.classList.contains("is-disabled")) return;
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        go();
+      });
+      /* click as fallback (desktop); ignore if pointer already handled */
+      btn.addEventListener("click", (e) => {
+        try { e.stopPropagation(); e.preventDefault(); } catch (_) {}
+      });
+    };
+    bind($("pageNavPrev"), previous);
+    bind($("pageNavNext"), next);
+  })();
 
   function findCategoryIndex(name) {
     const want = String(name || "").trim().toLowerCase();
@@ -1683,7 +2106,7 @@ window.TONINO_CONFIG = Object.freeze({
     if (!host) return;
     host.innerHTML = "";
     host.dataset.ready = "1";
-    syncDailyDishQuickJump();
+    syncDailySoupQuickJump();
     const jumps = [
       { label: "Çay", match: "Çay" },
       { label: "Türk Kahvesi", match: "Sıcak Kahve" },
@@ -1717,22 +2140,55 @@ window.TONINO_CONFIG = Object.freeze({
     if (lang === "en") return en || tr || ar;
     return ar || en || tr;
   }
-  function syncDailyDishEntry() {
-    const host = $("quickRow");
-    const fab = $("ddFab");
-    const has = !!(todayDailyDish && dailyDishMainLabel(todayDailyDish));
-    if (host) {
-      const old = host.querySelector(".daily-dish-jump");
-      if (old) old.remove();
-      if (has) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "quick-jump daily-dish-jump";
-        button.textContent = guestBag().dailyDishJump;
-        button.addEventListener("click", () => goToDailyBookPage());
-        host.insertBefore(button, host.firstChild);
+  function findDailySoupHotspot() {
+    const spotsMap = HOTSPOTS || {};
+    const todaySoup = String((todayDailyDish && todayDailyDish.soup) || "").trim().toLowerCase();
+    let byName = null;
+    let byToday = null;
+    for (const [pageKey, list] of Object.entries(spotsMap)) {
+      const art = Number(pageKey);
+      if (!Number.isFinite(art)) continue;
+      for (const h of list || []) {
+        const name = String((h && h.name) || "").trim();
+        if (!name) continue;
+        const low = name.toLowerCase()
+          .replace(/ı/g, "i").replace(/İ/g, "i")
+          .replace(/ş/g, "s").replace(/ç/g, "c").replace(/ğ/g, "g").replace(/ö/g, "o").replace(/ü/g, "u");
+        if (/gunun\s*corbasi|daily\s*soup|شوربة\s*اليوم/.test(low) || /^corba$/.test(low)) {
+          if (!byName) byName = { art, name, hotspot: h };
+        }
+        if (todaySoup && name.toLowerCase() === todaySoup) {
+          if (!byToday) byToday = { art, name, hotspot: h };
+        }
       }
     }
+    return byName || byToday;
+  }
+  function syncDailySoupQuickJump() {
+    const host = $("quickRow");
+    if (!host) return;
+    const old = host.querySelector(".daily-soup-jump, .daily-dish-jump");
+    if (old) old.remove();
+    const hit = findDailySoupHotspot();
+    if (!hit) return;
+    const soupName = String((todayDailyDish && todayDailyDish.soup) || "").trim();
+    const bag = guestBag();
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "quick-jump daily-soup-jump";
+    button.textContent = soupName
+      ? ((bag.dailySoupJumpShort || "🥣") + " " + soupName)
+      : (bag.dailySoupJump || "🥣 Günün Çorbası");
+    const bookPage = bookIndexFromArt(hit.art);
+    button.dataset.page = String(bookPage);
+    button.addEventListener("click", () => goTo(bookPage));
+    host.insertBefore(button, host.firstChild);
+  }
+  function syncDailyDishEntry() {
+    /* Quick strip uses daily soup — dish stays on book page 0. */
+    syncDailySoupQuickJump();
+    const fab = $("ddFab");
+    const has = !!(todayDailyDish && dailyDishMainLabel(todayDailyDish));
     if (fab) {
       if (has) {
         const name = dailyDishMainLabel(todayDailyDish);
@@ -1745,7 +2201,7 @@ window.TONINO_CONFIG = Object.freeze({
       }
     }
   }
-  function syncDailyDishQuickJump() { syncDailyDishEntry(); }
+  function syncDailyDishQuickJump() { syncDailySoupQuickJump(); }
   function maybeAutoOpenDailyDish() {
     if (!hasDailyBookPage()) return;
     if (document.documentElement.classList.contains("coach-locked")) return;
@@ -2163,6 +2619,7 @@ window.TONINO_CONFIG = Object.freeze({
         : (CATEGORIES[art] || "");
     }
     $("pageNumber").textContent = `${currentIndex + 1} / ${bookPageCount()}`;
+    syncPageNavButtons();
     const host = $("categories");
     const buttons = [...document.querySelectorAll(".category")];
     buttons.forEach((button) => {
@@ -2175,11 +2632,7 @@ window.TONINO_CONFIG = Object.freeze({
       host.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
     }
     document.querySelectorAll(".quick-jump").forEach(btn => {
-      if (btn.classList.contains("daily-dish-jump")) {
-        btn.classList.toggle("active", isDailyBookIndex(currentIndex));
-      } else {
-        btn.classList.toggle("active", Number(btn.dataset.page) === currentIndex);
-      }
+      btn.classList.toggle("active", Number(btn.dataset.page) === currentIndex);
     });
     const hint = $("hint");
     if (hint) {
@@ -2191,6 +2644,12 @@ window.TONINO_CONFIG = Object.freeze({
       }
     }
     placeCategoryBand();
+    try {
+      if (typeof liveCoachPhase !== "undefined" && liveCoachPhase === "plus" && typeof placeLiveCoachPlusRing === "function") {
+        placeLiveCoachPlusRing();
+        window.setTimeout(placeLiveCoachPlusRing, 280);
+      }
+    } catch (_) {}
   }
   function preloadNeighbors() {
     [currentIndex - 1, currentIndex + 1]
@@ -2231,6 +2690,7 @@ window.TONINO_CONFIG = Object.freeze({
     const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag;
     const prefix = (bag && bag.addedPrefix) || "تمت إضافة";
     toast(`${prefix} ${item.name}`);
+    try { if (typeof onLiveCoachItemAdded === "function") onLiveCoachItemAdded(); } catch (_) {}
   }
   function reduceItem(key) {
     const index=cart.findIndex(x=>itemKey(x)===key); if(index<0)return;
@@ -2238,9 +2698,21 @@ window.TONINO_CONFIG = Object.freeze({
     saveCart(); renderCart(); updateBadges();
   }
   function renderCart() {
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    const noteTitle = bag.lineNoteTitle || "ملاحظة للصنف";
     const count=cart.reduce((sum,item)=>sum+item.qty,0), total=cart.reduce((sum,item)=>sum+item.qty*item.price,0);
     $("cartCount").textContent=count; $("cartTotal").textContent=money(total);
-    $("orderGrid").innerHTML=cart.map(item=>`<div class="order"><button class="order-main" type="button" data-page="${item.page}"><span class="quantity">${item.qty}×</span><span class="name">${escapeHtml(item.name)}</span><span class="price">${money(item.qty*item.price)}</span></button><button class="order-action ${item.qty===1?'trash':''}" type="button" data-key="${encodeURIComponent(itemKey(item))}" aria-label="${item.qty>1?'إنقاص':'حذف'} ${escapeHtml(item.name)}">${item.qty>1?'−':'🗑'}</button></div>`).join("");
+    $("orderGrid").innerHTML=cart.map(item=>{
+      const key = encodeURIComponent(itemKey(item));
+      const note = String(item.note || "").trim();
+      const hasNote = !!note;
+      const preview = hasNote
+        ? `<div class="order-note-preview" title="${escapeHtml(note)}">📝 ${escapeHtml(note)}</div>`
+        : "";
+      return `<div class="order${hasNote ? " has-line-note" : ""}"><button class="order-main" type="button" data-page="${item.page}"><span class="quantity">${item.qty}×</span><span class="name">${escapeHtml(item.name)}</span><span class="price">${money(item.qty*item.price)}</span></button><button class="order-note-btn${hasNote ? " has-note" : ""}" type="button" data-note-key="${key}" aria-label="${escapeHtml(noteTitle)}: ${escapeHtml(item.name)}">📝</button><button class="order-action ${item.qty===1?'trash':''}" type="button" data-key="${key}" aria-label="${item.qty>1?'إنقاص':'حذف'} ${escapeHtml(item.name)}">${item.qty>1?'−':'🗑'}</button>${preview}</div>`;
+    }).join("");
+    const noteBar = $("orderNoteBar");
+    if (noteBar) noteBar.classList.toggle("show", cart.length > 0);
     const cloud=$("orderCloud"); cloud.classList.toggle("active",cart.length>0);
     /* Cover ambient only by cart content height — ambient keeps playing below until filled */
     if (cart.length) {
@@ -2249,6 +2721,8 @@ window.TONINO_CONFIG = Object.freeze({
     } else {
       cloud.style.height = "0px";
       cloud.style.maxHeight = "none";
+      const noteInp = $("noteInp");
+      if (noteInp) noteInp.value = "";
     }
     const band = $("logoBand");
     if (band) {
@@ -2257,6 +2731,73 @@ window.TONINO_CONFIG = Object.freeze({
       band.classList.remove("orders-full");
     }
   }
+  let lineNoteKey = "";
+  function closeLineNoteSheet() {
+    const sheet = $("line-note-sheet");
+    if (sheet) {
+      sheet.classList.remove("show");
+      sheet.setAttribute("aria-hidden", "true");
+    }
+    lineNoteKey = "";
+  }
+  function openLineNoteSheet(key) {
+    const item = cart.find(x => itemKey(x) === key);
+    if (!item) return;
+    lineNoteKey = key;
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    const sheet = $("line-note-sheet");
+    const title = $("lineNoteTitle");
+    const nameEl = $("lineNoteItemName");
+    const inp = $("lineNoteInp");
+    const cancel = $("lineNoteCancel");
+    const save = $("lineNoteSave");
+    if (title) title.textContent = bag.lineNoteTitle || "ملاحظة للصنف";
+    if (nameEl) nameEl.textContent = String(item.name || "");
+    if (inp) {
+      inp.value = String(item.note || "");
+      inp.placeholder = bag.itemNotePh || "ملاحظة لهذا الصنف…";
+    }
+    if (cancel) cancel.textContent = bag.close || "إغلاق";
+    if (save) save.textContent = bag.lineNoteSave || bag.noteDone || "تم";
+    if (sheet) {
+      sheet.classList.add("show");
+      sheet.setAttribute("aria-hidden", "false");
+    }
+    setTimeout(() => {
+      try { inp?.focus({ preventScroll: true }); } catch (_) { inp?.focus(); }
+    }, 80);
+    if (navigator.vibrate) navigator.vibrate(18);
+  }
+  function saveLineNoteSheet() {
+    if (!lineNoteKey) { closeLineNoteSheet(); return; }
+    const item = cart.find(x => itemKey(x) === lineNoteKey);
+    const inp = $("lineNoteInp");
+    const note = String(inp?.value || "").trim().slice(0, 120);
+    if (item) item.note = note;
+    closeLineNoteSheet();
+    saveCart();
+    renderCart();
+    updateBadges();
+  }
+  (function initLineNoteSheet() {
+    const sheet = $("line-note-sheet");
+    const cancel = $("lineNoteCancel");
+    const save = $("lineNoteSave");
+    if (cancel) cancel.addEventListener("click", e => { e.stopPropagation(); closeLineNoteSheet(); });
+    if (save) save.addEventListener("click", e => { e.stopPropagation(); saveLineNoteSheet(); });
+    if (sheet) {
+      sheet.addEventListener("click", e => {
+        if (e.target === sheet) closeLineNoteSheet();
+      });
+    }
+    const inp = $("lineNoteInp");
+    if (inp) {
+      inp.addEventListener("keydown", e => {
+        if (e.key === "Escape") closeLineNoteSheet();
+        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) saveLineNoteSheet();
+      });
+    }
+  })();
   function updateBadges() {
     document.querySelectorAll(".hotspot").forEach(button=>{
       const baseKey = button.dataset.key;
@@ -2336,6 +2877,7 @@ window.TONINO_CONFIG = Object.freeze({
         hotspotName: baseName,
         name: `${baseName} (${choice.note})`,
         price,
+        note: choice.note,
         variants: undefined,
       });
     });
@@ -2581,6 +3123,7 @@ window.TONINO_CONFIG = Object.freeze({
         ...item,
         hotspotName: baseName,
         name: /dondurma/i.test(baseName) ? `Dondurma - ${choice.note}` : `${baseName} - ${choice.note}`,
+        note: choice.note,
         variants: undefined,
       });
     });
@@ -2599,6 +3142,88 @@ window.TONINO_CONFIG = Object.freeze({
     if (code === "rate_limit") return "محاولات كثيرة — انتظر قليلاً";
     return "تعذّر إرسال الطلب للكاشير";
   }
+  function isDailyDishCartItem(item) {
+    return item && (
+      item.hotspotName === DAILY_DISH_KEY ||
+      String(item.itemId || "") === DAILY_DISH_KEY ||
+      item.page === DAILY_DISH_PAGE
+    );
+  }
+  function closeNotesReview() {
+    const sheet = $("notesReviewSheet");
+    if (sheet) {
+      sheet.classList.remove("show");
+      sheet.setAttribute("aria-hidden", "true");
+    }
+  }
+  function syncNotesFromReviewSheet() {
+    const list = $("notesReviewList");
+    if (list) {
+      list.querySelectorAll(".nr-note[data-note-key]").forEach(inp => {
+        const key = decodeURIComponent(inp.dataset.noteKey || "");
+        const item = cart.find(x => itemKey(x) === key);
+        if (item) item.note = String(inp.value || "").trim().slice(0, 120);
+      });
+    }
+    const reviewOrder = $("notesReviewOrderNote");
+    const topOrder = $("noteInp");
+    if (reviewOrder && topOrder) topOrder.value = String(reviewOrder.value || "").trim().slice(0, 200);
+    saveCart();
+    renderCart();
+  }
+  function openNotesReview() {
+    if (!cart.length) { toast("أضف صنفاً واحداً على الأقل"); return; }
+    try { if (typeof onLiveCoachSendOpened === "function") onLiveCoachSendOpened(); } catch (_) {}
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    const sheet = $("notesReviewSheet");
+    const list = $("notesReviewList");
+    const title = $("notesReviewTitle");
+    const sub = $("notesReviewSub");
+    const confirm = $("notesReviewConfirm");
+    const back = $("notesReviewBack");
+    const orderNoteEl = $("notesReviewOrderNote");
+    if (title) title.textContent = bag.notesReviewTitle || "راجع طلبك";
+    if (sub) sub.textContent = bag.notesReviewSub || "أضف ملاحظة تحت كل صنف — للمطبخ والبار";
+    if (confirm) confirm.textContent = bag.notesReviewConfirm || "✓ تأكيد وإرسال للمطبخ";
+    if (back) back.textContent = bag.notesReviewBack || "رجوع";
+    if (orderNoteEl) {
+      orderNoteEl.placeholder = bag.notePh || "ملاحظة عامة للطلب (اختياري)…";
+      orderNoteEl.value = String(($("noteInp") && $("noteInp").value) || "");
+    }
+    const itemPh = bag.itemNotePh || "ملاحظة لهذا الصنف…";
+    const dailyHint = bag.notesDailyHint || "التحلية والمشروب → البار · ملاحظة الطبخ → المطبخ";
+    if (list) {
+      list.innerHTML = cart.map(item => {
+        const key = encodeURIComponent(itemKey(item));
+        const note = String(item.note || "");
+        const hint = isDailyDishCartItem(item)
+          ? `<p class="nr-hint">${escapeHtml(dailyHint)}</p>`
+          : "";
+        return `<div class="nr-item">
+          <div class="nr-row">
+            <div>
+              <div class="nr-name">${escapeHtml(item.name)}</div>
+              <div class="nr-meta">${item.qty}× · ${money(item.qty * item.price)}</div>
+            </div>
+          </div>
+          ${hint}
+          <textarea class="nr-note" data-note-key="${key}" maxlength="120" rows="2" placeholder="${escapeHtml(itemPh)}">${escapeHtml(note)}</textarea>
+        </div>`;
+      }).join("");
+      list.querySelectorAll(".nr-note").forEach(inp => {
+        inp.addEventListener("input", () => {
+          const key = decodeURIComponent(inp.dataset.noteKey || "");
+          const item = cart.find(x => itemKey(x) === key);
+          if (item) item.note = String(inp.value || "").trim().slice(0, 120);
+        });
+      });
+    }
+    if (sheet) {
+      sheet.classList.add("show");
+      sheet.setAttribute("aria-hidden", "false");
+    }
+    if (navigator.vibrate) navigator.vibrate(12);
+  }
   async function sendOrder() {
     if (!cart.length) { toast("أضف صنفاً واحداً على الأقل"); return; }
     if (sending) return;
@@ -2607,26 +3232,31 @@ window.TONINO_CONFIG = Object.freeze({
       toast("امسح QR الطاولة لإرسال الطلب للكاشير");
       return;
     }
+    syncNotesFromReviewSheet();
     sending = true;
     const sendBtn = $("sendButton");
+    const confirmBtn = $("notesReviewConfirm");
     if (sendBtn) { sendBtn.disabled = true; sendBtn.style.opacity = ".65"; }
+    if (confirmBtn) confirmBtn.disabled = true;
     try {
       const apiBase = await resolveApiBase();
       if (!apiBase) {
         toast("لا يوجد اتصال بالكاشير (api)");
         return;
       }
+      const orderNote = String(($("noteInp") && $("noteInp").value) || "").trim().slice(0, 200);
       const res = await fetch(apiBase + "/api/guest/v1/orders", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           token: session.token,
+          note: orderNote || undefined,
           items: cart.map(item => ({
             name: String(item.name || "").trim() || "صنف",
             category: item.category || CATEGORIES[item.page] || undefined,
             price: String(item.price),
             qty: String(Math.max(1, Number(item.qty) || 1)),
-            notes: item.note ? String(item.note) : undefined,
+            notes: item.note ? String(item.note).trim().slice(0, 120) : undefined,
           })),
         }),
       });
@@ -2634,21 +3264,63 @@ window.TONINO_CONFIG = Object.freeze({
       try { data = await res.json(); } catch (_) {}
       if (data && data.ok) {
         cart = [];
+        const noteInp = $("noteInp");
+        if (noteInp) noteInp.value = "";
+        const reviewOrder = $("notesReviewOrderNote");
+        if (reviewOrder) reviewOrder.value = "";
+        closeNotesReview();
         saveCart();
         renderCart();
         updateBadges();
-        toast("تم الإرسال للكاشير ✓");
+        const okHint = (typeof guestBag === "function" && guestBag().sentOkBillHint) || "تم الإرسال ✓";
+        toast(okHint, 3800);
+        const sumBtn = $("summaryButton");
+        if (sumBtn) {
+          sumBtn.classList.remove("bill-pulse");
+          void sumBtn.offsetWidth;
+          sumBtn.classList.add("bill-pulse");
+        }
+        /* Clear success path: open read-only bill so guest sees what was sent */
+        if (typeof openTableBillSheet === "function") {
+          setTimeout(function () { openTableBillSheet(); }, 280);
+        }
         return;
       }
-      toast(mapSendError(data && data.error));
+      toast(mapSendError(data && data.error), 3200);
     } catch (_) {
-      toast("تعذّر الاتصال بالكاشير — تحقق من النفق");
+      toast("تعذّر الاتصال بالكاشير — تحقق من النفق", 3200);
     } finally {
       sending = false;
       if (sendBtn) { sendBtn.disabled = false; sendBtn.style.opacity = ""; }
+      if (confirmBtn) confirmBtn.disabled = false;
     }
   }
-  function toast(message){const element=$("toast");element.textContent=message;element.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>element.classList.remove("show"),1700);}
+  function onSendButtonClick() {
+    openNotesReview();
+  }
+  (function initNotesReviewSheet() {
+    const sheet = $("notesReviewSheet");
+    const closeBtn = $("notesReviewClose");
+    const back = $("notesReviewBack");
+    const confirm = $("notesReviewConfirm");
+    if (closeBtn) closeBtn.addEventListener("click", e => { e.stopPropagation(); closeNotesReview(); });
+    if (back) back.addEventListener("click", e => { e.stopPropagation(); syncNotesFromReviewSheet(); closeNotesReview(); });
+    if (confirm) confirm.addEventListener("click", e => { e.stopPropagation(); sendOrder(); });
+    if (sheet) {
+      sheet.addEventListener("click", e => {
+        if (e.target === sheet) { syncNotesFromReviewSheet(); closeNotesReview(); }
+      });
+    }
+  })();
+  function toast(message, holdMs){
+    const element = $("toast");
+    if (!element) return;
+    element.textContent = String(message || "");
+    element.classList.add("show");
+    clearTimeout(toastTimer);
+    const ms = Math.max(1200, Number(holdMs) || 2200);
+    toastTimer = setTimeout(() => element.classList.remove("show"), ms);
+  }
 
   /* Pinch-to-peek: 2 fingers enlarge page photo; release → back to normal */
   let pinch = {
@@ -2790,6 +3462,11 @@ window.TONINO_CONFIG = Object.freeze({
   $("viewer").addEventListener("pointercancel",endGesture,{passive:true});
 
   $("orderGrid").addEventListener("click",event=>{
+    const noteBtn = event.target.closest(".order-note-btn");
+    if (noteBtn) {
+      openLineNoteSheet(decodeURIComponent(noteBtn.dataset.noteKey || ""));
+      return;
+    }
     const action=event.target.closest(".order-action");if(action){reduceItem(decodeURIComponent(action.dataset.key));return;}
     const main=event.target.closest(".order-main");
     if(main){
@@ -2798,8 +3475,116 @@ window.TONINO_CONFIG = Object.freeze({
       else goTo(bookIndexFromArt(Number(p)));
     }
   });
-  $("sendButton").addEventListener("click",sendOrder);
-  $("summaryButton").addEventListener("click",()=>$("orderCloud").scrollTo({top:0,behavior:"smooth"}));
+  $("sendButton").addEventListener("click",onSendButtonClick);
+  function closeTableBillSheet() {
+    const sheet = $("tableBillSheet");
+    if (!sheet) return;
+    sheet.classList.remove("show");
+    sheet.setAttribute("aria-hidden", "true");
+  }
+  function renderTableBill(data) {
+    const bag = guestBag();
+    const list = $("tableBillList");
+    const totalEl = $("tableBillTotalVal");
+    if (!list || !totalEl) return;
+    const items = Array.isArray(data && data.items) ? data.items : [];
+    const currency = String((data && data.currency) || "TRY").trim() || "TRY";
+    const section = String((data && data.section) || "").trim();
+    const tableNum = data && data.table != null ? data.table : "";
+    const sub = $("tableBillSub");
+    if (sub && (section || tableNum !== "")) {
+      const tw = bag.tableWord || "Masa";
+      const base = bag.billSub || "";
+      sub.textContent = base + (tableNum !== "" ? " · " + tw + " " + (section ? section + " " : "") + tableNum : "");
+    }
+    list.innerHTML = "";
+    if (!items.length) {
+      const empty = document.createElement("div");
+      empty.className = "tb-empty";
+      empty.textContent = bag.billEmpty || "";
+      list.appendChild(empty);
+      totalEl.textContent = "0 " + currency;
+      return;
+    }
+    items.forEach(function (it) {
+      const row = document.createElement("div");
+      row.className = "tb-row";
+      const name = document.createElement("div");
+      name.className = "tb-name";
+      name.textContent = String(it.name || "");
+      const line = document.createElement("div");
+      line.className = "tb-line";
+      line.textContent = String(it.lineTotal || it.price || "0") + " " + currency;
+      row.appendChild(name);
+      row.appendChild(line);
+      const qty = Number(it.qty) || 1;
+      const meta = document.createElement("div");
+      meta.className = "tb-meta";
+      const note = String(it.notes || "").trim();
+      meta.textContent = "×" + qty + " · " + String(it.price || "0") + " " + currency + (note ? " — " + note : "");
+      row.appendChild(meta);
+      list.appendChild(row);
+    });
+    totalEl.textContent = String((data && data.total) || "0") + " " + currency;
+  }
+  async function loadTableBill() {
+    const bag = guestBag();
+    const list = $("tableBillList");
+    const totalEl = $("tableBillTotalVal");
+    if (list) {
+      list.innerHTML = "";
+      const load = document.createElement("div");
+      load.className = "tb-load";
+      load.textContent = bag.billLoading || "…";
+      list.appendChild(load);
+    }
+    if (totalEl) totalEl.textContent = "…";
+    try {
+      const s = guestSession();
+      const token = String((s && s.token) || "").trim();
+      if (!token) throw new Error("no_token");
+      const base = await resolveApiBase();
+      if (!base) throw new Error("no_api");
+      let url = String(base).replace(/\/+$/, "") + "/api/guest/v1/table-bill?t=" + encodeURIComponent(token);
+      if (s.shop) url += "&shop=" + encodeURIComponent(s.shop);
+      const res = await fetch(url, { method: "GET", cache: "no-store" });
+      const data = await res.json().catch(function () { return null; });
+      if (!res.ok || !data || data.ok === false) {
+        throw new Error((data && (data.error || data.message)) || "bill_failed");
+      }
+      renderTableBill(data);
+    } catch (err) {
+      if (list) {
+        list.innerHTML = "";
+        const errEl = document.createElement("div");
+        errEl.className = "tb-err";
+        errEl.textContent = bag.billError || "Error";
+        list.appendChild(errEl);
+      }
+      if (totalEl) totalEl.textContent = "—";
+      console.warn("[guest] table-bill", err);
+    }
+  }
+  function openTableBillSheet() {
+    const sheet = $("tableBillSheet");
+    if (!sheet) return;
+    sheet.classList.add("show");
+    sheet.setAttribute("aria-hidden", "false");
+    void loadTableBill();
+  }
+  $("summaryButton").addEventListener("click", () => openTableBillSheet());
+  const tableBillCloseX = $("tableBillCloseX");
+  if (tableBillCloseX) tableBillCloseX.addEventListener("click", closeTableBillSheet);
+  const tableBillCloseBtn = $("tableBillCloseBtn");
+  if (tableBillCloseBtn) tableBillCloseBtn.addEventListener("click", closeTableBillSheet);
+  const tableBillRefreshBtn = $("tableBillRefresh");
+  if (tableBillRefreshBtn) tableBillRefreshBtn.addEventListener("click", () => void loadTableBill());
+  const tableBillSheetEl = $("tableBillSheet");
+  if (tableBillSheetEl) {
+    tableBillSheetEl.addEventListener("click", function (e) {
+      if (e.target === tableBillSheetEl) closeTableBillSheet();
+    });
+  }
   $("shade").addEventListener("click",()=>{ closeVariants(); if (typeof closeIceCreamSheet === "function") closeIceCreamSheet(); });
   $("closeVariants").addEventListener("click",closeVariants);
   function hideDdThumbPop() {
@@ -2908,7 +3693,197 @@ window.TONINO_CONFIG = Object.freeze({
     if (window.visualViewport) visualViewport.addEventListener("resize", apply, {passive:true});
   })();
 
-  /* Start gate: mandatory instructions → user gesture → Android fullscreen (hides URL bar). Menu layout unchanged. */
+  /* Start gate: visual loop → tap start → fullscreen. Then live coach on real menu. */
+  const LIVE_COACH_KEY = "tonino-qr-live-coach-v314";
+  let liveCoachPhase = "";
+  let liveCoachRepositionTimer = 0;
+  function liveCoachFinished() {
+    try { return sessionStorage.getItem(LIVE_COACH_KEY) === "1"; } catch (_) { return false; }
+  }
+  function markLiveCoachFinished() {
+    try { sessionStorage.setItem(LIVE_COACH_KEY, "1"); } catch (_) {}
+  }
+  function findLiveCoachPlusTarget() {
+    try {
+      if (typeof isDailyBookIndex === "function" && isDailyBookIndex(currentIndex)) {
+        const dd =
+          document.querySelector("#ddOrder:not([disabled])") ||
+          document.querySelector(".dd-order:not([disabled])");
+        if (dd && !dd.classList.contains("is-soon") && !dd.hidden) return dd;
+      }
+    } catch (_) {}
+    const page = typeof currentMenu !== "undefined" ? currentMenu : null;
+    let spot = page && page.querySelector(".hotspot:not(.has-qty)");
+    if (!spot) spot = document.querySelector("#viewer .hotspot:not(.has-qty)");
+    if (!spot) spot = document.querySelector("#viewer .hotspot");
+    return spot || null;
+  }
+  function hideLiveCoachUi() {
+    const ring = document.getElementById("liveCoachPlusRing");
+    const tip = document.getElementById("liveCoachTip");
+    const send = document.getElementById("sendButton");
+    if (ring) {
+      ring.classList.remove("show");
+      ring.style.left = "";
+      ring.style.top = "";
+    }
+    if (tip) {
+      tip.classList.remove("show");
+      tip.textContent = "";
+      tip.dataset.phase = "";
+    }
+    if (send) send.classList.remove("live-coach-send");
+  }
+  function placeLiveCoachPlusRing() {
+    const ring = document.getElementById("liveCoachPlusRing");
+    const phone = document.getElementById("phone");
+    const target = findLiveCoachPlusTarget();
+    if (!ring || !phone || !target || liveCoachPhase !== "plus") {
+      if (ring) ring.classList.remove("show");
+      return;
+    }
+    const tr = target.getBoundingClientRect();
+    const pr = phone.getBoundingClientRect();
+    if (tr.width < 4 || tr.height < 4) {
+      ring.classList.remove("show");
+      return;
+    }
+    ring.style.left = (tr.left + tr.width / 2 - pr.left) + "px";
+    ring.style.top = (tr.top + tr.height / 2 - pr.top) + "px";
+    ring.classList.add("show");
+  }
+  function showLiveCoachPlus() {
+    if (liveCoachFinished()) return;
+    liveCoachPhase = "plus";
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    const tip = document.getElementById("liveCoachTip");
+    const send = document.getElementById("sendButton");
+    if (send) send.classList.remove("live-coach-send");
+    if (tip) {
+      tip.dataset.phase = "plus";
+      tip.textContent = bag.liveCoachPlus || "اضغط + الأخضر";
+      tip.classList.add("show");
+    }
+    placeLiveCoachPlusRing();
+    clearTimeout(liveCoachRepositionTimer);
+    liveCoachRepositionTimer = window.setTimeout(placeLiveCoachPlusRing, 220);
+    window.setTimeout(placeLiveCoachPlusRing, 500);
+  }
+  function showLiveCoachSend() {
+    if (liveCoachFinished()) return;
+    liveCoachPhase = "send";
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    const tip = document.getElementById("liveCoachTip");
+    const ring = document.getElementById("liveCoachPlusRing");
+    const send = document.getElementById("sendButton");
+    if (ring) ring.classList.remove("show");
+    if (tip) {
+      tip.dataset.phase = "send";
+      tip.textContent = bag.liveCoachSend || "اضغط إرسال";
+      tip.classList.add("show");
+    }
+    if (send) send.classList.add("live-coach-send");
+  }
+  function startLiveCoach() {
+    /* Disabled — teaching stays on the welcome gate only */
+    hideLiveCoachUi();
+    liveCoachPhase = "";
+    markLiveCoachFinished();
+  }
+  function onLiveCoachItemAdded() { /* no-op */ }
+  function onLiveCoachSendOpened() {
+    hideLiveCoachUi();
+    liveCoachPhase = "";
+    markLiveCoachFinished();
+  }
+  function hydrateStartDemoMenuImages() {
+    const img1 = document.getElementById("startDemoImg1");
+    const img2 = document.getElementById("startDemoImg2");
+    if (!img1 || !img2) return;
+    const fallback1 = "../menu/pages/page-003.jpg";
+    const fallback2 = "../menu/pages/page-006.jpg";
+    let a = fallback1, b = fallback2;
+    try {
+      if (typeof PAGES !== "undefined" && Array.isArray(PAGES) && PAGES.length) {
+        const pick = (i) => {
+          const u = PAGES[i];
+          return u && String(u).length > 8 ? u : "";
+        };
+        a = pick(2) || pick(0) || fallback1;
+        b = pick(5) || pick(3) || pick(1) || a;
+      }
+    } catch (_) {}
+    if (img1.getAttribute("src") !== a) img1.src = a;
+    if (img2.getAttribute("src") !== b) img2.src = b;
+  }
+  function startGateVisualLoop() {
+    const demo = document.getElementById("startDemo");
+    if (!demo) return;
+    hydrateStartDemoMenuImages();
+    demo.classList.add("playing");
+    /* Restart CSS animations cleanly */
+    demo.classList.remove("playing");
+    void demo.offsetWidth;
+    demo.classList.add("playing");
+  }
+  function stopGateVisualLoop() {
+    const demo = document.getElementById("startDemo");
+    if (demo) demo.classList.remove("playing");
+  }
+  /* Teach category-strip swipe once — welcome gate untouched */
+  const CATS_COACH_KEY = "tonino-qr-cats-coach-v328";
+  let catsCoachTimer = 0;
+  let catsCoachBound = false;
+  function catsCoachDone() {
+    try { return sessionStorage.getItem(CATS_COACH_KEY) === "1"; } catch (_) { return false; }
+  }
+  function markCatsCoachDone() {
+    try { sessionStorage.setItem(CATS_COACH_KEY, "1"); } catch (_) {}
+  }
+  function hideCatsSwipeCoach() {
+    const coach = document.getElementById("catsSwipeCoach");
+    if (coach) {
+      coach.classList.remove("show");
+      coach.setAttribute("aria-hidden", "true");
+    }
+  }
+  function startCatsSwipeCoach() {
+    if (catsCoachDone() || catsCoachBound) return;
+    const coach = document.getElementById("catsSwipeCoach");
+    const host = document.getElementById("categories");
+    const band = document.getElementById("categoryBand");
+    if (!coach || !host || !band) return;
+    if (document.documentElement.classList.contains("coach-locked")) return;
+    /* Only teach when the strip can actually scroll */
+    if (host.scrollWidth <= host.clientWidth + 12) {
+      markCatsCoachDone();
+      return;
+    }
+    catsCoachBound = true;
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    const lab = document.getElementById("catsSwipeLabel");
+    if (lab) lab.textContent = bag.catsSwipeHint || "Grupları kaydır ← →";
+    coach.classList.add("show");
+    coach.setAttribute("aria-hidden", "false");
+    const dismiss = () => {
+      if (!coach.classList.contains("show")) return;
+      hideCatsSwipeCoach();
+      markCatsCoachDone();
+      catsCoachBound = false;
+      clearTimeout(catsCoachTimer);
+      host.removeEventListener("scroll", onScroll);
+      host.removeEventListener("touchstart", onTouch, true);
+      host.removeEventListener("click", onClick, true);
+    };
+    const onScroll = () => dismiss();
+    const onTouch = () => dismiss();
+    const onClick = () => dismiss();
+    host.addEventListener("scroll", onScroll, { passive: true });
+    host.addEventListener("touchstart", onTouch, { passive: true, capture: true });
+    host.addEventListener("click", onClick, true);
+    clearTimeout(catsCoachTimer);
+    catsCoachTimer = window.setTimeout(dismiss, 8500);
+  }
   (function startGateFullscreen(){
     const root = document.documentElement;
     const gate = document.getElementById("startGate");
@@ -2939,13 +3914,27 @@ window.TONINO_CONFIG = Object.freeze({
     function unlockMenu(){
       root.classList.remove("coach-locked");
       if (gate) gate.classList.remove("show");
+      stopGateVisualLoop();
+      hideLiveCoachUi();
+      liveCoachPhase = "";
+      markLiveCoachFinished();
       try { updateGeometry(); } catch(_){}
+      /* Restore mini-menu behind sitting guest (was hidden only during gate) */
+      try {
+        const flip = document.getElementById("ambFlipCoach");
+        if (flip) {
+          flip.style.opacity = "";
+          flip.style.visibility = "";
+        }
+      } catch (_) {}
+      window.setTimeout(() => { try { startCatsSwipeCoach(); } catch (_) {} }, 650);
     }
     function showGate(){
       root.classList.add("coach-locked");
       if (gate) gate.classList.add("show");
+      startGateVisualLoop();
     }
-    /* Skip gate only when already immersive (PWA / live fullscreen). Otherwise always require «فهمت». */
+    /* Skip gate only when already immersive (PWA / live fullscreen). */
     function alreadyDone(){
       return isStandalone() || isFs();
     }
@@ -2964,6 +3953,9 @@ window.TONINO_CONFIG = Object.freeze({
     const onFs = () => { try { updateGeometry(); } catch(_){} };
     document.addEventListener("fullscreenchange", onFs);
     document.addEventListener("webkitfullscreenchange", onFs);
+    window.addEventListener("resize", () => {
+      if (liveCoachPhase === "plus") placeLiveCoachPlusRing();
+    }, { passive: true });
     const isPhone = root.classList.contains("is-phone") || root.classList.contains("is-android");
     if (!isPhone || alreadyDone()) unlockMenu();
     else showGate();
@@ -2979,21 +3971,32 @@ window.TONINO_CONFIG = Object.freeze({
       ambHoursAria: "ساعات العمل من 9 صباحاً حتى 11 ليلاً",
       tableWord: "طاولة",
       startTitle: "كيف تطلب؟",
-      startSub: "اضغط «فهمت» لفتح المينو على كامل الشاشة",
-      start1: "اسحب يمين / يسار ككتاب لقلب الصفحات",
-      start2: "اضغط زر + الأخضر لإضافة صنف",
-      start3: "راجع طلبك في الأعلى ثم اضغط إرسال",
-      startGo: "فهمت — ابدأ الطلب ✓",
+      startHero: "اطلب وأنت مكانك — الطلب يصلك",
+      startSub: "عرض قصير — ثم ابدأ الطلب",
+      start1: "اسحب",
+      start2: "اضغط +",
+      start3: "إرسال",
+      startGo: "فهمت — ابدأ",
+      startLoopSwipe: "اسحب",
+      startLoopPlus: "اضغط +",
+      startLoopSend: "إرسال",
+      startDemoSwipe: "اسحب ← → لقلب الصفحة",
+      startDemoPlus: "اضغط زر + الأخضر",
+      startDemoSend: "اضغط إرسال",
+      liveCoachPlus: "اضغط + الأخضر",
+      liveCoachSend: "اضغط إرسال",
       orderBtn: "اطلب",
       orderAgain: "✓ اطلب مرة أخرى",
       sendBtn: "إرسال ✓",
       dayOff: "اليوم أوف",
       soon: "قريباً",
       dailyDish: "الطبق اليومي",
-      dailyScheduleNote: "كل يوم طبق يومي · عدا السبت والأحد",
-      dailyScheduleNoteMain: "كل يوم طبق يومي",
-      dailyScheduleNoteSub: "عدا السبت والأحد",
+      dailyScheduleNote: "",
+      dailyScheduleNoteMain: "",
+      dailyScheduleNoteSub: "",
       dailyDishJump: "🍽 الطبق اليومي",
+      dailySoupJump: "🥣 الشوربة اليومية",
+      dailySoupJumpShort: "🥣",
       dailyOnly: "يمكن طلب طبق اليوم فقط",
       pickDessert: "اختر التحلية",
       pickDrink: "اختر المشروب",
@@ -3011,10 +4014,11 @@ window.TONINO_CONFIG = Object.freeze({
       dailyNoteSkip: "تخطي",
       dailyNoteOk: "أضف للطلب",
       close: "إغلاق",
-      hintSwipe: "اسحب يمين / يسار ككتاب <em>‹‹ ››</em>",
+      hintSwipe: "أسهم المجموعات ‹ › أو اسحب الصفحة",
       ambSwipeCoach: "اسحب لقلب الصفحة",
       hintDaily: "صفحة الطبق اليومي — اختر ثم أضف للسلة",
       hintPlus: "اضغط زر + الأخضر للطلب",
+      catsSwipeHint: "اسحب المجموعات ← →",
       addedPrefix: "تمت إضافة",
       iceTitle: "البوظة",
       iceCup: "كاسة",
@@ -3030,7 +4034,27 @@ window.TONINO_CONFIG = Object.freeze({
       iceAdd: "أضف للطلب",
       iceAddAll: "أضف الكل للطلب",
       iceTotal: "المجموع",
-      iceCancel: "إلغاء"
+      iceCancel: "إلغاء",
+      noteDone: "تم",
+      notePh: "ملاحظة عامة للطلب (اختياري)…",
+      itemNotePh: "ملاحظة لهذا الصنف (بدون بصل، نصف محمص…)",
+      lineNoteTitle: "ملاحظة للصنف",
+      lineNoteSave: "تم",
+      notesReviewTitle: "راجع طلبك",
+      notesReviewSub: "أضف ملاحظة تحت كل صنف — تصل للمطبخ والبار",
+      notesReviewConfirm: "✓ تأكيد وإرسال للمطبخ",
+      notesReviewBack: "رجوع",
+      notesDailyHint: "التحلية والمشروب → البار · ملاحظة الطبخ → المطبخ",
+      billBtn: "حسابي",
+      billTitle: "حساب الطاولة",
+      billSub: "قراءة فقط — المحاسبة عند الكاشير",
+      billTotal: "المجموع",
+      billEmpty: "لا يوجد طلب مفتوح على هذه الطاولة بعد",
+      billRefresh: "تحديث",
+      billClose: "إغلاق",
+      billLoading: "جاري التحميل…",
+      billError: "تعذّر تحميل الحساب",
+      sentOkBillHint: "تم الإرسال ✓ — راجع حسابك من «حسابي»"
     },
     tr: {
       cashierLabel: "Kasiyer",
@@ -3040,21 +4064,32 @@ window.TONINO_CONFIG = Object.freeze({
       ambHoursAria: "Açık 09:00 – 23:00",
       tableWord: "Masa",
       startTitle: "Nasıl sipariş verilir?",
-      startSub: "Tam ekran menü için «Anladım»a basın",
-      start1: "Sayfaları çevirmek için sağa / sola kaydırın",
-      start2: "Ürün eklemek için yeşil + düğmesine basın",
-      start3: "Üstten siparişinizi kontrol edin, sonra Gönder",
-      startGo: "Anladım — siparişe başla ✓",
+      startHero: "Kalkmadan sipariş verin — size gelsin",
+      startSub: "Kısa gösterim — sonra siparişe başla",
+      start1: "Kaydır",
+      start2: "+ bas",
+      start3: "Gönder",
+      startGo: "Anladım — başla",
+      startLoopSwipe: "Kaydır",
+      startLoopPlus: "+ bas",
+      startLoopSend: "Gönder",
+      startDemoSwipe: "Sayfayı kaydır ← →",
+      startDemoPlus: "Yeşil + düğmesine bas",
+      startDemoSend: "Gönder'e bas",
+      liveCoachPlus: "Yeşil + düğmesine bas",
+      liveCoachSend: "Gönder'e bas",
       orderBtn: "Sipariş ver",
       orderAgain: "✓ Tekrar sipariş ver",
       sendBtn: "Gönder ✓",
       dayOff: "Bugün kapalı",
       soon: "Yakında",
       dailyDish: "Günün Yemeği",
-      dailyScheduleNote: "Her gün var · Cmt–Pzr hariç",
-      dailyScheduleNoteMain: "Her gün var",
-      dailyScheduleNoteSub: "Cmt–Pzr hariç",
+      dailyScheduleNote: "",
+      dailyScheduleNoteMain: "",
+      dailyScheduleNoteSub: "",
       dailyDishJump: "🍽 Günün Yemeği",
+      dailySoupJump: "🥣 Günün Çorbası",
+      dailySoupJumpShort: "🥣",
       dailyOnly: "Sadece bugünün yemeği sipariş edilebilir",
       pickDessert: "Tatlı seçin",
       pickDrink: "İçecek seçin",
@@ -3072,10 +4107,11 @@ window.TONINO_CONFIG = Object.freeze({
       dailyNoteSkip: "Atla",
       dailyNoteOk: "Siparişe ekle",
       close: "Kapat",
-      hintSwipe: "Sayfalar için sağa / sola kaydırın <em>‹‹ ››</em>",
+      hintSwipe: "Grup okları ‹ › veya sayfayı kaydırın",
       ambSwipeCoach: "Kaydır — sayfa çevir",
       hintDaily: "Günün yemeği sayfası — seçin ve sepete ekleyin",
       hintPlus: "Sipariş için yeşil + düğmesine basın",
+      catsSwipeHint: "Grupları kaydır ← →",
       addedPrefix: "Eklendi",
       iceTitle: "Dondurma",
       iceCup: "Kase",
@@ -3091,7 +4127,27 @@ window.TONINO_CONFIG = Object.freeze({
       iceAdd: "Siparişe ekle",
       iceAddAll: "Hepsini ekle",
       iceTotal: "Toplam",
-      iceCancel: "İptal"
+      iceCancel: "İptal",
+      noteDone: "Tamam",
+      notePh: "Genel sipariş notu (isteğe bağlı)…",
+      itemNotePh: "Bu ürün için not (soğansız, az pişmiş…)",
+      lineNoteTitle: "Ürün notu",
+      lineNoteSave: "Tamam",
+      notesReviewTitle: "Siparişini kontrol et",
+      notesReviewSub: "Her ürünün altına not ekle — mutfak ve bara gider",
+      notesReviewConfirm: "✓ Onayla ve mutfağa gönder",
+      notesReviewBack: "Geri",
+      notesDailyHint: "Tatlı / içecek → bar · pişirme notu → mutfak",
+      billBtn: "Hesabım",
+      billTitle: "Masa hesabı",
+      billSub: "Sadece görüntüle — ödeme kasada",
+      billTotal: "Toplam",
+      billEmpty: "Bu masada henüz açık sipariş yok",
+      billRefresh: "Yenile",
+      billClose: "Kapat",
+      billLoading: "Yükleniyor…",
+      billError: "Hesap yüklenemedi",
+      sentOkBillHint: "Gönderildi ✓ — hesabını «Hesabım»dan kontrol et"
     },
     en: {
       cashierLabel: "Cashier",
@@ -3101,21 +4157,32 @@ window.TONINO_CONFIG = Object.freeze({
       ambHoursAria: "Open 9 AM – 11 PM",
       tableWord: "Table",
       startTitle: "How to order?",
-      startSub: "Tap «Got it» to open the full-screen menu",
-      start1: "Swipe left / right like a book to flip pages",
-      start2: "Tap the green + to add an item",
-      start3: "Check your order at the top, then tap Send",
-      startGo: "Got it — start ordering ✓",
+      startHero: "Order from your seat — it comes to you",
+      startSub: "Quick demo — then start ordering",
+      start1: "Swipe",
+      start2: "Tap +",
+      start3: "Send",
+      startGo: "Got it — start",
+      startLoopSwipe: "Swipe",
+      startLoopPlus: "Tap +",
+      startLoopSend: "Send",
+      startDemoSwipe: "Swipe ← → to turn pages",
+      startDemoPlus: "Tap the green +",
+      startDemoSend: "Tap Send",
+      liveCoachPlus: "Tap the green +",
+      liveCoachSend: "Tap Send",
       orderBtn: "Order",
       orderAgain: "✓ Order again",
       sendBtn: "Send ✓",
       dayOff: "Closed today",
       soon: "Soon",
       dailyDish: "Daily dish",
-      dailyScheduleNote: "Every day · except Sat–Sun",
-      dailyScheduleNoteMain: "Every day",
-      dailyScheduleNoteSub: "except Sat–Sun",
+      dailyScheduleNote: "",
+      dailyScheduleNoteMain: "",
+      dailyScheduleNoteSub: "",
       dailyDishJump: "🍽 Daily dish",
+      dailySoupJump: "🥣 Daily soup",
+      dailySoupJumpShort: "🥣",
       dailyOnly: "Only today's dish can be ordered",
       pickDessert: "Choose dessert",
       pickDrink: "Choose drink",
@@ -3133,10 +4200,11 @@ window.TONINO_CONFIG = Object.freeze({
       dailyNoteSkip: "Skip",
       dailyNoteOk: "Add to order",
       close: "Close",
-      hintSwipe: "Swipe left / right like a book <em>‹‹ ››</em>",
+      hintSwipe: "Use group arrows ‹ › or swipe the page",
       ambSwipeCoach: "Swipe to turn page",
       hintDaily: "Daily dish page — pick then add to cart",
       hintPlus: "Tap the green + to order",
+      catsSwipeHint: "Swipe groups ← →",
       addedPrefix: "Added",
       iceTitle: "Ice cream",
       iceCup: "Cup",
@@ -3152,7 +4220,27 @@ window.TONINO_CONFIG = Object.freeze({
       iceAdd: "Add to order",
       iceAddAll: "Add all to order",
       iceTotal: "Total",
-      iceCancel: "Cancel"
+      iceCancel: "Cancel",
+      noteDone: "Done",
+      notePh: "General order note (optional)…",
+      itemNotePh: "Note for this item (no onion, medium rare…)",
+      lineNoteTitle: "Item note",
+      lineNoteSave: "Done",
+      notesReviewTitle: "Review your order",
+      notesReviewSub: "Add a note under each item — kitchen and bar",
+      notesReviewConfirm: "✓ Confirm & send to kitchen",
+      notesReviewBack: "Back",
+      notesDailyHint: "Dessert / drink → bar · cooking note → kitchen",
+      billBtn: "My bill",
+      billTitle: "Table bill",
+      billSub: "View only — pay at the cashier",
+      billTotal: "Total",
+      billEmpty: "No open order on this table yet",
+      billRefresh: "Refresh",
+      billClose: "Close",
+      billLoading: "Loading…",
+      billError: "Could not load bill",
+      sentOkBillHint: "Sent ✓ — check your bill under «My bill»"
     }
   };
   function guestBag() {
@@ -3167,21 +4255,42 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function paintStartGate(bag) {
     const title = document.getElementById("startGateTitle");
+    const hero = document.getElementById("startGateHero");
     const sub = document.getElementById("startGateSub");
     const go = document.getElementById("startGo");
     const gate = document.getElementById("startGate");
+    if (hero) hero.textContent = bag.startHero || hero.textContent;
     if (title) title.textContent = bag.startTitle;
     if (sub) sub.textContent = bag.startSub;
     if (go) go.textContent = bag.startGo;
     if (gate) gate.setAttribute("aria-label", bag.startTitle);
-    const s1 = document.querySelector('[data-start-step="1"]');
-    const s2 = document.querySelector('[data-start-step="2"]');
-    const s3 = document.querySelector('[data-start-step="3"]');
-    if (s1) s1.textContent = bag.start1;
-    if (s2) s2.textContent = bag.start2;
-    if (s3) s3.textContent = bag.start3;
-    const ol = document.getElementById("startGateSteps");
-    if (ol) ol.style.textAlign = document.documentElement.dir === "rtl" ? "right" : "left";
+    const capSwipe = document.getElementById("startDemoCapSwipe");
+    const capPlus = document.getElementById("startDemoCapPlus");
+    const capSend = document.getElementById("startDemoCapSend");
+    const lang = window.__zekiqGuestLang || "tr";
+    const fbSwipe = lang === "en" ? "Swipe left / right to turn the page" : lang === "ar" ? "اسحب يمين / يسار لقلب الصفحة" : "Sayfayı çevirmek için sağa / sola kaydır";
+    const fbPlus = lang === "en" ? "Tap the green + to add an item" : lang === "ar" ? "اضغط زر + الأخضر لإضافة صنف" : "Ürün eklemek için yeşil + düğmesine bas";
+    const fbSend = lang === "en" ? "Tap Send to place your order" : lang === "ar" ? "اضغط إرسال لإرسال الطلب" : "Siparişi göndermek için Gönder'e bas";
+    if (capSwipe) capSwipe.textContent = bag.startDemoSwipe || fbSwipe;
+    if (capPlus) capPlus.textContent = bag.startDemoPlus || fbPlus;
+    if (capSend) capSend.textContent = bag.startDemoSend || fbSend;
+    const demoSend = document.getElementById("startDemoSendLabel");
+    if (demoSend) demoSend.textContent = "✓ " + (bag.startLoopSend || bag.sendBtn || "Gönder");
+    const demoTbl = document.getElementById("startDemoTableLabel");
+    if (demoTbl) demoTbl.textContent = bag.tableWord || "Masa";
+    const demoCart = document.getElementById("startDemoCartLabel");
+    if (demoCart) {
+      demoCart.textContent = lang === "ar" ? "1× صنف" : lang === "en" ? "1× item" : "1× ürün";
+    }
+    const catsLab = document.getElementById("catsSwipeLabel");
+    if (catsLab) catsLab.textContent = bag.catsSwipeHint || (lang === "ar" ? "اسحب المجموعات ← →" : lang === "en" ? "Swipe groups ← →" : "Grupları kaydır ← →");
+    const tip = document.getElementById("liveCoachTip");
+    if (tip && tip.classList.contains("show")) {
+      const phase = tip.dataset.phase || "plus";
+      tip.textContent = phase === "send"
+        ? (bag.liveCoachSend || "اضغط إرسال")
+        : (bag.liveCoachPlus || "اضغط + الأخضر");
+    }
     const orderBtn = document.getElementById("ddOrder");
     if (orderBtn && !orderBtn.disabled && !orderBtn.classList.contains("in-cart") && !orderBtn.classList.contains("is-soon")) {
       /* leave dynamic labels to renderDailyDishScreen; only seed default */
@@ -3191,6 +4300,32 @@ window.TONINO_CONFIG = Object.freeze({
     }
     const send = document.getElementById("sendButton");
     if (send) send.textContent = bag.sendBtn;
+    const noteInp = document.getElementById("noteInp");
+    if (noteInp) noteInp.placeholder = bag.notePh || noteInp.placeholder;
+    const lineNoteInp = document.getElementById("lineNoteInp");
+    if (lineNoteInp) lineNoteInp.placeholder = bag.itemNotePh || lineNoteInp.placeholder;
+    const lineNoteTitle = document.getElementById("lineNoteTitle");
+    if (lineNoteTitle) lineNoteTitle.textContent = bag.lineNoteTitle || lineNoteTitle.textContent;
+    const lineNoteSave = document.getElementById("lineNoteSave");
+    if (lineNoteSave) lineNoteSave.textContent = bag.lineNoteSave || bag.noteDone || lineNoteSave.textContent;
+    const lineNoteCancel = document.getElementById("lineNoteCancel");
+    if (lineNoteCancel) lineNoteCancel.textContent = bag.close || lineNoteCancel.textContent;
+    const billBtnLabel = document.getElementById("billBtnLabel");
+    if (billBtnLabel) billBtnLabel.textContent = bag.billBtn || "Hesabım";
+    const summaryBtn = document.getElementById("summaryButton");
+    if (summaryBtn) summaryBtn.setAttribute("aria-label", bag.billBtn || "Hesabım");
+    const billTitle = document.getElementById("tableBillTitle");
+    if (billTitle) billTitle.textContent = bag.billTitle || "";
+    const billSub = document.getElementById("tableBillSub");
+    if (billSub) billSub.textContent = bag.billSub || "";
+    const billTotalLbl = document.getElementById("tableBillTotalLabel");
+    if (billTotalLbl) billTotalLbl.textContent = bag.billTotal || "";
+    const billRefresh = document.getElementById("tableBillRefresh");
+    if (billRefresh) billRefresh.textContent = bag.billRefresh || "";
+    const billCloseBtn = document.getElementById("tableBillCloseBtn");
+    if (billCloseBtn) billCloseBtn.textContent = bag.billClose || "";
+    const billCloseX = document.getElementById("tableBillCloseX");
+    if (billCloseX) billCloseX.setAttribute("aria-label", bag.billClose || "close");
   }
   function paintFooterHint(bag) {
     const b = bag || guestBag();
@@ -3464,11 +4599,6 @@ window.TONINO_CONFIG = Object.freeze({
       const label = info.zone ? `${info.zone} • ${word} ${info.table}` : `${word} ${info.table}`;
       $("tableTop").textContent = label;
       $("tableFooter").textContent = label;
-      const startSub = document.getElementById("startGateSub") || document.querySelector("#startGate .start-sub");
-      if (startSub && info.table != null && String(info.table) !== "?" && String(info.table) !== "") {
-        const subBag = bag || window.__zekiqGuestBag || AMB_I18N[window.__zekiqGuestLang] || AMB_I18N.ar;
-        startSub.textContent = `${label} — ${subBag.startSub}`;
-      }
     };
     let bootLang = "tr";
     try {
