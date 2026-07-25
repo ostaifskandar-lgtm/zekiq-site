@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-fullbleed-v337 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-fullbleed-v337 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v340 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -3316,13 +3316,19 @@ window.TONINO_CONFIG = Object.freeze({
         body: JSON.stringify({
           token: session.token,
           note: orderNote || undefined,
-          items: cart.map(item => ({
-            name: String(item.name || "").trim() || "صنف",
-            category: item.category || CATEGORIES[item.page] || undefined,
-            price: String(item.price),
-            qty: String(Math.max(1, Number(item.qty) || 1)),
-            notes: item.note ? String(item.note).trim().slice(0, 120) : undefined,
-          })),
+          items: cart.map(item => {
+            const mid = item.menuItemId != null ? Number(item.menuItemId) : NaN;
+            const dept = String(item.dept || "").trim().toLowerCase();
+            return {
+              menuItemId: Number.isFinite(mid) && mid > 0 ? mid : undefined,
+              name: String(item.name || "").trim() || "صنف",
+              category: item.category || CATEGORIES[item.page] || undefined,
+              price: String(item.price),
+              qty: String(Math.max(1, Number(item.qty) || 1)),
+              notes: item.note ? String(item.note).trim().slice(0, 120) : undefined,
+              dept: dept === "barista" || dept === "kitchen" || dept === "nargile" ? dept : undefined,
+            };
+          }),
         }),
       });
       let data = {};
@@ -4515,11 +4521,15 @@ window.TONINO_CONFIG = Object.freeze({
         const variants = Array.isArray(item && item.variants)
           ? item.variants
           : (Array.isArray(s.variants) ? s.variants : undefined);
+        const deptRaw = String((item && item.dept) || s.dept || "").trim().toLowerCase();
+        const dept =
+          deptRaw === "barista" || deptRaw === "kitchen" || deptRaw === "nargile" ? deptRaw : undefined;
         return {
           name: String(s.name || (item && item.name) || "?").trim() || "?",
           price: Number.isFinite(price) ? price : 0,
           x, y,
           menuItemId: s.menuItemId != null ? Number(s.menuItemId) : undefined,
+          dept,
           kind: s.kind || undefined,
           variants
         };
