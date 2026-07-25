@@ -559,6 +559,65 @@ html[lang="en"] .amb-flip-label{direction:ltr}
 #orderCloud::-webkit-scrollbar{display:none}
 #orderCloud.active{opacity:1;pointer-events:auto;padding-top:4px;padding-bottom:4px}
 #orderGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;direction:rtl;align-content:start}
+/* Soft helper send — rides with order cloud; glow + finger cue */
+#cloudSendBar{
+  display:none;position:relative;margin:6px 2px 3px;padding:2px 0 0;
+  border-top:1px solid #e3aa4538
+}
+#orderCloud.active #cloudSendBar{display:block}
+#cloudSendBtn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;min-height:34px;margin-top:4px;padding:6px 12px;
+  border:1px solid #f0c15eaa;border-radius:12px;
+  background:linear-gradient(145deg,#c48928ee,#f0c15eee);
+  color:#1a1006;font-size:13px;font-weight:1000;letter-spacing:.03em;
+  box-shadow:0 0 0 0 #f0c15e66,0 2px 10px #0006;
+  cursor:pointer;
+  animation:cloudSendPulse 2.4s ease-in-out infinite
+}
+#cloudSendBtn:active{filter:brightness(1.05);transform:scale(.98)}
+#cloudSendBtn:disabled{opacity:.45;cursor:wait;animation:none;filter:none}
+#cloudSendBtn:disabled ~ #cloudSendFinger{display:none}
+#cloudSendBtn .cloud-send-ico{font-size:13px;line-height:1}
+/* Sideways finger → points at the send word (horizontal only) */
+#cloudSendFinger{
+  position:absolute;z-index:2;pointer-events:none;
+  right:8px;top:50%;
+  width:1.4em;height:1.4em;
+  font-size:22px;line-height:1.4em;text-align:center;
+  filter:drop-shadow(0 2px 4px #000a);
+  animation:cloudSendFingerTap 2.4s ease-in-out infinite;
+  transform-origin:80% 50%
+}
+#cloudSendFinger::before{content:"👈"}
+html[lang="ar"] #cloudSendFinger{
+  right:auto;left:8px;
+  transform-origin:20% 50%;
+  animation-name:cloudSendFingerTapAr
+}
+html[lang="ar"] #cloudSendFinger::before{content:"👉"}
+@keyframes cloudSendPulse{
+  0%,100%{
+    box-shadow:0 0 0 0 #f0c15e00,0 2px 10px #0006;
+    filter:brightness(1)
+  }
+  50%{
+    box-shadow:0 0 14px 3px #f0c15e77,0 2px 12px #0007;
+    filter:brightness(1.08)
+  }
+}
+/* LTR / TR / EN: from the right, tip toward the label */
+@keyframes cloudSendFingerTap{
+  0%,100%{transform:translateY(-50%) translateX(0) scale(1);opacity:.95}
+  45%{transform:translateY(-50%) translateX(-5px) scale(.92);opacity:1}
+  55%{transform:translateY(-50%) translateX(-5px) scale(.92);opacity:1}
+}
+/* AR: from the left, tip toward the label */
+@keyframes cloudSendFingerTapAr{
+  0%,100%{transform:translateY(-50%) translateX(0) scale(1);opacity:.95}
+  45%{transform:translateY(-50%) translateX(5px) scale(.92);opacity:1}
+  55%{transform:translateY(-50%) translateX(5px) scale(.92);opacity:1}
+}
 .order{min-height:28px;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 26px 26px;grid-template-rows:auto auto;border:1px solid #e1aa456e;border-radius:8px;overflow:hidden;background:linear-gradient(180deg,#503820f4,#281a10f4);box-shadow:0 2px 5px #0008,0 0 0 1px #fff05 inset}
 .order-main{min-width:0;border:0;background:transparent;color:#fff;padding:1px 4px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr 1fr;column-gap:3px;text-align:right;cursor:pointer;align-content:center;grid-column:1;grid-row:1}
 .order-main .quantity{grid-row:1/3;align-self:center;color:#caed38;font-size:12px;font-weight:1000;line-height:1}
@@ -938,43 +997,44 @@ html.coach-locked #catsSwipeCoach{display:none!important}
 .page-edge{position:absolute;z-index:20;top:0;bottom:0;width:12px;opacity:0;pointer-events:none;background:linear-gradient(90deg,#fff1ad,#da952e66,transparent);box-shadow:0 0 27px #ffd96c}
 .page-shade{position:absolute;z-index:19;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent 42%,#000b 100%)}
 .menu-page[data-dir="prev"] .page-edge{right:0;left:auto;transform:scaleX(-1)}.menu-page[data-dir="prev"] .page-shade{background:linear-gradient(-90deg,transparent 42%,#000b 100%)}
-.hotspot{position:absolute;width:34px;height:34px;transform:translate(-50%,-50%);border:0;border-radius:50%;background:transparent;cursor:pointer;z-index:30;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-/* Idle shimmer so guests see press marks over the printed + */
+.hotspot{position:absolute;width:51px;height:51px;transform:translate(-50%,-50%);border:0;border-radius:50%;background:transparent;cursor:pointer;z-index:30;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+/* Soft amber dot — +50% size, gentle pulse (same gold tone) */
 .hotspot::before{
   content:"";
   position:absolute;
-  inset:8px;
+  inset:16.5px;
   border-radius:50%;
   pointer-events:none;
-  background:radial-gradient(circle at 50% 45%,#fff7c8cc 0 18%,#f0c15e88 34%,#b8df1b33 58%,transparent 72%);
-  box-shadow:0 0 0 1px #ffe49aee,0 0 5px 1px #f0c15ecc,0 0 9px 1px #b8df1b55;
-  animation:hotspotGlow 1.7s ease-in-out infinite;
-  animation-delay:var(--glow-delay,0s);
-  transition:opacity .18s ease,transform .18s ease;
+  background:radial-gradient(circle at 45% 38%,#fff1c2 0 28%,#e8b84a 72%,#c9962a 100%);
+  border:1px solid #fff6d899;
+  box-shadow:0 1px 3px #0005;
+  animation:hotspotPulse 1.7s ease-in-out infinite;
+  animation-delay:var(--pulse-delay,0s);
+  transition:opacity .15s ease;
 }
 .hotspot::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid transparent;opacity:0;pointer-events:none}
-.hotspot.ping::after{animation:ring .42s ease}
-@keyframes hotspotGlow{
-  0%,100%{opacity:.42;transform:scale(.78);filter:brightness(.95)}
-  50%{opacity:1;transform:scale(1);filter:brightness(1.25)}
+.hotspot.ping::after{animation:ring .38s ease}
+@keyframes hotspotPulse{
+  0%,100%{opacity:.72;transform:scale(.9)}
+  50%{opacity:1;transform:scale(1.08)}
 }
-@keyframes ring{0%{opacity:1;transform:scale(.45);border-color:#f4ffab;box-shadow:0 0 0 0 #c8ed4588}100%{opacity:0;transform:scale(1.7);border-color:transparent;box-shadow:0 0 0 14px transparent}}
-/* Quantity replaces the glow mark in the center (not a corner badge) */
+@keyframes ring{0%{opacity:.7;transform:scale(.55);border-color:#e8b84aaa;box-shadow:0 0 0 0 #e8b84a44}100%{opacity:0;transform:scale(1.45);border-color:transparent;box-shadow:0 0 0 10px transparent}}
+/* Quantity replaces the idle mark in the center (not a corner badge) */
 .qty-badge{
-  position:absolute;inset:7px;display:none;place-items:center;
+  position:absolute;inset:13.5px;display:none;place-items:center;
   border-radius:50%;
-  background:linear-gradient(160deg,#e23b45,#b91c28);
-  color:#fff;border:1px solid #fff8e8;
-  font-size:10px;font-weight:1000;line-height:1;
-  box-shadow:0 1px 4px #0008,0 0 6px #e23b4588;
+  background:linear-gradient(160deg,#d6454d,#b01e28);
+  color:#fff;border:1px solid #fff8e8cc;
+  font-size:12px;font-weight:1000;line-height:1;
+  box-shadow:0 1px 3px #0007;
   z-index:2;
 }
 .hotspot.has-qty::before{opacity:0;animation:none;transform:scale(.5)}
 .hotspot.has-qty .qty-badge{display:grid}
 /* Dense pages (e.g. Sıcak Kahve ~20 spots) — smaller so numbers don't stack */
-.menu-page.dense-spots .hotspot{width:26px;height:26px}
-.menu-page.dense-spots .hotspot::before{inset:6px;box-shadow:0 0 0 1px #ffe49add,0 0 4px 1px #f0c15ebb}
-.menu-page.dense-spots .qty-badge{inset:5px;font-size:8px;border-width:1px;box-shadow:0 1px 3px #0007}
+.menu-page.dense-spots .hotspot{width:39px;height:39px}
+.menu-page.dense-spots .hotspot::before{inset:12px}
+.menu-page.dense-spots .qty-badge{inset:9px;font-size:10px}
 
 /* 5 — clear fixed footer guidance */
 #footer{position:absolute;z-index:950;left:0;right:0;bottom:0;height:calc(var(--footer-h) + var(--safe-bottom));padding:0 6px var(--safe-bottom);display:grid;grid-template-columns:56px 1fr 72px;gap:4px;align-items:center;direction:ltr;background:linear-gradient(180deg,#2a1c10,#17100a);border-top:2px solid #d7982e;color:#ffe9b1;box-shadow:0 -6px 18px #000a}
@@ -1035,7 +1095,7 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
 @media(max-width:350px){
   :root{--top-h:43px;--quick-h:34px;--cats-h:46px;--footer-h:46px}
   #topbar{grid-template-columns:72px minmax(0,1fr) 91px;gap:4px;padding-left:4px;padding-right:4px}.top-button{min-height:30px}
-  .order{height:26px;grid-template-columns:minmax(0,1fr) 24px}.order-main .price{display:none}.hotspot{width:30px;height:30px}.menu-page.dense-spots .hotspot{width:24px;height:24px}
+  .order{height:26px;grid-template-columns:minmax(0,1fr) 24px}.order-main .price{display:none}.hotspot{width:45px;height:45px}.menu-page.dense-spots .hotspot{width:36px;height:36px}
   #footer{grid-template-columns:48px 1fr 66px}.footer-side{font-size:11px}#hint{font-size:12px}
 }
 @media(orientation:landscape) and (max-height:520px){
@@ -1044,7 +1104,7 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
 }
 @media(prefers-reduced-motion:reduce){
   #viewer::before{animation:none}
-  .hotspot::before{animation:none;opacity:.85;transform:scale(1);filter:none}
+  .hotspot::before{animation:none;opacity:.9;transform:scale(1)}
   .logo-page,.menu-page,#toast,#variantSheet{transition-duration:.01ms!important}
 }
 
@@ -1281,8 +1341,11 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
     <div id="logoScene"></div>
     <div id="orderCloud">
       <div id="orderGrid"></div>
-      <div id="orderNoteBar" aria-label="order note">
-        <textarea id="noteInp" maxlength="200" rows="2" placeholder="ملاحظة عامة للطلب (اختياري)…"></textarea>
+      <!-- General order note kept hidden for send/review sync — not shown in cloud -->
+      <textarea id="noteInp" maxlength="200" rows="1" hidden aria-hidden="true" tabindex="-1"></textarea>
+      <div id="cloudSendBar" aria-label="send helper">
+        <button type="button" id="cloudSendBtn"><span class="cloud-send-ico" aria-hidden="true">✓</span><span id="cloudSendLabel">إرسال</span></button>
+        <span id="cloudSendFinger" aria-hidden="true"></span>
       </div>
     </div>
   </section>
@@ -1917,7 +1980,7 @@ window.TONINO_CONFIG = Object.freeze({
       button.className = "hotspot";
       button.style.left = `${item.x}%`;
       button.style.top = `${item.y}%`;
-      button.style.setProperty("--glow-delay", `${(spotIndex % 6) * 0.22}s`);
+      button.style.setProperty("--pulse-delay", `${(spotIndex % 6) * 0.18}s`);
       button.dataset.key = `${art}|${item.name}`;
       button.setAttribute("aria-label", `أضف ${item.name}`);
       button.innerHTML = '<span class="qty-badge">0</span>';
@@ -2505,14 +2568,16 @@ window.TONINO_CONFIG = Object.freeze({
     ddSelectedDrink = drink || "";
     const rawPrice = String(dish.price || "0").replace(",", ".");
     const numPrice = Number(rawPrice);
-    const mainName = dailyDishMainLabel(dish) || "Günün Yemeği";
-    /* Name = dish for kitchen only; choices stay in notes → bar gets generic label + options */
+    /* Always send Turkish title to POS/kitchen — guest screen stays localized via dailyDishMainLabel. */
+    const tr = String(dish.mainTr || "").trim();
+    const main = String(dish.main || "").trim();
+    const kitchenMain = tr || (!/[\u0600-\u06FF]/.test(main) ? main : "") || "Günün Yemeği";
     addItem({
       page: DAILY_DISH_PAGE,
       hotspotName: DAILY_DISH_KEY,
       itemId: DAILY_DISH_KEY,
-      name: `${guestBag().dailyDish} · ${mainName}`,
-      category: guestBag().dailyDish,
+      name: `Günün Yemeği · ${kitchenMain}`,
+      category: "Günün Yemeği",
       price: Number.isFinite(numPrice) && numPrice > 0 ? Math.round(numPrice) : 0,
       note: buildDailyDishNote(dish, dessert, drink, customerNote),
     });
@@ -2711,8 +2776,6 @@ window.TONINO_CONFIG = Object.freeze({
         : "";
       return `<div class="order${hasNote ? " has-line-note" : ""}"><button class="order-main" type="button" data-page="${item.page}"><span class="quantity">${item.qty}×</span><span class="name">${escapeHtml(item.name)}</span><span class="price">${money(item.qty*item.price)}</span></button><button class="order-note-btn${hasNote ? " has-note" : ""}" type="button" data-note-key="${key}" aria-label="${escapeHtml(noteTitle)}: ${escapeHtml(item.name)}">📝</button><button class="order-action ${item.qty===1?'trash':''}" type="button" data-key="${key}" aria-label="${item.qty>1?'إنقاص':'حذف'} ${escapeHtml(item.name)}">${item.qty>1?'−':'🗑'}</button>${preview}</div>`;
     }).join("");
-    const noteBar = $("orderNoteBar");
-    if (noteBar) noteBar.classList.toggle("show", cart.length > 0);
     const cloud=$("orderCloud"); cloud.classList.toggle("active",cart.length>0);
     /* Cover ambient only by cart content height — ambient keeps playing below until filled */
     if (cart.length) {
@@ -3235,8 +3298,10 @@ window.TONINO_CONFIG = Object.freeze({
     syncNotesFromReviewSheet();
     sending = true;
     const sendBtn = $("sendButton");
+    const cloudSendBtn = $("cloudSendBtn");
     const confirmBtn = $("notesReviewConfirm");
     if (sendBtn) { sendBtn.disabled = true; sendBtn.style.opacity = ".65"; }
+    if (cloudSendBtn) cloudSendBtn.disabled = true;
     if (confirmBtn) confirmBtn.disabled = true;
     try {
       const apiBase = await resolveApiBase();
@@ -3292,6 +3357,7 @@ window.TONINO_CONFIG = Object.freeze({
     } finally {
       sending = false;
       if (sendBtn) { sendBtn.disabled = false; sendBtn.style.opacity = ""; }
+      if (cloudSendBtn) cloudSendBtn.disabled = false;
       if (confirmBtn) confirmBtn.disabled = false;
     }
   }
@@ -3476,6 +3542,8 @@ window.TONINO_CONFIG = Object.freeze({
     }
   });
   $("sendButton").addEventListener("click",onSendButtonClick);
+  const cloudSendBtnEl = $("cloudSendBtn");
+  if (cloudSendBtnEl) cloudSendBtnEl.addEventListener("click", onSendButtonClick);
   function closeTableBillSheet() {
     const sheet = $("tableBillSheet");
     if (!sheet) return;
@@ -3988,6 +4056,8 @@ window.TONINO_CONFIG = Object.freeze({
       orderBtn: "اطلب",
       orderAgain: "✓ اطلب مرة أخرى",
       sendBtn: "إرسال ✓",
+      cloudSendBtn: "إرسال",
+      cloudSendHint: "",
       dayOff: "اليوم أوف",
       soon: "قريباً",
       dailyDish: "الطبق اليومي",
@@ -4081,6 +4151,8 @@ window.TONINO_CONFIG = Object.freeze({
       orderBtn: "Sipariş ver",
       orderAgain: "✓ Tekrar sipariş ver",
       sendBtn: "Gönder ✓",
+      cloudSendBtn: "Gönder",
+      cloudSendHint: "",
       dayOff: "Bugün kapalı",
       soon: "Yakında",
       dailyDish: "Günün Yemeği",
@@ -4174,6 +4246,8 @@ window.TONINO_CONFIG = Object.freeze({
       orderBtn: "Order",
       orderAgain: "✓ Order again",
       sendBtn: "Send ✓",
+      cloudSendBtn: "Send",
+      cloudSendHint: "",
       dayOff: "Closed today",
       soon: "Soon",
       dailyDish: "Daily dish",
@@ -4300,8 +4374,13 @@ window.TONINO_CONFIG = Object.freeze({
     }
     const send = document.getElementById("sendButton");
     if (send) send.textContent = bag.sendBtn;
-    const noteInp = document.getElementById("noteInp");
-    if (noteInp) noteInp.placeholder = bag.notePh || noteInp.placeholder;
+    const cloudSendLabel = document.getElementById("cloudSendLabel");
+    if (cloudSendLabel) {
+      const lang = window.__zekiqGuestLang || "tr";
+      cloudSendLabel.textContent =
+        bag.cloudSendBtn ||
+        (lang === "ar" ? "إرسال" : lang === "en" ? "Send" : "Gönder");
+    }
     const lineNoteInp = document.getElementById("lineNoteInp");
     if (lineNoteInp) lineNoteInp.placeholder = bag.itemNotePh || lineNoteInp.placeholder;
     const lineNoteTitle = document.getElementById("lineNoteTitle");
