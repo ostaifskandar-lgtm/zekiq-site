@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-fullbleed-v337 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-fullbleed-v337 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -4571,18 +4571,20 @@ window.TONINO_CONFIG = Object.freeze({
     if (!livePages.some(Boolean)) return spotsOk;
     const probeUrl = livePages.find(Boolean) || "";
     const isNew = probeUrl ? await probeLockedNewMenuPage(probeUrl) : false;
-    if (isNew) {
-      PAGES = livePages.map((u, i) => u || PAGES[i] || "");
+    /* Categories ALWAYS from cashier book — probe failure must not leave baked/wrong labels
+     * (coffee chip → daily dish when indices drift). */
+    if (data.book.pageCategories && livePages.length) {
       const cats = [];
-      for (let i = 0; i < PAGES.length; i++) {
-        const raw = data.book.pageCategories
-          ? (data.book.pageCategories[String(i)] || data.book.pageCategories[i])
-          : null;
+      for (let i = 0; i < livePages.length; i++) {
+        const raw = data.book.pageCategories[String(i)] || data.book.pageCategories[i];
         cats.push(Array.isArray(raw) && raw[0] ? String(raw[0]) : (CATEGORIES[i] || ("صفحة " + (i + 1))));
       }
       CATEGORIES = cats;
     }
-    return spotsOk || isNew;
+    if (isNew || (spotsOk && livePages.length >= 10)) {
+      PAGES = livePages.map((u, i) => u || PAGES[i] || "");
+    }
+    return spotsOk || isNew || !!(data.book.pageCategories && livePages.length);
   }
   async function loadDailyDishFallback(apiBase) {
     if (!apiBase || todayDailyDish) return;
