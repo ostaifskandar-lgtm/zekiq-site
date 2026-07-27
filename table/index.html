@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-fullbleed-v337 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 --><!-- guest-rate-sheet-v352 --><!-- guest-rate-after-send-v353 --><!-- guest-page-flicker-v354 --><!-- guest-flip-feel-v355 --><!-- guest-flip-hotspot-v356 --><!-- guest-line-note-kb-v357 --><!-- guest-ice-tea-flavor-v358 --><!-- guest-variant-reopen-v359 --><!-- guest-cat-title-glow-v360 --><!-- guest-coffee-no-duble-v361 --><!-- guest-water-temp-v363 --><!-- guest-ice-cream-fix-v364 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-fullbleed-v337 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 --><!-- guest-rate-sheet-v352 --><!-- guest-rate-after-send-v353 --><!-- guest-page-flicker-v354 --><!-- guest-flip-feel-v355 --><!-- guest-flip-hotspot-v356 --><!-- guest-line-note-kb-v357 --><!-- guest-ice-tea-flavor-v358 --><!-- guest-variant-reopen-v359 --><!-- guest-cat-title-glow-v360 --><!-- guest-coffee-no-duble-v361 --><!-- guest-water-temp-v363 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -1326,9 +1326,9 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
 #variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}
 #variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .variant{min-height:46px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:12px;font-weight:1000;cursor:pointer;padding:6px 8px;line-height:1.25}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
-/* Ice cream builder — own dimmer above #shade so taps hit chips (not global shade). */
+/* Ice cream builder — vessel + scoops + flavors */
 #ice-cream-sheet{
-  position:fixed;z-index:1260;inset:0;display:flex;align-items:flex-end;justify-content:center;
+  position:absolute;z-index:1105;inset:0;display:flex;align-items:flex-end;justify-content:center;
   background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .22s
 }
 #ice-cream-sheet.show{opacity:1;pointer-events:auto}
@@ -3862,7 +3862,7 @@ window.TONINO_CONFIG = Object.freeze({
       sheet.classList.remove("show");
       sheet.setAttribute("aria-hidden", "true");
     }
-    /* Own backdrop only — do not leave global #shade stuck dark. */
+    $("shade") && $("shade").classList.remove("show");
     iceSheetServings = [];
     iceSheetBase = null;
   }
@@ -3947,7 +3947,6 @@ window.TONINO_CONFIG = Object.freeze({
           "</div>";
         flavorSec.querySelectorAll("[data-flavor]").forEach((btn) => {
           btn.onclick = (e) => {
-            e.preventDefault();
             e.stopPropagation();
             serving.flavors[fi] = btn.getAttribute("data-flavor") || serving.flavors[fi];
             renderIceCreamSheet();
@@ -3957,7 +3956,6 @@ window.TONINO_CONFIG = Object.freeze({
       }
       card.querySelectorAll("[data-scoops]").forEach((btn) => {
         btn.onclick = (e) => {
-          e.preventDefault();
           e.stopPropagation();
           serving.scoops = Number(btn.getAttribute("data-scoops")) || 1;
           normalizeIceServing(serving);
@@ -3966,19 +3964,15 @@ window.TONINO_CONFIG = Object.freeze({
       });
       card.querySelectorAll("[data-vessel]").forEach((btn) => {
         btn.onclick = (e) => {
-          e.preventDefault();
           e.stopPropagation();
           serving.vessel = btn.getAttribute("data-vessel") === "cone" ? "cone" : "cup";
           renderIceCreamSheet();
         };
       });
-      card.addEventListener("click", (e) => e.stopPropagation());
       list.appendChild(card);
     });
   }
   function openIceCreamSheet(baseItem) {
-    /* Close other pickers; never use global #shade (it sat above ice sheet → dark + dead taps). */
-    try { closeVariants(); } catch (_) {}
     iceSheetBase = baseItem || findIceCreamMenuItem() || {
       name: "Dondurma Top",
       price: ICE_CREAM_SCOOP_FALLBACK,
@@ -3989,11 +3983,10 @@ window.TONINO_CONFIG = Object.freeze({
     renderIceCreamSheet();
     const sheet = document.getElementById("ice-cream-sheet");
     if (sheet) {
-      sheet.classList.remove("show");
-      try { void sheet.offsetWidth; } catch (_) {}
       sheet.classList.add("show");
       sheet.setAttribute("aria-hidden", "false");
     }
+    $("shade") && $("shade").classList.add("show");
     if (navigator.vibrate) navigator.vibrate(12);
   }
   function addIceCreamToCart(serving) {
@@ -4030,21 +4023,12 @@ window.TONINO_CONFIG = Object.freeze({
     const cancelBtn = document.getElementById("iceSheetCancel");
     const confirmBtn = document.getElementById("iceSheetConfirm");
     const sheet = document.getElementById("ice-cream-sheet");
-    const card = sheet && sheet.querySelector(".ice-sheet-card");
-    if (addBtn) addBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
+    if (addBtn) addBtn.addEventListener("click", () => {
       iceSheetServings.push(newIceServing());
       renderIceCreamSheet();
     });
-    if (cancelBtn) cancelBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      closeIceCreamSheet();
-    });
-    if (confirmBtn) confirmBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      confirmIceCreamSheet();
-    });
-    if (card) card.addEventListener("click", (e) => e.stopPropagation());
+    if (cancelBtn) cancelBtn.addEventListener("click", closeIceCreamSheet);
+    if (confirmBtn) confirmBtn.addEventListener("click", confirmIceCreamSheet);
     if (sheet) sheet.addEventListener("click", (e) => {
       if (e.target === sheet) closeIceCreamSheet();
     });
@@ -5907,9 +5891,9 @@ window.TONINO_CONFIG = Object.freeze({
       hintPlus: "اضغط زر + الأخضر للطلب",
       catsSwipeHint: "اسحب المجموعات ← →",
       addedPrefix: "تمت إضافة",
-      iceTitle: "🍨 البوظة",
-      iceCup: "🍨 كاسة",
-      iceCone: "🍦 قرطاس",
+      iceTitle: "البوظة",
+      iceCup: "كاسة",
+      iceCone: "كلاح",
       iceVessel: "الوعاء",
       iceScoops: "عدد الطابات",
       iceScoopUnit: "طابة",
@@ -6056,9 +6040,9 @@ window.TONINO_CONFIG = Object.freeze({
       hintPlus: "Sipariş için yeşil + düğmesine basın",
       catsSwipeHint: "Grupları kaydır ← →",
       addedPrefix: "Eklendi",
-      iceTitle: "🍨 Dondurma",
-      iceCup: "🍨 Kase",
-      iceCone: "🍦 Külah",
+      iceTitle: "Dondurma",
+      iceCup: "Kase",
+      iceCone: "Külah",
       iceVessel: "Kap",
       iceScoops: "Top sayısı",
       iceScoopUnit: "top",
@@ -6205,9 +6189,9 @@ window.TONINO_CONFIG = Object.freeze({
       hintPlus: "Tap the green + to order",
       catsSwipeHint: "Swipe groups ← →",
       addedPrefix: "Added",
-      iceTitle: "🍨 Ice cream",
-      iceCup: "🍨 Cup",
-      iceCone: "🍦 Cone",
+      iceTitle: "Ice cream",
+      iceCup: "Cup",
+      iceCone: "Cone",
       iceVessel: "Vessel",
       iceScoops: "Scoops",
       iceScoopUnit: "scoop",
