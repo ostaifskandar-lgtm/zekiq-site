@@ -99,17 +99,31 @@
     return loadGarsonDl().then(function (dl) {
       var btn = document.getElementById(buttonId);
       if (btn) {
-        var url = dl.setupUrl || btn.getAttribute("href") || "";
-        if (url && url !== "#") {
+        var url = String(dl.setupUrl || "").trim();
+        if (!url || url === "#") {
+          url = String(btn.getAttribute("data-apk-url") || "").trim();
+        }
+        /* Never put .apk in href — Cursor/Simple Browser auto-opens it → Windows Save-As spam. */
+        btn.href = "#garson-download";
+        btn.removeAttribute("target");
+        btn.removeAttribute("rel");
+        btn.removeAttribute("download");
+        if (url && /\.apk(\?|$)/i.test(url)) {
+          btn.dataset.apkUrl = url;
           btn.classList.remove("btn-ghost");
           btn.removeAttribute("aria-disabled");
-          btn.href = url;
-          btn.removeAttribute("target");
-          btn.removeAttribute("rel");
-          btn.removeAttribute("download");
           btn.textContent = garsonDownloadButtonLabel(dl);
-        } else if (!url || url === "#") {
-          btn.href = "#";
+          if (!btn.dataset.apkClickBound) {
+            btn.dataset.apkClickBound = "1";
+            btn.addEventListener("click", function (ev) {
+              ev.preventDefault();
+              var apk = String(btn.dataset.apkUrl || "").trim();
+              if (!apk) return;
+              /* Real user gesture only — phones install; desktop Save-As only if they click. */
+              window.location.assign(apk);
+            });
+          }
+        } else {
           btn.classList.add("btn-ghost");
           btn.setAttribute("aria-disabled", "true");
           btn.textContent = global.ZekiqI18n ? global.ZekiqI18n.tr("garson_no_url") : "…";
