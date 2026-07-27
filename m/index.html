@@ -26,7 +26,7 @@
     <div class="logo">M</div>
     <h1>المصاريف الضوئي</h1>
     <p>تطبيق أندرويد لتصوير فواتير المشتريات وقراءتها وحفظها على الهاتف.</p>
-    <a class="btn" href="https://raw.githubusercontent.com/ostaifskandar-lgtm/zekiq-site/main/downloads/ToninoBuyer.apk">⬇️ تحميل التطبيق</a>
+    <a class="btn" id="apkDlBtn" href="#buyer-download" data-apk-url="https://raw.githubusercontent.com/ostaifskandar-lgtm/zekiq-site/main/downloads/ToninoBuyer.apk">⬇️ تحميل التطبيق</a>
     <p class="ver">الإصدار 1.0.34 · build 34 · ~26.5 MB</p>
     <ul class="hint">
       <li>• أندرويد 8 أو أحدث</li>
@@ -35,5 +35,16 @@
     </ul>
     <div class="warn"><b>Play Protect:</b> إذا ظهر تحذير → ⋮ → تثبيت على أي حال</div>
   </div>
+  <script>
+  (function () {
+    var btn = document.getElementById("apkDlBtn");
+    if (!btn) return;
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      var u = btn.getAttribute("data-apk-url") || "";
+      if (u) window.location.assign(u);
+    });
+  })();
+  </script>
 </body>
 </html>
