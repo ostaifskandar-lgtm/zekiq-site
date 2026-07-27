@@ -2,13 +2,13 @@
 <html lang="tr" dir="ltr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="theme-color" content="#17100a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-fullbleed-v337 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-fullbleed-v337 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 --><!-- guest-rate-sheet-v352 --><!-- guest-rate-after-send-v353 --><!-- guest-page-flicker-v354 --><!-- guest-flip-feel-v355 --><!-- guest-flip-hotspot-v356 --><!-- guest-line-note-kb-v357 --><!-- guest-ice-tea-flavor-v358 --><!-- guest-variant-reopen-v359 --><!-- guest-cat-title-glow-v360 --><!-- guest-coffee-no-duble-v361 --><!-- guest-water-temp-v363 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -630,9 +630,9 @@ html[lang="ar"] #cloudSendFinger::before{content:"👉"}
 #orderNoteBar.show{display:block}
 #noteInp{width:100%;min-height:36px;resize:none;border-radius:8px;border:1px solid #e1aa456e;background:#1a120cf2;color:#fff8e7;padding:6px 8px;font-size:12px;font-family:inherit;box-sizing:border-box}
 #noteInp::placeholder{color:#c9a878aa}
-#line-note-sheet{display:none;position:fixed;inset:0;z-index:1210;align-items:flex-end;justify-content:center;padding:12px;padding-bottom:calc(12px + var(--safe-bottom,0px));background:#000a}
+#line-note-sheet{display:none;position:fixed;inset:0;z-index:1210;align-items:flex-end;justify-content:center;padding:12px;padding-bottom:calc(12px + var(--safe-bottom,0px) + var(--line-note-kb-inset,0px));background:#000a;transition:padding-bottom .18s ease;box-sizing:border-box}
 #line-note-sheet.show{display:flex}
-.line-note-card{width:min(440px,100%);background:linear-gradient(160deg,#21170f,#3b2716);border:1px solid #d99a34;border-radius:18px;padding:14px;box-shadow:0 -8px 40px #000c}
+.line-note-card{width:min(440px,100%);max-height:min(70dvh,calc(100dvh - var(--line-note-kb-inset,0px) - 48px));overflow:auto;-webkit-overflow-scrolling:touch;background:linear-gradient(160deg,#21170f,#3b2716);border:1px solid #d99a34;border-radius:18px;padding:14px;box-shadow:0 -8px 40px #000c}
 .line-note-title{margin:0 0 4px;text-align:center;color:#ffe5a1;font-size:15px;font-weight:800}
 .line-note-sub{margin:0 0 8px;text-align:center;color:#e9d2a2cc;font-size:12px;font-weight:700}
 #lineNoteInp{width:100%;min-height:72px;resize:vertical;border-radius:12px;border:1px solid #c8860a88;background:#140e09;color:#fff8e7;padding:10px;font-size:16px;font-family:inherit;box-sizing:border-box}
@@ -641,9 +641,9 @@ html[lang="ar"] #cloudSendFinger::before{content:"👉"}
 #lineNoteCancel{background:#ffffff10;color:#e9d2a2}
 #lineNoteSave{background:linear-gradient(145deg,#ffd54f,#f0b820);color:#1a0a00;border-color:#c8860a}
 /* Full notes review — opens on Send (old cart-panel flow) */
-#notesReviewSheet{display:none;position:fixed;inset:0;z-index:1220;align-items:stretch;justify-content:center;background:#000c;padding:0;padding-bottom:var(--safe-bottom,0px)}
+#notesReviewSheet{display:none;position:fixed;inset:0;z-index:1220;align-items:stretch;justify-content:center;background:#000c;padding:0;padding-bottom:calc(var(--safe-bottom,0px) + var(--notes-review-kb-inset,0px));transition:padding-bottom .18s ease;box-sizing:border-box}
 #notesReviewSheet.show{display:flex}
-.notes-review-card{width:min(440px,100%);margin:0 auto;display:flex;flex-direction:column;max-height:100%;background:linear-gradient(180deg,#fffaf0 0%,#fff3d6 42%,#ffe9b8 100%);color:#2a1600;box-shadow:0 0 40px #000a}
+.notes-review-card{width:min(440px,100%);margin:0 auto;display:flex;flex-direction:column;max-height:calc(100% - var(--notes-review-kb-inset,0px));background:linear-gradient(180deg,#fffaf0 0%,#fff3d6 42%,#ffe9b8 100%);color:#2a1600;box-shadow:0 0 40px #000a}
 .notes-review-hd{padding:14px 16px 10px;border-bottom:1.5px solid #c8860a59;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;background:linear-gradient(180deg,#fff8e4,#ffeec0);flex-shrink:0}
 .notes-review-title{margin:0;font-size:18px;font-weight:900;color:#8a5a08}
 .notes-review-sub{margin:4px 0 0;font-size:12px;font-weight:700;color:#785014b8;line-height:1.35}
@@ -685,13 +685,9 @@ html[lang="ar"] #cloudSendFinger::before{content:"👉"}
 .order-track-label{margin:0 0 8px;font-size:13px;font-weight:800;letter-spacing:.01em;line-height:1.35;text-align:center}
 .order-track-steps{display:flex;align-items:flex-start;justify-content:space-between;gap:2px}
 .order-track-steps .ots{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;opacity:.38;transition:opacity .25s}
-.order-track-steps .ots .ots-emoji{
-  font-size:16px;line-height:1.1;display:block;text-align:center;letter-spacing:-1px;
-  filter:grayscale(.35);transition:filter .25s,transform .25s;
-}
 .order-track-steps .ots .ots-anim{
-  width:36px;height:32px;display:block;position:relative;margin:0 auto;
-  filter:grayscale(.4);opacity:.9;transition:filter .25s,opacity .25s;
+  width:40px;height:36px;display:block;position:relative;margin:0 auto 1px;
+  filter:grayscale(.35) saturate(.85);opacity:.88;transition:filter .25s,opacity .25s,transform .25s;
 }
 .order-track-steps .ots .ots-anim svg{width:100%;height:100%;display:block;overflow:visible}
 .order-track-steps .ots i{
@@ -700,9 +696,8 @@ html[lang="ar"] #cloudSendFinger::before{content:"👉"}
 }
 .order-track-steps .ots b{font-size:9px;font-weight:700;text-align:center;line-height:1.15;color:#cfe8d1}
 .order-track-steps .ots.is-done,.order-track-steps .ots.is-active{opacity:1}
-.order-track-steps .ots.is-done .ots-emoji,.order-track-steps .ots.is-active .ots-emoji,
 .order-track-steps .ots.is-done .ots-anim,.order-track-steps .ots.is-active .ots-anim{filter:none;opacity:1}
-.order-track-steps .ots.is-active .ots-emoji{transform:scale(1.08)}
+.order-track-steps .ots.is-active .ots-anim{transform:scale(1.06)}
 .order-track-steps .ots.is-done i{background:#4caf50;border-color:#a5e6a8}
 .order-track-steps .ots.is-active i{
   background:#b8ff4a;border-color:#fff;box-shadow:0 0 0 4px #b8ff4a33;
@@ -710,7 +705,42 @@ html[lang="ar"] #cloudSendFinger::before{content:"👉"}
 }
 .order-track-steps .ots.is-active b{color:#f4ffd4}
 @keyframes otsPulse{0%,100%{box-shadow:0 0 0 3px #b8ff4a22}50%{box-shadow:0 0 0 6px #b8ff4a44}}
-/* Chef cooking — only animate when step is active */
+/* 1 · Sent — phone lifts a ticket toward the shop */
+.ots.is-active .ots-anim-send .os-ticket{animation:osTicket 1.35s ease-in-out infinite}
+.ots.is-active .ots-anim-send .os-wave{animation:osWave 1.35s ease-out infinite}
+.ots.is-active .ots-anim-send .os-wave.w2{animation-delay:.22s}
+.ots.is-active .ots-anim-send .os-wave.w3{animation-delay:.44s}
+@keyframes osTicket{
+  0%,100%{transform:translate(0,0) scale(1);opacity:1}
+  45%{transform:translate(5px,-7px) scale(.88);opacity:.55}
+  70%{transform:translate(7px,-10px) scale(.7);opacity:0}
+  71%{transform:translate(0,2px) scale(.9);opacity:0}
+  100%{transform:translate(0,0) scale(1);opacity:1}
+}
+@keyframes osWave{
+  0%{opacity:0;transform:scale(.5)}
+  30%{opacity:.9}
+  100%{opacity:0;transform:scale(1.55)}
+}
+/* 2 · Received — cashier stamp / check */
+.ots.is-active .ots-anim-recv .or-check{animation:orCheck 1.5s ease-in-out infinite}
+.ots.is-active .ots-anim-recv .or-glow{animation:orGlow 1.5s ease-in-out infinite}
+.ots.is-active .ots-anim-recv .or-slip{animation:orSlip 1.5s ease-in-out infinite}
+@keyframes orCheck{
+  0%,55%{transform:scale(.7);opacity:.35}
+  70%{transform:scale(1.15);opacity:1}
+  85%,100%{transform:scale(1);opacity:1}
+}
+@keyframes orGlow{
+  0%,60%{opacity:0;transform:scale(.6)}
+  75%{opacity:.55;transform:scale(1.15)}
+  100%{opacity:0;transform:scale(1.4)}
+}
+@keyframes orSlip{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-1px)}
+}
+/* 3 · Chef cooking — only animate when step is active */
 .ots-anim-chef .oc-arm{transform-origin:22px 18px}
 .ots.is-active .ots-anim-chef .oc-arm{animation:ocStir 1.1s ease-in-out infinite}
 .ots.is-active .ots-anim-chef .oc-steam{animation:ocSteam 1.4s ease-out infinite}
@@ -727,7 +757,7 @@ html[lang="ar"] #cloudSendFinger::before{content:"👉"}
   100%{opacity:0;transform:translateY(-10px) scale(1.1)}
 }
 @keyframes ocBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1px)}}
-/* Garson walking to guest — animate when on the way */
+/* 4 · Garson walking to guest — animate when on the way */
 .ots-anim-garson .og-walk{transform-box:fill-box}
 .ots.is-active .ots-anim-garson .og-walk{animation:ogWalk 1.8s ease-in-out infinite}
 .ots.is-active .ots-anim-garson .og-leg-l{animation:ogLeg 1.8s ease-in-out infinite;transform-origin:14px 26px}
@@ -753,6 +783,11 @@ html[dir="rtl"] .ots.is-active .ots-anim-garson .og-walk{animation-name:ogWalkRt
   50%{transform:translateY(-1.5px)}
 }
 @media (prefers-reduced-motion:reduce){
+  .ots.is-active .ots-anim-send .os-ticket,
+  .ots.is-active .ots-anim-send .os-wave,
+  .ots.is-active .ots-anim-recv .or-check,
+  .ots.is-active .ots-anim-recv .or-glow,
+  .ots.is-active .ots-anim-recv .or-slip,
   .ots.is-active .ots-anim-chef .oc-arm,
   .ots.is-active .ots-anim-chef .oc-steam,
   .ots.is-active .ots-anim-chef .oc-body,
@@ -762,6 +797,16 @@ html[dir="rtl"] .ots.is-active .ots-anim-garson .og-walk{animation-name:ogWalkRt
   .ots.is-active .ots-anim-garson .og-tray{animation:none!important}
 }
 html[lang="ar"] .order-track-label,html[lang="ar"] .order-track-steps .ots b{font-family:Tahoma,"Segoe UI",sans-serif}
+.order-track-recv,.order-track-dock-recv{
+  display:block;width:100%;margin-top:10px;border:0;border-radius:12px;padding:12px 12px;
+  font-size:15px;font-weight:1000;cursor:pointer;
+  background:linear-gradient(145deg,#81c784,#2e7d32);color:#041204;
+  box-shadow:0 4px 14px #1b5e2044;
+}
+.order-track-recv[hidden],.order-track-dock-recv[hidden]{display:none!important}
+.order-track-recv:active,.order-track-dock-recv:active{transform:scale(.98)}
+.order-track-dock-recv{margin-top:8px;padding:13px 12px}
+html[lang="ar"] .order-track-recv,html[lang="ar"] .order-track-dock-recv{font-family:Tahoma,"Segoe UI",sans-serif}
 .order-track-more,.table-bill-add-more{
   display:block;width:100%;margin-top:10px;border:0;border-radius:12px;padding:11px 12px;
   font-size:14px;font-weight:900;cursor:pointer;
@@ -769,6 +814,107 @@ html[lang="ar"] .order-track-label,html[lang="ar"] .order-track-steps .ots b{fon
   box-shadow:0 3px 12px #c8860a55;
 }
 .order-track-more:active,.table-bill-add-more:active{transform:scale(.98)}
+/* Track never overlays menu — only inside حسابي + green badge on حسابي button */
+.order-track-dock,.order-track-dock-recv{display:none!important}
+#summaryButton.has-live-track{
+  border-color:#7dffa0;box-shadow:0 0 0 2px #7dffa044;animation:billPulse 1.8s ease-in-out infinite;
+  position:relative;
+}
+#summaryButton.has-live-track::after{
+  content:"";position:absolute;top:4px;inset-inline-end:6px;width:8px;height:8px;border-radius:50%;
+  background:#b8ff4a;box-shadow:0 0 0 0 #b8ff4a88;animation:otsPulse 1.6s ease-in-out infinite;
+}
+.notes-review-where{
+  margin:0 14px 8px;padding:8px 10px;border-radius:10px;background:#fff3cd;border:1px solid #e6a81788;
+  font-size:12px;font-weight:800;color:#5a3a08;line-height:1.35;text-align:center;
+}
+html[lang="ar"] .notes-review-where{font-family:Tahoma,"Segoe UI",sans-serif}
+/* Anonymous service rating — inside حسابي only */
+.guest-rate-card{
+  margin:0 0 10px;padding:12px 12px 14px;border-radius:16px;
+  background:linear-gradient(160deg,#2a2218ee,#1a1410f2);
+  border:1px solid #c8860a66;color:#fff8e8;
+  box-shadow:0 6px 20px #0006;
+}
+.guest-rate-card[hidden],.guest-rate-chip[hidden],.guest-rate-thanks[hidden]{display:none!important}
+.guest-rate-title{margin:0 0 4px;font-size:14px;font-weight:900;text-align:center;color:#ffe082}
+.guest-rate-sub{margin:0 0 6px;font-size:12px;font-weight:700;line-height:1.4;text-align:center;color:#f0e0c0cc}
+.guest-rate-privacy{margin:0 0 10px;font-size:11px;font-weight:600;line-height:1.35;text-align:center;color:#cfe8d1aa}
+.guest-rate-stars{display:flex;justify-content:center;gap:6px;margin:0 0 10px;direction:ltr}
+.guest-rate-stars button{
+  width:40px;height:40px;border:0;border-radius:10px;cursor:pointer;
+  font-size:22px;line-height:1;background:#ffffff14;color:#6a5a40;
+  opacity:.55;filter:grayscale(.4);transition:transform .12s,opacity .12s,filter .12s,background .12s;
+}
+.guest-rate-stars button.on{opacity:1;filter:none;background:#ffe08233;color:#ffc107;transform:scale(1.06)}
+.guest-rate-stars button:active{transform:scale(.96)}
+.guest-rate-note{
+  width:100%;min-height:64px;resize:vertical;box-sizing:border-box;
+  border:1.5px solid #c8860a66;border-radius:12px;padding:10px 12px;
+  font-size:13px;font-weight:700;background:#fffef8;color:#2a1600;margin:0 0 6px;
+}
+.guest-rate-card.is-low .guest-rate-note{border-color:#ef5350;box-shadow:0 0 0 2px #ef535033}
+.guest-rate-note-hint{margin:0 0 10px;font-size:11px;font-weight:700;text-align:center;color:#ffcc80;min-height:1.2em}
+.guest-rate-actions{display:flex;gap:8px;align-items:stretch}
+.guest-rate-send{
+  flex:1;border:0;border-radius:12px;padding:11px 12px;font-size:14px;font-weight:900;cursor:pointer;
+  background:linear-gradient(145deg,#81c784,#43a047);color:#041204;
+}
+.guest-rate-send:disabled{opacity:.45;cursor:default}
+.guest-rate-skip{
+  border:1.5px solid #c8860a66;border-radius:12px;padding:11px 14px;font-size:13px;font-weight:800;
+  background:transparent;color:#ffe082;cursor:pointer;
+}
+.guest-rate-thanks{margin:8px 0 0;text-align:center;font-size:13px;font-weight:800;color:#b8ff4a}
+.guest-rate-chip{
+  display:block;width:100%;margin:0 0 10px;border:1.5px dashed #c8860a88;border-radius:12px;
+  padding:10px 12px;font-size:13px;font-weight:800;cursor:pointer;
+  background:#c8860a18;color:#8a5a08;
+}
+.guest-rate-chip:active{transform:scale(.98)}
+html[lang="ar"] .guest-rate-title,html[lang="ar"] .guest-rate-sub,html[lang="ar"] .guest-rate-privacy,
+html[lang="ar"] .guest-rate-note-hint,html[lang="ar"] .guest-rate-thanks{font-family:Tahoma,"Segoe UI",sans-serif}
+/* Thanks cloud mid-menu removed — quick rate uses BOTTOM sheet (before guest leaves) */
+#guestThanksCloud{display:none!important}
+#guestRateSheet{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:2147483000;
+  padding:0 10px calc(12px + var(--safe-bottom,0px));pointer-events:none;
+}
+#guestRateSheet.show,#guestRateSheet.is-open{
+  display:block!important;pointer-events:auto!important;visibility:visible!important;opacity:1!important;
+}
+#guestRateSheet.show .guest-rate-sheet-card,#guestRateSheet.is-open .guest-rate-sheet-card{pointer-events:auto}
+.guest-rate-sheet-card{
+  width:min(440px,100%);margin:0 auto;border-radius:20px 20px 16px 16px;padding:14px 14px 12px;
+  background:linear-gradient(165deg,#1f2a18f8,#12180ef5);border:1.5px solid #7dffa066;
+  box-shadow:0 -8px 36px #000a;color:#f4ffd4;
+  animation:guestRateSheetIn .32s ease-out;
+}
+@keyframes guestRateSheetIn{from{transform:translateY(110%);opacity:.4}to{transform:translateY(0);opacity:1}}
+.guest-rate-sheet-kicker{margin:0 0 4px;font-size:11px;font-weight:800;color:#a5e6a8;text-align:center}
+.guest-rate-sheet-title{margin:0 0 8px;font-size:16px;font-weight:1000;text-align:center;color:#ffe082;line-height:1.3}
+.guest-rate-sheet-stars{display:flex;justify-content:center;gap:8px;margin:0 0 8px;direction:ltr}
+.guest-rate-sheet-stars button{
+  width:44px;height:44px;border:0;border-radius:12px;cursor:pointer;font-size:24px;line-height:1;
+  background:#ffffff14;color:#6a5a40;opacity:.55;filter:grayscale(.35);
+}
+.guest-rate-sheet-stars button.on{opacity:1;filter:none;background:#ffe08233;color:#ffc107;transform:scale(1.08)}
+.guest-rate-sheet-note{
+  width:100%;min-height:44px;resize:vertical;box-sizing:border-box;margin:0 0 8px;
+  border:1.5px solid #7dffa044;border-radius:12px;padding:8px 10px;
+  font-size:13px;font-weight:700;background:#fffef8;color:#2a1600;
+}
+.guest-rate-sheet-actions{display:flex;gap:8px}
+.guest-rate-sheet-send{
+  flex:1;border:0;border-radius:12px;padding:12px;font-size:15px;font-weight:1000;cursor:pointer;
+  background:linear-gradient(145deg,#81c784,#2e7d32);color:#041204;
+}
+.guest-rate-sheet-send:disabled{opacity:.4;cursor:default}
+.guest-rate-sheet-skip{
+  border:1.5px solid #7dffa055;border-radius:12px;padding:12px 14px;font-size:13px;font-weight:800;
+  background:transparent;color:#cfe8d1;cursor:pointer;
+}
+html[lang="ar"] .guest-rate-sheet-kicker,html[lang="ar"] .guest-rate-sheet-title{font-family:Tahoma,"Segoe UI",sans-serif}
 .table-bill-actions{display:flex;flex-wrap:wrap;gap:8px}
 .table-bill-actions .table-bill-add-more{flex:1 1 100%;order:-1;margin-top:0}
 .table-bill-card{width:min(440px,100%);margin:0 auto;display:flex;flex-direction:column;max-height:100%;background:linear-gradient(180deg,#fffaf0 0%,#fff3d6 42%,#ffe9b8 100%);color:#2a1600;box-shadow:0 0 40px #000a}
@@ -1005,9 +1151,22 @@ html[lang="en"] .dd-photo.is-day-off::after{content:"Closed today"}
   opacity:.55;text-transform:none;transform:none;text-shadow:none
 }
 .category.active{
-  color:#d7ff3d;background:transparent;border:0;box-shadow:none;opacity:1;
+  color:#e8ff6a;background:transparent;border:0;box-shadow:none;opacity:1;
   font-size:clamp(16px,4.6vw,20px);letter-spacing:.4px;transform:none;
-  text-shadow:0 1px 0 #0007
+  text-shadow:0 0 8px #d7ff3dcc,0 0 18px #b8df1b99,0 1px 0 #0008;
+  animation:catTitleGlow 2.2s ease-in-out infinite
+}
+@keyframes catTitleGlow{
+  0%,100%{
+    color:#d7ff3d;
+    text-shadow:0 0 6px #d7ff3d88,0 0 14px #b8df1b66,0 1px 0 #0008;
+    filter:brightness(1)
+  }
+  50%{
+    color:#f4ff9a;
+    text-shadow:0 0 12px #e8ff6aee,0 0 28px #d7ff3dcc,0 0 40px #b8df1b88,0 1px 0 #0008;
+    filter:brightness(1.22)
+  }
 }
 /* Page arrows live in the category row (not mid-menu) */
 .page-nav{
@@ -1102,7 +1261,8 @@ html.coach-locked #catsSwipeCoach{display:none!important}
 .page-edge{position:absolute;z-index:20;top:0;bottom:0;width:12px;opacity:0;pointer-events:none;background:linear-gradient(90deg,#fff1ad,#da952e66,transparent);box-shadow:0 0 27px #ffd96c}
 .page-shade{position:absolute;z-index:19;inset:0;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent 42%,#000b 100%)}
 .menu-page[data-dir="prev"] .page-edge{right:0;left:auto;transform:scaleX(-1)}.menu-page[data-dir="prev"] .page-shade{background:linear-gradient(-90deg,transparent 42%,#000b 100%)}
-.hotspot{position:absolute;width:51px;height:51px;transform:translate(-50%,-50%);border:0;border-radius:50%;background:transparent;cursor:pointer;z-index:30;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+/* touch-action:none — let page-swipe start even when finger lands on + */
+.hotspot{position:absolute;width:51px;height:51px;transform:translate(-50%,-50%);border:0;border-radius:50%;background:transparent;cursor:pointer;z-index:30;touch-action:none;-webkit-tap-highlight-color:transparent}
 /* Soft amber dot — +50% size, gentle pulse (same gold tone) */
 .hotspot::before{
   content:"";
@@ -1152,8 +1312,19 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
 @keyframes billPulse{0%,100%{box-shadow:0 0 0 0 #e1a73a00;filter:brightness(1)}40%{box-shadow:0 0 0 4px #e1a73a99;filter:brightness(1.25)}}
 
 /* Variant sheet for the single ice-cream button. */
-#shade{position:absolute;z-index:1080;inset:0;background:#000b;opacity:0;pointer-events:none;transition:.2s}#shade.show{opacity:1;pointer-events:auto}
-#variantSheet:not(.show){visibility:hidden;pointer-events:none}#variantSheet{position:absolute;z-index:1100;left:6px;right:6px;bottom:calc(var(--footer-h) + var(--safe-bottom) + 6px);padding:15px;border:1px solid #d99a34;border-radius:20px;background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;transform:translateY(120%);transition:.34s cubic-bezier(.22,.9,.23,1)}#variantSheet.show{transform:translateY(0)}#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#variantGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* Variant sheet — fixed + high z so it always opens above the cart (every + tap). */
+#shade{position:fixed;z-index:1240;inset:0;background:#000b;opacity:0;pointer-events:none;transition:.2s}#shade.show{opacity:1;pointer-events:auto}
+#variantSheet:not(.show){visibility:hidden;pointer-events:none}
+#variantSheet{
+  position:fixed;z-index:1250;left:max(6px,env(safe-area-inset-left,0px));right:max(6px,env(safe-area-inset-right,0px));
+  bottom:calc(var(--footer-h,48px) + var(--safe-bottom,0px) + 8px);max-height:min(70dvh,520px);overflow:auto;
+  padding:15px;border:1px solid #d99a34;border-radius:20px;
+  background:linear-gradient(160deg,#21170f,#3b2716);box-shadow:0 -10px 45px #000c;
+  transform:translateY(120%);transition:transform .34s cubic-bezier(.22,.9,.23,1),visibility 0s linear .34s
+}
+#variantSheet.show{transform:translateY(0);visibility:visible;pointer-events:auto;transition:transform .34s cubic-bezier(.22,.9,.23,1),visibility 0s}
+#variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}
+#variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .variant{min-height:46px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:12px;font-weight:1000;cursor:pointer;padding:6px 8px;line-height:1.25}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
 /* Ice cream builder — vessel + scoops + flavors */
 #ice-cream-sheet{
@@ -1210,6 +1381,7 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
 @media(prefers-reduced-motion:reduce){
   #viewer::before{animation:none}
   .hotspot::before{animation:none;opacity:.9;transform:scale(1)}
+  .category.active{animation:none;filter:none;color:#e8ff6a;text-shadow:0 0 10px #d7ff3dcc,0 1px 0 #0008}
   .logo-page,.menu-page,#toast,#variantSheet{transition-duration:.01ms!important}
 }
 
@@ -1591,6 +1763,7 @@ html[lang="tr"] #orderCloudTitle,html[lang="en"] #orderCloudTitle{text-align:lef
         </div>
         <button type="button" class="notes-review-close" id="notesReviewClose" aria-label="إغلاق">×</button>
       </div>
+      <p class="notes-review-where" id="notesReviewWhere">📝 الملاحظات تُكتب هنا — تحت كل صنف + ملاحظة عامة أسفل القائمة</p>
       <div id="notesReviewList"></div>
       <div class="notes-review-ft">
         <textarea id="notesReviewOrderNote" maxlength="200" rows="2" placeholder="ملاحظة عامة للطلب (اختياري)…"></textarea>
@@ -1601,8 +1774,28 @@ html[lang="tr"] #orderCloudTitle,html[lang="en"] #orderCloudTitle{text-align:lef
       </div>
     </div>
   </div>
-  <!-- Track lives only inside حسابي — never floating over the menu -->
+  <!-- Track in حسابي; quick rate = bottom sheet (before guest leaves) — not mid-menu -->
+  <div id="guestThanksCloud" aria-hidden="true" hidden></div>
   <div id="orderTrackBar" class="order-track-bar" hidden aria-hidden="true"></div>
+  <div id="orderTrackDock" class="order-track-dock" hidden aria-hidden="true"></div>
+  <div id="guestRateSheet" aria-hidden="true">
+    <div class="guest-rate-sheet-card" role="dialog" aria-modal="true" aria-labelledby="guestRateSheetTitle">
+      <p class="guest-rate-sheet-kicker" id="guestRateSheetKicker">قبل المغادرة — 5 ثوانٍ</p>
+      <p class="guest-rate-sheet-title" id="guestRateSheetTitle">كيف كانت الخدمة؟</p>
+      <div class="guest-rate-sheet-stars" id="guestRateSheetStars" role="group" aria-label="rating">
+        <button type="button" data-star="1" aria-label="1">★</button>
+        <button type="button" data-star="2" aria-label="2">★</button>
+        <button type="button" data-star="3" aria-label="3">★</button>
+        <button type="button" data-star="4" aria-label="4">★</button>
+        <button type="button" data-star="5" aria-label="5">★</button>
+      </div>
+      <textarea id="guestRateSheetNote" class="guest-rate-sheet-note" rows="2" maxlength="500" placeholder=""></textarea>
+      <div class="guest-rate-sheet-actions">
+        <button type="button" class="guest-rate-sheet-send" id="guestRateSheetSend" disabled>إرسال التقييم</button>
+        <button type="button" class="guest-rate-sheet-skip" id="guestRateSheetSkip">لاحقاً</button>
+      </div>
+    </div>
+  </div>
   <div id="tableBillSheet" aria-hidden="true">
     <div class="table-bill-card" role="dialog" aria-modal="true" aria-labelledby="tableBillTitle">
       <div class="table-bill-hd">
@@ -1616,66 +1809,148 @@ html[lang="tr"] #orderCloudTitle,html[lang="en"] #orderCloudTitle{text-align:lef
         <div class="order-track-inner">
           <p class="order-track-label" id="billOrderTrackLabel"></p>
           <div class="order-track-steps" id="billOrderTrackSteps" aria-hidden="true">
-            <span class="ots" data-step="sent"><em class="ots-emoji" aria-hidden="true">📤</em><i></i><b class="ots-send-lbl">إرسال</b></span>
-            <span class="ots" data-step="received"><em class="ots-emoji" aria-hidden="true">🧾</em><i></i><b class="ots-recv-lbl">استلام</b></span>
+            <span class="ots" data-step="sent">
+              <span class="ots-anim ots-anim-send" aria-hidden="true">
+                <svg viewBox="0 0 40 36" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="osPhone" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#3d4f63"/><stop offset="100%" stop-color="#1a2430"/>
+                    </linearGradient>
+                  </defs>
+                  <!-- Phone -->
+                  <rect x="4" y="6" width="16" height="26" rx="3.2" fill="url(#osPhone)" stroke="#8fa3b8" stroke-width=".7"/>
+                  <rect x="5.8" y="9" width="12.4" height="18.5" rx="1.2" fill="#0d1f14"/>
+                  <rect x="9.2" y="28.8" width="5.6" height="1.4" rx=".7" fill="#5a6d80"/>
+                  <!-- Screen content -->
+                  <rect x="7.2" y="11.2" width="9.6" height="2.2" rx=".6" fill="#7dffa0" opacity=".85"/>
+                  <rect x="7.2" y="14.6" width="7.2" height="1.5" rx=".5" fill="#cfe8d1" opacity=".45"/>
+                  <rect x="7.2" y="17" width="8.4" height="1.5" rx=".5" fill="#cfe8d1" opacity=".35"/>
+                  <!-- Ticket flying out -->
+                  <g class="os-ticket">
+                    <rect x="20" y="12" width="11" height="8" rx="1.2" fill="#fff8e7" stroke="#e8c96a" stroke-width=".7"/>
+                    <path d="M22.2 14.2h6.6M22.2 16.2h4.8M22.2 18h5.4" stroke="#b8922a" stroke-width=".7" stroke-linecap="round"/>
+                  </g>
+                  <!-- Signal arcs toward shop -->
+                  <path class="os-wave w1" d="M32 10c2.2 2 2.2 6 0 8" fill="none" stroke="#b8ff4a" stroke-width="1.4" stroke-linecap="round" opacity="0"/>
+                  <path class="os-wave w2" d="M34.2 8c3.2 3 3.2 9 0 12" fill="none" stroke="#ffe082" stroke-width="1.2" stroke-linecap="round" opacity="0"/>
+                  <path class="os-wave w3" d="M36.2 6.2c4 3.8 4 11.5 0 15.4" fill="none" stroke="#a5e6a8" stroke-width="1" stroke-linecap="round" opacity="0"/>
+                </svg>
+              </span>
+              <i></i><b class="ots-send-lbl">إرسال</b>
+            </span>
+            <span class="ots" data-step="received">
+              <span class="ots-anim ots-anim-recv" aria-hidden="true">
+                <svg viewBox="0 0 40 36" xmlns="http://www.w3.org/2000/svg">
+                  <!-- POS counter -->
+                  <rect x="2" y="22" width="36" height="10" rx="2" fill="#3a2a1a"/>
+                  <rect x="2" y="22" width="36" height="3" rx="1" fill="#5a4630"/>
+                  <!-- Screen / register -->
+                  <rect x="5" y="8" width="18" height="14" rx="2" fill="#1a3040" stroke="#6a9ab0" stroke-width=".8"/>
+                  <rect x="6.5" y="9.5" width="15" height="9" rx="1" fill="#0a1a12"/>
+                  <g class="or-slip">
+                    <rect x="8" y="11" width="12" height="6.5" rx=".8" fill="#fff8e7"/>
+                    <path d="M9.5 12.8h9M9.5 14.6h6.5M9.5 16.2h8" stroke="#b8922a" stroke-width=".65" stroke-linecap="round"/>
+                  </g>
+                  <!-- Big green check stamp -->
+                  <circle class="or-glow" cx="30" cy="14" r="8" fill="#4caf50" opacity="0"/>
+                  <circle cx="30" cy="14" r="6.2" fill="#2e7d32" stroke="#b8ff4a" stroke-width="1.2"/>
+                  <path class="or-check" d="M26.8 14.2l2.4 2.4 4.6-5" fill="none" stroke="#f4ffd4" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+                  <!-- Tiny bell -->
+                  <path d="M23.5 6.5c0-1.6 1.2-2.8 2.8-2.8s2.8 1.2 2.8 2.8c0 2.2.8 3.2.8 3.2H22.7s.8-1 .8-3.2z" fill="#ffe082" stroke="#e8c96a" stroke-width=".4"/>
+                  <circle cx="26.3" cy="10.2" r=".7" fill="#e8c96a"/>
+                </svg>
+              </span>
+              <i></i><b class="ots-recv-lbl">استلام</b>
+            </span>
             <span class="ots" data-step="preparing">
               <span class="ots-anim ots-anim-chef" aria-hidden="true">
-                <svg viewBox="0 0 36 32" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 40 36" xmlns="http://www.w3.org/2000/svg">
                   <g class="oc-body">
-                    <ellipse cx="18" cy="11" rx="7.2" ry="6.2" fill="#f5f0e6"/>
-                    <path d="M11 9c0-4.2 3-7 7-7s7 2.8 7 7" fill="#fff" stroke="#e8e0d4" stroke-width=".6"/>
-                    <circle cx="18" cy="3.2" r="1.4" fill="#fff" stroke="#e8e0d4" stroke-width=".5"/>
-                    <circle cx="15.2" cy="10.2" r=".7" fill="#3a2a1a"/>
-                    <circle cx="20.8" cy="10.2" r=".7" fill="#3a2a1a"/>
-                    <path d="M16.2 13.2c1.2.9 2.4.9 3.6 0" fill="none" stroke="#c47a5a" stroke-width=".8" stroke-linecap="round"/>
-                    <path d="M12 16.5c1.5 3.5 4 5 6 5s4.5-1.5 6-5" fill="#2f5d8a"/>
-                    <rect x="15.5" y="20.5" width="5" height="3.2" rx="1" fill="#1e3f5c"/>
+                    <!-- Chef hat -->
+                    <ellipse cx="16" cy="10" rx="7.5" ry="5.8" fill="#fffaf0"/>
+                    <path d="M9.2 9.5c0-4.6 3.2-7.6 6.8-7.6s6.8 3 6.8 7.6" fill="#fff" stroke="#e8e0d4" stroke-width=".7"/>
+                    <circle cx="16" cy="2.6" r="1.6" fill="#fff" stroke="#e8e0d4" stroke-width=".55"/>
+                    <!-- Face -->
+                    <ellipse cx="16" cy="12.2" rx="5.4" ry="4.6" fill="#f0d5b8"/>
+                    <circle cx="13.8" cy="11.6" r=".85" fill="#3a2a1a"/>
+                    <circle cx="18.2" cy="11.6" r=".85" fill="#3a2a1a"/>
+                    <path d="M14.4 14.2c1.1.85 2.2.85 3.3 0" fill="none" stroke="#c47a5a" stroke-width=".9" stroke-linecap="round"/>
+                    <!-- Jacket -->
+                    <path d="M10.5 17.2c1.6 4 4.2 5.8 5.5 5.8s3.9-1.8 5.5-5.8" fill="#1e4a6e"/>
+                    <rect x="14" y="21.5" width="4" height="2.8" rx=".8" fill="#163a56"/>
+                    <circle cx="16" cy="19.2" r="1.1" fill="#e8eef4"/>
                   </g>
                   <g class="oc-arm">
-                    <line x1="22" y1="17.5" x2="28" y2="22" stroke="#f5f0e6" stroke-width="2.2" stroke-linecap="round"/>
-                    <line x1="27.2" y1="21.2" x2="30.5" y2="19" stroke="#8a6a3a" stroke-width="1.4" stroke-linecap="round"/>
+                    <line x1="21" y1="18.5" x2="28" y2="23" stroke="#f0d5b8" stroke-width="2.4" stroke-linecap="round"/>
+                    <line x1="27" y1="22.2" x2="31.2" y2="19.5" stroke="#8a6a3a" stroke-width="1.6" stroke-linecap="round"/>
                   </g>
-                  <ellipse cx="26" cy="25.5" rx="6.5" ry="2.2" fill="#5a4630"/>
-                  <ellipse cx="26" cy="24.6" rx="5.2" ry="1.5" fill="#3d2e1c"/>
-                  <circle class="oc-steam s1" cx="23.5" cy="20" r="1.1" fill="#cfe8d1" opacity="0"/>
-                  <circle class="oc-steam s2" cx="26" cy="19" r="1.2" fill="#d8f0da" opacity="0"/>
-                  <circle class="oc-steam s3" cx="28.5" cy="20.2" r="1" fill="#cfe8d1" opacity="0"/>
+                  <!-- Pan -->
+                  <ellipse cx="28.5" cy="27.5" rx="7.2" ry="2.4" fill="#5a4630"/>
+                  <ellipse cx="28.5" cy="26.4" rx="5.8" ry="1.7" fill="#3d2e1c"/>
+                  <ellipse cx="28.5" cy="25.6" rx="4.2" ry="1.1" fill="#ff8a50" opacity=".55"/>
+                  <circle class="oc-steam s1" cx="25.5" cy="21.5" r="1.25" fill="#cfe8d1" opacity="0"/>
+                  <circle class="oc-steam s2" cx="28.5" cy="20.2" r="1.35" fill="#d8f0da" opacity="0"/>
+                  <circle class="oc-steam s3" cx="31.5" cy="21.8" r="1.15" fill="#cfe8d1" opacity="0"/>
                 </svg>
               </span>
               <i></i><b class="ots-prep-lbl">تجهيز</b>
             </span>
             <span class="ots" data-step="ready">
               <span class="ots-anim ots-anim-garson" aria-hidden="true">
-                <svg viewBox="0 0 36 32" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 40 36" xmlns="http://www.w3.org/2000/svg">
                   <g class="og-walk">
-                    <circle cx="16" cy="8" r="3.4" fill="#f0d5b8"/>
-                    <path d="M13.2 6.2c.4-1.6 1.6-2.4 2.8-2.4s2.4.8 2.8 2.4" fill="#2a2a2a"/>
-                    <rect x="13.2" y="11.2" width="5.6" height="8.2" rx="1.4" fill="#1a3d5c"/>
-                    <rect x="13.8" y="12.2" width="4.4" height="2.2" fill="#e8eef4" opacity=".85"/>
+                    <circle cx="15" cy="8.5" r="3.8" fill="#f0d5b8"/>
+                    <path d="M11.8 6.4c.45-1.8 1.8-2.7 3.2-2.7s2.75.9 3.2 2.7" fill="#1f1f1f"/>
+                    <rect x="11.8" y="12" width="6.4" height="9" rx="1.5" fill="#163a56"/>
+                    <rect x="12.6" y="13.2" width="4.8" height="2.4" fill="#f4f7fa" opacity=".9"/>
                     <g class="og-tray">
-                      <ellipse cx="24.5" cy="13.5" rx="5.2" ry="1.6" fill="#d4af37" stroke="#b8922a" stroke-width=".5"/>
-                      <rect x="21.5" y="10.2" width="2.4" height="2.6" rx=".5" fill="#f4f4f4"/>
-                      <rect x="24.2" y="9.6" width="2.2" height="3.2" rx=".5" fill="#e8f5e9"/>
-                      <circle cx="27.6" cy="11.4" r="1.3" fill="#fff3e0" stroke="#ffb74d" stroke-width=".4"/>
+                      <ellipse cx="26" cy="14" rx="6" ry="1.8" fill="#d4af37" stroke="#b8922a" stroke-width=".6"/>
+                      <rect x="22.4" y="10.2" width="2.6" height="3" rx=".55" fill="#fff"/>
+                      <rect x="25.4" y="9.4" width="2.5" height="3.6" rx=".55" fill="#e8f5e9"/>
+                      <circle cx="29.2" cy="11.6" r="1.45" fill="#fff3e0" stroke="#ffb74d" stroke-width=".45"/>
+                      <ellipse cx="26" cy="12.6" rx="1.1" ry=".45" fill="#ff7043" opacity=".7"/>
                     </g>
-                    <line x1="18.5" y1="13.5" x2="20.5" y2="13.5" stroke="#f0d5b8" stroke-width="1.8" stroke-linecap="round"/>
-                    <path class="og-leg-l" d="M14.5 19.2l-1.2 7.2" stroke="#1a3d5c" stroke-width="1.8" stroke-linecap="round"/>
-                    <path class="og-leg-r" d="M17.5 19.2l1.4 7.2" stroke="#1a3d5c" stroke-width="1.8" stroke-linecap="round"/>
-                    <ellipse cx="13" cy="27.2" rx="1.6" ry=".7" fill="#3a2a1a"/>
-                    <ellipse cx="19.2" cy="27.2" rx="1.6" ry=".7" fill="#3a2a1a"/>
+                    <line x1="18" y1="14.2" x2="21" y2="14.2" stroke="#f0d5b8" stroke-width="2" stroke-linecap="round"/>
+                    <path class="og-leg-l" d="M13.4 20.8l-1.4 8" stroke="#163a56" stroke-width="2" stroke-linecap="round"/>
+                    <path class="og-leg-r" d="M16.8 20.8l1.6 8" stroke="#163a56" stroke-width="2" stroke-linecap="round"/>
+                    <ellipse cx="11.6" cy="29.6" rx="1.8" ry=".75" fill="#3a2a1a"/>
+                    <ellipse cx="18.8" cy="29.6" rx="1.8" ry=".75" fill="#3a2a1a"/>
                   </g>
-                  <g opacity=".9">
-                    <rect x="29.5" y="20" width="5" height="7" rx=".8" fill="#8d6e4a"/>
-                    <rect x="28.8" y="19.2" width="6.4" height="1.4" rx=".4" fill="#a8845c"/>
-                    <circle cx="32" cy="16.5" r="1.2" fill="#cfe8d1" opacity=".5"/>
+                  <!-- Guest table ahead -->
+                  <g opacity=".95">
+                    <rect x="31" y="22" width="6.5" height="8" rx="1" fill="#8d6e4a"/>
+                    <rect x="30" y="21" width="8.5" height="1.6" rx=".5" fill="#a8845c"/>
+                    <circle cx="34.2" cy="18.2" r="1.5" fill="#cfe8d1" opacity=".55"/>
+                    <path d="M34.2 16.2v-2.2M32.6 17l-1.4-1.4M35.8 17l1.4-1.4" stroke="#ffe082" stroke-width=".7" stroke-linecap="round" opacity=".7"/>
                   </g>
                 </svg>
               </span>
               <i></i><b class="ots-ready-lbl">في الطريق</b>
             </span>
           </div>
+          <button type="button" class="order-track-recv" id="billOrderTrackRecvBtn" hidden>✓ استلمت الطلب</button>
           <button type="button" class="order-track-more" id="billOrderTrackMoreBtn">أضف شيئاً آخر؟</button>
         </div>
+      </div>
+      <button type="button" class="guest-rate-chip" id="guestRateChip" hidden>تقييم الخدمة</button>
+      <div id="guestRateCard" class="guest-rate-card" hidden>
+        <p class="guest-rate-title" id="guestRateTitle">كيف كانت الخدمة؟</p>
+        <p class="guest-rate-sub" id="guestRateSub">رأيك يساعدنا نقدّم خدمة أفضل في المرة القادمة.</p>
+        <p class="guest-rate-privacy" id="guestRatePrivacy">تقييمك سري — بدون اسم أو رقم هاتف.</p>
+        <div class="guest-rate-stars" id="guestRateStars" role="group" aria-label="rating">
+          <button type="button" data-star="1" aria-label="1">★</button>
+          <button type="button" data-star="2" aria-label="2">★</button>
+          <button type="button" data-star="3" aria-label="3">★</button>
+          <button type="button" data-star="4" aria-label="4">★</button>
+          <button type="button" data-star="5" aria-label="5">★</button>
+        </div>
+        <textarea id="guestRateNote" class="guest-rate-note" rows="2" maxlength="500" placeholder=""></textarea>
+        <p class="guest-rate-note-hint" id="guestRateNoteHint"></p>
+        <div class="guest-rate-actions">
+          <button type="button" class="guest-rate-send" id="guestRateSend" disabled>إرسال</button>
+          <button type="button" class="guest-rate-skip" id="guestRateSkip">لاحقاً</button>
+        </div>
+        <p class="guest-rate-thanks" id="guestRateThanks" hidden>شكراً لك — وصلنا رأيك.</p>
       </div>
       <div id="tableBillList"></div>
       <div class="table-bill-ft">
@@ -1794,7 +2069,7 @@ window.TONINO_CONFIG = Object.freeze({
   defaultTable: "?",
   enableNativeShare: true,
   storageKey: "tonino-qr-menu-cart-vFinal",
-  pageTransitionMs: 520
+  pageTransitionMs: 340
 });
 
 </script>
@@ -1812,14 +2087,14 @@ window.TONINO_CONFIG = Object.freeze({
   let CATEGORIES_AR = null;
   let HAS_ARABIC_PAGES = false;
 
-  let HOTSPOTS = {"0":[{"name":"Serpme Kahvaltı (2 kişilik)","price":1250,"x":93.1528,"y":80.53630000000001,"menuItemId":2168,"kind":"plus"},{"name":"Serpme Kahvaltı (3 kişilik)","price":1650,"x":93.2538,"y":86.92689999999999,"menuItemId":2169,"kind":"plus"},{"name":"Serpme Kahvaltı (4 kişilik)","price":1850,"x":93.4558,"y":92.8711,"menuItemId":2170,"kind":"plus"}],"1":[{"name":"Sade Omlet","price":245,"x":34.0768,"y":96.8339,"menuItemId":2167,"kind":"plus"},{"name":"Menemen","price":250,"x":34.0768,"y":62.4203,"menuItemId":2165,"kind":"plus"},{"name":"Kaşarlı Omlet","price":260,"x":33.9758,"y":82.8599,"menuItemId":2164,"kind":"plus"},{"name":"Sucuklu Omlet","price":260,"x":73.9657,"y":59.08330000000001,"menuItemId":2172,"kind":"plus"},{"name":"Simit Kahvaltısı","price":275,"x":85.57900000000001,"y":39.0608,"menuItemId":2171,"kind":"plus"},{"name":"Karışık Omlet","price":280,"x":74.5716,"y":78.8971,"menuItemId":2162,"kind":"plus"},{"name":"Kavurmalı Omlet","price":290,"x":74.4706,"y":97.251,"menuItemId":2163,"kind":"plus"},{"name":"Mini Kahvaltı","price":470,"x":33.3699,"y":39.0608,"menuItemId":2166,"kind":"plus"}],"2":[{"name":"Günün Çorbası","price":95,"x":23.473399999999998,"y":75.1739,"menuItemId":2158,"kind":"plus"},{"name":"Patates Tava","price":215,"x":21.3527,"y":94.2577,"menuItemId":2159,"kind":"plus"},{"name":"Kaşarlı Lavaş Tost","price":240,"x":43.1654,"y":26.4735,"menuItemId":2206,"kind":"plus"},{"name":"Karışık Lavaş Tost","price":260,"x":94.5666,"y":25.222099999999998,"menuItemId":2204,"kind":"plus"},{"name":"Kavurmalı Lavaş Tost","price":280,"x":88.2045,"y":42.950300000000006,"menuItemId":2205,"kind":"plus"},{"name":"Çıtır Tavuk ve Patates","price":345,"x":72.9559,"y":95.4048,"menuItemId":2161,"kind":"plus"},{"name":"Tonino Mix","price":395,"x":73.25880000000001,"y":78.9281,"menuItemId":2160,"kind":"plus"}],"3":[{"name":"Kekikli Makarna","price":275,"x":23.1704,"y":65.4445,"menuItemId":2207,"kind":"plus"},{"name":"Köri Makarna","price":275,"x":23.1704,"y":45.317800000000005,"menuItemId":2208,"kind":"plus"},{"name":"Penne Arrabbiata","price":280,"x":23.1704,"y":25.6083,"menuItemId":2210,"kind":"plus"},{"name":"Pesto Makarna","price":290,"x":72.04700000000001,"y":32.6995,"menuItemId":2211,"kind":"plus"},{"name":"Sezar Salata","price":320,"x":21.4537,"y":96.521,"menuItemId":2237,"kind":"plus"},{"name":"Ton Balık Salata","price":335,"x":70.2293,"y":96.4167,"menuItemId":2238,"kind":"plus"},{"name":"Penne Alfredo","price":340,"x":71.946,"y":65.13170000000001,"menuItemId":2209,"kind":"plus"}],"4":[{"name":"Kekikli Tavuk","price":345,"x":84.6701,"y":77.051,"menuItemId":2296,"kind":"plus"},{"name":"Köri Soslu Tavuk","price":345,"x":39.227000000000004,"y":95.092,"menuItemId":2297,"kind":"plus"},{"name":"Meksika Soslu Tavuk","price":345,"x":39.227000000000004,"y":56.9243,"menuItemId":2298,"kind":"plus"},{"name":"Cheese California","price":355,"x":84.6701,"y":37.7361,"menuItemId":2295,"kind":"plus"},{"name":"Tonino Spesiyal Pesto","price":355,"x":39.227000000000004,"y":19.2779,"menuItemId":2301,"kind":"plus"}],"5":[{"name":"Barbekü Soslu Tavuk","price":345,"x":90.4262,"y":56.5071,"menuItemId":2292,"kind":"plus"},{"name":"Cheddar Tavuklu Wrap","price":345,"x":90.6282,"y":95.7177,"menuItemId":2294,"kind":"plus"},{"name":"Soya Soslu Tavuk","price":345,"x":36.9043,"y":35.859,"menuItemId":2299,"kind":"plus"},{"name":"Tavuklu Wrap","price":345,"x":36.9043,"y":74.33959999999999,"menuItemId":2300,"kind":"plus"},{"name":"Cafe de Paris","price":350,"x":90.2243,"y":18.9651,"menuItemId":2293,"kind":"plus"}],"6":[{"name":"Mozzarella Pizza","price":310,"x":23.9783,"y":28.9763,"menuItemId":2233,"kind":"plus"},{"name":"Sebzeli Pizza","price":330,"x":65.786,"y":86.74929999999999,"menuItemId":2234,"kind":"plus"},{"name":"Sucuklu Pizza","price":345,"x":23.3724,"y":57.9671,"menuItemId":2235,"kind":"plus"},{"name":"Etibol Pizza","price":355,"x":65.38199999999999,"y":29.810599999999997,"menuItemId":2230,"kind":"plus"},{"name":"Karışık Pizza","price":360,"x":65.38199999999999,"y":57.2371,"menuItemId":2231,"kind":"plus"},{"name":"Kavurmalı Pizza","price":380,"x":73.1578,"y":95.3006,"menuItemId":2232,"kind":"plus"},{"name":"Ton Balıklı Pizza","price":380,"x":23.9783,"y":88.835,"menuItemId":2236,"kind":"plus"}],"7":[{"name":"Cheddar Köfte Wrap","price":330,"x":92.9508,"y":95.6134,"menuItemId":2195,"kind":"plus"},{"name":"Köfte Wrap","price":330,"x":44.276199999999996,"y":95.7177,"menuItemId":2198,"kind":"plus"},{"name":"kassap köfte","price":350,"x":93.0518,"y":67.3526,"menuItemId":2203,"kind":"plus"},{"name":"Cheddar Köfte","price":360,"x":42.2565,"y":68.2912,"menuItemId":2194,"kind":"plus"},{"name":"Kaşarlı Köfte","price":360,"x":92.9508,"y":32.6262,"menuItemId":2197,"kind":"plus"},{"name":"Tonino Köfte","price":360,"x":40.2368,"y":32.000499999999995,"menuItemId":2201,"kind":"plus"}],"8":[{"name":"Tavuk Burger","price":310,"x":90.1233,"y":80.1795,"menuItemId":2200,"kind":"plus"},{"name":"Cheddar Burger","price":325,"x":90.0223,"y":39.6132,"menuItemId":2193,"kind":"plus"},{"name":"Lavaşino Burger","price":325,"x":34.7837,"y":62.0341,"menuItemId":2199,"kind":"plus"},{"name":"Tonino Special Burger","price":325,"x":36.1974,"y":23.2407,"menuItemId":2202,"kind":"plus"},{"name":"Double Burger","price":365,"x":34.8846,"y":96.1348,"menuItemId":2196,"kind":"plus"}],"9":[{"name":"Izgara Köfte Sporcu","price":365,"x":53.2639,"y":93.0796,"menuItemId":2275,"kind":"plus"},{"name":"ızgara  tavuk ve ayaran","price":355,"x":53.2639,"y":51.7834,"menuItemId":2500,"kind":"plus"}],"10":[{"name":"termos  çay ","price":280,"x":94.0617,"y":93.7363,"menuItemId":2501,"kind":"plus"},{"name":"Ada Çayı","price":150,"x":93.8597,"y":83.9337,"menuItemId":2311,"kind":"plus"},{"name":"Hibiscus","price":150,"x":93.9607,"y":74.6524,"menuItemId":2314,"kind":"plus"},{"name":"Kış Çayı","price":150,"x":93.75869999999999,"y":65.1627,"menuItemId":2316,"kind":"plus"},{"name":"Papatya","price":150,"x":93.8597,"y":55.672900000000006,"menuItemId":2318,"kind":"plus"},{"name":"Ihlamur + Ball","price":165,"x":93.8597,"y":46.183099999999996,"menuItemId":2315,"kind":"plus"},{"name":"Yeşil Çay","price":150,"x":93.8597,"y":36.6933,"menuItemId":2319,"kind":"plus"},{"name":"Nane Limon","price":150,"x":93.8597,"y":27.3078,"menuItemId":2317,"kind":"plus"},{"name":"Fincan Çay","price":60,"x":93.9607,"y":17.9222,"menuItemId":2313,"kind":"plus"},{"name":"Bardak Çay","price":50,"x":93.8597,"y":9.4753,"menuItemId":2312,"kind":"plus"}],"11":[{"name":"Nutella Waffle","price":350,"x":94.3646,"y":4.2611,"menuItemId":2288,"kind":"plus"},{"name":"Künefe","price":260,"x":94.3646,"y":16.9837,"menuItemId":2286,"kind":"plus"},{"name":"Fırın Sütlaç","price":190,"x":94.46560000000001,"y":24.2835,"menuItemId":2283,"kind":"plus"},{"name":"Magnolia","price":210,"x":94.46560000000001,"y":31.270500000000002,"menuItemId":2287,"kind":"plus"},{"name":"Ballı Cevizle","price":250,"x":94.3646,"y":38.1532,"menuItemId":2278,"kind":"plus"},{"name":"Frambuazlı Cheesecake","price":240,"x":94.2636,"y":45.0359,"menuItemId":2282,"kind":"plus"},{"name":"Fıstık Rüyası","price":240,"x":94.46560000000001,"y":52.2315,"menuItemId":2284,"kind":"plus"},{"name":"Brownie","price":260,"x":94.46560000000001,"y":59.2185,"menuItemId":2279,"kind":"plus"},{"name":"San Sebastian","price":260,"x":94.3646,"y":66.1012,"menuItemId":2289,"kind":"plus"},{"name":"Sufle","price":260,"x":94.3646,"y":72.8796,"menuItemId":2290,"kind":"plus"},{"name":"Tiramisu","price":240,"x":94.2636,"y":79.2409,"menuItemId":2291,"kind":"plus"},{"name":"Dubai Pasta","price":280,"x":94.46560000000001,"y":86.3322,"menuItemId":2281,"kind":"plus"},{"name":"Kalpli Pasta","price":250,"x":94.46560000000001,"y":93.1106,"menuItemId":2285,"kind":"plus"}],"12":[{"name":"Dondurma Top","price":60,"x":91.8867,"y":45.9722,"menuItemId":2280,"kind":"plus"}],"13":[{"name":"White Chocolate Mocha","price":200,"x":76.6923,"y":95.9996,"menuItemId":2192,"kind":"plus"},{"name":"Fındıklı Latte","price":200,"x":76.6923,"y":91.4111,"menuItemId":2186,"kind":"plus"},{"name":"Caramel Macchiato","price":200,"x":76.59129999999999,"y":86.5098,"menuItemId":2179,"kind":"plus"},{"name":"Caramel Latte","price":200,"x":76.59129999999999,"y":82.1299,"menuItemId":2178,"kind":"plus"},{"name":"Cafe Mocha","price":200,"x":76.4903,"y":77.33290000000001,"menuItemId":2176,"kind":"plus"},{"name":"Cafe Latte","price":190,"x":76.3893,"y":72.7444,"menuItemId":2175,"kind":"plus"},{"name":"Cappuccino","price":190,"x":76.59129999999999,"y":68.05160000000001,"menuItemId":2177,"kind":"plus"},{"name":"Sütlü Nescafe","price":190,"x":76.4903,"y":63.2546,"menuItemId":2189,"kind":"plus"},{"name":"Double Espresso","price":150,"x":76.59129999999999,"y":58.874700000000004,"menuItemId":2182,"kind":"plus"},{"name":"Espresso","price":120,"x":76.6923,"y":53.973400000000005,"menuItemId":2183,"kind":"plus"},{"name":"Salep","price":160,"x":76.6923,"y":49.1763,"menuItemId":2188,"kind":"plus"},{"name":"Sıcak Çikolata","price":200,"x":76.6923,"y":44.9007,"menuItemId":2190,"kind":"plus"},{"name":"Americano","price":150,"x":76.59129999999999,"y":40.3122,"menuItemId":2173,"kind":"plus"},{"name":"Filtre Sütlü","price":170,"x":76.59129999999999,"y":35.7238,"menuItemId":2185,"kind":"plus"},{"name":"Filtre Kahve","price":150,"x":76.4903,"y":30.7182,"menuItemId":2184,"kind":"plus"},{"name":"Menengiç Kahvesi","price":145,"x":76.6923,"y":26.025399999999998,"menuItemId":2187,"kind":"plus"},{"name":"Dibek Kahvesi","price":145,"x":76.59129999999999,"y":21.3326,"menuItemId":2181,"kind":"plus"},{"name":"Damla Sakızlı Türk Kahvesi","price":135,"x":76.4903,"y":12.26,"menuItemId":2180,"kind":"plus"},{"name":"Antep Fıstık Türk Kahvesi","price":145,"x":76.3893,"y":16.7442,"menuItemId":2174,"kind":"plus"},{"name":"Türk Kahvesi","price":125,"x":76.59129999999999,"y":7.567200000000001,"menuItemId":2191,"kind":"plus"}],"14":[{"name":"Iced Fındıklı Latte","price":200,"x":79.1159,"y":91.3068,"menuItemId":2306,"kind":"plus"},{"name":"Iced White Mocha","price":200,"x":79.0149,"y":79.8357,"menuItemId":2310,"kind":"plus"},{"name":"Iced Mocha","price":200,"x":79.0149,"y":67.3216,"menuItemId":2308,"kind":"plus"},{"name":"Iced Caramel Mocha","price":200,"x":79.1159,"y":55.9547,"menuItemId":2305,"kind":"plus"},{"name":"Iced Caramel Latte","price":200,"x":79.0149,"y":43.336400000000005,"menuItemId":2304,"kind":"plus"},{"name":"Iced Vanilla Latte","price":200,"x":79.0149,"y":30.7182,"menuItemId":2309,"kind":"plus"},{"name":"Iced Latte","price":190,"x":79.0149,"y":18.2041,"menuItemId":2307,"kind":"plus"},{"name":"Iced Americano","price":170,"x":79.0149,"y":5.481599999999999,"menuItemId":2303,"kind":"plus"}],"15":[{"name":"Elmalı Smoothie","price":240,"x":77.50019999999999,"y":85.9884,"menuItemId":2248,"kind":"plus"},{"name":"Karpuzlu Smoothie","price":240,"x":77.50019999999999,"y":79.3142,"menuItemId":2252,"kind":"plus"},{"name":"Böğürtlenli Smoothie","price":240,"x":77.50019999999999,"y":72.64009999999999,"menuItemId":2241,"kind":"plus"},{"name":"Mangolu Smoothie","price":240,"x":77.39920000000001,"y":66.0702,"menuItemId":2256,"kind":"plus"},{"name":"Çilekli Smoothie","price":240,"x":77.6012,"y":59.291799999999995,"menuItemId":2271,"kind":"plus"},{"name":"Şeftali Frozen","price":210,"x":77.50019999999999,"y":46.9864,"menuItemId":2272,"kind":"plus"},{"name":"Elmalı Frozen","price":210,"x":77.50019999999999,"y":40.2079,"menuItemId":2247,"kind":"plus"},{"name":"Karpuzlu Frozen","price":210,"x":77.50019999999999,"y":33.5338,"menuItemId":2251,"kind":"plus"},{"name":"Orman Meyveli Frozen","price":210,"x":77.50019999999999,"y":26.859699999999997,"menuItemId":2260,"kind":"plus"},{"name":"Böğürtlenli Frozen","price":210,"x":77.50019999999999,"y":20.1855,"menuItemId":2240,"kind":"plus"},{"name":"Mangolu Frozen","price":210,"x":77.39920000000001,"y":13.511400000000002,"menuItemId":2255,"kind":"plus"},{"name":"Çilekli Frozen","price":210,"x":77.50019999999999,"y":6.8372,"menuItemId":2269,"kind":"plus"}],"16":[{"name":"Vanilyalı Magnum","price":280,"x":79.4875,"y":76.7088,"menuItemId":2216,"kind":"plus"},{"name":"Çilekli Magnum","price":280,"x":79.4875,"y":69.3047,"menuItemId":2219,"kind":"plus"},{"name":"Magnum Milkshake","price":280,"x":79.4875,"y":62.943400000000004,"menuItemId":2213,"kind":"plus"},{"name":"Muzlu Milkshake","price":220,"x":79.3865,"y":55.3307,"menuItemId":2214,"kind":"plus"},{"name":"Karamelli Milkshake","price":220,"x":79.3865,"y":48.239399999999996,"menuItemId":2212,"kind":"plus"},{"name":"Vanilyalı Milkshake","price":220,"x":79.4875,"y":40.9396,"menuItemId":2217,"kind":"plus"},{"name":"Çilekli Milkshake","price":220,"x":79.4875,"y":33.848299999999995,"menuItemId":2220,"kind":"plus"},{"name":"Çikolatalı Milkshake","price":220,"x":79.4875,"y":19.77,"menuItemId":2218,"kind":"plus"},{"name":"Special Karışık Milkshake","price":230,"x":79.4875,"y":6.6303,"menuItemId":2265,"kind":"plus"},{"name":"OREO  MİLKSHAKE","price":220,"x":79.5128,"y":26.8522,"menuItemId":2215,"kind":"plus"}],"17":[{"name":"Naneli Limonata","price":150,"x":79.2856,"y":91.4127,"menuItemId":2259,"kind":"plus"},{"name":"Çilekli Limonata","price":150,"x":79.3865,"y":83.3829,"menuItemId":2270,"kind":"plus"},{"name":"Classic Limonata","price":140,"x":79.3865,"y":74.206,"menuItemId":2243,"kind":"plus"},{"name":"Portakal Suyu","price":170,"x":79.2856,"y":66.6976,"menuItemId":2262,"kind":"plus"},{"name":"Red Bull Mojito","price":260,"x":78.0737,"y":47.9266,"menuItemId":2264,"kind":"plus"},{"name":"Şeftali Mojito","price":225,"x":78.0737,"y":39.8967,"menuItemId":2273,"kind":"plus"},{"name":"Mango Mojito","price":225,"x":78.0737,"y":31.866899999999998,"menuItemId":2254,"kind":"plus"},{"name":"Elma Mojito","price":225,"x":78.0737,"y":23.211399999999998,"menuItemId":2246,"kind":"plus"},{"name":"Çilek Mojito","price":225,"x":78.0737,"y":14.660100000000002,"menuItemId":2268,"kind":"plus"},{"name":"Classic Mojito","price":225,"x":78.0737,"y":6.0046,"menuItemId":2244,"kind":"plus"}],"18":[{"name":"Mathilda","price":250,"x":77.3668,"y":5.5875,"menuItemId":2258,"kind":"plus"},{"name":"Churchill","price":145,"x":77.2659,"y":12.783,"menuItemId":2242,"kind":"plus"},{"name":"Valentina","price":230,"x":77.3668,"y":19.77,"menuItemId":2266,"kind":"plus"},{"name":"Cool Lime","price":225,"x":77.4678,"y":27.5913,"menuItemId":2245,"kind":"plus"},{"name":"PİNK LİME ","price":225,"x":77.3668,"y":34.7868,"menuItemId":2263,"kind":"plus"},{"name":"Ice Lime Berry","price":225,"x":77.4678,"y":41.8781,"menuItemId":2249,"kind":"plus"},{"name":"Çilek Bubble Smoothie","price":250,"x":69.3891,"y":65.2376,"menuItemId":2267,"kind":"plus"},{"name":"Mango Bubble Smoothie","price":250,"x":69.49,"y":73.05890000000001,"menuItemId":2253,"kind":"plus"},{"name":"Blueberry Bubble Smoothie","price":250,"x":69.2881,"y":82.3401,"menuItemId":2239,"kind":"plus"},{"name":"Karpuz Bubble Smoothie","price":250,"x":69.3891,"y":90.1613,"menuItemId":2250,"kind":"plus"}],"19":[{"name":"Su","price":40,"x":86.6574,"y":6.4216999999999995,"menuItemId":2327,"kind":"plus"},{"name":"Ayran","price":60,"x":86.5565,"y":16.1201,"menuItemId":2320,"kind":"plus"},{"name":"Kola","price":80,"x":86.6574,"y":24.7756,"menuItemId":2322,"kind":"plus"},{"name":"fanta","price":80,"x":86.75840000000001,"y":33.535399999999996,"menuItemId":2328,"kind":"plus"},{"name":"Sprite","price":80,"x":86.6574,"y":51.5765,"menuItemId":2326,"kind":"plus"},{"name":"Ice Tea","price":80,"x":86.6574,"y":61.170500000000004,"menuItemId":2321,"kind":"plus"},{"name":"Soda","price":60,"x":86.6574,"y":72.8503,"menuItemId":2325,"kind":"plus"},{"name":"Meyveli Soda","price":70,"x":86.75840000000001,"y":85.3643,"menuItemId":2323,"kind":"plus"},{"name":"Red Bull 250ml","price":160,"x":86.75840000000001,"y":94.9584,"menuItemId":2324,"kind":"plus"}],"20":[{"name":"Love 66","price":600,"x":92.1106,"y":5.4832,"menuItemId":2225,"kind":"plus"}]};;;
+  let HOTSPOTS = {"0":[{"name":"Serpme Kahvaltı (2 kişilik)","price":1250,"x":93.1891,"y":80.53630000000001,"menuItemId":2168,"kind":"plus"},{"name":"Serpme Kahvaltı (3 kişilik)","price":1650,"x":93.39110000000001,"y":86.8976,"menuItemId":2169,"kind":"plus"},{"name":"Serpme Kahvaltı (4 kişilik)","price":1850,"x":93.593,"y":92.946,"menuItemId":2170,"kind":"plus"}],"1":[{"name":"Sade Omlet","price":245,"x":34.1131,"y":96.8045,"menuItemId":2167,"kind":"plus"},{"name":"Menemen","price":250,"x":34.214,"y":62.391,"menuItemId":2165,"kind":"plus"},{"name":"Kaşarlı Omlet","price":260,"x":34.1131,"y":82.8305,"menuItemId":2164,"kind":"plus"},{"name":"Sucuklu Omlet","price":260,"x":74.103,"y":59.15820000000001,"menuItemId":2172,"kind":"plus"},{"name":"Simit Kahvaltısı","price":275,"x":85.7162,"y":39.0315,"menuItemId":2171,"kind":"plus"},{"name":"Karışık Omlet","price":280,"x":74.5069,"y":78.9721,"menuItemId":2162,"kind":"plus"},{"name":"Kavurmalı Omlet","price":290,"x":74.5393,"y":97.2722,"menuItemId":2163,"kind":"plus"},{"name":"Mini Kahvaltı","price":470,"x":33.5071,"y":39.0315,"menuItemId":2166,"kind":"plus"}],"2":[{"name":"Günün Çorbası","price":95,"x":23.5097,"y":75.14450000000001,"menuItemId":2158,"kind":"plus"},{"name":"Patates Tava","price":215,"x":21.389,"y":94.22840000000001,"menuItemId":2159,"kind":"plus"},{"name":"Kaşarlı Lavaş Tost","price":240,"x":94.5019,"y":25.1928,"menuItemId":2206,"kind":"plus"},{"name":"Karışık Lavaş Tost","price":260,"x":43.201699999999995,"y":26.3399,"menuItemId":2204,"kind":"plus"},{"name":"Kavurmalı Lavaş Tost","price":280,"x":88.3418,"y":43.025200000000005,"menuItemId":2205,"kind":"plus"},{"name":"Çıtır Tavuk ve Patates","price":345,"x":72.9922,"y":95.3755,"menuItemId":2161,"kind":"plus"},{"name":"Tonino Mix","price":395,"x":73.2951,"y":78.8987,"menuItemId":2160,"kind":"plus"}],"3":[{"name":"Kekikli Makarna","price":275,"x":23.206699999999998,"y":65.3109,"menuItemId":2207,"kind":"plus"},{"name":"Köri Makarna","price":275,"x":23.206699999999998,"y":45.3928,"menuItemId":2208,"kind":"plus"},{"name":"Penne Arrabbiata","price":280,"x":23.0047,"y":25.6832,"menuItemId":2210,"kind":"plus"},{"name":"Pesto Makarna","price":290,"x":72.0833,"y":32.5659,"menuItemId":2211,"kind":"plus"},{"name":"Sezar Salata","price":320,"x":21.590999999999998,"y":96.49170000000001,"menuItemId":2237,"kind":"plus"},{"name":"Ton Balık Salata","price":335,"x":70.26559999999999,"y":96.49170000000001,"menuItemId":2238,"kind":"plus"},{"name":"Penne Alfredo","price":340,"x":72.0833,"y":65.1024,"menuItemId":2209,"kind":"plus"}],"4":[{"name":"Kekikli Tavuk","price":345,"x":84.8074,"y":77.0216,"menuItemId":2296,"kind":"plus"},{"name":"Köri Soslu Tavuk","price":345,"x":39.1623,"y":95.0627,"menuItemId":2297,"kind":"plus"},{"name":"Meksika Soslu Tavuk","price":345,"x":39.2633,"y":56.9992,"menuItemId":2298,"kind":"plus"},{"name":"Cheese California","price":355,"x":84.8074,"y":37.811099999999996,"menuItemId":2295,"kind":"plus"},{"name":"Tonino Spesiyal Pesto","price":355,"x":39.1623,"y":19.2486,"menuItemId":2301,"kind":"plus"}],"5":[{"name":"Barbekü Soslu Tavuk","price":345,"x":90.4625,"y":56.582100000000004,"menuItemId":2292,"kind":"plus"},{"name":"Cheddar Tavuklu Wrap","price":345,"x":90.6645,"y":95.6884,"menuItemId":2294,"kind":"plus"},{"name":"Soya Soslu Tavuk","price":345,"x":36.8396,"y":35.829699999999995,"menuItemId":2299,"kind":"plus"},{"name":"Tavuklu Wrap","price":345,"x":36.9406,"y":74.41449999999999,"menuItemId":2300,"kind":"plus"},{"name":"Cafe de Paris","price":350,"x":90.2605,"y":18.9358,"menuItemId":2293,"kind":"plus"}],"6":[{"name":"Mozzarella Pizza","price":310,"x":24.0146,"y":28.947,"menuItemId":2233,"kind":"plus"},{"name":"Sebzeli Pizza","price":330,"x":66.0242,"y":86.72,"menuItemId":2234,"kind":"plus"},{"name":"Sucuklu Pizza","price":345,"x":23.4087,"y":57.8335,"menuItemId":2235,"kind":"plus"},{"name":"Etibol Pizza","price":355,"x":65.5193,"y":29.781200000000002,"menuItemId":2230,"kind":"plus"},{"name":"Karışık Pizza","price":360,"x":65.4183,"y":57.2078,"menuItemId":2231,"kind":"plus"},{"name":"Kavurmalı Pizza","price":380,"x":73.2951,"y":95.3755,"menuItemId":2232,"kind":"plus"},{"name":"Ton Balıklı Pizza","price":380,"x":24.0146,"y":88.8057,"menuItemId":2236,"kind":"plus"}],"7":[{"name":"Cheddar Köfte Wrap","price":330,"x":92.9871,"y":95.5841,"menuItemId":2195,"kind":"plus"},{"name":"Köfte Wrap","price":330,"x":44.3125,"y":95.6884,"menuItemId":2198,"kind":"plus"},{"name":"kassap köfte","price":350,"x":93.0881,"y":67.3233,"menuItemId":2203,"kind":"plus"},{"name":"Cheddar Köfte","price":360,"x":42.2928,"y":68.2618,"menuItemId":2194,"kind":"plus"},{"name":"Kaşarlı Köfte","price":360,"x":92.9871,"y":32.5969,"menuItemId":2197,"kind":"plus"},{"name":"Tonino Köfte","price":360,"x":40.2731,"y":32.0755,"menuItemId":2201,"kind":"plus"}],"8":[{"name":"Tavuk Burger","price":310,"x":90.1596,"y":80.15010000000001,"menuItemId":2200,"kind":"plus"},{"name":"Cheddar Burger","price":325,"x":90.1596,"y":39.6882,"menuItemId":2193,"kind":"plus"},{"name":"Lavaşino Burger","price":325,"x":34.920899999999996,"y":62.1091,"menuItemId":2199,"kind":"plus"},{"name":"Tonino Special Burger","price":325,"x":36.2337,"y":23.1071,"menuItemId":2202,"kind":"plus"},{"name":"Double Burger","price":365,"x":34.920899999999996,"y":96.0012,"menuItemId":2196,"kind":"plus"}],"9":[{"name":"Izgara Köfte Sporcu","price":365,"x":53.199200000000005,"y":93.1546,"menuItemId":2275,"kind":"plus"},{"name":"ızgara  tavuk ve ayaran","price":355,"x":53.199200000000005,"y":51.6498,"menuItemId":2500,"kind":"plus"}],"10":[{"name":"Bardak Çay","price":50,"x":93.795,"y":9.446,"menuItemId":2312,"kind":"plus"},{"name":"Fincan Çay","price":60,"x":93.795,"y":17.9972,"menuItemId":2313,"kind":"plus"},{"name":"Ada Çayı","price":150,"x":93.795,"y":84.0086,"menuItemId":2311,"kind":"plus"},{"name":"Hibiscus","price":150,"x":93.896,"y":74.5188,"menuItemId":2314,"kind":"plus"},{"name":"Kış Çayı","price":150,"x":93.896,"y":65.029,"menuItemId":2316,"kind":"plus"},{"name":"Nane Limon","price":150,"x":93.896,"y":27.3827,"menuItemId":2317,"kind":"plus"},{"name":"Papatya","price":150,"x":93.896,"y":55.6435,"menuItemId":2318,"kind":"plus"},{"name":"Yeşil Çay","price":150,"x":93.795,"y":36.7682,"menuItemId":2319,"kind":"plus"},{"name":"Ihlamur + Ball","price":165,"x":93.896,"y":46.1537,"menuItemId":2315,"kind":"plus"},{"name":"termos  çay ","price":280,"x":93.997,"y":93.6027,"menuItemId":2501,"kind":"plus"}],"11":[{"name":"Nutella Waffle","price":350,"x":94.4009,"y":4.2318,"menuItemId":2288,"kind":"plus"},{"name":"Künefe","price":260,"x":94.29990000000001,"y":16.9544,"menuItemId":2286,"kind":"plus"},{"name":"Fırın Sütlaç","price":190,"x":94.4009,"y":24.2542,"menuItemId":2283,"kind":"plus"},{"name":"Magnolia","price":210,"x":94.4009,"y":31.1369,"menuItemId":2287,"kind":"plus"},{"name":"Ballı Cevizle","price":250,"x":94.4009,"y":38.1239,"menuItemId":2278,"kind":"plus"},{"name":"Frambuazlı Cheesecake","price":240,"x":94.29990000000001,"y":44.902300000000004,"menuItemId":2282,"kind":"plus"},{"name":"Fıstık Rüyası","price":240,"x":94.4009,"y":52.4107,"menuItemId":2284,"kind":"plus"},{"name":"Brownie","price":260,"x":94.4009,"y":59.2934,"menuItemId":2279,"kind":"plus"},{"name":"San Sebastian","price":260,"x":94.4009,"y":65.86330000000001,"menuItemId":2289,"kind":"plus"},{"name":"Sufle","price":260,"x":94.29990000000001,"y":73.05890000000001,"menuItemId":2290,"kind":"plus"},{"name":"Tiramisu","price":240,"x":94.29990000000001,"y":79.3159,"menuItemId":2291,"kind":"plus"},{"name":"Dubai Pasta","price":280,"x":94.4009,"y":86.1986,"menuItemId":2281,"kind":"plus"},{"name":"Kalpli Pasta","price":250,"x":94.4009,"y":93.0813,"menuItemId":2285,"kind":"plus"}],"12":[{"name":"Dondurma Top","price":60,"x":91.8763,"y":46.0185,"menuItemId":2280,"kind":"plus"}],"13":[{"name":"Türk Kahvesi","price":125,"x":72.7216,"y":4.1471,"menuItemId":2191,"kind":"plus"},{"name":"DOUBLE TÜRK KAHVESİ","price":200,"x":72.7115,"y":13.0972,"menuItemId":2502,"kind":"plus"},{"name":"Dibek Kahvesi","price":145,"x":72.79759999999999,"y":54.3335,"menuItemId":2181,"kind":"plus"},{"name":"Damla Sakızlı Türk Kahvesi","price":135,"x":72.7115,"y":21.0358,"menuItemId":2180,"kind":"plus"},{"name":"Filtre Sütlü","price":170,"x":72.8225,"y":95.8122,"menuItemId":2185,"kind":"plus"},{"name":"Filtre Kahve","price":150,"x":72.7115,"y":87.5021,"menuItemId":2184,"kind":"plus"},{"name":"DOUBLE MENEMGİÇ ","price":220,"x":72.7115,"y":79.2116,"menuItemId":2503,"kind":"plus"},{"name":"Menengiç Kahvesi","price":145,"x":72.7115,"y":70.9406,"menuItemId":2187,"kind":"plus"},{"name":"DOUBLE DAMLA SAKIZ","price":210,"x":72.79759999999999,"y":29.3172,"menuItemId":2504,"kind":"plus"},{"name":"Antep Fıstık Türk Kahvesi","price":145,"x":72.8642,"y":37.8176,"menuItemId":2174,"kind":"plus"},{"name":"DOUBLE  ANTEP  FISTIK","price":220,"x":72.7115,"y":46.1772,"menuItemId":2505,"kind":"plus"},{"name":"DOUBLE DİBEK ","price":220,"x":72.7115,"y":62.580999999999996,"menuItemId":2506,"kind":"plus"}],"14":[{"name":"Sıcak Çikolata","price":200,"x":78.51559999999999,"y":3.932,"menuItemId":2190,"kind":"plus"},{"name":"Salep","price":160,"x":78.51559999999999,"y":12.2395,"menuItemId":2188,"kind":"plus"},{"name":"Espresso","price":120,"x":78.51559999999999,"y":20.2041,"menuItemId":2183,"kind":"plus"},{"name":"Double Espresso","price":150,"x":78.51559999999999,"y":29.194599999999998,"menuItemId":2182,"kind":"plus"},{"name":"Sütlü Nescafe","price":190,"x":78.5262,"y":37.351099999999995,"menuItemId":2189,"kind":"plus"},{"name":"Cappuccino","price":190,"x":78.4555,"y":45.5573,"menuItemId":2177,"kind":"plus"},{"name":"Cafe Latte","price":190,"x":78.51559999999999,"y":53.8173,"menuItemId":2175,"kind":"plus"},{"name":"White Chocolate Mocha","price":200,"x":78.4777,"y":96.0208,"menuItemId":2192,"kind":"plus"},{"name":"Cafe Mocha","price":200,"x":78.3628,"y":61.9501,"menuItemId":2176,"kind":"plus"},{"name":"Caramel Latte","price":200,"x":78.51559999999999,"y":70.852,"menuItemId":2178,"kind":"plus"},{"name":"Caramel Macchiato","price":200,"x":78.51559999999999,"y":79.2116,"menuItemId":2179,"kind":"plus"},{"name":"Fındıklı Latte","price":200,"x":78.51559999999999,"y":87.5712,"menuItemId":2186,"kind":"plus"}],"15":[{"name":"Iced Americano","price":170,"x":79.0836,"y":5.607,"menuItemId":2303,"kind":"plus"},{"name":"Iced Latte","price":190,"x":79.0836,"y":18.2253,"menuItemId":2307,"kind":"plus"},{"name":"Iced Caramel Latte","price":200,"x":78.9826,"y":43.357600000000005,"menuItemId":2304,"kind":"plus"},{"name":"Iced Caramel Mocha","price":200,"x":79.0836,"y":55.8716,"menuItemId":2305,"kind":"plus"},{"name":"Iced Fındıklı Latte","price":200,"x":79.0836,"y":91.1194,"menuItemId":2306,"kind":"plus"},{"name":"Iced Mocha","price":200,"x":78.9826,"y":67.3428,"menuItemId":2308,"kind":"plus"},{"name":"Iced Vanilla Latte","price":200,"x":79.0836,"y":30.739300000000004,"menuItemId":2309,"kind":"plus"},{"name":"Iced White Mocha","price":200,"x":79.0836,"y":79.85679999999999,"menuItemId":2310,"kind":"plus"}],"16":[{"name":"Böğürtlenli Frozen","price":210,"x":81.5759,"y":18.696199999999997,"menuItemId":2240,"kind":"plus"},{"name":"Çilekli Frozen","price":210,"x":81.5759,"y":4.2008,"menuItemId":2269,"kind":"plus"},{"name":"Elmalı Frozen","price":210,"x":81.5759,"y":39.970099999999995,"menuItemId":2247,"kind":"plus"},{"name":"Karpuzlu Frozen","price":210,"x":81.5759,"y":32.5659,"menuItemId":2251,"kind":"plus"},{"name":"Mangolu Frozen","price":210,"x":81.5759,"y":11.3964,"menuItemId":2255,"kind":"plus"},{"name":"Orman Meyveli Frozen","price":210,"x":81.5759,"y":25.6832,"menuItemId":2260,"kind":"plus"},{"name":"Şeftali Frozen","price":210,"x":81.5759,"y":47.165600000000005,"menuItemId":2272,"kind":"plus"},{"name":"Karpuzlu Smoothie","price":240,"x":81.5759,"y":81.2663,"menuItemId":2252,"kind":"plus"},{"name":"Böğürtlenli Smoothie","price":240,"x":81.5759,"y":73.9665,"menuItemId":2241,"kind":"plus"},{"name":"Elmalı Smoothie","price":240,"x":81.5759,"y":88.4619,"menuItemId":2248,"kind":"plus"},{"name":"Orman Meyveli Smoothie","price":240,"x":81.5759,"y":95.7617,"menuItemId":2261,"kind":"plus"},{"name":"Mangolu Smoothie","price":240,"x":81.5759,"y":66.7709,"menuItemId":2256,"kind":"plus"},{"name":"Çilekli Smoothie","price":240,"x":81.5759,"y":59.4711,"menuItemId":2271,"kind":"plus"}],"17":[{"name":"Çikolatalı Milkshake","price":220,"x":79.5562,"y":19.7391,"menuItemId":2218,"kind":"plus"},{"name":"Special Karışık Milkshake","price":230,"x":79.4552,"y":6.7036,"menuItemId":2265,"kind":"plus"},{"name":"OREO  MİLKSHAKE","price":220,"x":79.4552,"y":26.8303,"menuItemId":2215,"kind":"plus"},{"name":"Çilekli Milkshake","price":220,"x":79.5562,"y":33.921600000000005,"menuItemId":2220,"kind":"plus"},{"name":"Vanilyalı Magnum","price":280,"x":79.4552,"y":41.0129,"menuItemId":2216,"kind":"plus"},{"name":"Karamelli Milkshake","price":220,"x":79.3366,"y":48.1498,"menuItemId":2212,"kind":"plus"},{"name":"Muzlu Milkshake","price":220,"x":79.5562,"y":55.299699999999994,"menuItemId":2214,"kind":"plus"},{"name":"Magnum Milkshake","price":280,"x":79.4552,"y":62.7038,"menuItemId":2213,"kind":"plus"},{"name":"Çilekli Magnum","price":280,"x":79.35419999999999,"y":69.378,"menuItemId":2219,"kind":"plus"},{"name":"Vanilyalı Milkshake","price":220,"x":79.4552,"y":76.67779999999999,"menuItemId":2217,"kind":"plus"}],"18":[{"name":"Classic Mojito","price":225,"x":78.1424,"y":6.0779,"menuItemId":2244,"kind":"plus"},{"name":"Çilek Mojito","price":225,"x":78.04140000000001,"y":14.837700000000002,"menuItemId":2268,"kind":"plus"},{"name":"Elma Mojito","price":225,"x":78.1424,"y":23.2847,"menuItemId":2246,"kind":"plus"},{"name":"Mango Mojito","price":225,"x":78.1424,"y":31.9402,"menuItemId":2254,"kind":"plus"},{"name":"Şeftali Mojito","price":225,"x":78.04140000000001,"y":39.970099999999995,"menuItemId":2273,"kind":"plus"},{"name":"Red Bull Mojito","price":260,"x":78.04140000000001,"y":47.8956,"menuItemId":2264,"kind":"plus"},{"name":"Portakal Suyu","price":170,"x":79.35419999999999,"y":66.6666,"menuItemId":2262,"kind":"plus"},{"name":"Classic Limonata","price":140,"x":79.35419999999999,"y":73.9665,"menuItemId":2243,"kind":"plus"},{"name":"Çilekli Limonata","price":150,"x":79.2532,"y":83.24770000000001,"menuItemId":2270,"kind":"plus"},{"name":"Naneli Limonata","price":150,"x":79.2532,"y":91.3818,"menuItemId":2259,"kind":"plus"}],"19":[{"name":"Mathilda","price":250,"x":77.4355,"y":5.4522,"menuItemId":2258,"kind":"plus"},{"name":"Churchill","price":145,"x":77.33449999999999,"y":12.752099999999999,"menuItemId":2242,"kind":"plus"},{"name":"Valentina","price":230,"x":77.4355,"y":19.7391,"menuItemId":2266,"kind":"plus"},{"name":"PİNK LİME ","price":225,"x":77.33449999999999,"y":34.755900000000004,"menuItemId":2263,"kind":"plus"},{"name":"Çilek Bubble Smoothie","price":250,"x":69.4577,"y":64.99810000000001,"menuItemId":2267,"kind":"plus"},{"name":"Mango Bubble Smoothie","price":250,"x":69.4577,"y":73.1322,"menuItemId":2253,"kind":"plus"},{"name":"Blueberry Bubble Smoothie","price":250,"x":69.3567,"y":82.2048,"menuItemId":2239,"kind":"plus"},{"name":"Karpuz Bubble Smoothie","price":250,"x":69.4577,"y":90.0261,"menuItemId":2250,"kind":"plus"},{"name":"Cool Lime","price":225,"x":77.4355,"y":27.560299999999998,"menuItemId":2245,"kind":"plus"},{"name":"Ice Lime Berry","price":225,"x":77.4355,"y":41.8471,"menuItemId":2249,"kind":"plus"}],"20":[{"name":"Su","price":40,"x":86.6251,"y":6.3908000000000005,"menuItemId":2327,"kind":"plus"},{"name":"Ayran","price":60,"x":86.5241,"y":16.819100000000002,"menuItemId":2320,"kind":"plus"},{"name":"Kola","price":80,"x":86.6251,"y":28.081699999999998,"menuItemId":2322,"kind":"plus"},{"name":"fanta","price":80,"x":86.6251,"y":39.4486,"menuItemId":2328,"kind":"plus"},{"name":"Sprite","price":80,"x":86.6251,"y":50.0855,"menuItemId":2326,"kind":"plus"},{"name":"Ice Tea","price":80,"x":86.6251,"y":61.2439,"menuItemId":2321,"kind":"plus"},{"name":"Meyveli Soda","price":70,"x":86.6251,"y":83.8734,"menuItemId":2323,"kind":"plus"},{"name":"Red Bull 250ml","price":160,"x":86.72609999999999,"y":94.406,"menuItemId":2324,"kind":"plus"},{"name":"Soda","price":60,"x":86.6107,"y":72.587,"menuItemId":2325,"kind":"plus"}],"21":[{"name":"Love 66","price":600,"x":92.2116,"y":5.2942,"menuItemId":2225,"kind":"plus"},{"name":"Lady Killer","price":600,"x":92.2116,"y":12.906899999999998,"menuItemId":2224,"kind":"plus"},{"name":"Decavu","price":600,"x":92.1106,"y":20.5196,"menuItemId":2221,"kind":"plus"},{"name":"Elma Nargile","price":650,"x":92.2116,"y":28.028,"menuItemId":2222,"kind":"plus"},{"name":"Karpuz Nargile","price":600,"x":92.1106,"y":35.640699999999995,"menuItemId":2223,"kind":"plus"},{"name":"Spesiyal Nargile","price":600,"x":92.3126,"y":43.149100000000004,"menuItemId":2228,"kind":"plus"},{"name":"Nane Nargile","price":600,"x":92.0096,"y":50.7618,"menuItemId":2226,"kind":"plus"},{"name":"Üzüm Nane Nargile","price":600,"x":92.2116,"y":58.2702,"menuItemId":2229,"kind":"plus"},{"name":"Nargile Kafası","price":200,"x":92.1106,"y":65.6743,"menuItemId":2227,"kind":"plus"}]};;;
   let HOTSPOTS_TR = HOTSPOTS;
   let HOTSPOTS_AR = null;
   const LOGO_RATIO = 0;
 
   const $ = id => document.getElementById(id);
   const money = value => `${Number(value).toLocaleString("tr-TR")} ${CONFIG.currency}`;
-  const itemKey = item => `${item.page}|${item.name}`;
+  const itemKey = item => `${item.page}|${item.name}|${String(item.note || "").trim()}`;
   const escapeHtml = value => String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 
   let currentIndex = 0;
@@ -1827,7 +2102,10 @@ window.TONINO_CONFIG = Object.freeze({
   let currentLogo = null;
   let underMenu = null;
   let underLogo = null;
-  let turning = false;
+  let turning = false; /* true only during CSS page-flip (not image preload wait) */
+  let turnGen = 0;
+  let pendingTurn = null; /* { index, direction } — one swipe queued while animating */
+  let ignoreHotspotClickUntil = 0;
   let cart = [];
   let toastTimer = null;
   let todayDailyDish = null;
@@ -2231,9 +2509,22 @@ window.TONINO_CONFIG = Object.freeze({
     const paper = document.createElement("div");
     paper.className = "paper";
     const image = new Image();
-    image.src = pageSource(art) || "";
-    image.alt = CATEGORIES[art];
+    const src0 = pageSource(art) || "";
+    image.alt = CATEGORIES[art] || "";
     image.draggable = false;
+    image.decoding = "async";
+    /* Keep prior good bitmap if live poll briefly returns empty/broken URL. */
+    if (src0) {
+      let tries = 0;
+      image.onerror = () => {
+        tries += 1;
+        if (tries > 2) return;
+        const fallback = (PAGES_TR && PAGES_TR[art]) || (PAGES && PAGES[art]) || src0;
+        const bust = (fallback.includes("?") ? "&" : "?") + "retry=" + tries + "&t=" + Date.now();
+        setTimeout(() => { try { image.src = fallback + bust; } catch (_) {} }, 400 * tries);
+      };
+      image.src = src0;
+    }
     paper.appendChild(image);
 
     (HOTSPOTS[art] || []).forEach((item, spotIndex) => {
@@ -2248,10 +2539,21 @@ window.TONINO_CONFIG = Object.freeze({
       button.innerHTML = '<span class="qty-badge">0</span>';
       button.addEventListener("click", event => {
         event.stopPropagation();
+        /* Swipe that started on + must not add an item. */
+        if (performance.now() < ignoreHotspotClickUntil) {
+          event.preventDefault();
+          return;
+        }
+        if (gesture && (gesture.mode === "horizontal" || gesture.swiped)) {
+          event.preventDefault();
+          return;
+        }
         button.classList.remove("ping"); void button.offsetWidth; button.classList.add("ping");
         const fullItem = {...item, page:art};
         if (isIceCreamOrderSpot(item) || isStandaloneIceCreamItem(item)) openIceCreamSheet(fullItem);
         else if (needsTurkishCoffeeSugar(item.name)) openTurkishCoffeeVariants(fullItem);
+        else if (needsIceTeaFlavor(item.name)) openIceTeaVariants(fullItem);
+        else if (needsWaterTemp(item.name)) openWaterVariants(fullItem);
         else if (item.variants) openVariants(fullItem);
         else addItem(fullItem);
       });
@@ -2291,6 +2593,35 @@ window.TONINO_CONFIG = Object.freeze({
     if (shade) shade.style.opacity = "";
     if (edge) edge.style.opacity = "";
   }
+  function layerImageReady(layer) {
+    if (!layer) return true;
+    if (layer.classList.contains("dd-book-page")) return true;
+    const img = layer.querySelector(".paper img");
+    if (!img) return true;
+    if (!img.getAttribute("src") && !img.src) return true;
+    return !!(img.complete && img.naturalWidth > 0);
+  }
+  function whenLayerImageReady(layer, maxWaitMs) {
+    if (layerImageReady(layer)) return Promise.resolve(true);
+    const img = layer && layer.querySelector(".paper img");
+    if (!img) return Promise.resolve(true);
+    const wait = Math.max(120, Number(maxWaitMs) || 700);
+    return new Promise((resolve) => {
+      let done = false;
+      const finish = (ok) => {
+        if (done) return;
+        done = true;
+        try { img.removeEventListener("load", onOk); img.removeEventListener("error", onErr); } catch (_) {}
+        resolve(!!ok);
+      };
+      const onOk = () => finish(true);
+      const onErr = () => finish(false);
+      img.addEventListener("load", onOk);
+      img.addEventListener("error", onErr);
+      try { if (img.decode) img.decode().then(() => finish(true)).catch(() => {}); } catch (_) {}
+      setTimeout(() => finish(layerImageReady(layer)), wait);
+    });
+  }
   function prepareUnder(index, direction) {
     if (underMenu) underMenu.remove();
     if (underLogo) underLogo.remove();
@@ -2307,6 +2638,11 @@ window.TONINO_CONFIG = Object.freeze({
     fitMenuPage(underMenu,index);
     if (isDailyBookIndex(index)) renderDailyDishScreen(underMenu);
     underMenu.scrollTop = currentMenu.scrollTop;
+    /* Warm decode so completeTurn does not flash an empty paper. */
+    try {
+      const img = underMenu.querySelector(".paper img");
+      if (img && img.decode) img.decode().catch(() => {});
+    } catch (_) {}
   }
   function setDirection(direction) {
     const dir = direction > 0 ? "next" : "prev";
@@ -2331,14 +2667,44 @@ window.TONINO_CONFIG = Object.freeze({
       if (edge) edge.style.opacity = String(Math.min(1,p*2.4));
     });
   }
-  function completeTurn(target,direction,duration=CONFIG.pageTransitionMs) {
+  function finishTurnSwap(target) {
+    if (!underMenu || !underLogo || !currentMenu || !currentLogo) {
+      turning = false;
+      return;
+    }
+    currentMenu.remove(); currentLogo.remove();
+    currentMenu = underMenu; currentLogo = underLogo; underMenu = null; underLogo = null;
+    currentIndex = target; clearLayer(currentMenu); clearLayer(currentLogo); turning = false;
+    syncNavigation(); preloadNeighbors(); updateBadges(); fitMenuPage(currentMenu,currentIndex);
+    if (isDailyBookIndex(currentIndex)) renderDailyDishScreen(currentMenu);
+    const queued = pendingTurn;
+    pendingTurn = null;
+    if (queued && queued.index !== currentIndex) {
+      goTo(queued.index, queued.direction);
+    }
+  }
+  async function completeTurn(target,direction,duration=CONFIG.pageTransitionMs) {
     if (!underMenu || !underLogo) return;
-    turning = true; setDirection(direction);
+    const myGen = ++turnGen;
+    const underSnap = underMenu;
+    const logoSnap = underLogo;
+    setDirection(direction);
+    /* Preload wait must NOT set turning — that blocked the next finger swipe. */
+    await whenLayerImageReady(underSnap, 500);
+    if (myGen !== turnGen || underMenu !== underSnap || underLogo !== logoSnap || !underSnap) {
+      return;
+    }
+    if (turning) {
+      pendingTurn = { index: target, direction };
+      return;
+    }
+    turning = true;
     const angle = direction > 0 ? -178 : 178;
     const transition = `transform ${duration}ms cubic-bezier(.22,.76,.16,1),opacity ${duration}ms ease`;
     [currentMenu,currentLogo].forEach(layer => layer.style.transition = transition);
     [underMenu,underLogo].forEach(layer => layer.style.transition = `transform ${duration}ms cubic-bezier(.2,.82,.2,1),opacity ${duration}ms ease`);
     requestAnimationFrame(() => {
+      if (myGen !== turnGen || underMenu !== underSnap || !currentMenu || !underMenu) return;
       currentMenu.style.transform = `rotateY(${angle}deg)`; currentLogo.style.transform = `rotateY(${angle}deg)`;
       currentMenu.style.opacity = ".03"; currentLogo.style.opacity = ".03";
       underMenu.style.transform = "translate3d(0,0,0) scale(1)"; underLogo.style.transform = "translate3d(0,0,0) scale(1)";
@@ -2349,16 +2715,14 @@ window.TONINO_CONFIG = Object.freeze({
       });
     });
     setTimeout(() => {
-      currentMenu.remove(); currentLogo.remove();
-      currentMenu = underMenu; currentLogo = underLogo; underMenu = null; underLogo = null;
-      currentIndex = target; clearLayer(currentMenu); clearLayer(currentLogo); turning = false;
-      syncNavigation(); preloadNeighbors(); updateBadges(); fitMenuPage(currentMenu,currentIndex);
-      if (isDailyBookIndex(currentIndex)) renderDailyDishScreen(currentMenu);
-    },duration+35);
+      if (myGen !== turnGen || underMenu !== underSnap) return;
+      finishTurnSwap(target);
+    }, duration + 28);
   }
   function cancelTurn(direction) {
-    if (!underMenu || !underLogo) return;
-    const duration = 260;
+    turnGen += 1;
+    if (!underMenu || !underLogo) { turning = false; return; }
+    const duration = 200;
     [currentMenu,currentLogo].forEach(layer => layer.style.transition = `transform ${duration}ms cubic-bezier(.2,.8,.2,1),opacity ${duration}ms ease`);
     [underMenu,underLogo].forEach(layer => layer.style.transition = `transform ${duration}ms ease,opacity ${duration}ms ease`);
     currentMenu.style.transform = "rotateY(0deg)"; currentLogo.style.transform = "rotateY(0deg)";
@@ -2369,12 +2733,17 @@ window.TONINO_CONFIG = Object.freeze({
     setTimeout(() => {
       underMenu?.remove(); underLogo?.remove(); underMenu=null; underLogo=null;
       clearLayer(currentMenu); clearLayer(currentLogo);
+      turning = false;
     },duration+20);
   }
   function goTo(index,direction=null) {
     index = Math.max(0,Math.min(bookPageCount()-1,index));
-    if (turning || index === currentIndex) return;
+    if (index === currentIndex) return;
     const dir = direction ?? (index > currentIndex ? 1 : -1);
+    if (turning) {
+      pendingTurn = { index, direction: dir };
+      return;
+    }
     prepareUnder(index,dir); completeTurn(index,dir);
   }
   const next = () => goTo(currentIndex+1,1);
@@ -2994,11 +3363,16 @@ window.TONINO_CONFIG = Object.freeze({
     } catch (_) {}
   }
   function preloadNeighbors() {
-    [currentIndex - 1, currentIndex + 1]
-      .filter((i) => i >= 0 && i < bookPageCount() && !isDailyBookIndex(i))
+    const total = bookPageCount();
+    [currentIndex - 2, currentIndex - 1, currentIndex + 1, currentIndex + 2]
+      .filter((i) => i >= 0 && i < total && !isDailyBookIndex(i))
       .forEach((i) => {
+        const src = pageSource(artIndexFromBook(i));
+        if (!src) return;
         const image = new Image();
-        image.src = pageSource(artIndexFromBook(i));
+        image.decoding = "async";
+        image.src = src;
+        try { if (image.decode) image.decode().catch(() => {}); } catch (_) {}
       });
   }
 
@@ -3101,6 +3475,74 @@ window.TONINO_CONFIG = Object.freeze({
     }
   }
   let lineNoteKey = "";
+  function softKeyboardCoveredPx() {
+    const vv = window.visualViewport;
+    if (!vv) return 0;
+    return Math.max(0, (window.innerHeight || 0) - vv.height - (vv.offsetTop || 0));
+  }
+  function syncLineNoteKeyboardInset() {
+    const sheet = $("line-note-sheet");
+    if (!sheet || !sheet.classList.contains("show")) {
+      document.documentElement.style.setProperty("--line-note-kb-inset", "0px");
+      return;
+    }
+    const covered = softKeyboardCoveredPx();
+    document.documentElement.style.setProperty(
+      "--line-note-kb-inset",
+      (covered > 48 ? covered + 16 : 0) + "px"
+    );
+    try {
+      const card = sheet.querySelector(".line-note-card");
+      const inp = $("lineNoteInp");
+      if (card && covered > 48) card.scrollTop = Math.max(0, (inp && inp.offsetTop) || 0);
+    } catch (_) {}
+  }
+  function bindLineNoteKeyboardInset(on) {
+    if (!window.visualViewport) return;
+    if (on && !window.__lineNoteKbBound) {
+      visualViewport.addEventListener("resize", syncLineNoteKeyboardInset, { passive: true });
+      visualViewport.addEventListener("scroll", syncLineNoteKeyboardInset, { passive: true });
+      window.__lineNoteKbBound = true;
+    } else if (!on && window.__lineNoteKbBound) {
+      try {
+        visualViewport.removeEventListener("resize", syncLineNoteKeyboardInset);
+        visualViewport.removeEventListener("scroll", syncLineNoteKeyboardInset);
+      } catch (_) {}
+      window.__lineNoteKbBound = false;
+    }
+  }
+  function syncNotesReviewKeyboardInset() {
+    const sheet = $("notesReviewSheet");
+    if (!sheet || !sheet.classList.contains("show")) {
+      document.documentElement.style.setProperty("--notes-review-kb-inset", "0px");
+      return;
+    }
+    const covered = softKeyboardCoveredPx();
+    document.documentElement.style.setProperty(
+      "--notes-review-kb-inset",
+      (covered > 48 ? covered + 12 : 0) + "px"
+    );
+    try {
+      const active = document.activeElement;
+      if (active && sheet.contains(active) && typeof active.scrollIntoView === "function") {
+        active.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+    } catch (_) {}
+  }
+  function bindNotesReviewKeyboardInset(on) {
+    if (!window.visualViewport) return;
+    if (on && !window.__notesReviewKbBound) {
+      visualViewport.addEventListener("resize", syncNotesReviewKeyboardInset, { passive: true });
+      visualViewport.addEventListener("scroll", syncNotesReviewKeyboardInset, { passive: true });
+      window.__notesReviewKbBound = true;
+    } else if (!on && window.__notesReviewKbBound) {
+      try {
+        visualViewport.removeEventListener("resize", syncNotesReviewKeyboardInset);
+        visualViewport.removeEventListener("scroll", syncNotesReviewKeyboardInset);
+      } catch (_) {}
+      window.__notesReviewKbBound = false;
+    }
+  }
   function closeLineNoteSheet() {
     const sheet = $("line-note-sheet");
     if (sheet) {
@@ -3108,6 +3550,8 @@ window.TONINO_CONFIG = Object.freeze({
       sheet.setAttribute("aria-hidden", "true");
     }
     lineNoteKey = "";
+    document.documentElement.style.setProperty("--line-note-kb-inset", "0px");
+    bindLineNoteKeyboardInset(false);
   }
   function openLineNoteSheet(key) {
     const item = cart.find(x => itemKey(x) === key);
@@ -3131,9 +3575,21 @@ window.TONINO_CONFIG = Object.freeze({
     if (sheet) {
       sheet.classList.add("show");
       sheet.setAttribute("aria-hidden", "false");
+      if (!sheet.__kbFocusBound) {
+        sheet.addEventListener("focusin", () => {
+          setTimeout(syncLineNoteKeyboardInset, 80);
+          setTimeout(syncLineNoteKeyboardInset, 320);
+        });
+        sheet.__kbFocusBound = true;
+      }
     }
+    bindLineNoteKeyboardInset(true);
+    syncLineNoteKeyboardInset();
     setTimeout(() => {
-      try { inp?.focus({ preventScroll: true }); } catch (_) { inp?.focus(); }
+      try { inp?.focus({ preventScroll: true }); } catch (_) { try { inp?.focus(); } catch (__) {} }
+      syncLineNoteKeyboardInset();
+      setTimeout(syncLineNoteKeyboardInset, 280);
+      setTimeout(syncLineNoteKeyboardInset, 520);
     }, 80);
     if (navigator.vibrate) navigator.vibrate(18);
   }
@@ -3182,21 +3638,27 @@ window.TONINO_CONFIG = Object.freeze({
     });
   }
   function normGuestName(s) {
-    return String(s || "").toLowerCase()
-      .replace(/ı/g, "i").replace(/İ/g, "i").replace(/ğ/g, "g").replace(/Ğ/g, "g")
-      .replace(/ş/g, "s").replace(/Ş/g, "s").replace(/ö/g, "o").replace(/Ö/g, "o")
-      .replace(/ü/g, "u").replace(/Ü/g, "u").replace(/ç/g, "c").replace(/Ç/g, "c")
+    return String(s || "")
+      /* Turkish İ/I must be folded before toLowerCase (JS turns İ into i+◌̇). */
+      .replace(/İ/g, "i")
+      .replace(/I/g, "i")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/ı/g, "i").replace(/ğ/g, "g").replace(/ş/g, "s")
+      .replace(/ö/g, "o").replace(/ü/g, "u").replace(/ç/g, "c")
       .replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
   }
-  /** Türk Kahvesi + Damla Sakız + Antep Fıstık + Menengiç (+ Dibek) → sugar / duble choices */
+  /** Türk Kahvesi + Damla Sakız + Antep Fıstık + Menengiç (+ Dibek) → sugar choices */
   function needsTurkishCoffeeSugar(name) {
     const n = normGuestName(name);
     if (!n) return false;
     if (/\bturk\s+kahve/.test(n)) return true;
     if (/\bdamla\s+sak/.test(n)) return true;
     if (/\bantep\s+fist/.test(n)) return true;
-    if (/\bmenengic/.test(n)) return true;
-    if (/\bdibek\s+kahve/.test(n)) return true;
+    /* Menu spelling varies: Menengiç / MENEMGİÇ */
+    if (/\bmenengi?c\b/.test(n) || /\bmenemgi?c\b/.test(n)) return true;
+    if (/\bdibek\b/.test(n)) return true;
     return false;
   }
   function turkishCoffeeOpts() {
@@ -3205,8 +3667,84 @@ window.TONINO_CONFIG = Object.freeze({
       { id: "sade", label: b.coffeeSade || "Sade", note: "Sade", priceMul: 1 },
       { id: "orta", label: b.coffeeOrta || "Orta şekerli", note: "Orta şekerli", priceMul: 1 },
       { id: "sekerli", label: b.coffeeSekerli || "Şekerli", note: "Şekerli", priceMul: 1 },
-      { id: "duble", label: b.coffeeDuble || "Duble", note: "Duble", priceMul: 2 },
     ];
+  }
+  /** Ice Tea → Şeftali / Limon / Mango */
+  function needsIceTeaFlavor(name) {
+    const n = normGuestName(name);
+    if (!n) return false;
+    if (n === "ice tea" || n === "icetea") return true;
+    if (/\bice\s*tea\b/.test(n)) return true;
+    if (/\bbuzlu\s+cay\b/.test(n)) return true;
+    return false;
+  }
+  function iceTeaFlavorOpts() {
+    const b = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    return [
+      { id: "seftali", label: b.iceTeaSeftali || "Şeftali", note: "Şeftali", priceMul: 1 },
+      { id: "limon", label: b.iceTeaLimon || "Limon", note: "Limon", priceMul: 1 },
+      { id: "mango", label: b.iceTeaMango || "Mango", note: "Mango", priceMul: 1 },
+    ];
+  }
+  function openIceTeaVariants(item) {
+    const baseName = String(item.name || "").trim() || "Ice Tea";
+    const basePrice = Number(item.price) || 0;
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    const already = cart.some((x) => normGuestName(x.hotspotName || x.name) === normGuestName(baseName));
+    const head = bag.pickIceTeaFlavor || bag.pickOption || "Lezzet seçin";
+    const title = already
+      ? (bag.pickIceTeaFlavorAgain || head) + " — " + baseName
+      : head + " — " + baseName;
+    openChoiceSheet(title, iceTeaFlavorOpts(), choice => {
+      const price = Math.round(basePrice * (choice.priceMul || 1));
+      addItem({
+        ...item,
+        hotspotName: baseName,
+        name: baseName,
+        price,
+        note: choice.note,
+        dept: item.dept || "barista",
+        variants: undefined,
+      });
+    });
+  }
+  /** Su / ماء → cold fridge or room temp */
+  function needsWaterTemp(name) {
+    const n = normGuestName(name);
+    if (!n) return false;
+    if (n === "su" || n === "water") return true;
+    /* Arabic display name may appear rarely as hotspot name */
+    if (n === "maa" || n.indexOf("ماء") >= 0) return true;
+    return false;
+  }
+  function waterTempOpts() {
+    const b = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    return [
+      { id: "cold", label: b.waterCold || "Soğuk", note: "Soğuk (buzdolabı)", priceMul: 1 },
+      { id: "room", label: b.waterRoom || "Oda sıcaklığı", note: "Oda sıcaklığı", priceMul: 1 },
+    ];
+  }
+  function openWaterVariants(item) {
+    const baseName = String(item.name || "").trim() || "Su";
+    const basePrice = Number(item.price) || 0;
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    const already = cart.some((x) => normGuestName(x.hotspotName || x.name) === normGuestName(baseName));
+    const head = bag.pickWaterTemp || bag.pickOption || "Su seçin";
+    const title = already
+      ? (bag.pickWaterTempAgain || head) + " — " + baseName
+      : head + " — " + baseName;
+    openChoiceSheet(title, waterTempOpts(), choice => {
+      const price = Math.round(basePrice * (choice.priceMul || 1));
+      addItem({
+        ...item,
+        hotspotName: baseName,
+        name: baseName,
+        price,
+        note: choice.note,
+        dept: item.dept || "barista",
+        variants: undefined,
+      });
+    });
   }
   function openChoiceSheet(title, choices, onPick, opts) {
     /* Do not flip the menu book — overlay only (Türk Kahvesi + daily dish). */
@@ -3219,27 +3757,39 @@ window.TONINO_CONFIG = Object.freeze({
     const closeBtn = $("closeVariants");
     if (closeBtn) closeBtn.textContent = bag.close || "إغلاق";
     const grid = $("variantGrid");
+    if (!grid || !sheet) return;
+    /* Force reopen even if sheet was just closed (2nd / 3rd coffee, ice tea, …). */
+    sheet.classList.remove("show");
+    $("shade") && $("shade").classList.remove("show");
+    try { void sheet.offsetWidth; } catch (_) {}
     grid.innerHTML = "";
     choices.forEach(choice => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "variant";
       button.textContent = choice.label;
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (ev) => {
+        try { ev.preventDefault(); ev.stopPropagation(); } catch (_) {}
         closeVariants();
+        /* Prevent the same tap from hitting the + hotspot under the sheet. */
+        ignoreHotspotClickUntil = performance.now() + 650;
         onPick(choice);
       });
       grid.appendChild(button);
     });
     $("shade").classList.add("show");
-    $("variantSheet").classList.add("show");
+    sheet.classList.add("show");
   }
   function openTurkishCoffeeVariants(item) {
     const baseName = String(item.name || "").trim();
     const basePrice = Number(item.price) || 0;
     const bag = (typeof guestBag === "function" ? guestBag() : null) || window.__zekiqGuestBag || {};
+    const already = cart.some((x) => normGuestName(x.hotspotName || x.name) === normGuestName(baseName));
     const head = bag.pickSugarSize || bag.pickOption || "Şeker / boyut";
-    openChoiceSheet(head + " — " + baseName, turkishCoffeeOpts(), choice => {
+    const title = already
+      ? (bag.pickSugarSizeAgain || head) + " — " + baseName
+      : head + " — " + baseName;
+    openChoiceSheet(title, turkishCoffeeOpts(), choice => {
       const price = Math.round(basePrice * (choice.priceMul || 1));
       /* Keep menu name for POS dept match; sugar/size only in note (not name suffix). */
       addItem({
@@ -3526,6 +4076,8 @@ window.TONINO_CONFIG = Object.freeze({
       sheet.classList.remove("show");
       sheet.setAttribute("aria-hidden", "true");
     }
+    document.documentElement.style.setProperty("--notes-review-kb-inset", "0px");
+    bindNotesReviewKeyboardInset(false);
   }
   function syncNotesFromReviewSheet() {
     const list = $("notesReviewList");
@@ -3555,6 +4107,8 @@ window.TONINO_CONFIG = Object.freeze({
     const orderNoteEl = $("notesReviewOrderNote");
     if (title) title.textContent = bag.notesReviewTitle || "راجع طلبك";
     if (sub) sub.textContent = bag.notesReviewSub || "أضف ملاحظة تحت كل صنف إن احتجت — ثم أرسل وانتظر طلبك";
+    const where = $("notesReviewWhere");
+    if (where) where.textContent = bag.notesReviewWhere || "📝 الملاحظات تُكتب هنا — تحت كل صنف + ملاحظة عامة أسفل القائمة";
     if (confirm) confirm.textContent = bag.notesReviewConfirm || "✓ تأكيد وإرسال الطلب";
     if (back) back.textContent = bag.notesReviewBack || "رجوع";
     if (orderNoteEl) {
@@ -3592,7 +4146,18 @@ window.TONINO_CONFIG = Object.freeze({
     if (sheet) {
       sheet.classList.add("show");
       sheet.setAttribute("aria-hidden", "false");
+      if (!sheet.__kbFocusBound) {
+        sheet.addEventListener("focusin", () => {
+          setTimeout(syncNotesReviewKeyboardInset, 80);
+          setTimeout(syncNotesReviewKeyboardInset, 320);
+        });
+        sheet.__kbFocusBound = true;
+      }
     }
+    bindNotesReviewKeyboardInset(true);
+    syncNotesReviewKeyboardInset();
+    setTimeout(syncNotesReviewKeyboardInset, 280);
+    setTimeout(syncNotesReviewKeyboardInset, 520);
     if (navigator.vibrate) navigator.vibrate(12);
   }
   async function sendOrder() {
@@ -3827,37 +4392,82 @@ window.TONINO_CONFIG = Object.freeze({
   $("viewer").addEventListener("touchend", onPinchTouchEnd, { passive: true });
   $("viewer").addEventListener("touchcancel", onPinchTouchEnd, { passive: true });
 
-  /* Horizontal only — menu page does not scroll vertically. */
-  let gesture={active:false,mode:null,x:0,y:0,time:0,dx:0,direction:0,target:-1};
-  $("viewer").addEventListener("pointerdown",event=>{
+  /* Horizontal page-turn — works from anywhere on the page (including + buttons). */
+  let gesture={active:false,mode:null,x:0,y:0,time:0,dx:0,direction:0,target:-1,pointerId:null,swiped:false};
+  const viewerEl = $("viewer");
+  viewerEl.addEventListener("pointerdown",event=>{
     if(pinch.active)return;
-    if(turning||event.target.closest(".hotspot,.dd-opt,.dd-order,.dd-nav,.dd-week-btn,.dd-week,.dd-week-wrap,.dd-dock"))return;
-    gesture={active:true,mode:null,x:event.clientX,y:event.clientY,time:performance.now(),dx:0,direction:0,target:-1};
+    /* Hotspots intentionally allowed — tap vs swipe decided on move/up. */
+    if(event.target.closest(".dd-opt,.dd-order,.dd-nav,.dd-week-btn,.dd-week,.dd-week-wrap,.dd-dock,.page-nav"))return;
+    if(turning){
+      /* Queue a follow-up turn from this swipe when flip ends. */
+      gesture={active:true,mode:null,x:event.clientX,y:event.clientY,time:performance.now(),dx:0,direction:0,target:-1,pointerId:event.pointerId,swiped:false,queueOnly:true};
+      try { viewerEl.setPointerCapture(event.pointerId); } catch (_) {}
+      return;
+    }
+    gesture={active:true,mode:null,x:event.clientX,y:event.clientY,time:performance.now(),dx:0,direction:0,target:-1,pointerId:event.pointerId,swiped:false,queueOnly:false};
+    try { viewerEl.setPointerCapture(event.pointerId); } catch (_) {}
   },{passive:true});
-  $("viewer").addEventListener("pointermove",event=>{
-    if(pinch.active||!gesture.active||turning)return;
+  viewerEl.addEventListener("pointermove",event=>{
+    if(pinch.active||!gesture.active)return;
+    if(gesture.pointerId!=null && event.pointerId!==gesture.pointerId)return;
+    if(turning && !gesture.queueOnly)return;
     const dx=event.clientX-gesture.x,dy=event.clientY-gesture.y;
-    if(!gesture.mode&&Math.max(Math.abs(dx),Math.abs(dy))>8){
-      if(Math.abs(dy)>Math.abs(dx)*1.05){gesture.active=false;return;}
+    if(!gesture.mode&&Math.max(Math.abs(dx),Math.abs(dy))>5){
+      /* Only abandon if clearly vertical; slight diagonal still turns the page. */
+      if(Math.abs(dy)>Math.abs(dx)*1.75){
+        gesture.active=false;
+        try { if(gesture.pointerId!=null) viewerEl.releasePointerCapture(gesture.pointerId); } catch (_) {}
+        return;
+      }
       gesture.mode="horizontal";
+      gesture.swiped=true;
+      ignoreHotspotClickUntil = performance.now() + 500;
     }
     if(gesture.mode!=="horizontal")return;
     event.preventDefault();
     const direction=dx<0?1:-1,target=currentIndex+direction;
-    if(target<0||target>=bookPageCount())return;
-    if(!underMenu||gesture.target!==target){prepareUnder(target,direction);gesture.target=target;gesture.direction=direction;}
     gesture.dx=dx;
+    gesture.direction=direction;
+    if(target<0||target>=bookPageCount()){
+      gesture.target=-1;
+      return;
+    }
+    gesture.target=target;
+    if(gesture.queueOnly)return;
+    if(!underMenu||underMenu.dataset.page!==String(target)){
+      turnGen += 1; /* cancel in-flight completeTurn waiting on old under page */
+      prepareUnder(target,direction);
+    }
     [currentMenu,currentLogo,underMenu,underLogo].forEach(layer=>{if(layer)layer.style.transition="none";});
-    applyTurnProgress(Math.abs(dx)/$("viewer").clientWidth*1.25,direction);
+    let progress = Math.min(.94, Math.abs(dx) / Math.max(1, viewerEl.clientWidth) * 1.7);
+    if (!layerImageReady(underMenu)) progress = Math.min(progress, 0.28);
+    applyTurnProgress(progress, direction);
   },{passive:false});
-  function endGesture(){
+  function endGesture(event){
     if(!gesture.active)return;
-    const {dx,direction,target,mode,time}=gesture,elapsed=performance.now()-time,width=$("viewer").clientWidth;gesture.active=false;
-    if(mode==="horizontal"&&target>=0&&(Math.abs(dx)>width*.21||(Math.abs(dx)>46&&elapsed<280))){completeTurn(target,direction,390);return;}
-    if(underMenu&&underLogo)cancelTurn(direction||1);
+    if(event && gesture.pointerId!=null && event.pointerId!==gesture.pointerId)return;
+    const {dx,direction,target,mode,time,pointerId,queueOnly,swiped}=gesture;
+    const elapsed=Math.max(1,performance.now()-time);
+    const width=Math.max(1,viewerEl.clientWidth);
+    gesture.active=false;
+    try { if(pointerId!=null) viewerEl.releasePointerCapture(pointerId); } catch (_) {}
+    if(swiped) ignoreHotspotClickUntil = performance.now() + 450;
+    const distOk = Math.abs(dx) > width * 0.08 || Math.abs(dx) > 26;
+    const flingOk = Math.abs(dx) > 16 && (elapsed < 520 || Math.abs(dx) / elapsed > 0.22);
+    const wantTurn = mode==="horizontal" && target>=0 && (distOk || flingOk);
+    if(wantTurn){
+      if(turning || queueOnly){
+        pendingTurn = { index: target, direction: direction || (dx < 0 ? 1 : -1) };
+        return;
+      }
+      completeTurn(target, direction || (dx < 0 ? 1 : -1), Math.min(CONFIG.pageTransitionMs, 300));
+      return;
+    }
+    if(!queueOnly && underMenu && underLogo) cancelTurn(direction||1);
   }
-  $("viewer").addEventListener("pointerup",endGesture,{passive:true});
-  $("viewer").addEventListener("pointercancel",endGesture,{passive:true});
+  viewerEl.addEventListener("pointerup",endGesture,{passive:true});
+  viewerEl.addEventListener("pointercancel",endGesture,{passive:true});
 
   $("orderGrid").addEventListener("click",event=>{
     const noteBtn = event.target.closest(".order-note-btn");
@@ -3881,16 +4491,580 @@ window.TONINO_CONFIG = Object.freeze({
   let orderTrackUntil = 0;
   let orderTrackLastStatus = "";
   const TRACK_FLAG = "zekiqGuestTrackActive";
+  const RATE_DONE_FLAG = "zekiqGuestRated";
+  const RATE_DISMISS_FLAG = "zekiqGuestRateDismissed";
+  const RATE_ELIGIBLE_FLAG = "zekiqGuestRateEligible";
+  const RATE_SHEET_OFFERED = "zekiqGuestRateSheetOffered";
+  const GUEST_RECEIVED_FLAG = "zekiqGuestOrderReceived";
+  const TRACK_LS_BASE = "zekiqGuestTrackV2";
+  const THANKS_AT_KEY = "zekiqGuestThanksAt";
+  const THANKS_SHOWN_KEY = "zekiqGuestThanksShown";
+  /*
+   * Guests almost never keep the page open until food arrives.
+   * Ask for stars ~2.5s after SEND (while حسابي / success is still on screen).
+   * ready/استلمت remain a second chance only if they stayed.
+   */
+  const RATE_AFTER_SEND_MS = 2500;
+  let guestRateStars = 0;
+  let guestRateSending = false;
+  let guestThanksTimer = null;
+  let guestRateAfterSendTimer = null;
+  let orderTrackLastOrderId = null;
+  function lsGet(k) {
+    try { return localStorage.getItem(k); } catch (_) { return null; }
+  }
+  function lsSet(k, v) {
+    try { localStorage.setItem(k, v); } catch (_) {}
+  }
+  function lsDel(k) {
+    try { localStorage.removeItem(k); } catch (_) {}
+  }
+  function thanksStorageSuffix() {
+    try {
+      const s = guestSession();
+      const t = String((s && s.token) || "").trim().slice(-16);
+      if (t) return t;
+      const info = typeof tableInfo === "function" ? tableInfo() : null;
+      if (info && (info.zone || info.table)) return String(info.zone || "") + "-" + String(info.table || "");
+    } catch (_) {}
+    return "default";
+  }
+  function thanksKey(base) {
+    return base + ":" + thanksStorageSuffix();
+  }
+  function isThanksCloudShown() {
+    return lsGet(thanksKey(THANKS_SHOWN_KEY)) === "1" || !!window.__zekiqThanksShown;
+  }
+  function markThanksCloudShown() {
+    window.__zekiqThanksShown = true;
+    lsSet(thanksKey(THANKS_SHOWN_KEY), "1");
+  }
+  function paintThanksCloudLabels(bag) {
+    const b = bag || guestBag() || {};
+    const title = $("guestThanksTitle");
+    const body = $("guestThanksBody");
+    const rate = $("guestThanksRateBtn");
+    const later = $("guestThanksLaterBtn");
+    if (title) title.textContent = b.thanksTitle || "شكراً لزيارتكم";
+    if (body) {
+      body.textContent =
+        b.thanksBody ||
+        "ساعدونا في التقييم والتطوير — رأيكم يهمّنا لتحسين الخدمة.";
+    }
+    if (rate) rate.textContent = b.thanksRate || "تقييم الخدمة الآن";
+    if (later) later.textContent = b.thanksLater || "لاحقاً";
+  }
+  function hideThanksCloud() {
+    const el = $("guestThanksCloud");
+    if (!el) return;
+    el.classList.remove("show");
+    el.setAttribute("aria-hidden", "true");
+  }
+  /* Never overlay rating/thanks on the menu — rating lives only in حسابي */
+  function showThanksCloud() {
+    hideThanksCloud();
+  }
+  function scheduleThanksCloud() {
+    hideThanksCloud();
+    if (guestThanksTimer) {
+      clearTimeout(guestThanksTimer);
+      guestThanksTimer = null;
+    }
+  }
+  function resumeThanksCloud() {
+    hideThanksCloud();
+  }
+  function bindThanksCloud() {
+    hideThanksCloud();
+  }
+  function trackPersistKey() {
+    return TRACK_LS_BASE + ":" + thanksStorageSuffix();
+  }
+  function readTrackPersist() {
+    try {
+      const raw = lsGet(trackPersistKey());
+      if (!raw) return null;
+      const o = JSON.parse(raw);
+      return o && typeof o === "object" ? o : null;
+    } catch (_) {
+      return null;
+    }
+  }
+  function writeTrackPersist(patch) {
+    const prev = readTrackPersist() || {};
+    const next = Object.assign({}, prev, patch || {}, { at: Date.now() });
+    try {
+      lsSet(trackPersistKey(), JSON.stringify(next));
+    } catch (_) {}
+    return next;
+  }
+  function clearTrackPersist() {
+    lsDel(trackPersistKey());
+  }
+  function isGuestOrderReceived() {
+    if (window.__zekiqGuestOrderReceived || ssGet(GUEST_RECEIVED_FLAG) === "1") return true;
+    const p = readTrackPersist();
+    return !!(p && p.received);
+  }
+  function markGuestOrderReceived() {
+    window.__zekiqGuestOrderReceived = true;
+    ssSet(GUEST_RECEIVED_FLAG, "1");
+    writeTrackPersist({ active: false, received: true, orderId: orderTrackLastOrderId });
+  }
+  function paintRecvButtons(status) {
+    const ready = String(status || "") === "ready" && isOrderTrackActive() && !isGuestOrderReceived();
+    const billBtn = $("billOrderTrackRecvBtn");
+    const bag = guestBag() || {};
+    const label = bag.trackRecvBtn || "✓ استلمت الطلب";
+    if (billBtn) {
+      billBtn.hidden = !ready;
+      billBtn.textContent = label;
+    }
+  }
+  function confirmGuestReceived(opts) {
+    const firstTime = !isGuestOrderReceived();
+    window.__zekiqKeepRateSheet = true;
+    if (firstTime) {
+      markGuestOrderReceived();
+      hideThanksCloud();
+      lsDel(thanksKey(THANKS_AT_KEY));
+      stopOrderTracking();
+      clearOrderTrackActive();
+      /* Close حسابي without hideGuestRateUi (flag keeps sheet) */
+      try {
+        const bill = $("tableBillSheet");
+        if (bill) {
+          bill.classList.remove("show");
+          bill.setAttribute("aria-hidden", "true");
+        }
+      } catch (_) {}
+      paintOrderTrackUI("none");
+      paintRecvButtons("none");
+      const bag = guestBag() || {};
+      toast(bag.trackRecvDone || "تم الاستلام ✓ — شكراً لكم", 1800);
+      if (navigator.vibrate) {
+        try { navigator.vibrate([12, 30, 12]); } catch (_) {}
+      }
+    } else {
+      try {
+        const bill = $("tableBillSheet");
+        if (bill && bill.classList.contains("show")) {
+          bill.classList.remove("show");
+          bill.setAttribute("aria-hidden", "true");
+        }
+      } catch (_) {}
+    }
+    markGuestRateEligible();
+    ssDel(RATE_DISMISS_FLAG);
+    /* Show rating NOW — even if previously dismissed / already received */
+    if (!isGuestRateDone()) {
+      try {
+        showGuestRateSheet({ reason: "received", force: true });
+      } catch (err) {
+        console.warn("[guest-rate] show failed", err);
+      }
+      setTimeout(function () {
+        if (!isGuestRateDone()) {
+          try { showGuestRateSheet({ reason: "received", force: true }); } catch (_) {}
+        }
+        window.__zekiqKeepRateSheet = false;
+      }, 400);
+    } else {
+      window.__zekiqKeepRateSheet = false;
+      toast((guestBag() || {}).rateThanks || "شكراً — تقييمك مسجّل مسبقاً", 2200);
+    }
+    void opts;
+  }
+  function bindGuestRecvButtons() {
+    const billBtn = $("billOrderTrackRecvBtn");
+    if (billBtn && !billBtn.__bound) {
+      billBtn.__bound = true;
+      billBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        confirmGuestReceived({ stayInBill: true });
+      });
+    }
+  }
   function isOrderTrackActive() {
-    try { return sessionStorage.getItem(TRACK_FLAG) === "1"; } catch (_) { return !!window.__zekiqTrackActive; }
+    if (isGuestOrderReceived()) return false;
+    if (window.__zekiqTrackActive) return true;
+    try {
+      if (sessionStorage.getItem(TRACK_FLAG) === "1") return true;
+    } catch (_) {}
+    const p = readTrackPersist();
+    return !!(p && p.active && !p.received);
   }
   function markOrderTrackActive() {
     window.__zekiqTrackActive = true;
     try { sessionStorage.setItem(TRACK_FLAG, "1"); } catch (_) {}
+    writeTrackPersist({ active: true, received: false });
   }
   function clearOrderTrackActive() {
     window.__zekiqTrackActive = false;
     try { sessionStorage.removeItem(TRACK_FLAG); } catch (_) {}
+    const p = readTrackPersist();
+    if (p && p.received) {
+      writeTrackPersist({ active: false, received: true });
+    } else {
+      writeTrackPersist({ active: false });
+    }
+  }
+  function ssGet(k) {
+    try { return sessionStorage.getItem(k); } catch (_) { return null; }
+  }
+  function ssSet(k, v) {
+    try { sessionStorage.setItem(k, v); } catch (_) {}
+  }
+  function ssDel(k) {
+    try { sessionStorage.removeItem(k); } catch (_) {}
+  }
+  function isGuestRateDone() {
+    return (
+      ssGet(RATE_DONE_FLAG) === "1" ||
+      lsGet(thanksKey(RATE_DONE_FLAG)) === "1" ||
+      !!window.__zekiqGuestRated
+    );
+  }
+  function isGuestRateDismissed() {
+    return ssGet(RATE_DISMISS_FLAG) === "1";
+  }
+  function markGuestRateEligible() {
+    ssSet(RATE_ELIGIBLE_FLAG, "1");
+    window.__zekiqGuestRateEligible = true;
+  }
+  function isGuestRateEligible() {
+    return ssGet(RATE_ELIGIBLE_FLAG) === "1" || !!window.__zekiqGuestRateEligible;
+  }
+  function paintGuestRateLabels(bag) {
+    const b = bag || guestBag() || {};
+    const title = $("guestRateTitle");
+    const sub = $("guestRateSub");
+    const priv = $("guestRatePrivacy");
+    const note = $("guestRateNote");
+    const hint = $("guestRateNoteHint");
+    const send = $("guestRateSend");
+    const skip = $("guestRateSkip");
+    const thanks = $("guestRateThanks");
+    const chip = $("guestRateChip");
+    const stars = $("guestRateStars");
+    if (title) title.textContent = b.rateTitle || "كيف كانت الخدمة؟";
+    if (sub) sub.textContent = b.rateSub || "";
+    if (priv) priv.textContent = b.ratePrivacy || "";
+    if (note) note.placeholder = b.rateNotePh || "";
+    if (send) send.textContent = b.rateSend || "إرسال";
+    if (skip) skip.textContent = b.rateSkip || "لاحقاً";
+    if (thanks) thanks.textContent = b.rateThanks || "";
+    if (chip) chip.textContent = b.rateChip || "تقييم الخدمة";
+    if (stars) stars.setAttribute("aria-label", b.rateStarsAria || "rating");
+    if (hint) {
+      if (guestRateStars > 0 && guestRateStars <= 2) hint.textContent = b.rateNoteHintLow || "";
+      else if (guestRateStars >= 4) hint.textContent = b.rateNoteHintHigh || "";
+      else hint.textContent = b.rateNoteHintMid || "";
+    }
+  }
+  function setGuestRateStars(n) {
+    guestRateStars = Math.max(0, Math.min(5, Number(n) || 0));
+    ["guestRateStars", "guestRateSheetStars"].forEach(function (id) {
+      const root = $(id);
+      if (!root) return;
+      root.querySelectorAll("button").forEach(function (btn) {
+        const v = Number(btn.getAttribute("data-star") || 0);
+        btn.classList.toggle("on", v > 0 && v <= guestRateStars);
+      });
+    });
+    const card = $("guestRateCard");
+    if (card) card.classList.toggle("is-low", guestRateStars > 0 && guestRateStars <= 2);
+    const send = $("guestRateSend");
+    if (send) send.disabled = guestRateStars < 1 || guestRateSending;
+    const sheetSend = $("guestRateSheetSend");
+    if (sheetSend) sheetSend.disabled = guestRateStars < 1 || guestRateSending;
+    paintGuestRateLabels(guestBag());
+  }
+  function hideGuestRateSheet() {
+    if (window.__zekiqKeepRateSheet) return;
+    const el = $("guestRateSheet");
+    if (!el) return;
+    el.classList.remove("show", "is-open");
+    el.style.removeProperty("display");
+    el.style.removeProperty("z-index");
+    el.setAttribute("aria-hidden", "true");
+  }
+  function showGuestRateSheet(opts) {
+    if (isGuestRateDone()) {
+      hideGuestRateSheet();
+      return;
+    }
+    const force = !!(opts && opts.force);
+    /* After استلمت we force bottom sheet. Otherwise in-bill card if حسابي open. */
+    if (isTableBillOpen() && !force) {
+      hideGuestRateSheet();
+      markGuestRateEligible();
+      showGuestRateCard();
+      try {
+        const card = $("guestRateCard");
+        if (card && card.scrollIntoView) card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      } catch (_) {}
+      return;
+    }
+    markGuestRateEligible();
+    ssSet(RATE_SHEET_OFFERED, "1");
+    const bag = guestBag() || {};
+    const b = bag;
+    let el = $("guestRateSheet");
+    if (!el) {
+      /* Fallback if old cached HTML without sheet node */
+      el = document.createElement("div");
+      el.id = "guestRateSheet";
+      el.innerHTML =
+        '<div class="guest-rate-sheet-card" role="dialog">' +
+        '<p class="guest-rate-sheet-kicker" id="guestRateSheetKicker"></p>' +
+        '<p class="guest-rate-sheet-title" id="guestRateSheetTitle"></p>' +
+        '<div class="guest-rate-sheet-stars" id="guestRateSheetStars" role="group">' +
+        '<button type="button" data-star="1">★</button><button type="button" data-star="2">★</button>' +
+        '<button type="button" data-star="3">★</button><button type="button" data-star="4">★</button>' +
+        '<button type="button" data-star="5">★</button></div>' +
+        '<textarea id="guestRateSheetNote" class="guest-rate-sheet-note" rows="2" maxlength="500"></textarea>' +
+        '<div class="guest-rate-sheet-actions">' +
+        '<button type="button" class="guest-rate-sheet-send" id="guestRateSheetSend">إرسال</button>' +
+        '<button type="button" class="guest-rate-sheet-skip" id="guestRateSheetSkip">لاحقاً</button>' +
+        "</div></div>";
+      document.body.appendChild(el);
+      bindGuestRateUi();
+    }
+    try {
+      if (el.parentElement !== document.body) document.body.appendChild(el);
+    } catch (_) {}
+    const kicker = $("guestRateSheetKicker");
+    const title = $("guestRateSheetTitle");
+    const note = $("guestRateSheetNote");
+    const send = $("guestRateSheetSend");
+    const skip = $("guestRateSheetSkip");
+    const reason = opts && opts.reason ? String(opts.reason) : "";
+    if (kicker) {
+      kicker.textContent =
+        reason === "sent"
+          ? b.rateSheetKickerSent || "تم إرسال طلبك — قيّم قبل إغلاق الصفحة"
+          : reason === "ready"
+            ? b.rateSheetKickerReady || "طلبك في الطريق — قيّم قبل المغادرة"
+            : b.rateSheetKickerRecv || "قبل المغادرة — ثوانٍ فقط";
+    }
+    if (title) title.textContent = b.rateTitle || "كيف كانت الخدمة؟";
+    if (note) {
+      note.hidden = false;
+      note.placeholder = b.rateNotePh || "";
+    }
+    if (send) {
+      send.hidden = false;
+      send.disabled = guestRateStars < 1 || guestRateSending;
+      send.textContent = b.rateSheetSend || b.rateSend || "إرسال التقييم";
+    }
+    if (skip) {
+      skip.hidden = false;
+      skip.textContent = b.rateSkip || "لاحقاً";
+    }
+    el.classList.add("show", "is-open");
+    el.setAttribute("aria-hidden", "false");
+    el.style.setProperty("display", "block", "important");
+    el.style.setProperty("position", "fixed", "important");
+    el.style.setProperty("left", "0", "important");
+    el.style.setProperty("right", "0", "important");
+    el.style.setProperty("bottom", "0", "important");
+    el.style.setProperty("z-index", "2147483000", "important");
+    el.style.setProperty("pointer-events", "auto", "important");
+    el.style.setProperty("visibility", "visible", "important");
+    setGuestRateStars(guestRateStars);
+    if (navigator.vibrate) {
+      try { navigator.vibrate([14, 30, 14]); } catch (_) {}
+    }
+  }
+  function hideGuestRateUi() {
+    const card = $("guestRateCard");
+    const chip = $("guestRateChip");
+    if (card) card.hidden = true;
+    if (chip) chip.hidden = true;
+    hideGuestRateSheet();
+  }
+  function showGuestRateCard() {
+    if (isGuestRateDone()) {
+      hideGuestRateUi();
+      return;
+    }
+    paintGuestRateLabels(guestBag());
+    const card = $("guestRateCard");
+    const chip = $("guestRateChip");
+    const thanks = $("guestRateThanks");
+    if (thanks) thanks.hidden = true;
+    if (chip) chip.hidden = true;
+    if (card) card.hidden = false;
+    setGuestRateStars(guestRateStars);
+  }
+  function showGuestRateChipOnly() {
+    if (isGuestRateDone() || !isGuestRateEligible()) {
+      hideGuestRateUi();
+      return;
+    }
+    paintGuestRateLabels(guestBag());
+    const card = $("guestRateCard");
+    const chip = $("guestRateChip");
+    if (card) card.hidden = true;
+    if (chip) chip.hidden = false;
+  }
+  function syncGuestRateUi() {
+    /* Rating UI only inside حسابي — never over the menu */
+    if (!isTableBillOpen()) {
+      hideGuestRateUi();
+      return;
+    }
+    if (isGuestRateDone()) {
+      hideGuestRateUi();
+      return;
+    }
+    if (!isGuestRateEligible()) {
+      hideGuestRateUi();
+      return;
+    }
+    if (isGuestRateDismissed()) showGuestRateChipOnly();
+    else showGuestRateCard();
+  }
+  function scheduleRateAfterSend() {
+    if (isGuestRateDone()) return;
+    if (guestRateAfterSendTimer) {
+      clearTimeout(guestRateAfterSendTimer);
+      guestRateAfterSendTimer = null;
+    }
+    guestRateAfterSendTimer = setTimeout(function () {
+      guestRateAfterSendTimer = null;
+      if (isGuestRateDone()) return;
+      if (ssGet(RATE_SHEET_OFFERED) === "1") return;
+      markGuestRateEligible();
+      ssDel(RATE_DISMISS_FLAG);
+      window.__zekiqKeepRateSheet = true;
+      try {
+        showGuestRateSheet({ reason: "sent", force: true });
+      } catch (err) {
+        console.warn("[guest-rate] after-send show failed", err);
+      }
+      setTimeout(function () {
+        window.__zekiqKeepRateSheet = false;
+      }, 500);
+    }, RATE_AFTER_SEND_MS);
+  }
+  function maybeOfferGuestRating(status) {
+    if (isGuestRateDone()) {
+      hideGuestRateSheet();
+      if (isTableBillOpen()) hideGuestRateUi();
+      return;
+    }
+    const st = String(status || "");
+    /* Backup only — primary ask is scheduleRateAfterSend() right after order */
+    if (st === "ready" || st === "served" || isGuestOrderReceived()) {
+      if (ssGet(RATE_SHEET_OFFERED) === "1" || isGuestRateDismissed()) return;
+      markGuestRateEligible();
+      showGuestRateSheet({
+        reason: st === "ready" ? "ready" : "received",
+        force: true,
+      });
+    }
+  }
+  async function submitGuestRating() {
+    if (guestRateSending || isGuestRateDone() || guestRateStars < 1) return;
+    const bag = guestBag() || {};
+    const noteEl = $("guestRateNote");
+    const sheetNote = $("guestRateSheetNote");
+    const message = String(
+      (sheetNote && sheetNote.value) || (noteEl && noteEl.value) || "",
+    ).trim();
+    guestRateSending = true;
+    setGuestRateStars(guestRateStars);
+    try {
+      const s = guestSession();
+      const token = String((s && s.token) || "").trim();
+      const base = await resolveApiBase();
+      if (!token || !base) throw new Error("no_api");
+      const res = await fetch(String(base).replace(/\/+$/, "") + "/api/guest/v1/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: token, rating: guestRateStars, message: message }),
+      });
+      const data = await res.json().catch(function () { return null; });
+      if (!res.ok || !data || data.ok === false) throw new Error("bad");
+      window.__zekiqGuestRated = true;
+      ssSet(RATE_DONE_FLAG, "1");
+      lsSet(thanksKey(RATE_DONE_FLAG), "1");
+      ssDel(RATE_DISMISS_FLAG);
+      hideThanksCloud();
+      hideGuestRateSheet();
+      lsDel(thanksKey(THANKS_AT_KEY));
+      const thanks = $("guestRateThanks");
+      if (thanks) thanks.hidden = false;
+      const send = $("guestRateSend");
+      const skip = $("guestRateSkip");
+      if (send) send.hidden = true;
+      if (skip) skip.hidden = true;
+      if (noteEl) noteEl.disabled = true;
+      toast(bag.rateThanks || "شكراً لك — وصلنا رأيك", 2400);
+      setTimeout(function () { hideGuestRateUi(); }, 900);
+    } catch (_) {
+      toast(bag.rateError || "تعذّر إرسال التقييم", 2400);
+    } finally {
+      guestRateSending = false;
+      setGuestRateStars(guestRateStars);
+    }
+  }
+  function dismissGuestRating() {
+    if (isGuestRateDone()) return;
+    ssSet(RATE_DISMISS_FLAG, "1");
+    ssSet(RATE_SHEET_OFFERED, "1");
+    hideGuestRateSheet();
+    if (isTableBillOpen()) showGuestRateChipOnly();
+    else {
+      const sumBtn = $("summaryButton");
+      if (sumBtn) sumBtn.classList.add("has-live-track");
+      toast((guestBag() || {}).rateDismissHint || "يمكنك التقييم لاحقاً من حسابي", 2600);
+    }
+  }
+  function bindGuestRateUi() {
+    function bindStars(rootId) {
+      const stars = $(rootId);
+      if (!stars || stars.__bound) return;
+      stars.__bound = true;
+      stars.addEventListener("click", function (ev) {
+        const btn = ev.target && ev.target.closest ? ev.target.closest("button[data-star]") : null;
+        if (!btn) return;
+        setGuestRateStars(Number(btn.getAttribute("data-star") || 0));
+      });
+    }
+    bindStars("guestRateStars");
+    bindStars("guestRateSheetStars");
+    const send = $("guestRateSend");
+    if (send && !send.__bound) {
+      send.__bound = true;
+      send.addEventListener("click", function () { void submitGuestRating(); });
+    }
+    const sheetSend = $("guestRateSheetSend");
+    if (sheetSend && !sheetSend.__bound) {
+      sheetSend.__bound = true;
+      sheetSend.addEventListener("click", function () { void submitGuestRating(); });
+    }
+    const skip = $("guestRateSkip");
+    if (skip && !skip.__bound) {
+      skip.__bound = true;
+      skip.addEventListener("click", dismissGuestRating);
+    }
+    const sheetSkip = $("guestRateSheetSkip");
+    if (sheetSkip && !sheetSkip.__bound) {
+      sheetSkip.__bound = true;
+      sheetSkip.addEventListener("click", dismissGuestRating);
+    }
+    const chip = $("guestRateChip");
+    if (chip && !chip.__bound) {
+      chip.__bound = true;
+      chip.addEventListener("click", function () {
+        ssDel(RATE_DISMISS_FLAG);
+        showGuestRateCard();
+      });
+    }
   }
   function isTableBillOpen() {
     const sheet = $("tableBillSheet");
@@ -3898,11 +5072,38 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function trackPhaseLabel(bag, status) {
     const b = bag || guestBag() || {};
-    if (status === "preparing") return b.trackPreparing || "تم الاستلام — طلبك قيد التجهيز…";
-    if (status === "ready") return b.trackReady || "طلبك في الطريق إليك";
+    if (status === "preparing") return b.trackPreparing || "③ تجهيز — المطبخ يجهّز طلبك الآن";
+    if (status === "ready") return b.trackReady || "④ في الطريق — الجرسون قادم إليك";
     if (status === "served") return b.trackServed || "تم تقديم طلبك ✓";
-    if (status === "sent") return b.trackSent || "تم إرسال طلبك — بانتظار المطبخ";
+    if (status === "sent") return b.trackSent || "① إرسال — وصل للكاشير، بانتظار الاستلام";
     return b.trackNone || "";
+  }
+  function trackDockStepLabels(bag) {
+    const b = bag || guestBag() || {};
+    return [
+      b.trackStepSendN || ("1 · " + (b.trackStepSend || "إرسال")),
+      b.trackStepRecvN || ("2 · " + (b.trackStepRecv || "استلام")),
+      b.trackStepPrepN || ("3 · " + (b.trackStepPrep || "تجهيز")),
+      b.trackStepReadyN || ("4 · " + (b.trackStepReady || "في الطريق")),
+    ];
+  }
+  function paintTrackDock(status) {
+    /* Never show a floating track over the menu — only a badge on حسابي */
+    const dock = $("orderTrackDock");
+    if (dock) {
+      dock.hidden = true;
+      dock.setAttribute("aria-hidden", "true");
+    }
+    const sumBtn = $("summaryButton");
+    const st = String(status || orderTrackLastStatus || "");
+    const active =
+      isOrderTrackActive() &&
+      !isGuestOrderReceived() &&
+      st &&
+      st !== "none" &&
+      st !== "served";
+    const billOpen = isTableBillOpen();
+    if (sumBtn) sumBtn.classList.toggle("has-live-track", !!(active && !billOpen));
   }
   /**
    * UI steps: إرسال → استلام → تجهيز → في الطريق
@@ -3923,10 +5124,10 @@ window.TONINO_CONFIG = Object.freeze({
     const recvLbl = root.querySelector(".ots-recv-lbl");
     const prepLbl = root.querySelector(".ots-prep-lbl");
     const readyLbl = root.querySelector(".ots-ready-lbl");
-    if (sendLbl) sendLbl.textContent = b.trackStepSend || "إرسال";
-    if (recvLbl) recvLbl.textContent = b.trackStepRecv || "استلام";
-    if (prepLbl) prepLbl.textContent = b.trackStepPrep || "تجهيز";
-    if (readyLbl) readyLbl.textContent = b.trackStepReady || "في الطريق";
+    if (sendLbl) sendLbl.textContent = b.trackStepSendN || ("1 · " + (b.trackStepSend || "إرسال"));
+    if (recvLbl) recvLbl.textContent = b.trackStepRecvN || ("2 · " + (b.trackStepRecv || "استلام"));
+    if (prepLbl) prepLbl.textContent = b.trackStepPrepN || ("3 · " + (b.trackStepPrep || "تجهيز"));
+    if (readyLbl) readyLbl.textContent = b.trackStepReadyN || ("4 · " + (b.trackStepReady || "في الطريق"));
     const order = ["sent", "received", "preparing", "ready"];
     const idx = trackStepIndex(status);
     root.querySelectorAll(".ots").forEach(function (el) {
@@ -3955,13 +5156,15 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function paintOrderTrackUI(status) {
     const bag = guestBag();
-    const active = isOrderTrackActive();
-    const label = trackPhaseLabel(bag, status);
+    const active = isOrderTrackActive() && !isGuestOrderReceived();
+    const st = String(status || "");
+    const label = trackPhaseLabel(bag, st);
     const bar = $("orderTrackBar");
     const billBar = $("billOrderTrack");
-    const show = active && status && status !== "none";
+    /* Hide track after guest receive, or when kitchen served */
+    const show = active && st && st !== "none" && st !== "served";
     paintOrderTrackMoreLabels(bag);
-    /* Never float track / CTA over the menu — only inside حسابي */
+    /* Full track only inside حسابي; compact dock stays after close */
     if (bar) {
       bar.hidden = true;
       bar.setAttribute("aria-hidden", "true");
@@ -3970,16 +5173,19 @@ window.TONINO_CONFIG = Object.freeze({
       billBar.hidden = !show;
       const lbl2 = $("billOrderTrackLabel");
       if (lbl2) lbl2.textContent = label;
-      paintTrackSteps($("billOrderTrackSteps"), status, bag);
+      paintTrackSteps($("billOrderTrackSteps"), st, bag);
     }
     const addMoreBill = $("tableBillAddMore");
     if (addMoreBill) addMoreBill.hidden = !show;
-    if (show && status !== orderTrackLastStatus && status !== "sent") {
+    paintTrackDock(show ? st : "none");
+    paintRecvButtons(show ? st : "none");
+    if (show && st !== orderTrackLastStatus && st !== "sent") {
       if (navigator.vibrate) {
-        try { navigator.vibrate(status === "ready" ? [20, 40, 20] : 12); } catch (_) {}
+        try { navigator.vibrate(st === "ready" ? [20, 40, 20] : 12); } catch (_) {}
       }
     }
-    orderTrackLastStatus = status || "";
+    orderTrackLastStatus = st || "";
+    maybeOfferGuestRating(st);
   }
   async function fetchOrderStatus() {
     try {
@@ -3999,20 +5205,38 @@ window.TONINO_CONFIG = Object.freeze({
     }
   }
   async function refreshOrderTrack() {
-    if (!isOrderTrackActive()) {
+    if (!isOrderTrackActive() || isGuestOrderReceived()) {
       paintOrderTrackUI("none");
       return null;
     }
     const data = await fetchOrderStatus();
     const status = data && data.status ? String(data.status) : "none";
-    paintOrderTrackUI(status);
-    if (status === "none" || status === "served") {
-      if (Date.now() > orderTrackUntil - 60_000) {
-        stopOrderTracking();
-        clearOrderTrackActive();
-        paintOrderTrackUI("none");
-      }
+    if (data && data.orderId != null) {
+      orderTrackLastOrderId = data.orderId;
+      writeTrackPersist({ orderId: data.orderId, lastStatus: status });
     }
+    /* Kitchen/garson marked served → track disappears (guest phone not required) */
+    if (status === "served") {
+      if (!isGuestOrderReceived()) {
+        markGuestOrderReceived();
+        markGuestRateEligible();
+      }
+      stopOrderTracking();
+      clearOrderTrackActive();
+      paintOrderTrackUI("none");
+      if (isTableBillOpen()) syncGuestRateUi();
+      return data;
+    }
+    /* Table closed / no open order → stop quietly */
+    if (status === "none" || data == null) {
+      stopOrderTracking();
+      clearOrderTrackActive();
+      clearTrackPersist();
+      paintOrderTrackUI("none");
+      return data;
+    }
+    paintOrderTrackUI(status);
+    maybeOfferGuestRating(status);
     return data;
   }
   function stopOrderTracking() {
@@ -4024,12 +5248,34 @@ window.TONINO_CONFIG = Object.freeze({
   function startOrderTracking(opts) {
     const force = !!(opts && opts.force);
     if (!force && !isOrderTrackActive()) return; /* never show before guest sends */
-    if (force) markOrderTrackActive();
+    if (force) {
+      /* New send — fresh track for this table token */
+      window.__zekiqGuestOrderReceived = false;
+      ssDel(GUEST_RECEIVED_FLAG);
+      writeTrackPersist({ active: true, received: false, orderId: null, lastStatus: "sent" });
+      ssDel(RATE_SHEET_OFFERED);
+      ssDel(RATE_DISMISS_FLAG);
+      ssDel(RATE_DONE_FLAG);
+      ssDel(RATE_ELIGIBLE_FLAG);
+      lsDel(thanksKey(RATE_DONE_FLAG));
+      window.__zekiqGuestRated = false;
+      window.__zekiqGuestRateEligible = false;
+      guestRateStars = 0;
+      if (guestRateAfterSendTimer) {
+        clearTimeout(guestRateAfterSendTimer);
+        guestRateAfterSendTimer = null;
+      }
+      hideGuestRateSheet();
+      markOrderTrackActive();
+    }
     orderTrackUntil = Math.max(
       orderTrackUntil,
-      Date.now() + (force ? 45 * 60_000 : 20 * 60_000),
+      Date.now() + (force ? 90 * 60_000 : 45 * 60_000),
     );
     if (force) paintOrderTrackUI("sent");
+    scheduleThanksCloud();
+    /* Primary rating moment: seconds after send — guest is still looking */
+    if (force) scheduleRateAfterSend();
     void refreshOrderTrack();
     if (orderTrackTimer) return;
     orderTrackTimer = setInterval(function () {
@@ -4058,6 +5304,24 @@ window.TONINO_CONFIG = Object.freeze({
     if (!sheet) return;
     sheet.classList.remove("show");
     sheet.setAttribute("aria-hidden", "true");
+    if (!window.__zekiqKeepRateSheet) hideGuestRateUi();
+    else {
+      const card = $("guestRateCard");
+      const chip = $("guestRateChip");
+      if (card) card.hidden = true;
+      if (chip) chip.hidden = true;
+    }
+    paintTrackDock(orderTrackLastStatus || "sent");
+    /* Soft hint once: track lives in حسابي (green badge) — never mid-menu */
+    if (
+      isOrderTrackActive() &&
+      !isGuestOrderReceived() &&
+      !window.__zekiqTrackCloseHinted
+    ) {
+      window.__zekiqTrackCloseHinted = true;
+      const bag = guestBag() || {};
+      toast(bag.trackClosedHint || "متابعة الطلب من حسابي (النقطة الخضراء)", 2800);
+    }
   }
   function renderTableBill(data) {
     const bag = guestBag();
@@ -4154,6 +5418,8 @@ window.TONINO_CONFIG = Object.freeze({
     } else {
       paintOrderTrackUI("none");
     }
+    paintTrackDock(orderTrackLastStatus || "none");
+    syncGuestRateUi();
   }
   $("summaryButton").addEventListener("click", () => openTableBillSheet());
   const tableBillCloseX = $("tableBillCloseX");
@@ -4166,6 +5432,10 @@ window.TONINO_CONFIG = Object.freeze({
   if (tableBillAddMore) tableBillAddMore.addEventListener("click", continueOrderingFromTrack);
   const billOrderTrackMoreBtn = $("billOrderTrackMoreBtn");
   if (billOrderTrackMoreBtn) billOrderTrackMoreBtn.addEventListener("click", continueOrderingFromTrack);
+  bindGuestRateUi();
+  bindGuestRecvButtons();
+  bindThanksCloud();
+  syncGuestRateUi();
   const tableBillSheetEl = $("tableBillSheet");
   if (tableBillSheetEl) {
     tableBillSheetEl.addEventListener("click", function (e) {
@@ -4593,7 +5863,17 @@ window.TONINO_CONFIG = Object.freeze({
       pickDrink: "اختر المشروب",
       pickOption: "اختر الخيار",
       pickSugarSize: "اختر السكر / الحجم",
+      pickSugarSizeAgain: "قهوة إضافية — اختر السكر",
       pickIceFlavor: "اختر نكهة الآيس كريم",
+      pickIceTeaFlavor: "اختر نكهة الآيس تي",
+      pickIceTeaFlavorAgain: "آيس تي إضافي — اختر النكهة",
+      iceTeaSeftali: "خوخ",
+      iceTeaLimon: "ليمون",
+      iceTeaMango: "مانغو",
+      pickWaterTemp: "اختر الماء",
+      pickWaterTempAgain: "ماء إضافي — اختر",
+      waterCold: "ماء بارد",
+      waterRoom: "خارج البراد",
       coffeeSade: "سادة",
       coffeeOrta: "وسط سكر",
       coffeeSekerli: "سكر",
@@ -4631,32 +5911,64 @@ window.TONINO_CONFIG = Object.freeze({
       itemNotePh: "ملاحظة لهذا الصنف (بدون بصل، نصف محمص…)",
       lineNoteTitle: "ملاحظة للصنف",
       lineNoteSave: "تم",
-      notesReviewTitle: "راجع طلبك",
-      notesReviewSub: "أضف ملاحظة تحت كل صنف إن احتجت — ثم أرسل وانتظر طلبك",
+      notesReviewTitle: "راجع طلبك والملاحظات",
+      notesReviewSub: "قبل الإرسال: اكتب ملاحظة تحت كل صنف إن لزم (بدون بصل…) ثم أكّد",
+      notesReviewWhere: "📝 مكان الملاحظات هنا — حقل تحت كل صنف + ملاحظة عامة أسفل القائمة",
       notesReviewConfirm: "✓ تأكيد وإرسال الطلب",
       notesReviewBack: "رجوع",
       notesDailyHint: "ملاحظاتك تصل مع الطلب للكاشير والطاقم",
       billBtn: "حسابي",
-      billTitle: "حساب الطاولة",
-      billSub: "قراءة فقط — المحاسبة عند الكاشير",
+      billTitle: "حسابي — التتبع والحساب",
+      billSub: "هنا ترى مراحل طلبك — الدفع عند الكاشير",
       billTotal: "المجموع",
       billEmpty: "لا يوجد طلب مفتوح على هذه الطاولة بعد",
       billRefresh: "تحديث",
-      billClose: "إغلاق",
+      billClose: "متابعة المينو",
       billLoading: "جاري التحميل…",
       billError: "تعذّر تحميل الحساب",
-      sentOkBillHint: "تم الإرسال ✓ — تابع الحالة من حسابي",
+      sentOkBillHint: "تم الإرسال ✓ — تابع الطلب من حسابي",
       trackStepSend: "إرسال",
       trackStepRecv: "استلام",
       trackStepPrep: "تجهيز",
       trackStepReady: "في الطريق",
-      trackSent: "تم إرسال طلبك — بانتظار المطبخ",
-      trackPreparing: "تم الاستلام — طلبك قيد التجهيز…",
-      trackReady: "طلبك في الطريق إليك",
+      trackStepSendN: "1 · إرسال",
+      trackStepRecvN: "2 · استلام",
+      trackStepPrepN: "3 · تجهيز",
+      trackStepReadyN: "4 · في الطريق",
+      trackSent: "① إرسال — وصل للكاشير، بانتظار الاستلام",
+      trackPreparing: "③ تجهيز — المطبخ يجهّز طلبك الآن",
+      trackReady: "④ في الطريق — الجرسون قادم إليك",
       trackServed: "تم تقديم طلبك ✓",
       trackNone: "",
       trackAddMore: "أضف شيئاً آخر؟",
-      trackAddMoreHint: "تمام — تصفّح المينو وأضف ثم أرسل من جديد"
+      trackAddMoreHint: "تمام — تصفّح المينو وأضف ثم أرسل من جديد",
+      trackDockKicker: "تتبع طلبك",
+      trackDockHint: "اضغط لفتح حسابي والتفاصيل",
+      trackClosedHint: "متابعة الطلب من حسابي (النقطة الخضراء)",
+      trackRecvBtn: "✓ استلمت الطلب",
+      trackRecvDone: "تم الاستلام ✓ — شكراً لكم",
+      thanksTitle: "شكراً لزيارتكم",
+      thanksBody: "ساعدونا في التقييم والتطوير — رأيكم يهمّنا لنحسّن الخدمة في المرة القادمة.",
+      thanksRate: "تقييم الخدمة الآن",
+      thanksLater: "لاحقاً",
+      rateTitle: "كيف كانت الخدمة؟",
+      rateSub: "رأيك يساعدنا نقدّم خدمة أفضل في المرة القادمة.",
+      ratePrivacy: "تقييمك سري — بدون اسم أو رقم هاتف. يصل لصاحب المحل فقط.",
+      rateNotePh: "ملاحظة اختيارية (مثلاً: تأخر، طعم، معاملة…)",
+      rateNoteHintLow: "نجمتان أو أقل — ملاحظتك تساعدنا كثيراً على التحسين.",
+      rateNoteHintMid: "يمكنك إضافة ملاحظة إن أحببت.",
+      rateNoteHintHigh: "ملاحظة اختيارية — شكراً لثقتك.",
+      rateSend: "إرسال التقييم",
+      rateSkip: "لاحقاً",
+      rateThanks: "شكراً لك — وصلنا رأيك.",
+      rateSheetKickerSent: "تم إرسال طلبك — قيّم قبل إغلاق الصفحة",
+      rateSheetKickerReady: "طلبك في الطريق — قيّم قبل المغادرة",
+      rateSheetKickerRecv: "قبل المغادرة — ثوانٍ فقط",
+      rateSheetSend: "إرسال التقييم",
+      rateDismissHint: "يمكنك التقييم لاحقاً من حسابي",
+      rateChip: "تقييم الخدمة",
+      rateStarsAria: "تقييم بالنجوم",
+      rateError: "تعذّر إرسال التقييم — حاول مرة أخرى"
     },
     tr: {
       cashierLabel: "Kasiyer",
@@ -4700,7 +6012,17 @@ window.TONINO_CONFIG = Object.freeze({
       pickDrink: "İçecek seçin",
       pickOption: "Seçenek seçin",
       pickSugarSize: "Şeker / boyut seçin",
+      pickSugarSizeAgain: "Ekstra kahve — şeker seçin",
       pickIceFlavor: "Dondurma aroması seçin",
+      pickIceTeaFlavor: "Ice Tea aroması seçin",
+      pickIceTeaFlavorAgain: "Ekstra Ice Tea — aroma seçin",
+      iceTeaSeftali: "Şeftali",
+      iceTeaLimon: "Limon",
+      iceTeaMango: "Mango",
+      pickWaterTemp: "Su seçin",
+      pickWaterTempAgain: "Ekstra su — seçin",
+      waterCold: "Soğuk (buzdolabı)",
+      waterRoom: "Oda sıcaklığı",
       coffeeSade: "Sade",
       coffeeOrta: "Orta şekerli",
       coffeeSekerli: "Şekerli",
@@ -4738,32 +6060,64 @@ window.TONINO_CONFIG = Object.freeze({
       itemNotePh: "Bu ürün için not (soğansız, az pişmiş…)",
       lineNoteTitle: "Ürün notu",
       lineNoteSave: "Tamam",
-      notesReviewTitle: "Siparişini kontrol et",
-      notesReviewSub: "İstersen her ürüne not ekle — sonra gönder ve bekle",
+      notesReviewTitle: "Sipariş ve notlar",
+      notesReviewSub: "Göndermeden önce her ürüne not yazabilirsin (soğansız…) — sonra onayla",
+      notesReviewWhere: "📝 Notlar burada — her ürünün altında + altta genel not",
       notesReviewConfirm: "✓ Onayla ve siparişi gönder",
       notesReviewBack: "Geri",
       notesDailyHint: "Notların kasiyer ve ekibe iletilir",
       billBtn: "Hesabım",
-      billTitle: "Masa hesabı",
-      billSub: "Sadece görüntüle — ödeme kasada",
+      billTitle: "Hesabım — takip",
+      billSub: "Sipariş aşamalarını burada gör — ödeme kasada",
       billTotal: "Toplam",
       billEmpty: "Bu masada henüz açık sipariş yok",
       billRefresh: "Yenile",
-      billClose: "Kapat",
+      billClose: "Menüye dön",
       billLoading: "Yükleniyor…",
       billError: "Hesap yüklenemedi",
-      sentOkBillHint: "Gönderildi ✓ — durumu Hesabım’dan izle",
+      sentOkBillHint: "Gönderildi ✓ — takibi Hesabım’dan izleyin",
       trackStepSend: "Gönderildi",
       trackStepRecv: "Alındı",
       trackStepPrep: "Hazırlanıyor",
       trackStepReady: "Yolda",
-      trackSent: "Siparişin gönderildi — mutfak bekleniyor",
-      trackPreparing: "Alındı — siparişin hazırlanıyor…",
-      trackReady: "Siparişin yolda",
+      trackStepSendN: "1 · Gönderildi",
+      trackStepRecvN: "2 · Alındı",
+      trackStepPrepN: "3 · Hazırlanıyor",
+      trackStepReadyN: "4 · Yolda",
+      trackSent: "① Gönderildi — kasiyerde, alınmayı bekliyor",
+      trackPreparing: "③ Hazırlanıyor — mutfak siparişinde",
+      trackReady: "④ Yolda — garson geliyor",
       trackServed: "Siparişin servis edildi ✓",
       trackNone: "",
       trackAddMore: "Bir şey daha ekle?",
-      trackAddMoreHint: "Harika — menüye dön, ekle ve tekrar gönder"
+      trackAddMoreHint: "Harika — menüye dön, ekle ve tekrar gönder",
+      trackDockKicker: "Sipariş takibi",
+      trackDockHint: "Detay için Hesabım’a dokun",
+      trackClosedHint: "Takip Hesabım’da (yeşil nokta)",
+      trackRecvBtn: "✓ Siparişi aldım",
+      trackRecvDone: "Teslim alındı ✓ — teşekkürler",
+      thanksTitle: "Ziyaretiniz için teşekkürler",
+      thanksBody: "Değerlendirme ve gelişim için bize yardımcı olun — görüşünüz hizmeti iyileştirmemize yardımcı olur.",
+      thanksRate: "Hizmeti şimdi değerlendir",
+      thanksLater: "Sonra",
+      rateTitle: "Hizmet nasıldı?",
+      rateSub: "Görüşünüz bir sonraki sefer daha iyi hizmet vermemize yardımcı olur.",
+      ratePrivacy: "Değerlendirmeniz gizli — isim veya telefon yok. Sadece işletme sahibi görür.",
+      rateNotePh: "İsteğe bağlı not (örn. gecikme, lezzet, ilgi…)",
+      rateNoteHintLow: "1–2 yıldız — notunuz iyileştirme için çok önemli.",
+      rateNoteHintMid: "İsterseniz kısa bir not ekleyebilirsiniz.",
+      rateNoteHintHigh: "Not isteğe bağlı — teşekkürler.",
+      rateSend: "Gönder",
+      rateSkip: "Sonra",
+      rateThanks: "Teşekkürler — görüşünüz bize ulaştı.",
+      rateSheetKickerSent: "Siparişiniz gönderildi — sayfayı kapatmadan puanlayın",
+      rateSheetKickerReady: "Siparişiniz yolda — gitmeden önce puanlayın",
+      rateSheetKickerRecv: "Gitmeden önce — birkaç saniye",
+      rateSheetSend: "Puanı gönder",
+      rateDismissHint: "Daha sonra Hesabım’dan puanlayabilirsiniz",
+      rateChip: "Hizmeti değerlendir",
+      rateStarsAria: "Yıldız puanı",
+      rateError: "Gönderilemedi — tekrar deneyin"
     },
     en: {
       cashierLabel: "Cashier",
@@ -4807,7 +6161,17 @@ window.TONINO_CONFIG = Object.freeze({
       pickDrink: "Choose drink",
       pickOption: "Choose option",
       pickSugarSize: "Choose sugar / size",
+      pickSugarSizeAgain: "Another coffee — choose sugar",
       pickIceFlavor: "Choose ice cream flavor",
+      pickIceTeaFlavor: "Choose ice tea flavor",
+      pickIceTeaFlavorAgain: "Another ice tea — choose flavor",
+      iceTeaSeftali: "Peach",
+      iceTeaLimon: "Lemon",
+      iceTeaMango: "Mango",
+      pickWaterTemp: "Choose water",
+      pickWaterTempAgain: "Another water — choose",
+      waterCold: "Cold (fridge)",
+      waterRoom: "Room temperature",
       coffeeSade: "Plain",
       coffeeOrta: "Medium sugar",
       coffeeSekerli: "Sweet",
@@ -4845,32 +6209,64 @@ window.TONINO_CONFIG = Object.freeze({
       itemNotePh: "Note for this item (no onion, medium rare…)",
       lineNoteTitle: "Item note",
       lineNoteSave: "Done",
-      notesReviewTitle: "Review your order",
-      notesReviewSub: "Add a note under each item if needed — then send and wait",
+      notesReviewTitle: "Review & notes",
+      notesReviewSub: "Before send: add a note under each item if needed — then confirm",
+      notesReviewWhere: "📝 Notes go here — under each item + general note at the bottom",
       notesReviewConfirm: "✓ Confirm & send order",
       notesReviewBack: "Back",
       notesDailyHint: "Your notes go with the order to the team",
       billBtn: "My bill",
-      billTitle: "Table bill",
-      billSub: "View only — pay at the cashier",
+      billTitle: "My bill — tracking",
+      billSub: "See your order stages here — pay at the cashier",
       billTotal: "Total",
       billEmpty: "No open order on this table yet",
       billRefresh: "Refresh",
-      billClose: "Close",
+      billClose: "Back to menu",
       billLoading: "Loading…",
       billError: "Could not load bill",
-      sentOkBillHint: "Sent ✓ — track progress in My bill",
+      sentOkBillHint: "Sent ✓ — track your order in My bill",
       trackStepSend: "Sent",
       trackStepRecv: "Received",
       trackStepPrep: "Preparing",
       trackStepReady: "On the way",
-      trackSent: "Order sent — waiting for the kitchen",
-      trackPreparing: "Received — your order is being prepared…",
-      trackReady: "Your order is on the way",
+      trackStepSendN: "1 · Sent",
+      trackStepRecvN: "2 · Received",
+      trackStepPrepN: "3 · Preparing",
+      trackStepReadyN: "4 · On the way",
+      trackSent: "① Sent — at the cashier, waiting to be received",
+      trackPreparing: "③ Preparing — kitchen is making your order",
+      trackReady: "④ On the way — waiter is coming",
       trackServed: "Your order was served ✓",
       trackNone: "",
       trackAddMore: "Add something else?",
-      trackAddMoreHint: "Nice — browse the menu, add more, then send again"
+      trackAddMoreHint: "Nice — browse the menu, add more, then send again",
+      trackDockKicker: "Order tracking",
+      trackDockHint: "Tap to open My bill for details",
+      trackClosedHint: "Track your order in My bill (green dot)",
+      trackRecvBtn: "✓ I received the order",
+      trackRecvDone: "Received ✓ — thank you",
+      thanksTitle: "Thank you for visiting",
+      thanksBody: "Help us improve — your rating and feedback make our service better next time.",
+      thanksRate: "Rate service now",
+      thanksLater: "Later",
+      rateTitle: "How was the service?",
+      rateSub: "Your feedback helps us serve better next time.",
+      ratePrivacy: "Anonymous — no name or phone. Only the owner sees this.",
+      rateNotePh: "Optional note (delay, taste, staff…)",
+      rateNoteHintLow: "1–2 stars — a short note helps us improve a lot.",
+      rateNoteHintMid: "You can add a note if you like.",
+      rateNoteHintHigh: "Note optional — thank you.",
+      rateSend: "Send rating",
+      rateSkip: "Later",
+      rateThanks: "Thank you — we received your feedback.",
+      rateSheetKickerSent: "Order sent — rate before you close the page",
+      rateSheetKickerReady: "Your order is on the way — rate before you leave",
+      rateSheetKickerRecv: "Before you leave — just a few seconds",
+      rateSheetSend: "Send rating",
+      rateDismissHint: "You can rate later from My bill",
+      rateChip: "Rate service",
+      rateStarsAria: "Star rating",
+      rateError: "Could not send — try again"
     }
   };
   function guestBag() {
@@ -4961,6 +6357,7 @@ window.TONINO_CONFIG = Object.freeze({
     if (billCloseBtn) billCloseBtn.textContent = bag.billClose || "";
     const billCloseX = document.getElementById("tableBillCloseX");
     if (billCloseX) billCloseX.setAttribute("aria-label", bag.billClose || "close");
+    if (typeof paintGuestRateLabels === "function") paintGuestRateLabels(bag);
   }
   function paintFooterHint(bag) {
     const b = bag || guestBag();
@@ -5055,7 +6452,8 @@ window.TONINO_CONFIG = Object.freeze({
       HAS_ARABIC_PAGES = Array.isArray(PAGES_AR) && PAGES_AR.some((u) => /guest-menu-pages-ar/i.test(String(u || "")));
       return HAS_ARABIC_PAGES;
     }
-    const next = trPagesToArUrls(base.filter((u) => u && !/^data:/i.test(String(u))));
+    /* Preserve index slots (empty pages stay empty) so AR/TR spots stay aligned. */
+    const next = trPagesToArUrls(base.map((u) => (/^data:/i.test(String(u || "")) ? "" : String(u || ""))));
     if (next.some(Boolean)) {
       PAGES_AR = next;
       HAS_ARABIC_PAGES = true;
@@ -5063,6 +6461,17 @@ window.TONINO_CONFIG = Object.freeze({
     }
     HAS_ARABIC_PAGES = Array.isArray(PAGES_AR) && PAGES_AR.some((u) => /guest-menu-pages-ar/i.test(String(u || "")));
     return HAS_ARABIC_PAGES;
+  }
+  function guestBookFingerprint(pages, spots, cats) {
+    try {
+      return JSON.stringify({
+        p: Array.isArray(pages) ? pages : [],
+        c: Array.isArray(cats) ? cats : [],
+        s: spots && typeof spots === "object" ? spots : {},
+      });
+    } catch (_) {
+      return String(Date.now());
+    }
   }
   function applyMenuLangPages(langCode, opts) {
     const lang = normalizeGuestLang(langCode) || "tr";
@@ -5220,6 +6629,7 @@ window.TONINO_CONFIG = Object.freeze({
   async function applyLiveBook(data, apiBase) {
     if (!data || !data.ok || !data.book) return false;
     let spotsOk = false;
+    const fpBefore = guestBookFingerprint(PAGES, HOTSPOTS, CATEGORIES);
     /* Spots ALWAYS from live cashier book — TR and AR maps stay separate. */
     if (data.book.manualSpots && typeof data.book.manualSpots === "object") {
       const next = spotsToHotspots(data.book.manualSpots, data.items);
@@ -5246,12 +6656,27 @@ window.TONINO_CONFIG = Object.freeze({
       ? HOTSPOTS_AR
       : (HOTSPOTS_TR || HOTSPOTS);
     if (Array.isArray(data.items)) window.__zekiqGuestMenuItems = data.items;
-    if (!Array.isArray(data.book.pages) || !data.book.pages.length) return spotsOk;
+    if (!Array.isArray(data.book.pages) || !data.book.pages.length) {
+      /* Spots-only update: remount only when hotspot map actually changed. */
+      try {
+        const gate = document.getElementById("startGate");
+        const open = gate && gate.classList.contains("show");
+        const fpNow = guestBookFingerprint(PAGES, HOTSPOTS, CATEGORIES);
+        const needRemount = fpNow !== fpBefore;
+        applyMenuLangPages(window.__zekiqGuestLang || "tr", open || !needRemount ? { afterStart: true } : { force: true, afterStart: true });
+      } catch (_) {}
+      return spotsOk;
+    }
     /* Keep index alignment with manualSpots — do not compact-filter empty slots. */
     const livePages = data.book.pages.map(u => absMenuUrl(apiBase, u) || "");
     if (!livePages.some(Boolean)) return spotsOk;
     const probeUrl = livePages.find(Boolean) || "";
-    const isNew = probeUrl ? await probeLockedNewMenuPage(probeUrl) : false;
+    /* Probe once — every 20s poll was waiting up to 5s then force-remounting images. */
+    let isNew = !!window.__zekiqMenuProbedOk;
+    if (!isNew) {
+      isNew = probeUrl ? await probeLockedNewMenuPage(probeUrl) : false;
+      if (isNew) window.__zekiqMenuProbedOk = true;
+    }
     /* Categories ALWAYS from cashier book — probe failure must not leave baked/wrong labels
      * (coffee chip → daily dish when indices drift). */
     if (data.book.pageCategories && livePages.length) {
@@ -5267,7 +6692,7 @@ window.TONINO_CONFIG = Object.freeze({
     if (!livePagesAr.some(Boolean) && livePages.some(Boolean)) {
       livePagesAr = trPagesToArUrls(livePages);
     }
-    if (isNew || (spotsOk && livePages.length >= 10)) {
+    if (isNew || (spotsOk && livePages.length >= 10) || (PAGES.some(Boolean) && livePages.length >= 10)) {
       PAGES_TR = livePages.map((u, i) => u || (PAGES_TR && PAGES_TR[i]) || PAGES[i] || "");
       if (livePagesAr.some(Boolean)) {
         PAGES_AR = trPagesToArUrls(livePagesAr.map((u, i) => u || (PAGES_AR && PAGES_AR[i]) || ""));
@@ -5282,7 +6707,13 @@ window.TONINO_CONFIG = Object.freeze({
     try {
       const gate = document.getElementById("startGate");
       const open = gate && gate.classList.contains("show");
-      applyMenuLangPages(window.__zekiqGuestLang || "tr", open ? {} : { force: true, afterStart: true });
+      const fpNow = guestBookFingerprint(PAGES, HOTSPOTS, CATEGORIES);
+      const needRemount = fpNow !== fpBefore;
+      /* Never force-remount on unchanged live polls — that blanked pages for ~1min on tunnel. */
+      applyMenuLangPages(
+        window.__zekiqGuestLang || "tr",
+        open || !needRemount ? { afterStart: true } : { force: true, afterStart: true }
+      );
     } catch (_) {}
     return spotsOk || isNew || !!(data.book.pageCategories && livePages.length);
   }
@@ -5471,11 +6902,22 @@ window.TONINO_CONFIG = Object.freeze({
     try { applyMenuLangPages(window.__zekiqGuestLang || "tr", { force: true, afterStart: true }); } catch (_) {}
     if (hasDailyBookPage() && currentMenu) renderDailyDishScreen(currentMenu);
     paintFooterHint(guestBag());
-    /* Resume track chip ONLY if this guest already sent in this browser session — never on first open. */
+    /* Resume track from localStorage if guest reopened same QR after closing the page */
     try {
-      if (isOrderTrackActive()) startOrderTracking();
-      else paintOrderTrackUI("none");
-    } catch (_) {}
+      const persisted = readTrackPersist();
+      if (persisted && persisted.received) {
+        window.__zekiqGuestOrderReceived = true;
+        ssSet(GUEST_RECEIVED_FLAG, "1");
+        paintOrderTrackUI("none");
+      } else if (isOrderTrackActive() || (persisted && persisted.active)) {
+        markOrderTrackActive();
+        startOrderTracking();
+      } else {
+        paintOrderTrackUI("none");
+      }
+    } catch (_) {
+      try { paintOrderTrackUI("none"); } catch (_) {}
+    }
     /* If live spots arrived, remount so buttons match cashier editor (not baked HTML). */
     if (live && live.bookOk) {
       mountInitial(currentIndex);
@@ -5483,18 +6925,13 @@ window.TONINO_CONFIG = Object.freeze({
       updateBadges();
       if (hasDailyBookPage() && currentMenu) renderDailyDishScreen(currentMenu);
     }
-    /* While guest keeps the page open, pick up cashier spot edits. */
-    let lastBookVer = String(window.__zekiqBookVersion || "");
+    /* While guest keeps the page open, pick up cashier spot edits.
+     * applyLiveBook remounts only when pages/spots fingerprint changes — do not
+     * mountInitial here (was blanking images every poll / every version tick). */
     setInterval(async () => {
       try {
-        const again = await loadLiveMenuBook();
-        const ver = String(window.__zekiqBookVersion || "");
-        if (again && again.bookOk && ver && ver !== lastBookVer) {
-          lastBookVer = ver;
-          mountInitial(currentIndex);
-          updateBadges();
-          if (hasDailyBookPage() && currentMenu) renderDailyDishScreen(currentMenu);
-        }
+        await loadLiveMenuBook();
+        try { updateBadges(); } catch (_) {}
       } catch (_) {}
     }, 20000);
   })();
