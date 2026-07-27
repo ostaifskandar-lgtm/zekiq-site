@@ -27,7 +27,7 @@
     <div class="logo">Z</div>
     <h1>تطبيق المالك</h1>
     <p>راقب مبيعات مطعمك من أي بلد — يعمل على 4G بعد تثبيت التطبيق.</p>
-    <a class="btn" href="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=39">⬇️ تحميل ZEKiQ Owner</a>
+    <a class="btn" id="apkDlBtn" href="#owner-download" data-apk-url="https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=39">⬇️ تحميل ZEKiQ Owner</a>
     <p class="ver">الإصدار 1.0.39 · build 39 · ~15.2 MB</p>
     <ul class="hint">
       <li>• حمّل وثبّت من «التنزيلات» — وليس من Chrome مباشرة</li>
@@ -40,5 +40,16 @@
     </div>
     <div class="warn"><b>Play Protect:</b> إذا ظهر تحذير → ⋮ → تثبيت على أي حال</div>
   </div>
+  <script>
+  (function () {
+    var btn = document.getElementById("apkDlBtn");
+    if (!btn) return;
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      var u = btn.getAttribute("data-apk-url") || "";
+      if (u) window.location.assign(u);
+    });
+  })();
+  </script>
 </body>
 </html>
