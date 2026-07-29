@@ -836,7 +836,12 @@ html[lang="ar"] .notes-review-where{font-family:Tahoma,"Segoe UI",sans-serif}
   border:1px solid #c8860a66;color:#fff8e8;
   box-shadow:0 6px 20px #0006;
 }
-.guest-rate-card[hidden],.guest-rate-chip[hidden],.guest-rate-thanks[hidden]{display:none!important}
+.guest-rate-card[hidden],.guest-rate-chip[hidden],.guest-rate-chips[hidden],.guest-rate-thanks[hidden]{display:none!important}
+.guest-rate-chips{display:flex;gap:8px;margin:0 0 10px}
+.guest-rate-chips .guest-rate-chip{flex:1;margin:0}
+.guest-rate-chip.is-complaint{
+  border-color:#ef535088;background:#ef535018;color:#b71c1c;
+}
 .guest-rate-title{margin:0 0 4px;font-size:14px;font-weight:900;text-align:center;color:#ffe082}
 .guest-rate-sub{margin:0 0 6px;font-size:12px;font-weight:700;line-height:1.4;text-align:center;color:#f0e0c0cc}
 .guest-rate-privacy{margin:0 0 10px;font-size:11px;font-weight:600;line-height:1.35;text-align:center;color:#cfe8d1aa}
@@ -1932,7 +1937,10 @@ html[lang="tr"] #orderCloudTitle,html[lang="en"] #orderCloudTitle{text-align:lef
           <button type="button" class="order-track-more" id="billOrderTrackMoreBtn">أضف شيئاً آخر؟</button>
         </div>
       </div>
-      <button type="button" class="guest-rate-chip" id="guestRateChip" hidden>تقييم الخدمة</button>
+      <div class="guest-rate-chips" id="guestRateChips" hidden>
+        <button type="button" class="guest-rate-chip" id="guestRateChip">تقييم الخدمة</button>
+        <button type="button" class="guest-rate-chip is-complaint" id="guestComplaintChip">إرسال شكوى</button>
+      </div>
       <div id="guestRateCard" class="guest-rate-card" hidden>
         <p class="guest-rate-title" id="guestRateTitle">كيف كانت الخدمة؟</p>
         <p class="guest-rate-sub" id="guestRateSub">رأيك يساعدنا نقدّم خدمة أفضل في المرة القادمة.</p>
@@ -4500,13 +4508,12 @@ window.TONINO_CONFIG = Object.freeze({
   const THANKS_AT_KEY = "zekiqGuestThanksAt";
   const THANKS_SHOWN_KEY = "zekiqGuestThanksShown";
   /*
-   * Guests almost never keep the page open until food arrives.
-   * Ask for stars ~2.5s after SEND (while حسابي / success is still on screen).
-   * ready/استلمت remain a second chance only if they stayed.
+   * Rating/complaint: opt-in only — chips in حسابي after an order.
+   * Never auto-popup sheet/card over the menu.
    */
-  const RATE_AFTER_SEND_MS = 2500;
   let guestRateStars = 0;
   let guestRateSending = false;
+  let guestRateMode = "rating"; /* rating | complaint */
   let guestThanksTimer = null;
   let guestRateAfterSendTimer = null;
   let orderTrackLastOrderId = null;
@@ -4656,21 +4663,10 @@ window.TONINO_CONFIG = Object.freeze({
     }
     markGuestRateEligible();
     ssDel(RATE_DISMISS_FLAG);
-    /* Show rating NOW — even if previously dismissed / already received */
-    if (!isGuestRateDone()) {
-      try {
-        showGuestRateSheet({ reason: "received", force: true });
-      } catch (err) {
-        console.warn("[guest-rate] show failed", err);
-      }
-      setTimeout(function () {
-        if (!isGuestRateDone()) {
-          try { showGuestRateSheet({ reason: "received", force: true }); } catch (_) {}
-        }
-        window.__zekiqKeepRateSheet = false;
-      }, 400);
-    } else {
-      window.__zekiqKeepRateSheet = false;
+    window.__zekiqKeepRateSheet = false;
+    hideGuestRateSheet();
+    /* Opt-in only — chips appear when guest opens حسابي */
+    if (isGuestRateDone()) {
       toast((guestBag() || {}).rateThanks || "شكراً — تقييمك مسجّل مسبقاً", 2200);
     }
     void opts;
@@ -4738,6 +4734,7 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function paintGuestRateLabels(bag) {
     const b = bag || guestBag() || {};
+    const complaint = guestRateMode === "complaint";
     const title = $("guestRateTitle");
     const sub = $("guestRateSub");
     const priv = $("guestRatePrivacy");
@@ -4747,21 +4744,56 @@ window.TONINO_CONFIG = Object.freeze({
     const skip = $("guestRateSkip");
     const thanks = $("guestRateThanks");
     const chip = $("guestRateChip");
+    const complaintChip = $("guestComplaintChip");
     const stars = $("guestRateStars");
-    if (title) title.textContent = b.rateTitle || "كيف كانت الخدمة؟";
-    if (sub) sub.textContent = b.rateSub || "";
+    if (title) {
+      title.textContent = complaint
+        ? (b.complaintTitle || "إرسال شكوى")
+        : (b.rateTitle || "كيف كانت الخدمة؟");
+    }
+    if (sub) {
+      sub.textContent = complaint
+        ? (b.complaintSub || "اكتب المشكلة باختصار — تصل لصاحب المحل فقط.")
+        : (b.rateSub || "");
+    }
     if (priv) priv.textContent = b.ratePrivacy || "";
-    if (note) note.placeholder = b.rateNotePh || "";
-    if (send) send.textContent = b.rateSend || "إرسال";
+    if (note) {
+      note.placeholder = complaint
+        ? (b.complaintNotePh || "اكتب الشكوى هنا (إلزامي)…")
+        : (b.rateNotePh || "");
+    }
+    if (send) {
+      send.textContent = complaint
+        ? (b.complaintSend || "إرسال الشكوى")
+        : (b.rateSend || "إرسال");
+    }
     if (skip) skip.textContent = b.rateSkip || "لاحقاً";
-    if (thanks) thanks.textContent = b.rateThanks || "";
+    if (thanks) {
+      thanks.textContent = complaint
+        ? (b.complaintThanks || "شكراً — وصلت شكواك.")
+        : (b.rateThanks || "");
+    }
     if (chip) chip.textContent = b.rateChip || "تقييم الخدمة";
+    if (complaintChip) complaintChip.textContent = b.complaintChip || "إرسال شكوى";
     if (stars) stars.setAttribute("aria-label", b.rateStarsAria || "rating");
     if (hint) {
-      if (guestRateStars > 0 && guestRateStars <= 2) hint.textContent = b.rateNoteHintLow || "";
+      if (complaint) hint.textContent = b.complaintNoteHint || "الرسالة إلزامية — النجوم اختيارية لشدة المشكلة.";
+      else if (guestRateStars > 0 && guestRateStars <= 2) hint.textContent = b.rateNoteHintLow || "";
       else if (guestRateStars >= 4) hint.textContent = b.rateNoteHintHigh || "";
       else hint.textContent = b.rateNoteHintMid || "";
     }
+  }
+  function canSubmitGuestFeedback() {
+    if (guestRateSending) return false;
+    if (guestRateMode === "complaint") {
+      const noteEl = $("guestRateNote");
+      const sheetNote = $("guestRateSheetNote");
+      const message = String(
+        (noteEl && noteEl.value) || (sheetNote && sheetNote.value) || "",
+      ).trim();
+      return message.length >= 4;
+    }
+    return guestRateStars >= 1;
   }
   function setGuestRateStars(n) {
     guestRateStars = Math.max(0, Math.min(5, Number(n) || 0));
@@ -4774,11 +4806,13 @@ window.TONINO_CONFIG = Object.freeze({
       });
     });
     const card = $("guestRateCard");
-    if (card) card.classList.toggle("is-low", guestRateStars > 0 && guestRateStars <= 2);
+    if (card) {
+      card.classList.toggle("is-low", guestRateMode === "complaint" || (guestRateStars > 0 && guestRateStars <= 2));
+    }
     const send = $("guestRateSend");
-    if (send) send.disabled = guestRateStars < 1 || guestRateSending;
+    if (send) send.disabled = !canSubmitGuestFeedback();
     const sheetSend = $("guestRateSheetSend");
-    if (sheetSend) sheetSend.disabled = guestRateStars < 1 || guestRateSending;
+    if (sheetSend) sheetSend.disabled = !canSubmitGuestFeedback();
     paintGuestRateLabels(guestBag());
   }
   function hideGuestRateSheet() {
@@ -4790,114 +4824,50 @@ window.TONINO_CONFIG = Object.freeze({
     el.style.removeProperty("z-index");
     el.setAttribute("aria-hidden", "true");
   }
-  function showGuestRateSheet(opts) {
+  function showGuestRateSheet(_opts) {
+    /* Legacy entry — never auto-popup; only unlock opt-in chips in حسابي */
     if (isGuestRateDone()) {
       hideGuestRateSheet();
       return;
     }
-    const force = !!(opts && opts.force);
-    /* After استلمت we force bottom sheet. Otherwise in-bill card if حسابي open. */
-    if (isTableBillOpen() && !force) {
-      hideGuestRateSheet();
-      markGuestRateEligible();
-      showGuestRateCard();
-      try {
-        const card = $("guestRateCard");
-        if (card && card.scrollIntoView) card.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      } catch (_) {}
-      return;
-    }
     markGuestRateEligible();
-    ssSet(RATE_SHEET_OFFERED, "1");
-    const bag = guestBag() || {};
-    const b = bag;
-    let el = $("guestRateSheet");
-    if (!el) {
-      /* Fallback if old cached HTML without sheet node */
-      el = document.createElement("div");
-      el.id = "guestRateSheet";
-      el.innerHTML =
-        '<div class="guest-rate-sheet-card" role="dialog">' +
-        '<p class="guest-rate-sheet-kicker" id="guestRateSheetKicker"></p>' +
-        '<p class="guest-rate-sheet-title" id="guestRateSheetTitle"></p>' +
-        '<div class="guest-rate-sheet-stars" id="guestRateSheetStars" role="group">' +
-        '<button type="button" data-star="1">★</button><button type="button" data-star="2">★</button>' +
-        '<button type="button" data-star="3">★</button><button type="button" data-star="4">★</button>' +
-        '<button type="button" data-star="5">★</button></div>' +
-        '<textarea id="guestRateSheetNote" class="guest-rate-sheet-note" rows="2" maxlength="500"></textarea>' +
-        '<div class="guest-rate-sheet-actions">' +
-        '<button type="button" class="guest-rate-sheet-send" id="guestRateSheetSend">إرسال</button>' +
-        '<button type="button" class="guest-rate-sheet-skip" id="guestRateSheetSkip">لاحقاً</button>' +
-        "</div></div>";
-      document.body.appendChild(el);
-      bindGuestRateUi();
-    }
-    try {
-      if (el.parentElement !== document.body) document.body.appendChild(el);
-    } catch (_) {}
-    const kicker = $("guestRateSheetKicker");
-    const title = $("guestRateSheetTitle");
-    const note = $("guestRateSheetNote");
-    const send = $("guestRateSheetSend");
-    const skip = $("guestRateSheetSkip");
-    const reason = opts && opts.reason ? String(opts.reason) : "";
-    if (kicker) {
-      kicker.textContent =
-        reason === "sent"
-          ? b.rateSheetKickerSent || "تم إرسال طلبك — قيّم قبل إغلاق الصفحة"
-          : reason === "ready"
-            ? b.rateSheetKickerReady || "طلبك في الطريق — قيّم قبل المغادرة"
-            : b.rateSheetKickerRecv || "قبل المغادرة — ثوانٍ فقط";
-    }
-    if (title) title.textContent = b.rateTitle || "كيف كانت الخدمة؟";
-    if (note) {
-      note.hidden = false;
-      note.placeholder = b.rateNotePh || "";
-    }
-    if (send) {
-      send.hidden = false;
-      send.disabled = guestRateStars < 1 || guestRateSending;
-      send.textContent = b.rateSheetSend || b.rateSend || "إرسال التقييم";
-    }
-    if (skip) {
-      skip.hidden = false;
-      skip.textContent = b.rateSkip || "لاحقاً";
-    }
-    el.classList.add("show", "is-open");
-    el.setAttribute("aria-hidden", "false");
-    el.style.setProperty("display", "block", "important");
-    el.style.setProperty("position", "fixed", "important");
-    el.style.setProperty("left", "0", "important");
-    el.style.setProperty("right", "0", "important");
-    el.style.setProperty("bottom", "0", "important");
-    el.style.setProperty("z-index", "2147483000", "important");
-    el.style.setProperty("pointer-events", "auto", "important");
-    el.style.setProperty("visibility", "visible", "important");
-    setGuestRateStars(guestRateStars);
-    if (navigator.vibrate) {
-      try { navigator.vibrate([14, 30, 14]); } catch (_) {}
-    }
+    hideGuestRateSheet();
+    if (isTableBillOpen()) syncGuestRateUi();
+    void _opts;
   }
   function hideGuestRateUi() {
     const card = $("guestRateCard");
+    const chips = $("guestRateChips");
     const chip = $("guestRateChip");
     if (card) card.hidden = true;
+    if (chips) chips.hidden = true;
     if (chip) chip.hidden = true;
     hideGuestRateSheet();
   }
-  function showGuestRateCard() {
+  function showGuestRateCard(mode) {
     if (isGuestRateDone()) {
       hideGuestRateUi();
       return;
     }
+    guestRateMode = mode === "complaint" ? "complaint" : "rating";
+    if (guestRateMode === "complaint" && guestRateStars < 1) guestRateStars = 1;
     paintGuestRateLabels(guestBag());
     const card = $("guestRateCard");
-    const chip = $("guestRateChip");
+    const chips = $("guestRateChips");
     const thanks = $("guestRateThanks");
+    const send = $("guestRateSend");
+    const skip = $("guestRateSkip");
+    const noteEl = $("guestRateNote");
     if (thanks) thanks.hidden = true;
-    if (chip) chip.hidden = true;
+    if (chips) chips.hidden = true;
+    if (send) send.hidden = false;
+    if (skip) skip.hidden = false;
+    if (noteEl) noteEl.disabled = false;
     if (card) card.hidden = false;
     setGuestRateStars(guestRateStars);
+    try {
+      if (card && card.scrollIntoView) card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } catch (_) {}
   }
   function showGuestRateChipOnly() {
     if (isGuestRateDone() || !isGuestRateEligible()) {
@@ -4906,49 +4876,28 @@ window.TONINO_CONFIG = Object.freeze({
     }
     paintGuestRateLabels(guestBag());
     const card = $("guestRateCard");
-    const chip = $("guestRateChip");
+    const chips = $("guestRateChips");
     if (card) card.hidden = true;
-    if (chip) chip.hidden = false;
+    if (chips) chips.hidden = false;
   }
   function syncGuestRateUi() {
-    /* Rating UI only inside حسابي — never over the menu */
+    /* Opt-in chips only inside حسابي — never auto-expand card/sheet */
+    hideGuestRateSheet();
     if (!isTableBillOpen()) {
       hideGuestRateUi();
       return;
     }
-    if (isGuestRateDone()) {
+    if (isGuestRateDone() || !isGuestRateEligible()) {
       hideGuestRateUi();
       return;
     }
-    if (!isGuestRateEligible()) {
-      hideGuestRateUi();
-      return;
-    }
-    if (isGuestRateDismissed()) showGuestRateChipOnly();
-    else showGuestRateCard();
+    showGuestRateChipOnly();
   }
   function scheduleRateAfterSend() {
     if (isGuestRateDone()) return;
-    if (guestRateAfterSendTimer) {
-      clearTimeout(guestRateAfterSendTimer);
-      guestRateAfterSendTimer = null;
-    }
-    guestRateAfterSendTimer = setTimeout(function () {
-      guestRateAfterSendTimer = null;
-      if (isGuestRateDone()) return;
-      if (ssGet(RATE_SHEET_OFFERED) === "1") return;
-      markGuestRateEligible();
-      ssDel(RATE_DISMISS_FLAG);
-      window.__zekiqKeepRateSheet = true;
-      try {
-        showGuestRateSheet({ reason: "sent", force: true });
-      } catch (err) {
-        console.warn("[guest-rate] after-send show failed", err);
-      }
-      setTimeout(function () {
-        window.__zekiqKeepRateSheet = false;
-      }, 500);
-    }, RATE_AFTER_SEND_MS);
+    markGuestRateEligible();
+    hideGuestRateSheet();
+    if (isTableBillOpen()) syncGuestRateUi();
   }
   function maybeOfferGuestRating(status) {
     if (isGuestRateDone()) {
@@ -4957,24 +4906,27 @@ window.TONINO_CONFIG = Object.freeze({
       return;
     }
     const st = String(status || "");
-    /* Backup only — primary ask is scheduleRateAfterSend() right after order */
     if (st === "ready" || st === "served" || isGuestOrderReceived()) {
-      if (ssGet(RATE_SHEET_OFFERED) === "1" || isGuestRateDismissed()) return;
       markGuestRateEligible();
-      showGuestRateSheet({
-        reason: st === "ready" ? "ready" : "received",
-        force: true,
-      });
+      hideGuestRateSheet();
+      if (isTableBillOpen()) syncGuestRateUi();
     }
   }
   async function submitGuestRating() {
-    if (guestRateSending || isGuestRateDone() || guestRateStars < 1) return;
+    if (guestRateSending || isGuestRateDone() || !canSubmitGuestFeedback()) return;
     const bag = guestBag() || {};
     const noteEl = $("guestRateNote");
     const sheetNote = $("guestRateSheetNote");
     const message = String(
-      (sheetNote && sheetNote.value) || (noteEl && noteEl.value) || "",
+      (noteEl && noteEl.value) || (sheetNote && sheetNote.value) || "",
     ).trim();
+    const kind = guestRateMode === "complaint" ? "complaint" : "rating";
+    const rating = guestRateStars >= 1 ? guestRateStars : kind === "complaint" ? 1 : 0;
+    if (kind === "rating" && rating < 1) return;
+    if (kind === "complaint" && message.length < 4) {
+      toast(bag.complaintNeedMsg || "اكتب نص الشكوى أولاً", 2200);
+      return;
+    }
     guestRateSending = true;
     setGuestRateStars(guestRateStars);
     try {
@@ -4985,7 +4937,12 @@ window.TONINO_CONFIG = Object.freeze({
       const res = await fetch(String(base).replace(/\/+$/, "") + "/api/guest/v1/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: token, rating: guestRateStars, message: message }),
+        body: JSON.stringify({
+          token: token,
+          rating: rating,
+          message: message,
+          kind: kind,
+        }),
       });
       const data = await res.json().catch(function () { return null; });
       if (!res.ok || !data || data.ok === false) throw new Error("bad");
@@ -5003,10 +4960,20 @@ window.TONINO_CONFIG = Object.freeze({
       if (send) send.hidden = true;
       if (skip) skip.hidden = true;
       if (noteEl) noteEl.disabled = true;
-      toast(bag.rateThanks || "شكراً لك — وصلنا رأيك", 2400);
+      toast(
+        kind === "complaint"
+          ? (bag.complaintThanks || "شكراً — وصلت شكواك")
+          : (bag.rateThanks || "شكراً لك — وصلنا رأيك"),
+        2400,
+      );
       setTimeout(function () { hideGuestRateUi(); }, 900);
     } catch (_) {
-      toast(bag.rateError || "تعذّر إرسال التقييم", 2400);
+      toast(
+        kind === "complaint"
+          ? (bag.complaintError || bag.rateError || "تعذّر إرسال الشكوى")
+          : (bag.rateError || "تعذّر إرسال التقييم"),
+        2400,
+      );
     } finally {
       guestRateSending = false;
       setGuestRateStars(guestRateStars);
@@ -5016,11 +4983,10 @@ window.TONINO_CONFIG = Object.freeze({
     if (isGuestRateDone()) return;
     ssSet(RATE_DISMISS_FLAG, "1");
     ssSet(RATE_SHEET_OFFERED, "1");
+    guestRateMode = "rating";
     hideGuestRateSheet();
     if (isTableBillOpen()) showGuestRateChipOnly();
     else {
-      const sumBtn = $("summaryButton");
-      if (sumBtn) sumBtn.classList.add("has-live-track");
       toast((guestBag() || {}).rateDismissHint || "يمكنك التقييم لاحقاً من حسابي", 2600);
     }
   }
@@ -5037,6 +5003,11 @@ window.TONINO_CONFIG = Object.freeze({
     }
     bindStars("guestRateStars");
     bindStars("guestRateSheetStars");
+    const noteEl = $("guestRateNote");
+    if (noteEl && !noteEl.__bound) {
+      noteEl.__bound = true;
+      noteEl.addEventListener("input", function () { setGuestRateStars(guestRateStars); });
+    }
     const send = $("guestRateSend");
     if (send && !send.__bound) {
       send.__bound = true;
@@ -5062,7 +5033,15 @@ window.TONINO_CONFIG = Object.freeze({
       chip.__bound = true;
       chip.addEventListener("click", function () {
         ssDel(RATE_DISMISS_FLAG);
-        showGuestRateCard();
+        showGuestRateCard("rating");
+      });
+    }
+    const complaintChip = $("guestComplaintChip");
+    if (complaintChip && !complaintChip.__bound) {
+      complaintChip.__bound = true;
+      complaintChip.addEventListener("click", function () {
+        ssDel(RATE_DISMISS_FLAG);
+        showGuestRateCard("complaint");
       });
     }
   }
@@ -5274,7 +5253,7 @@ window.TONINO_CONFIG = Object.freeze({
     );
     if (force) paintOrderTrackUI("sent");
     scheduleThanksCloud();
-    /* Primary rating moment: seconds after send — guest is still looking */
+    /* Enable opt-in rate/complaint chips in حسابي — no auto popup */
     if (force) scheduleRateAfterSend();
     void refreshOrderTrack();
     if (orderTrackTimer) return;
@@ -5307,9 +5286,9 @@ window.TONINO_CONFIG = Object.freeze({
     if (!window.__zekiqKeepRateSheet) hideGuestRateUi();
     else {
       const card = $("guestRateCard");
-      const chip = $("guestRateChip");
+      const chips = $("guestRateChips");
       if (card) card.hidden = true;
-      if (chip) chip.hidden = true;
+      if (chips) chips.hidden = true;
     }
     paintTrackDock(orderTrackLastStatus || "sent");
     /* Soft hint once: track lives in حسابي (green badge) — never mid-menu */
@@ -5965,8 +5944,17 @@ window.TONINO_CONFIG = Object.freeze({
       rateSheetKickerReady: "طلبك في الطريق — قيّم قبل المغادرة",
       rateSheetKickerRecv: "قبل المغادرة — ثوانٍ فقط",
       rateSheetSend: "إرسال التقييم",
-      rateDismissHint: "يمكنك التقييم لاحقاً من حسابي",
+      rateDismissHint: "يمكنك التقييم أو الشكوى لاحقاً من حسابي",
       rateChip: "تقييم الخدمة",
+      complaintChip: "إرسال شكوى",
+      complaintTitle: "إرسال شكوى",
+      complaintSub: "اكتب المشكلة باختصار — تصل لصاحب المحل فقط، بدون اسم أو هاتف.",
+      complaintNotePh: "اكتب الشكوى هنا (إلزامي)…",
+      complaintNoteHint: "الرسالة إلزامية. النجوم اختيارية لشدة المشكلة.",
+      complaintSend: "إرسال الشكوى",
+      complaintThanks: "شكراً — وصلت شكواك.",
+      complaintNeedMsg: "اكتب نص الشكوى أولاً",
+      complaintError: "تعذّر إرسال الشكوى — حاول مرة أخرى",
       rateStarsAria: "تقييم بالنجوم",
       rateError: "تعذّر إرسال التقييم — حاول مرة أخرى"
     },
@@ -6114,8 +6102,17 @@ window.TONINO_CONFIG = Object.freeze({
       rateSheetKickerReady: "Siparişiniz yolda — gitmeden önce puanlayın",
       rateSheetKickerRecv: "Gitmeden önce — birkaç saniye",
       rateSheetSend: "Puanı gönder",
-      rateDismissHint: "Daha sonra Hesabım’dan puanlayabilirsiniz",
+      rateDismissHint: "Daha sonra Hesabım’dan puan veya şikayet gönderebilirsiniz",
       rateChip: "Hizmeti değerlendir",
+      complaintChip: "Şikayet gönder",
+      complaintTitle: "Şikayet gönder",
+      complaintSub: "Sorunu kısaca yazın — sadece işletme sahibi görür, isim/telefon yok.",
+      complaintNotePh: "Şikayetinizi buraya yazın (zorunlu)…",
+      complaintNoteHint: "Mesaj zorunlu. Yıldızlar sorunun şiddeti için isteğe bağlı.",
+      complaintSend: "Şikayeti gönder",
+      complaintThanks: "Teşekkürler — şikayetiniz bize ulaştı.",
+      complaintNeedMsg: "Önce şikayet metnini yazın",
+      complaintError: "Şikayet gönderilemedi — tekrar deneyin",
       rateStarsAria: "Yıldız puanı",
       rateError: "Gönderilemedi — tekrar deneyin"
     },
@@ -6263,8 +6260,17 @@ window.TONINO_CONFIG = Object.freeze({
       rateSheetKickerReady: "Your order is on the way — rate before you leave",
       rateSheetKickerRecv: "Before you leave — just a few seconds",
       rateSheetSend: "Send rating",
-      rateDismissHint: "You can rate later from My bill",
+      rateDismissHint: "You can rate or complain later from My bill",
       rateChip: "Rate service",
+      complaintChip: "Send complaint",
+      complaintTitle: "Send a complaint",
+      complaintSub: "Describe the issue briefly — only the owner sees it, no name or phone.",
+      complaintNotePh: "Write your complaint here (required)…",
+      complaintNoteHint: "Message required. Stars optional for severity.",
+      complaintSend: "Send complaint",
+      complaintThanks: "Thank you — we received your complaint.",
+      complaintNeedMsg: "Please write the complaint first",
+      complaintError: "Could not send complaint — try again",
       rateStarsAria: "Star rating",
       rateError: "Could not send — try again"
     }
