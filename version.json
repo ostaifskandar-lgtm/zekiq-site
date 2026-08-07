@@ -1,10 +1,10 @@
 {
   "productVersion": "1.0.5",
-  "buildId": "2026-08-06-130820",
-  "displayVersion": "1.0.5 (2026-08-06-130820)",
+  "buildId": "2026-08-07-155712",
+  "displayVersion": "1.0.5 (2026-08-07-155712)",
   "installerFile": "ZEKiQ-POS-Setup.exe",
   "installerSizeMb": 869,
   "installerMarker": "inno-package-customer 2026-07-07T00:59:31.4594712+03:00",
   "shopUpdateChannel": "GitHub releases (yellow banner in app)",
-  "publishedAt": "2026-08-06T13:09:52.062Z"
+  "publishedAt": "2026-08-07T15:58:20.793Z"
 }
