@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="tr" dir="ltr">
 <head>
 <meta charset="utf-8">
@@ -7,8 +7,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ZEKiQ">
+<link rel="manifest" href="/table/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/table/icons/icon-180.png">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-natural-v368 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 --><!-- guest-rate-sheet-v352 --><!-- guest-rate-after-send-v353 --><!-- guest-page-flicker-v354 --><!-- guest-flip-feel-v355 --><!-- guest-flip-hotspot-v356 --><!-- guest-line-note-kb-v357 --><!-- guest-ice-tea-flavor-v358 --><!-- guest-variant-reopen-v359 --><!-- guest-cat-title-glow-v360 --><!-- guest-coffee-no-duble-v361 --><!-- guest-water-temp-v363 --><!-- guest-find-zoom-v364 --><!-- guest-tools-band-v366 --><!-- guest-pages-baked-v365 --><!-- guest-dd-boot-fix-v367 --><!-- guest-live-session-v369 --><!-- guest-web-push-v370 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-natural-v368 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-rate-notify-v372 --><!-- guest-fs-keep-v371 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 --><!-- guest-rate-sheet-v352 --><!-- guest-rate-after-send-v353 --><!-- guest-page-flicker-v354 --><!-- guest-flip-feel-v355 --><!-- guest-flip-hotspot-v356 --><!-- guest-line-note-kb-v357 --><!-- guest-ice-tea-flavor-v358 --><!-- guest-variant-reopen-v359 --><!-- guest-cat-title-glow-v360 --><!-- guest-coffee-no-duble-v361 --><!-- guest-water-temp-v363 --><!-- guest-find-zoom-v364 --><!-- guest-tools-band-v366 --><!-- guest-pages-baked-v365 --><!-- guest-dd-boot-fix-v367 --><!-- guest-live-session-v369 --><!-- guest-web-push-v370 --><!-- guest-ios-push-v373 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -962,34 +965,42 @@ html[lang="ar"] .guest-rate-note-hint,html[lang="ar"] .guest-rate-thanks{font-fa
 }
 #guestRateSheet.show .guest-rate-sheet-card,#guestRateSheet.is-open .guest-rate-sheet-card{pointer-events:auto}
 .guest-rate-sheet-card{
-  width:min(440px,100%);margin:0 auto;border-radius:20px 20px 16px 16px;padding:14px 14px 12px;
-  background:linear-gradient(165deg,#1f2a18f8,#12180ef5);border:1.5px solid #7dffa066;
-  box-shadow:0 -8px 36px #000a;color:#f4ffd4;
-  animation:guestRateSheetIn .32s ease-out;
+  position:relative;overflow:hidden;
+  width:min(440px,100%);margin:0 auto;border-radius:22px 22px 18px 18px;padding:16px 16px 14px;
+  background:linear-gradient(165deg,#2a1e0cf8 0%,#1a1208f5 45%,#0f1a12f8 100%);
+  border:1.5px solid #c9a22799;
+  box-shadow:0 -10px 40px #000b,0 0 0 1px #ffe08222 inset;
+  color:#fff8e8;animation:guestRateSheetIn .38s cubic-bezier(.22,1,.36,1);
 }
-@keyframes guestRateSheetIn{from{transform:translateY(110%);opacity:.4}to{transform:translateY(0);opacity:1}}
-.guest-rate-sheet-kicker{margin:0 0 4px;font-size:11px;font-weight:800;color:#a5e6a8;text-align:center}
-.guest-rate-sheet-title{margin:0 0 8px;font-size:16px;font-weight:1000;text-align:center;color:#ffe082;line-height:1.3}
-.guest-rate-sheet-stars{display:flex;justify-content:center;gap:8px;margin:0 0 8px;direction:ltr}
+.guest-rate-sheet-card::before{
+  content:"";position:absolute;inset:-40% -20% auto;height:70%;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 0%,#ffe08255,transparent 62%);
+}
+@keyframes guestRateSheetIn{from{transform:translateY(110%);opacity:.35}to{transform:translateY(0);opacity:1}}
+.guest-rate-sheet-kicker{position:relative;margin:0 0 6px;font-size:12px;font-weight:800;color:#ffe082cc;text-align:center;letter-spacing:.02em}
+.guest-rate-sheet-title{position:relative;margin:0 0 10px;font-size:18px;font-weight:1000;text-align:center;color:#ffe082;line-height:1.3;text-shadow:0 1px 0 #0006}
+.guest-rate-sheet-stars{position:relative;display:flex;justify-content:center;gap:8px;margin:0 0 10px;direction:ltr}
 .guest-rate-sheet-stars button{
-  width:44px;height:44px;border:0;border-radius:12px;cursor:pointer;font-size:24px;line-height:1;
+  width:46px;height:46px;border:0;border-radius:14px;cursor:pointer;font-size:26px;line-height:1;
   background:#ffffff14;color:#6a5a40;opacity:.55;filter:grayscale(.35);
+  transition:transform .12s,opacity .12s,background .12s;
 }
-.guest-rate-sheet-stars button.on{opacity:1;filter:none;background:#ffe08233;color:#ffc107;transform:scale(1.08)}
+.guest-rate-sheet-stars button.on{opacity:1;filter:none;background:#ffe08233;color:#ffc107;transform:scale(1.1);box-shadow:0 0 16px #ffe08244}
 .guest-rate-sheet-note{
-  width:100%;min-height:44px;resize:vertical;box-sizing:border-box;margin:0 0 8px;
-  border:1.5px solid #7dffa044;border-radius:12px;padding:8px 10px;
+  position:relative;width:100%;min-height:48px;resize:vertical;box-sizing:border-box;margin:0 0 10px;
+  border:1.5px solid #c9a22766;border-radius:14px;padding:10px 12px;
   font-size:13px;font-weight:700;background:#fffef8;color:#2a1600;
 }
-.guest-rate-sheet-actions{display:flex;gap:8px}
+.guest-rate-sheet-actions{position:relative;display:flex;gap:8px}
 .guest-rate-sheet-send{
-  flex:1;border:0;border-radius:12px;padding:12px;font-size:15px;font-weight:1000;cursor:pointer;
-  background:linear-gradient(145deg,#81c784,#2e7d32);color:#041204;
+  flex:1;border:0;border-radius:14px;padding:13px;font-size:15px;font-weight:1000;cursor:pointer;
+  background:linear-gradient(145deg,#e6a817,#b87200);color:#1a0a00;
+  box-shadow:0 4px 14px #c8860a44;
 }
-.guest-rate-sheet-send:disabled{opacity:.4;cursor:default}
+.guest-rate-sheet-send:disabled{opacity:.4;cursor:default;box-shadow:none}
 .guest-rate-sheet-skip{
-  border:1.5px solid #7dffa055;border-radius:12px;padding:12px 14px;font-size:13px;font-weight:800;
-  background:transparent;color:#cfe8d1;cursor:pointer;
+  border:1.5px solid #c9a22766;border-radius:14px;padding:13px 14px;font-size:13px;font-weight:800;
+  background:transparent;color:#f0e0c0;cursor:pointer;
 }
 html[lang="ar"] .guest-rate-sheet-kicker,html[lang="ar"] .guest-rate-sheet-title{font-family:Tahoma,"Segoe UI",sans-serif}
 .table-bill-actions{display:flex;flex-wrap:wrap;gap:8px}
@@ -1675,6 +1686,46 @@ html[lang="tr"] #orderCloudTitle,html[lang="en"] #orderCloudTitle{text-align:lef
 .mf-add.has-qty .mf-qty{display:grid}
 .mf-empty{padding:26px 12px;text-align:center;color:#d9bd85;font-size:clamp(14px,3.9vw,16px);font-weight:900;line-height:1.55}
 
+
+/* iPhone — Add to Home Screen (required for Web Push after payment) */
+#iosInstallSheet{
+  position:fixed;inset:0;z-index:98000;
+  display:none;align-items:flex-end;justify-content:center;
+  background:#0008;padding:0;
+}
+#iosInstallSheet.show{display:flex;}
+.ios-install-card{
+  width:100%;max-width:440px;
+  background:linear-gradient(168deg,#1a1008 0%,#0d0500 100%);
+  border-radius:22px 22px 0 0;
+  border:1.5px solid rgba(200,134,10,.45);border-bottom:none;
+  box-shadow:0 -12px 48px rgba(0,0,0,.72);
+  padding:18px 18px calc(16px + env(safe-area-inset-bottom,0px));
+}
+.ios-install-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:999px;margin-bottom:10px;
+  background:rgba(200,134,10,.16);border:1px solid rgba(200,134,10,.38);
+  color:#ffe082;font-size:11px;font-weight:900;letter-spacing:.06em;
+}
+.ios-install-title{margin:0 0 8px;font-size:20px;font-weight:900;color:#ffe082;line-height:1.25}
+.ios-install-simple-txt{
+  margin:0 0 10px;font-size:15px;line-height:1.55;color:#ffe082;font-weight:900;text-align:center;
+}
+.ios-install-note{
+  margin:0 0 14px;font-size:12px;line-height:1.5;color:rgba(200,134,10,.85);text-align:center;
+}
+.ios-install-actions{display:flex;flex-direction:column;gap:8px}
+.ios-install-primary{
+  width:100%;border:none;border-radius:14px;padding:14px;
+  background:linear-gradient(135deg,#e6a817,#b87200);color:#1a0a00;
+  font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;touch-action:manipulation;
+}
+.ios-install-secondary{
+  width:100%;border:1.5px solid rgba(200,134,10,.42);border-radius:14px;padding:12px;
+  background:transparent;color:#f0a820;font-size:13px;font-weight:800;
+  cursor:pointer;font-family:inherit;touch-action:manipulation;
+}
 </style>
 </head>
 <body>
@@ -2017,6 +2068,20 @@ html[lang="tr"] #orderCloudTitle,html[lang="en"] #orderCloudTitle{text-align:lef
     </div>
   </div>
   <!-- Track in حسابي; quick rate = bottom sheet (before guest leaves) — not mid-menu -->
+  
+  <div id="iosInstallSheet" aria-hidden="true" role="dialog" aria-labelledby="iosInstallTitle">
+    <div class="ios-install-card">
+      <div class="ios-install-badge">📲 iPhone</div>
+      <h2 class="ios-install-title" id="iosInstallTitle">تنبيهات التقييم على iPhone</h2>
+      <p class="ios-install-simple-txt" id="iosInstallSimple">من Safari: اضغط مشاركة ⬆ ثم «إضافة إلى الشاشة الرئيسية»</p>
+      <p class="ios-install-note" id="iosInstallNote">بدون هذه الخطوة Apple لا يرسل إشعار التقييم بعد الدفع. بعدها افتح المينو من الأيقونة.</p>
+      <div class="ios-install-actions">
+        <button type="button" class="ios-install-primary" id="iosInstallContinue">حسناً</button>
+        <button type="button" class="ios-install-secondary" id="iosInstallLater">لاحقاً</button>
+      </div>
+    </div>
+  </div>
+
   <div id="guestThanksCloud" aria-hidden="true" hidden></div>
   <div id="orderTrackBar" class="order-track-bar" hidden aria-hidden="true"></div>
   <div id="orderTrackDock" class="order-track-dock" hidden aria-hidden="true"></div>
@@ -4671,6 +4736,8 @@ window.TONINO_CONFIG = Object.freeze({
     }
     document.documentElement.style.setProperty("--notes-review-kb-inset", "0px");
     bindNotesReviewKeyboardInset(false);
+    /* Keyboard / sheet often eject Android fullscreen — reclaim on this user gesture. */
+    try { if (window.__zekiqRestoreFs) window.__zekiqRestoreFs(); } catch (_) {}
   }
   function syncNotesFromReviewSheet() {
     const list = $("notesReviewList");
@@ -4761,7 +4828,12 @@ window.TONINO_CONFIG = Object.freeze({
     }
     /* Say it before the guest waits out a timeout for nothing. */
     if (navigator.onLine === false) { toast(words.noNet, 3600); return; }
-    /* Still inside the click: asking later gets blocked and kills background notifications. */
+    /*
+     * Still inside the confirm click (user gesture):
+     * 1) reclaim fullscreen before anything else — Android often dropped it on the notes keyboard
+     * 2) then ask notify (may briefly drop FS again; the next tap restores via __zekiqRestoreFs)
+     */
+    try { if (window.__zekiqRestoreFs) window.__zekiqRestoreFs(); } catch (_) {}
     try { askGuestNotifyPermission(); } catch (_) {}
     syncNotesFromReviewSheet();
     sending = true;
@@ -4832,9 +4904,28 @@ window.TONINO_CONFIG = Object.freeze({
           sumBtn.classList.add("bill-pulse");
         }
         try { startOrderTracking({ force: true }); } catch (_) {}
+        try {
+          const oid = data.orderId != null ? Number(data.orderId) : NaN;
+          if (Number.isFinite(oid) && oid > 0) {
+            orderTrackLastOrderId = oid;
+            writeTrackPersist({ orderId: oid });
+            guestPushSyncedFor = "";
+            void ensureGuestPushSubscription();
+          }
+        } catch (_) {}
+        try {
+          if (isIosPhone() && !isStandaloneApp()) {
+            offerIosInstallForPush({ reason: "after-send", delayMs: 1400, force: true });
+          }
+        } catch (_) {}
+        /* Reclaim fullscreen while we still can; openWindow bill after a beat. */
+        try { if (window.__zekiqRestoreFs) window.__zekiqRestoreFs(); } catch (_) {}
         /* Clear success path: open read-only bill so guest sees what was sent + live track */
         if (typeof openTableBillSheet === "function") {
-          setTimeout(function () { openTableBillSheet(); }, 280);
+          setTimeout(function () {
+            openTableBillSheet();
+            try { if (window.__zekiqRestoreFs) window.__zekiqRestoreFs(); } catch (_) {}
+          }, 280);
         }
         return;
       }
@@ -5204,8 +5295,8 @@ window.TONINO_CONFIG = Object.freeze({
   const POLL_LIVE_VISIBLE_MS = 4000;
   const POLL_LIVE_HIDDEN_MS = 30_000;
   /** Order already served/received: only the payment matters now, so ask rarely. */
-  const POLL_IDLE_VISIBLE_MS = 45_000;
-  const POLL_IDLE_HIDDEN_MS = 120_000;
+  const POLL_IDLE_VISIBLE_MS = 12_000;
+  const POLL_IDLE_HIDDEN_MS = 45_000;
   /**
    * Farewell keeps a «لاحقاً» escape. Set to false to obey "no close button" literally —
    * the guest then leaves the card only by sending, which also blocks him from the menu.
@@ -5240,6 +5331,7 @@ window.TONINO_CONFIG = Object.freeze({
       if (p && typeof p.then === "function") {
         p.then(function (res) {
           if (res === "granted") void ensureGuestPushSubscription();
+          else if (isIosPhone() && !isStandaloneApp()) offerIosInstallForPush({ reason: "denied" });
         }, function () {});
       }
     } catch (_) {}
@@ -5257,16 +5349,63 @@ window.TONINO_CONFIG = Object.freeze({
       return !!(window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
     } catch (_) { return false; }
   }
-  /** iOS delivers push only to a page installed on the home screen — say it once, never again. */
+  const IOS_INSTALL_DISMISS_KEY = "zekiqGuestIosInstallDismissed";
+  function paintIosInstallSheet() {
+    const bag = guestBag() || {};
+    const title = document.getElementById("iosInstallTitle");
+    const simple = document.getElementById("iosInstallSimple");
+    const note = document.getElementById("iosInstallNote");
+    const cont = document.getElementById("iosInstallContinue");
+    const later = document.getElementById("iosInstallLater");
+    if (title) title.textContent = bag.iosInstallTitle || bag.iosPushHint || "";
+    if (simple) simple.textContent = bag.iosInstallSimple || bag.iosPushHint || "";
+    if (note) note.textContent = bag.iosInstallNote || "";
+    if (cont) cont.textContent = bag.iosInstallContinue || "OK";
+    if (later) later.textContent = bag.iosInstallLater || "Later";
+  }
+  function hideIosInstallSheet(persist) {
+    const el = document.getElementById("iosInstallSheet");
+    if (el) {
+      el.classList.remove("show");
+      el.setAttribute("aria-hidden", "true");
+    }
+    if (persist) lsSet(IOS_INSTALL_DISMISS_KEY, "1");
+  }
+  function showIosInstallSheet() {
+    paintIosInstallSheet();
+    const el = document.getElementById("iosInstallSheet");
+    if (!el) return;
+    el.classList.add("show");
+    el.setAttribute("aria-hidden", "false");
+  }
+  /** iOS Web Push only after Add to Home Screen — sheet beats a one-line toast. */
+  function offerIosInstallForPush(opts) {
+    if (!isIosPhone() || isStandaloneApp()) return;
+    if (lsGet(IOS_INSTALL_DISMISS_KEY) === "1" && !(opts && opts.force)) return;
+    if (document.getElementById("iosInstallSheet") && document.getElementById("iosInstallSheet").classList.contains("show")) return;
+    setTimeout(function () { showIosInstallSheet(); }, (opts && opts.delayMs) || 700);
+  }
   function hintIosInstallForPush() {
     if (!isIosPhone() || isStandaloneApp()) return;
+    offerIosInstallForPush({ reason: "hint" });
     if (lsGet(IOS_HINT_KEY) === "1") return;
     lsSet(IOS_HINT_KEY, "1");
     const bag = guestBag() || {};
     setTimeout(function () {
+      var sheetEl = document.getElementById("iosInstallSheet");
+      if (sheetEl && sheetEl.classList.contains("show")) return;
       toast(bag.iosPushHint || "", 5200);
     }, 2600);
   }
+  function bindIosInstallSheetOnce() {
+    if (window.__zekiqIosInstallBound) return;
+    window.__zekiqIosInstallBound = true;
+    const cont = document.getElementById("iosInstallContinue");
+    const later = document.getElementById("iosInstallLater");
+    if (cont) cont.addEventListener("click", function () { hideIosInstallSheet(true); });
+    if (later) later.addEventListener("click", function () { hideIosInstallSheet(true); });
+  }
+  try { bindIosInstallSheetOnce(); } catch (_) {}
   function urlBase64ToUint8Array(base64) {
     const padded = String(base64 || "") + "=".repeat((4 - (String(base64 || "").length % 4)) % 4);
     const raw = atob(padded.replace(/-/g, "+").replace(/_/g, "/"));
@@ -5332,19 +5471,35 @@ window.TONINO_CONFIG = Object.freeze({
       });
       if (res.ok) guestPushSyncedFor = String(orderId || "");
     } catch (_) {
-      /* Push is a bonus layer — the page keeps working exactly as before without it. */
+      /* Push is a bonus layer — on iPhone Safari, guide Home Screen install instead. */
+      try {
+        if (isIosPhone() && !isStandaloneApp()) offerIosInstallForPush({ reason: "subscribe-fail" });
+      } catch (_) {}
     } finally {
       guestPushBusy = false;
     }
   }
   /* A push that arrives while he is looking at the page is just a wake-up: let the normal
-   * refresh produce the message so the guest never sees the same news twice. */
+   * refresh produce the message so the guest never sees the same news twice.
+   * Farewell click is different: the tab may already have farewellAt set, so refresh alone
+   * would paint the menu and skip the rating sheet — open the sheet from the tag. */
   try {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", function (ev) {
         const data = ev && ev.data;
-        if (!data || !(data.zekiqPush || data.zekiqPushOpened)) return;
-        void refreshOrderTrack();
+        if (!data) return;
+        const farewell =
+          data.openRate === true ||
+          String(data.tag || "") === "zekiq-farewell" ||
+          /(?:[?&#]rate=1\b|#rate\b|#farewell\b)/i.test(String(data.url || ""));
+        if (data.zekiqPushOpened && farewell) {
+          openGuestFarewellFromNotify();
+          return;
+        }
+        if (!(data.zekiqPush || data.zekiqPushOpened)) return;
+        void Promise.resolve(refreshOrderTrack()).then(function () {
+          if (farewell) openGuestFarewellFromNotify();
+        });
       });
     }
   } catch (_) {}
@@ -5362,9 +5517,14 @@ window.TONINO_CONFIG = Object.freeze({
     if (!document.hidden) { toast(msg, 2600); return; }
     if (!guestNotifyGranted()) return;
     try {
-      const note = new Notification(guestShopTitle(), { body: msg, tag: String(tag || "zekiq-order") });
+      const noteTag = String(tag || "zekiq-order");
+      const note = new Notification(guestShopTitle(), { body: msg, tag: noteTag });
       note.onclick = function () {
-        try { window.focus(); note.close(); } catch (_) {}
+        try {
+          window.focus();
+          note.close();
+          if (noteTag === "zekiq-farewell") openGuestFarewellFromNotify();
+        } catch (_) {}
       };
     } catch (_) {}
   }
@@ -5461,24 +5621,74 @@ window.TONINO_CONFIG = Object.freeze({
     hideGuestRateSheet();
   }
   /**
-   * Cashier closed the table: he has eaten, he has paid, he is still sitting.
-   * This is the only moment where both the farewell and the rating are honest.
+   * Notification / ?rate=1 tap: reopen rating even if farewellAt was already stamped
+   * while the phone was in the pocket (otherwise the guest only sees the menu again).
    */
-  function showGuestFarewell() {
-    if (isGuestFarewellShown()) return;
-    writeTrackPersist({ farewellAt: Date.now(), active: false });
+  function openGuestFarewellFromNotify() {
     const bag = guestBag() || {};
-    if (!isGuestOrderReceived()) markGuestOrderReceived();
-    markGuestRateEligible();
-    ssDel(RATE_DISMISS_FLAG);
-    guestNotify(bag.farewellNotify || bag.farewellKicker || "", "zekiq-farewell");
-    if (navigator.vibrate) {
-      try { navigator.vibrate([12, 30, 12]); } catch (_) {}
-    }
     if (isGuestRateDone()) {
       toast(bag.farewellKicker || bag.rateThanks || "", 2600);
       return;
     }
+    if (!isGuestFarewellShown()) {
+      writeTrackPersist({ farewellAt: Date.now(), active: false });
+    }
+    if (!isGuestOrderReceived()) markGuestOrderReceived();
+    markGuestRateEligible();
+    ssDel(RATE_DISMISS_FLAG);
+    openGuestFarewellSheet();
+  }
+  /** Cold boot or return via ?rate=1 / #rate after the OS killed the tab. */
+  function resumeGuestFarewellIfNeeded() {
+    let wantRate = false;
+    try {
+      const h = String(location.hash || "").replace(/^#/, "").toLowerCase();
+      wantRate = h === "rate" || h === "farewell";
+      const q = new URLSearchParams(location.search || "");
+      if (q.get("rate") === "1" || q.get("farewell") === "1") wantRate = true;
+    } catch (_) {}
+    if (wantRate) {
+      try {
+        const u = new URL(location.href);
+        u.searchParams.delete("rate");
+        u.searchParams.delete("farewell");
+        u.hash = "";
+        history.replaceState(null, "", u.pathname + u.search);
+      } catch (_) {
+        try {
+          history.replaceState(null, "", location.pathname + location.search.replace(/[?&]rate=1\b/, "").replace(/[?&]farewell=1\b/, ""));
+        } catch (_) {}
+      }
+    }
+    if (isGuestRateDone()) return false;
+    if (wantRate || isGuestFarewellShown()) {
+      openGuestFarewellFromNotify();
+      return true;
+    }
+    return false;
+  }
+  /**
+   * Cashier closed the table: he has eaten, he has paid, he is still sitting.
+   * This is the only moment where both the farewell and the rating are honest.
+   */
+  function showGuestFarewell() {
+    const bag = guestBag() || {};
+    if (isGuestRateDone()) {
+      if (!isGuestFarewellShown()) writeTrackPersist({ farewellAt: Date.now(), active: false });
+      toast(bag.farewellKicker || bag.rateThanks || "", 2600);
+      return;
+    }
+    const firstTime = !isGuestFarewellShown();
+    if (firstTime) {
+      writeTrackPersist({ farewellAt: Date.now(), active: false });
+      guestNotify(bag.farewellNotify || bag.farewellKicker || "", "zekiq-farewell");
+      if (navigator.vibrate) {
+        try { navigator.vibrate([12, 30, 12]); } catch (_) {}
+      }
+    }
+    if (!isGuestOrderReceived()) markGuestOrderReceived();
+    markGuestRateEligible();
+    ssDel(RATE_DISMISS_FLAG);
     openGuestFarewellSheet();
   }
   document.addEventListener("visibilitychange", function () {
@@ -5489,6 +5699,17 @@ window.TONINO_CONFIG = Object.freeze({
     }
     /* Back in his hand: answer now instead of showing a page that is up to two minutes old. */
     ensureTrackTimer(desiredTrackPollMs());
+    void refreshOrderTrack();
+    try { resumeGuestFarewellIfNeeded(); } catch (_) {}
+  });
+  window.addEventListener("pageshow", function () {
+    if (!isGuestWatchActive() && !(isOrderTrackActive() && !isGuestOrderReceived())) return;
+    ensureTrackTimer(desiredTrackPollMs());
+    void refreshOrderTrack();
+    try { resumeGuestFarewellIfNeeded(); } catch (_) {}
+  });
+  window.addEventListener("focus", function () {
+    if (!isGuestWatchActive() && !(isOrderTrackActive() && !isGuestOrderReceived())) return;
     void refreshOrderTrack();
   });
   function lsGet(k) {
@@ -6293,6 +6514,7 @@ window.TONINO_CONFIG = Object.freeze({
       if (card) card.hidden = true;
       if (chips) chips.hidden = true;
     }
+    try { if (window.__zekiqRestoreFs) window.__zekiqRestoreFs(); } catch (_) {}
     paintTrackDock(orderTrackLastStatus || "sent");
     /* Soft hint once: track lives in حسابي (green badge) — never mid-menu */
     if (
@@ -6829,24 +7051,51 @@ window.TONINO_CONFIG = Object.freeze({
         requestFs().finally(() => {
           unlockMenu();
           btn.disabled = false;
+          /* Ask notify on the start gesture — not on send — so send does not eject fullscreen. */
+          try { if (typeof askGuestNotifyPermission === "function") askGuestNotifyPermission(); } catch (_) {}
           try { updateGeometry(); } catch(_){}
           try { syncDailyDishEntry(); } catch(_){}
           try { ensureDailyBookMounted(); } catch(_){}
         });
       });
     }
-    /* Android drops fullscreen when the keyboard takes over (search field). Remember that the
-     * guest had it, so the next tap — a real user gesture — can take it back. */
-    let fsWasGranted = isFs();
-    window.__zekiqRestoreFs = () => {
-      try { if (fsWasGranted && !isFs()) requestFs(); } catch(_){}
-    };
+    /*
+     * Android drops fullscreen when the keyboard / notify dialog / send sheet appears.
+     * Remember that the guest had it; every later finger-down may reclaim it (gesture required).
+     */
+    let fsWasGranted = isFs() || isStandalone();
+    let fsRestoreBusy = false;
+    function restoreFsNow() {
+      if (!fsWasGranted || isFs() || isStandalone() || fsRestoreBusy) return Promise.resolve(false);
+      fsRestoreBusy = true;
+      return requestFs().finally(() => {
+        fsRestoreBusy = false;
+        try { updateGeometry(); } catch (_) {}
+      });
+    }
+    window.__zekiqRestoreFs = restoreFsNow;
     const onFs = () => {
       if (isFs()) fsWasGranted = true;
       try { updateGeometry(); } catch(_){}
     };
     document.addEventListener("fullscreenchange", onFs);
     document.addEventListener("webkitfullscreenchange", onFs);
+    /* Next tap after Android ejected FS (common right after إرسال) — reclaim without a second gate. */
+    document.addEventListener(
+      "pointerdown",
+      () => {
+        try { restoreFsNow(); } catch (_) {}
+      },
+      { capture: true, passive: true },
+    );
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (!document.hidden) {
+          try { restoreFsNow(); } catch (_) {}
+        }
+      },
+    );
     window.addEventListener("resize", () => {
       if (liveCoachPhase === "plus") placeLiveCoachPlusRing();
     }, { passive: true });
@@ -7018,11 +7267,16 @@ window.TONINO_CONFIG = Object.freeze({
       stageSentAlert: "استلمنا طلبك ✓",
       stagePreparingAlert: "طلبك قيد التحضير 👨‍🍳",
       stageReadyAlert: "طلبك جاهز — في الطريق إليك",
-      farewellKicker: "شكراً لزيارتك — نراك قريباً",
-      farewellTitle: "كيف كانت تجربتك؟",
+      farewellKicker: "شكراً لجلستكم معنا — لحظة صغيرة تهمّنا",
+      farewellTitle: "كيف كانت تجربتكم اليوم؟",
       farewellNotePh: "ملاحظاتك تصل للمالك مباشرة (اختياري)",
       farewellNotify: "شكراً لزيارتك — كيف كانت تجربتك؟",
       iosPushHint: "لتصلك تنبيهات الطلب: مشاركة ⬆ ← إضافة إلى الشاشة الرئيسية",
+      iosInstallTitle: "تنبيهات التقييم على iPhone",
+      iosInstallSimple: "من Safari: مشاركة ⬆ ثم «إضافة إلى الشاشة الرئيسية»",
+      iosInstallNote: "بدونها Apple لا يرسل إشعار التقييم بعد الدفع. افتح لاحقاً من أيقونة الشاشة.",
+      iosInstallContinue: "حسناً",
+      iosInstallLater: "لاحقاً",
       rateSheetSend: "إرسال التقييم",
       rateDismissHint: "يمكنك التقييم لاحقاً من حسابي",
       rateChip: "نرجو تقييم هذه الخدمة",
@@ -7199,11 +7453,16 @@ window.TONINO_CONFIG = Object.freeze({
       stageSentAlert: "Siparişinizi aldık ✓",
       stagePreparingAlert: "Siparişiniz hazırlanıyor 👨‍🍳",
       stageReadyAlert: "Siparişiniz hazır — yola çıktı",
-      farewellKicker: "Bizi seçtiğiniz için teşekkürler — yine bekleriz",
-      farewellTitle: "Deneyiminiz nasıldı?",
+      farewellKicker: "Bizimle olduğunuz için teşekkürler — bir an yeter",
+      farewellTitle: "Bugün nasıl geçti?",
       farewellNotePh: "Notunuz doğrudan işletme sahibine gider (isteğe bağlı)",
       farewellNotify: "Teşekkürler — deneyiminiz nasıldı?",
       iosPushHint: "Bildirim almak için: Paylaş ⬆ → Ana Ekrana Ekle",
+      iosInstallTitle: "iPhone'da değerlendirme bildirimi",
+      iosInstallSimple: "Safari'de: Paylaş ⬆ → «Ana Ekrana Ekle»",
+      iosInstallNote: "Bu adım olmadan ödeme sonrası bildirim gelmez. Sonra ikondan açın.",
+      iosInstallContinue: "Tamam",
+      iosInstallLater: "Sonra",
       rateSheetSend: "Puanı gönder",
       rateDismissHint: "Daha sonra Hesabım’dan değerlendirme gönderebilirsiniz",
       rateChip: "Hizmeti değerlendirin",
@@ -7380,11 +7639,16 @@ window.TONINO_CONFIG = Object.freeze({
       stageSentAlert: "We got your order ✓",
       stagePreparingAlert: "Your order is being prepared 👨‍🍳",
       stageReadyAlert: "Your order is ready — on its way",
-      farewellKicker: "Thanks for visiting — see you soon",
-      farewellTitle: "How was your experience?",
+      farewellKicker: "Thank you for being with us — a moment is enough",
+      farewellTitle: "How was your visit today?",
       farewellNotePh: "Your note goes straight to the owner (optional)",
       farewellNotify: "Thank you — how was your experience?",
       iosPushHint: "To get order alerts: Share ⬆ → Add to Home Screen",
+      iosInstallTitle: "iPhone rating alerts",
+      iosInstallSimple: "In Safari: Share ⬆ → Add to Home Screen",
+      iosInstallNote: "Without this, Apple will not send the post-payment rating alert. Open from the icon afterwards.",
+      iosInstallContinue: "OK",
+      iosInstallLater: "Later",
       rateSheetSend: "Send rating",
       rateDismissHint: "You can rate later from My bill",
       rateChip: "Please rate this service",
@@ -8162,8 +8426,11 @@ window.TONINO_CONFIG = Object.freeze({
           /* Table may have been closed while the page was gone → say goodbye now. */
           startGuestSessionWatch();
         }
+        /* Paid + notification/#rate: show rating sheet, do not dump him on the menu. */
+        resumeGuestFarewellIfNeeded();
       } catch (_) {
         try { paintOrderTrackUI("none"); } catch (_) {}
+        try { resumeGuestFarewellIfNeeded(); } catch (_) {}
       }
       /* If live spots arrived, remount so buttons match cashier editor (not baked HTML). */
       if (live && live.bookOk) {
