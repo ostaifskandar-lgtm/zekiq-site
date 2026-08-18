@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ZEKiQ Receive</title>
+  <style>
+    body { margin: 0; min-height: 100dvh; display: flex; align-items: center; justify-content: center;
+      font-family: "IBM Plex Sans Arabic", Tahoma, sans-serif; background: #f7f0de; color: #241d14; }
+    p { margin: 0; font-weight: 800; }
+    small { display: block; margin-top: 8px; color: #6a5d4c; font-weight: 600; }
+  </style>
+  <script>
+    (function () {
+      var url = "http://127.0.0.1:3000/buyer";
+      fetch(url, { mode: "no-cors" }).then(function () {
+        location.replace(url);
+      }).catch(function () {
+        document.getElementById("msg").textContent = "افتح نافذة ZEKiQ POS أو Buyer Dev أولاً، ثم أعد فتح هذا الملف.";
+      });
+      setTimeout(function () { location.replace(url); }, 400);
+    })();
+  </script>
+</head>
+<body>
+  <div>
+    <p>جاري فتح التطبيق الحقيقي…</p>
+    <small id="msg">نفس واجهة Receive — ليست نسخة مبسّطة</small>
+  </div>
+</body>
+</html>
