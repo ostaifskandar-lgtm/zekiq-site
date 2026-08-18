@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="ZEKiQ POS">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c0a09"/>
+      <stop offset="55%" stop-color="#1c1917"/>
+      <stop offset="100%" stop-color="#292524"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="45%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+    <linearGradient id="z" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="35%" stop-color="#FBBF24"/>
+      <stop offset="70%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="zGlow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- App tile -->
+  <rect width="256" height="256" rx="58" fill="url(#bg)"/>
+  <rect x="6" y="6" width="244" height="244" rx="52" fill="none" stroke="url(#ring)" stroke-width="5"/>
+  <rect x="14" y="14" width="228" height="110" rx="40" fill="url(#shine)"/>
+
+  <!-- Subtle table grid (POS floor) -->
+  <g fill="#F59E0B" opacity="0.07">
+    <rect x="36" y="36" width="40" height="40" rx="8"/>
+    <rect x="84" y="36" width="40" height="40" rx="8"/>
+    <rect x="132" y="36" width="40" height="40" rx="8"/>
+    <rect x="180" y="36" width="40" height="40" rx="8"/>
+  </g>
+
+  <!-- Z mark (software brand) -->
+  <path fill="url(#z)" filter="url(#zGlow)" d="M48 58h160L82 128h126v34H48l88-70H48V58z"/>
+  <circle cx="196" cy="54" r="12" fill="#FDE68A"/>
+  <circle cx="196" cy="54" r="7" fill="#F59E0B"/>
+
+  <!-- POS terminal / receipt (readable metaphor) -->
+  <rect x="52" y="168" width="152" height="72" rx="16" fill="#1c1917" stroke="url(#ring)" stroke-width="3"/>
+  <rect x="68" y="184" width="120" height="10" rx="5" fill="#F59E0B"/>
+  <rect x="68" y="202" width="92" height="8" rx="4" fill="#57534e"/>
+  <rect x="68" y="218" width="72" height="8" rx="4" fill="#44403c"/>
+  <circle cx="182" cy="222" r="10" fill="#22c55e"/>
+  <circle cx="182" cy="222" r="5" fill="#86efac"/>
+</svg>
