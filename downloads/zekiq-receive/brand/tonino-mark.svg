@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Tonino">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#2d2d2d"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+  <path fill="#8DC63F" d="M18 42c8-14 22-22 38-20 6 1 10 4 12 8l-6 4c-2-3-6-5-11-5-12-1-22 6-28 18l-5-5z"/>
+  <path fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" d="M36 78V52c0-10 8-18 18-18h8c10 0 18 8 18 18v26"/>
+  <path fill="none" stroke="#fff" stroke-width="4" d="M32 78h56"/>
+  <ellipse cx="62" cy="88" rx="22" ry="5" fill="#fff" opacity=".25"/>
+  <path fill="#E4177A" d="M78 28c12 2 20 10 22 22-8-2-14-6-18-12-2 4-6 8-12 10 4-8 2-16-4-20 6 0 10 0 12 0z"/>
+  <text x="64" y="108" text-anchor="middle" fill="#E4177A" font-family="Georgia, serif" font-size="14" font-weight="700" font-style="italic">T</text>
+</svg>
