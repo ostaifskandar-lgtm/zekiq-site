@@ -1,0 +1,26 @@
+{
+  "name": "ZEKiQ POS",
+  "short_name": "ZEKiQ",
+  "description": "نظام نقاط بيع ذكي لإدارة المطاعم والمقاهي — ZEKiQ Smart POS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#F59E0B",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/brand/zekiq-mark.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/brand/zekiq-mark.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
