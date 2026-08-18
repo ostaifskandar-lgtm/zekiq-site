@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="tr" dir="ltr">
+
+  <head>
+<script id="tonino-buyer-html-flag">(function(){try{window.__TONINO_APP_TARGET__="buyer";localStorage.removeItem("tonino-garson-mode");localStorage.removeItem("tonino-owner-native-apk");}catch(e){}})();</script>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover" />
+    <title>ZEKiQ Receive</title>
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#047857" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ZEKiQ" />
+    <link rel="apple-touch-icon" href="./brand/zekiq-mark.svg" />
+    <link rel="icon" type="image/svg+xml" href="./brand/zekiq-mark.svg" />
+    <link rel="stylesheet" href="./zekiq-boot.css" />
+    <script>
+      (function () {
+        try {
+          var l = localStorage.getItem("app-language");
+          if (l !== "ar" && l !== "tr" && l !== "en") l = "tr";
+          document.documentElement.lang = l;
+          document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+        } catch (e) {}
+      })();
+    </script>
+    <script>
+      (function () {
+        window.toninoIsOwnerApp = function () {
+          try {
+            if (window.__TONINO_APP_TARGET__ === "owner") return true;
+            if (localStorage.getItem("tonino-owner-native-apk") === "1") return true;
+            return location.pathname.replace(/\/+$/, "").endsWith("/owner");
+          } catch (e) {
+            return false;
+          }
+        };
+      })();
+    </script>
+    <script type="module" crossorigin src="./assets/index-BMLm2Dxj.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/bg-removal-DJzRRhA5.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-react-CB7Y9FZB.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-Dh7iN7jK.css">
+  </head>
+
+  <body style="margin:0;background:#faf8f4">
+    <script>
+      (function () {
+        try {
+          var c = window.Capacitor;
+          if (!c || !c.isNativePlatform || !c.isNativePlatform()) return;
+          var appId = c.config && c.config.appId;
+          var isOwnerApk =
+            appId === "com.tonino.owner" || window.__TONINO_APP_TARGET__ === "owner";
+          if (!isOwnerApk) return;
+          window.__TONINO_APP_TARGET__ = "owner";
+          localStorage.setItem("tonino-owner-native-apk", "1");
+          localStorage.setItem("tonino-owner-standalone-v1", "1");
+          var path = location.pathname.replace(/\/+$/, "");
+          if (!path.endsWith("/owner")) {
+            location.replace("/owner?native=1&standalone=1");
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <div
+      id="zekiq-boot-splash"
+      style="position:fixed;inset:0;z-index:2147483646;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#faf8f4;font-family:system-ui,-apple-system,Segoe UI,sans-serif"
+    >
+      <div style="width:min(92vw,22rem);background:rgba(255,255,255,.96);border:1px solid #c5cad3;border-radius:.75rem;padding:2rem 1.5rem;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.08)">
+        <div id="zekiq-boot-title" style="font-size:1.35rem;font-weight:900;color:#b45309;letter-spacing:.04em;margin-bottom:.35rem">ZEKiQ POS</div>
+        <p id="zekiq-boot-msg" style="margin:0 0 1rem;font-size:.95rem;color:#374151;font-weight:600">جاري التحميل… / Yükleniyor…</p>
+        <div style="height:.65rem;border-radius:999px;background:#e5e7eb;overflow:hidden">
+          <div id="zekiq-boot-bar" style="height:100%;width:38%;background:linear-gradient(90deg,#f59e0b,#fbbf24);animation:zekiqBootPulse 1.2s ease-in-out infinite alternate"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var isOwner = window.toninoIsOwnerApp && window.toninoIsOwnerApp();
+        if (isOwner) {
+          var splash = document.getElementById("zekiq-boot-splash");
+          if (splash) {
+            splash.style.background = "#f3ebe0";
+            var card = splash.querySelector("div");
+            if (card) {
+              card.style.background = "rgba(251,246,236,.98)";
+              card.style.borderColor = "#e2d2b3";
+            }
+            var title = document.getElementById("zekiq-boot-title");
+            if (title) {
+              title.textContent = "ZEKiQ Owner";
+              title.style.color = "#8f6218";
+            }
+            var msg = document.getElementById("zekiq-boot-msg");
+            if (msg) msg.textContent = "جاري التحميل…";
+            var bar = document.getElementById("zekiq-boot-bar");
+            if (bar) bar.style.background = "linear-gradient(90deg,#cfa73e,#e4c76b)";
+          }
+          setTimeout(function () {
+            var splashEl = document.getElementById("zekiq-boot-splash");
+            if (!splashEl || !splashEl.isConnected) return;
+            var msgEl = document.getElementById("zekiq-boot-msg");
+            if (msgEl) {
+              msgEl.textContent = "تعذّر التحميل — أغلق التطبيق وافتحه مرة أخرى";
+            }
+          }, 22000);
+          return;
+        }
+        var key = "zekiq-boot-reload";
+        setTimeout(function () {
+          var splash = document.getElementById("zekiq-boot-splash");
+          if (!splash || !splash.isConnected) return;
+          if (!sessionStorage.getItem(key)) {
+            sessionStorage.setItem(key, "1");
+            location.reload();
+            return;
+          }
+          var msg = document.getElementById("zekiq-boot-msg");
+          if (msg) {
+            msg.textContent = "تعذّر تحميل الواجهة — أغلق البرنامج وافتحه من أيقونة ZEKiQ POS";
+          }
+        }, 14000);
+      })();
+    </script>
+    <script>
+      (function () {
+        try {
+          if (!window.toninoIsOwnerApp || !window.toninoIsOwnerApp()) return;
+          var th = localStorage.getItem("owner-app-theme");
+          if (th !== "light" && th !== "dark") th = "light";
+          document.documentElement.setAttribute("data-owner-theme", th);
+          document.documentElement.style.colorScheme = th === "light" ? "light" : "dark";
+          document.documentElement.classList.add("owner-native-shell");
+          document.body.classList.add("owner-mobile-app", "owner-native-shell");
+          document.body.style.background = th === "light" ? "#f3ebe0" : "#030304";
+          document.body.style.color = th === "light" ? "#2a2418" : "";
+        } catch (e) {}
+      })();
+    </script>
+    <div id="root"></div>
+  </body>
+
+</html>
