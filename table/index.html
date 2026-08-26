@@ -11,7 +11,7 @@
 <link rel="manifest" href="/table/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/table/icons/icon-180.png">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-natural-v368 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-rate-notify-v372 --><!-- guest-fs-keep-v371 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 --><!-- guest-rate-sheet-v352 --><!-- guest-rate-after-send-v353 --><!-- guest-page-flicker-v354 --><!-- guest-flip-feel-v355 --><!-- guest-flip-hotspot-v356 --><!-- guest-line-note-kb-v357 --><!-- guest-ice-tea-flavor-v358 --><!-- guest-variant-reopen-v359 --><!-- guest-cat-title-glow-v360 --><!-- guest-coffee-no-duble-v361 --><!-- guest-water-temp-v363 --><!-- guest-find-zoom-v364 --><!-- guest-tools-band-v366 --><!-- guest-pages-baked-v365 --><!-- guest-dd-boot-fix-v367 --><!-- guest-live-session-v369 --><!-- guest-web-push-v370 --><!-- guest-ios-push-v373 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-natural-v368 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-rate-notify-v372 --><!-- guest-fs-keep-v371 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 --><!-- guest-rate-sheet-v352 --><!-- guest-rate-after-send-v353 --><!-- guest-page-flicker-v354 --><!-- guest-flip-feel-v355 --><!-- guest-flip-hotspot-v356 --><!-- guest-line-note-kb-v357 --><!-- guest-ice-tea-flavor-v358 --><!-- guest-variant-reopen-v359 --><!-- guest-cat-title-glow-v360 --><!-- guest-coffee-no-duble-v361 --><!-- guest-water-temp-v363 --><!-- guest-find-zoom-v364 --><!-- guest-tools-band-v366 --><!-- guest-pages-baked-v365 --><!-- guest-dd-boot-fix-v367 --><!-- guest-live-session-v369 --><!-- guest-web-push-v370 --><!-- guest-ios-push-v373 --><!-- guest-ice-sheet-z-v374 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -1433,9 +1433,9 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
 #variantSheet h3{text-align:center;color:#ffe5a1;font-size:16px;margin-bottom:10px}
 #variantGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .variant{min-height:46px;border:1px solid #dca64a;border-radius:11px;background:#ffffff0b;color:#fff;font-size:12px;font-weight:1000;cursor:pointer;padding:6px 8px;line-height:1.25}.variant:active{background:#d69a31;color:#171008}#closeVariants{margin-top:9px;width:100%;height:39px;border:1px solid #9d7642;border-radius:11px;background:#ffffff08;color:#e9d2a2;font-weight:1000;cursor:pointer}
-/* Ice cream builder — vessel + scoops + flavors */
+/* Ice cream builder — above #shade (1240) so chips stay tappable */
 #ice-cream-sheet{
-  position:absolute;z-index:1105;inset:0;display:flex;align-items:flex-end;justify-content:center;
+  position:fixed;z-index:1260;inset:0;display:flex;align-items:flex-end;justify-content:center;
   background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .22s
 }
 #ice-cream-sheet.show{opacity:1;pointer-events:auto}
@@ -1460,7 +1460,8 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
 .ice-flavors,.ice-scoops,.ice-vessel{display:flex;flex-wrap:wrap;gap:6px}
 .ice-chip{
   border:1.5px solid #ffd54f73;background:#ffffff14;color:#fff8e8;border-radius:999px;
-  padding:7px 11px;font-size:12px;font-weight:900;cursor:pointer
+  padding:7px 11px;font-size:12px;font-weight:900;cursor:pointer;
+  touch-action:manipulation;-webkit-user-select:none;user-select:none
 }
 .ice-chip.active{background:linear-gradient(145deg,#ffd54f,#f0b820);color:#1a0a00;border-color:#c8860a}
 .ice-sheet-add-serving{
@@ -4607,7 +4608,8 @@ window.TONINO_CONFIG = Object.freeze({
       sheet.classList.add("show");
       sheet.setAttribute("aria-hidden", "false");
     }
-    $("shade") && $("shade").classList.add("show");
+    /* Own dim backdrop — do not raise #shade or it sits on top and eats every tap. */
+    $("shade") && $("shade").classList.remove("show");
     if (navigator.vibrate) navigator.vibrate(12);
   }
   function addIceCreamToCart(serving) {
