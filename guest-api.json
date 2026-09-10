@@ -1,12 +1,12 @@
 {
   "apiUrl": "https://zekiq-dev.zekiqmenu.com",
   "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
-  "updatedAt": "2026-09-06T21:39:37.975Z",
+  "updatedAt": "2026-09-08T16:01:13.181Z",
   "shops": {
     "zekiq-dev.zekiqmenu.com": {
       "tunnelUrl": "https://zekiq-dev.zekiqmenu.com",
       "hostname": "zekiq-dev.zekiqmenu.com",
-      "updatedAt": "2026-09-06T21:39:37.975Z"
+      "updatedAt": "2026-09-08T16:01:13.181Z"
     }
   }
 }
