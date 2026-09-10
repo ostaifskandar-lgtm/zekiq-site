@@ -11,7 +11,7 @@
 <link rel="manifest" href="/table/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/table/icons/icon-180.png">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-natural-v368 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-rate-notify-v372 --><!-- guest-fs-keep-v371 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 --><!-- guest-rate-sheet-v352 --><!-- guest-rate-after-send-v353 --><!-- guest-page-flicker-v354 --><!-- guest-flip-feel-v355 --><!-- guest-flip-hotspot-v356 --><!-- guest-line-note-kb-v357 --><!-- guest-ice-tea-flavor-v358 --><!-- guest-variant-reopen-v359 --><!-- guest-cat-title-glow-v360 --><!-- guest-coffee-no-duble-v361 --><!-- guest-water-temp-v363 --><!-- guest-find-zoom-v364 --><!-- guest-tools-band-v366 --><!-- guest-pages-baked-v365 --><!-- guest-dd-boot-fix-v367 --><!-- guest-live-session-v369 --><!-- guest-web-push-v370 --><!-- guest-ios-push-v373 --><!-- guest-ice-sheet-z-v374 -->
+<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-natural-v368 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-rate-notify-v372 --><!-- guest-fs-keep-v371 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 --><!-- guest-rate-sheet-v352 --><!-- guest-rate-after-send-v353 --><!-- guest-page-flicker-v354 --><!-- guest-flip-feel-v355 --><!-- guest-flip-hotspot-v356 --><!-- guest-line-note-kb-v357 --><!-- guest-ice-tea-flavor-v358 --><!-- guest-variant-reopen-v359 --><!-- guest-cat-title-glow-v360 --><!-- guest-coffee-no-duble-v361 --><!-- guest-water-temp-v363 --><!-- guest-find-zoom-v364 --><!-- guest-tools-band-v366 --><!-- guest-pages-baked-v365 --><!-- guest-dd-boot-fix-v367 --><!-- guest-live-session-v369 --><!-- guest-web-push-v370 --><!-- guest-ios-push-v373 --><!-- guest-ice-sheet-z-v374 --><!-- guest-direct-order-v375 --><!-- guest-direct-order-v376 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -21,10 +21,18 @@
   var coarse=false;try{coarse=!!(window.matchMedia&&window.matchMedia("(any-pointer:coarse)").matches);}catch(e){}
   var shortSide=Math.min(screen.width||0,screen.height||0);
   var touch=(navigator.maxTouchPoints>0)&&shortSide>0&&shortSide<=1100;
+  document.documentElement.classList.add("menu-flow");
+  document.documentElement.classList.add("direct-order");
   if(android||mobile||coarse||touch){
     document.documentElement.classList.add("is-phone");
     if(android||/SamsungBrowser/i.test(ua)||coarse)document.documentElement.classList.add("is-android");
   }
+  try{
+    var dayPref=sessionStorage.getItem("zekiqDayTerrace");
+    var hour=new Date().getHours();
+    var phone=document.documentElement.classList.contains("is-phone")||document.documentElement.classList.contains("is-android");
+    if(dayPref==="1"||(dayPref!=="0"&&phone&&hour>=8&&hour<=19))document.documentElement.classList.add("day-terrace");
+  }catch(e){}
 }catch(e){}})();
 </script>
 <style>
@@ -233,8 +241,7 @@ html[lang="ar"] .start-demo-captions{direction:rtl}
   font-size:clamp(16px,4.4vw,19px);font-weight:1000;box-shadow:0 8px 22px #0008
 }
 #startGo:active{transform:scale(.98)}
-/* Live coach on real menu — disabled (welcome demo only; no rings after start) */
-#liveCoachPlusRing,#liveCoachTip{display:none!important}
+/* Live coach on real + — enabled by guest-direct-order-v375 */
 html.coach-locked #topbar,
 html.coach-locked #logoBand,
 html.coach-locked #quickBand,
@@ -1727,6 +1734,139 @@ html[lang="tr"] #orderCloudTitle,html[lang="en"] #orderCloudTitle{text-align:lef
   background:transparent;color:#f0a820;font-size:13px;font-weight:800;
   cursor:pointer;font-family:inherit;touch-action:manipulation;
 }
+/* guest-direct-order-v375 — self-order path (qr-analysis_1) */
+html.menu-flow,html.direct-order{--sticky-send-h:0px}
+html.has-cart{--sticky-send-h:72px}
+html.menu-flow #viewer{
+  overflow-y:auto!important;overflow-x:hidden!important;
+  touch-action:pan-y pinch-zoom!important;perspective:none!important;
+  scroll-snap-type:none!important;-webkit-overflow-scrolling:touch;
+  scroll-padding-top:calc(var(--orders-h) + var(--quick-h) + var(--cats-h));
+  bottom:calc(var(--sticky-send-h) + var(--safe-bottom))!important
+}
+html.has-cart.menu-flow #viewer{bottom:calc(var(--sticky-send-h) + var(--safe-bottom))!important}
+html.menu-flow #menuScene{
+  position:relative!important;inset:auto!important;display:flex;flex-direction:column;
+  transform:none!important;overflow:visible!important;transform-style:flat!important;
+  padding-top:calc(var(--orders-h) + var(--quick-h) + var(--cats-h))
+}
+html.menu-flow .menu-page{
+  position:relative!important;inset:auto!important;flex:0 0 auto;height:auto!important;
+  min-height:0;scroll-snap-align:none;
+  scroll-margin-top:calc(var(--orders-h) + var(--quick-h) + var(--cats-h));
+  transform:none!important;touch-action:pan-y pinch-zoom!important;
+  will-change:auto!important;overflow:visible!important
+}
+html.menu-flow .menu-page .paper{margin-top:0}
+html.menu-flow .page-nav,
+html.menu-flow #catsSwipeCoach,
+html.menu-flow .amb-flip-coach,
+html.menu-flow #hint,
+html.menu-flow #menuCallBtn{display:none!important}
+html.menu-flow .hotspot{touch-action:manipulation;width:56px;height:56px}
+html.direct-order .start-demo,
+html.direct-order .start-demo-captions,
+html.direct-order .start-demo-dots{display:none!important}
+html.direct-order #startGate .start-card{max-width:min(100%,380px);gap:10px}
+html.direct-order #startGo{min-height:56px!important;font-size:18px!important}
+#stickySendDock{
+  display:none;position:absolute;z-index:1600;left:0;right:0;bottom:0;
+  padding:8px 10px calc(10px + var(--safe-bottom));
+  background:linear-gradient(180deg,transparent,#0c0806f6 36%);
+  pointer-events:none
+}
+html.has-cart #stickySendDock{display:block}
+html.menu-flow #footer,
+html.has-cart #footer{display:none!important}
+html.menu-flow #viewer{bottom:calc(var(--sticky-send-h) + var(--safe-bottom))!important;overscroll-behavior-y:contain}
+html.direct-order #orderCloudHint,
+html.direct-order #ambStoryTag,
+html.menu-flow #ambStoryTag{display:none!important}
+html.has-cart #cloudSendMain,
+html.has-cart #cloudSendFinger{display:none!important}
+#stickySendBtn{
+  pointer-events:auto;width:100%;min-height:54px;border:0;border-radius:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(145deg,#1f9a32,#2fae5a);color:#fff;
+  font-size:clamp(15px,4.2vw,18px);font-weight:1000;letter-spacing:.01em;
+  box-shadow:0 0 0 0 #2fae5a88,0 8px 22px #000a;
+  animation:stickySendPulse 1.8s ease-in-out infinite
+}
+#stickySendBtn:active{transform:scale(.98)}
+#stickySendBtn.live-coach-send{box-shadow:0 0 0 3px #caed38,0 0 18px #caed38aa}
+@keyframes stickySendPulse{
+  0%,100%{box-shadow:0 0 0 0 #2fae5a00,0 8px 22px #000a;filter:brightness(1)}
+  50%{box-shadow:0 0 16px 4px #2fae5a77,0 8px 22px #000a;filter:brightness(1.08)}
+}
+#helpCallFab{
+  position:absolute;z-index:1500;left:10px;bottom:calc(10px + var(--safe-bottom));
+  width:40px;height:40px;border-radius:50%;border:1px solid #e3aa4566;
+  background:#17100acc;color:#cdb27a;font-size:16px;font-weight:900;cursor:pointer;
+  opacity:.55;display:none;align-items:center;justify-content:center;
+  box-shadow:0 2px 10px #0008
+}
+html.service-call-on #helpCallFab{display:grid}
+html.has-cart #helpCallFab{bottom:calc(var(--sticky-send-h) + 12px + var(--safe-bottom));opacity:.4}
+#helpCallFab:active{opacity:.9;transform:scale(.96)}
+#sentArriveSheet,#garsonNudgeSheet{
+  position:absolute;inset:0;z-index:5200;display:none;align-items:center;justify-content:center;
+  padding:calc(16px + var(--safe-top)) 16px calc(16px + var(--safe-bottom));
+  background:#0c0806e8;backdrop-filter:blur(8px)
+}
+#sentArriveSheet.show,#garsonNudgeSheet.show{display:flex}
+.sent-arrive-card,.garson-nudge-card{
+  width:min(100%,380px);border-radius:22px;padding:22px 18px 16px;text-align:center;
+  border:1px solid #d7982e99;background:linear-gradient(165deg,#2a1c10ee,#17100af5);
+  box-shadow:0 18px 50px #000c;color:#ffe9b1
+}
+.sent-arrive-check{
+  width:72px;height:72px;margin:0 auto 10px;border-radius:50%;
+  display:grid;place-items:center;font-size:38px;font-weight:1000;color:#143016;
+  background:linear-gradient(145deg,#2fae5a,#b8df1b);box-shadow:0 0 24px #2fae5a66
+}
+.sent-arrive-card h2,.garson-nudge-card h2{margin:0 0 6px;font-size:clamp(20px,5.4vw,26px);color:#ffda7d}
+.sent-arrive-card p,.garson-nudge-card p{margin:0 0 14px;color:#cdb27a;font-weight:700;line-height:1.4}
+.sent-arrive-steps{display:flex;justify-content:space-between;gap:6px;margin:0 0 16px}
+.sent-arrive-steps span{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.4}
+.sent-arrive-steps span i{width:10px;height:10px;border-radius:50%;background:#4a6b4e}
+.sent-arrive-steps span b{font-size:11px;font-weight:800}
+.sent-arrive-steps span.is-active{opacity:1}
+.sent-arrive-steps span.is-active i{background:#b8ff4a;box-shadow:0 0 0 4px #b8ff4a33}
+.sent-arrive-actions,.garson-nudge-actions{display:flex;flex-direction:column;gap:8px}
+.sent-arrive-actions button,.garson-nudge-actions button{
+  width:100%;min-height:48px;border-radius:14px;border:0;font-weight:1000;cursor:pointer
+}
+.sent-primary{background:linear-gradient(145deg,#1f9a32,#2fae5a);color:#fff;font-size:16px}
+.sent-secondary,.nudge-call{background:transparent;border:1.5px solid #d7982e88!important;color:#ffe9b1;font-size:14px}
+.nudge-self{background:linear-gradient(145deg,#a9670c,#f0b747);color:#181006;font-size:16px}
+/* Live following ring removed — it drifted off the real + (qr-analysis coach). */
+html.direct-order #liveCoachPlusRing,
+html.direct-order #liveCoachTip,
+#liveCoachPlusRing,#liveCoachTip{display:none!important}
+#liveCoachPlusRing.show,#liveCoachTip.show{display:none!important}
+@keyframes livePlusRing{
+  0%,100%{transform:scale(.92);opacity:.85}
+  50%{transform:scale(1.08);opacity:1}
+}
+html.day-terrace #phone{background:#f3ead6!important}
+html.day-terrace #viewer{background:#efe2c8!important}
+html.day-terrace #categoryBand{background:#f7eedc!important;border-bottom-color:#8a5a12!important}
+html.day-terrace .category{color:#5a3c12;opacity:.7;text-shadow:none}
+html.day-terrace .category.active{color:#1a1108;text-shadow:none;filter:none}
+html.day-terrace #footer,html.day-terrace #quickBand{background:#f7eedc;color:#1a1108}
+html.day-terrace .hotspot{width:64px;height:64px}
+html.day-terrace .hotspot::before{
+  inset:14px;background:radial-gradient(circle at 45% 38%,#d8ffe0 0 28%,#1f9a32 78%,#0d6b22 100%);
+  border:2px solid #fff;box-shadow:0 2px 6px #0006;animation:none;opacity:1
+}
+html.day-terrace #stickySendBtn{min-height:58px;font-size:18px;background:#157a28}
+html.day-terrace .sent-arrive-card,html.day-terrace .garson-nudge-card,html.day-terrace #startGate .start-card{
+  background:#fff8ea;color:#1a1108;border-color:#c9a227
+}
+html.day-terrace .sent-arrive-card h2,html.day-terrace .garson-nudge-card h2,html.day-terrace #startGate h2{color:#6a4a12}
+html.day-terrace .sent-arrive-card p,html.day-terrace .garson-nudge-card p{color:#3a2a10}
+html.day-terrace #startGate .start-hero,html.day-terrace #startGate .start-sub{color:#3a2a10!important;opacity:1}
+
 </style>
 </head>
 <body>
@@ -2268,6 +2408,7 @@ html[lang="tr"] #orderCloudTitle,html[lang="en"] #orderCloudTitle{text-align:lef
         <div class="table-bill-total"><span id="tableBillTotalLabel">Toplam</span><span id="tableBillTotalVal">0 TL</span></div>
         <div class="table-bill-actions">
           <button type="button" id="tableBillAddMore" class="table-bill-add-more" hidden>أضف شيئاً آخر؟</button>
+          <button type="button" id="tableBillCallWaiter" class="table-bill-call" hidden>Garson</button>
           <button type="button" id="tableBillCallBill" class="table-bill-call" hidden>Hesap istiyorum</button>
           <button type="button" id="tableBillRefresh">Yenile</button>
           <button type="button" id="tableBillCloseBtn">Tamam</button>
@@ -2320,6 +2461,41 @@ html[lang="tr"] #orderCloudTitle,html[lang="en"] #orderCloudTitle{text-align:lef
     <div id="menuFindCount"></div>
     <div id="menuFindList"></div>
   </div>
+
+  <div id="stickySendDock" hidden>
+    <button type="button" id="stickySendBtn" aria-label="send order">
+      <span aria-hidden="true">🟢</span>
+      <span id="stickySendLabel">Send</span>
+    </button>
+  </div>
+  <button type="button" id="helpCallFab" hidden aria-label="help">?</button>
+  <div id="sentArriveSheet" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="sentArriveTitle">
+    <div class="sent-arrive-card">
+      <div class="sent-arrive-check" aria-hidden="true">✓</div>
+      <h2 id="sentArriveTitle">Order received</h2>
+      <p id="sentArriveSub"></p>
+      <div id="sentArriveSteps" class="sent-arrive-steps" aria-hidden="true">
+        <span data-step="sent" class="is-active"><i></i><b id="sentStepSend"></b></span>
+        <span data-step="preparing"><i></i><b id="sentStepPrep"></b></span>
+        <span data-step="ready"><i></i><b id="sentStepReady"></b></span>
+      </div>
+      <div class="sent-arrive-actions">
+        <button type="button" class="sent-primary" id="sentArriveBill">My bill</button>
+        <button type="button" class="sent-secondary" id="sentArriveMore">Add more</button>
+      </div>
+    </div>
+  </div>
+  <div id="garsonNudgeSheet" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="garsonNudgeTitle">
+    <div class="garson-nudge-card">
+      <h2 id="garsonNudgeTitle"></h2>
+      <p id="garsonNudgeSub"></p>
+      <div class="garson-nudge-actions">
+        <button type="button" class="nudge-self" id="garsonNudgeSelf"></button>
+        <button type="button" class="nudge-call" id="garsonNudgeCall"></button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" role="status" aria-live="polite"></div>
   <div id="liveCoachPlusRing" aria-hidden="true"></div>
   <div id="liveCoachTip" aria-live="polite"></div>
@@ -2329,12 +2505,13 @@ html[lang="tr"] #orderCloudTitle,html[lang="en"] #orderCloudTitle{text-align:lef
         <div class="guest-lang-switch" id="startLangSwitch" role="group" aria-label="Language">
           <button type="button" data-lang="tr" class="active">TR</button>
           <button type="button" data-lang="ar">ع</button>
+          <button type="button" data-lang="en">EN</button>
         </div>
       </div>
 
 <p class="start-hero" id="startGateHero">Kalkmadan sipariş verin — size gelsin</p>
-      <h2 id="startGateTitle">Nasıl sipariş verilir?</h2>
-      <p class="start-sub" id="startGateSub">Kısa gösterim — sonra siparişe başla</p>
+      <h2 id="startGateTitle">Kendiniz sipariş verin</h2>
+      <p class="start-sub" id="startGateSub">Dilinizi seçin, sonra başlayın</p>
       <div class="start-demo playing" id="startDemo" aria-hidden="true">
         <div class="start-demo-phone">
           <div class="start-demo-top">
@@ -2417,6 +2594,219 @@ window.TONINO_CONFIG = Object.freeze({
   const itemKey = item => `${item.page}|${item.name}|${String(item.menuItemId || "")}|${String(item.price || "")}`;
   const escapeHtml = value => String(value).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 
+
+  const MENU_FLOW = true;
+  try { document.documentElement.classList.add("menu-flow"); document.documentElement.classList.add("direct-order"); } catch (_) {}
+  function applyDayTerrace() {
+    try {
+      const pref = sessionStorage.getItem("zekiqDayTerrace");
+      const hour = new Date().getHours();
+      const phone = document.documentElement.classList.contains("is-phone")
+        || document.documentElement.classList.contains("is-android");
+      const on = pref === "1" || (pref !== "0" && phone && hour >= 8 && hour <= 19);
+      document.documentElement.classList.toggle("day-terrace", on);
+    } catch (_) {}
+  }
+  applyDayTerrace();
+  function hotspotAddWord() {
+    const lang = window.__zekiqGuestLang || "tr";
+    if (lang === "ar") return "أضف";
+    if (lang === "en") return "Add";
+    return "Ekle";
+  }
+  function paintHotspotAria() {
+    const word = hotspotAddWord();
+    document.querySelectorAll("#menuScene .hotspot").forEach(function (btn) {
+      const key = String(btn.dataset.key || "");
+      const name = key.includes("|") ? key.slice(key.indexOf("|") + 1) : "";
+      if (name) btn.setAttribute("aria-label", word + " " + name);
+    });
+  }
+  function menuFlowChromeHeight() {
+    const viewer = $("viewer");
+    if (!viewer) return 0;
+    const top = viewer.getBoundingClientRect().top;
+    let bottom = top;
+    ["logoBand", "quickBand", "categoryBand"].forEach(function (id) {
+      const el = $(id);
+      if (!el || el.hidden) return;
+      const r = el.getBoundingClientRect();
+      if (r.height > 1) bottom = Math.max(bottom, r.bottom);
+    });
+    return Math.max(0, Math.round(bottom - top));
+  }
+  function stickySendPhrase(count, total) {
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || {};
+    const n = Math.max(0, Number(count) || 0);
+    const moneyTxt = money(total);
+    if (typeof bag.stickySend === "function") return bag.stickySend(n, moneyTxt);
+    const lang = window.__zekiqGuestLang || "tr";
+    if (lang === "ar") return "أرسل طلبك — " + n + (n === 1 ? " صنف" : " أصناف") + " · " + moneyTxt;
+    if (lang === "en") return "Send your order — " + n + (n === 1 ? " item" : " items") + " · " + moneyTxt;
+    return "Siparişi gönder — " + n + " ürün · " + moneyTxt;
+  }
+  function syncStickySendDock() {
+    const dock = $("stickySendDock");
+    const btn = $("stickySendBtn");
+    const lab = $("stickySendLabel");
+    const count = cart.reduce((s, it) => s + (Number(it.qty) || 0), 0);
+    const total = cart.reduce((s, it) => s + (Number(it.qty) || 0) * (Number(it.price) || 0), 0);
+    const on = count > 0;
+    document.documentElement.classList.toggle("has-cart", on);
+    if (dock) {
+      dock.hidden = !on;
+      dock.style.display = on ? "block" : "none";
+    }
+    if (lab) lab.textContent = stickySendPhrase(count, total);
+    if (btn) {
+      const bag = (typeof guestBag === "function" ? guestBag() : null) || {};
+      btn.setAttribute("aria-label", lab ? lab.textContent : (bag.cloudSendBtn || "Send"));
+    }
+  }
+  function mountScrollBook(index) {
+    const scene = $("menuScene");
+    if (!scene) return;
+    try { if (window.__zekiqFlowObs) window.__zekiqFlowObs.disconnect(); } catch (_) {}
+    try { releaseZoomEl(false); } catch (_) {}
+    document.documentElement.classList.add("menu-flow");
+    const keep = Math.max(0, Math.min(bookPageCount() - 1, Number(index) || 0));
+    scene.innerHTML = "";
+    const logo = $("logoScene");
+    if (logo) logo.innerHTML = "";
+    currentLogo = null;
+    underMenu = null;
+    underLogo = null;
+    turning = false;
+    const n = bookPageCount();
+    for (let i = 0; i < n; i++) {
+      const page = makeMenuPage(i);
+      page.classList.add("menu-flow-page");
+      page.id = "menuFlowPage-" + i;
+      const img = page.querySelector(".paper img");
+      if (img && Math.abs(i - keep) > 2) {
+        try { img.loading = "lazy"; } catch (_) {}
+      }
+      scene.appendChild(page);
+      if (isDailyBookIndex(i)) {
+        try { renderDailyDishScreen(page); } catch (_) {}
+      }
+    }
+    currentIndex = keep;
+    currentMenu = scene.querySelector('.menu-page[data-page="' + keep + '"]') || scene.firstElementChild;
+    try { applyOrdersSpace(lastArtMenuHeight || 320); } catch (_) {}
+    try { placeCategoryBand(); } catch (_) {}
+    bindMenuFlowObserver();
+    requestAnimationFrame(function () {
+      scrollFlowTo(keep, false);
+      try { syncNavigation(); } catch (_) {}
+      try { updateBadges(); } catch (_) {}
+      try { restickZoom(); } catch (_) {}
+      try { if (liveCoachPhase === "plus") placeLiveCoachPlusRing(); } catch (_) {}
+    });
+  }
+  function bindMenuFlowObserver() {
+    const viewer = $("viewer");
+    const pages = Array.prototype.slice.call(document.querySelectorAll("#menuScene > .menu-page"));
+    if (!viewer || !pages.length || typeof IntersectionObserver !== "function") return;
+    const obs = new IntersectionObserver(function (entries) {
+      let best = null, ratio = 0;
+      entries.forEach(function (en) {
+        if (en.intersectionRatio > ratio) { ratio = en.intersectionRatio; best = en.target; }
+      });
+      if (!best || ratio < 0.32) return;
+      const idx = Number(best.dataset.page);
+      if (!Number.isFinite(idx) || idx === currentIndex) return;
+      currentIndex = idx;
+      currentMenu = best;
+      try { syncNavigation(); } catch (_) {}
+      try { if (isDailyBookIndex(idx)) renderDailyDishScreen(best); } catch (_) {}
+      try { if (liveCoachPhase === "plus") placeLiveCoachPlusRing(); } catch (_) {}
+    }, { root: viewer, threshold: [0.32, 0.5, 0.72] });
+    pages.forEach(function (p) { obs.observe(p); });
+    window.__zekiqFlowObs = obs;
+  }
+  function scrollFlowTo(index, smooth) {
+    index = Math.max(0, Math.min(bookPageCount() - 1, index));
+    const page = document.querySelector('#menuScene > .menu-page[data-page="' + index + '"]');
+    if (!page) return;
+    currentIndex = index;
+    currentMenu = page;
+    try { syncNavigation(); } catch (_) {}
+    if (isDailyBookIndex(index)) {
+      try { renderDailyDishScreen(page); } catch (_) {}
+    }
+    const viewer = $("viewer");
+    if (!viewer) return;
+    const jump = function () {
+      const chrome = menuFlowChromeHeight();
+      const vRect = viewer.getBoundingClientRect();
+      const pRect = page.getBoundingClientRect();
+      const top = Math.max(0, Math.round((pRect.top - vRect.top) + viewer.scrollTop - chrome));
+      if (smooth) {
+        try { viewer.scrollTo({ top: top, behavior: "smooth" }); } catch (_) { viewer.scrollTop = top; }
+      } else {
+        viewer.scrollTop = top;
+      }
+    };
+    jump();
+    if (!smooth) requestAnimationFrame(jump);
+  }
+  function showSentArrive() {
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || {};
+    const sheet = $("sentArriveSheet");
+    if (!sheet) return;
+    let tableTxt = "";
+    try {
+      const info = typeof tableInfo === "function" ? tableInfo() : {};
+      const word = bag.tableWord || (window.__zekiqGuestLang === "ar" ? "طاولة" : "Masa");
+      tableTxt = word + " " + (info.table || "?");
+    } catch (_) {}
+    const title = $("sentArriveTitle");
+    const sub = $("sentArriveSub");
+    if (title) title.textContent = bag.sentArriveTitle || title.textContent;
+    if (sub) sub.textContent = (bag.sentArriveSub || "").replace("{table}", tableTxt);
+    const send = $("sentStepSend");
+    const prep = $("sentStepPrep");
+    const ready = $("sentStepReady");
+    if (send) send.textContent = bag.trackStepSend || send.textContent;
+    if (prep) prep.textContent = bag.trackStepPrep || prep.textContent;
+    if (ready) ready.textContent = bag.trackStepReady || ready.textContent;
+    const bill = $("sentArriveBill");
+    const more = $("sentArriveMore");
+    if (bill) bill.textContent = bag.sentArriveBill || bag.billBtn || bill.textContent;
+    if (more) more.textContent = bag.sentArriveMore || more.textContent;
+    sheet.classList.add("show");
+    sheet.setAttribute("aria-hidden", "false");
+    if (navigator.vibrate) try { navigator.vibrate([18, 40, 18]); } catch (_) {}
+  }
+  function hideSentArrive() {
+    const sheet = $("sentArriveSheet");
+    if (!sheet) return;
+    sheet.classList.remove("show");
+    sheet.setAttribute("aria-hidden", "true");
+  }
+  function showGarsonNudge() {
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || {};
+    const sheet = $("garsonNudgeSheet");
+    if (!sheet) return;
+    const title = $("garsonNudgeTitle");
+    const sub = $("garsonNudgeSub");
+    const selfBtn = $("garsonNudgeSelf");
+    const callBtn = $("garsonNudgeCall");
+    if (title) title.textContent = bag.garsonNudgeTitle || "";
+    if (sub) sub.textContent = bag.garsonNudgeSub || "";
+    if (selfBtn) selfBtn.textContent = bag.garsonNudgeSelf || "";
+    if (callBtn) callBtn.textContent = bag.garsonNudgeCall || "";
+    sheet.classList.add("show");
+    sheet.setAttribute("aria-hidden", "false");
+  }
+  function hideGarsonNudge() {
+    const sheet = $("garsonNudgeSheet");
+    if (!sheet) return;
+    sheet.classList.remove("show");
+    sheet.setAttribute("aria-hidden", "true");
+  }
+
   let currentIndex = 0;
   let currentMenu = null;
   let currentLogo = null;
@@ -2460,6 +2850,19 @@ window.TONINO_CONFIG = Object.freeze({
    * Do NOT yank the guest back from later menu pages on every poll.
    */
   function ensureDailyBookMounted() {
+    if (MENU_FLOW) {
+      if (!hasDailyBookPage()) return false;
+      const page0 = document.getElementById("menuFlowPage-0") || document.querySelector('.menu-page[data-page="0"]');
+      if (!currentMenu) { try { mountInitial(0); } catch (_) { return false; } return true; }
+      if (page0 && !page0.classList.contains("dd-book-page")) {
+        try { mountInitial(currentIndex); } catch (_) { return false; }
+        return true;
+      }
+      if (page0 && page0.classList.contains("dd-book-page")) {
+        try { renderDailyDishScreen(page0); } catch (_) {}
+      }
+      return true;
+    }
     if (!hasDailyBookPage()) return false;
     const onDaily = !!(currentMenu && currentMenu.classList.contains("dd-book-page"));
     if (!currentMenu) {
@@ -2676,6 +3079,20 @@ window.TONINO_CONFIG = Object.freeze({
     strip.classList.toggle("is-bare", bare);
   }
   function applyOrdersSpace(menuHeight) {
+    if (MENU_FLOW) {
+      const phone = $("phone");
+      if (!phone) return;
+      let ordersH = cart.length ? 118 : 92;
+      if (cart.length && ordersH < 96) ordersH = 96;
+      else if (!cart.length && billAvailable && ordersH < 48) ordersH = 48;
+      document.documentElement.style.setProperty("--orders-h", ordersH + "px");
+      document.documentElement.style.setProperty("--logo-art-h", "0px");
+      document.documentElement.style.setProperty("--logo-h", "0px");
+      placeBandTools(ordersH >= 168);
+      const band = $("logoBand");
+      if (band) band.classList.toggle("ambient-tiny", ordersH > 0 && ordersH < 72);
+      return;
+    }
     const phone = $("phone");
     if (!phone) return;
     const topH = $("topbar")?.offsetHeight || 0;
@@ -2722,6 +3139,17 @@ window.TONINO_CONFIG = Object.freeze({
     const quick = $("quickBand");
     const phone = $("phone");
     if (!band || !phone) return;
+    if (MENU_FLOW) {
+      const phoneRect = phone.getBoundingClientRect();
+      const topbarBottom = Math.round(($("topbar")?.getBoundingClientRect().bottom || 0) - phoneRect.top);
+      const ordersH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--orders-h")) || 0;
+      const logoBottom = topbarBottom + ordersH;
+      const catsH = categoryBandHeight();
+      const quickH = quickBandHeight();
+      if (quick) quick.style.top = logoBottom + "px";
+      band.style.top = (logoBottom + quickH) + "px";
+      return;
+    }
     const phoneRect = phone.getBoundingClientRect();
     const topbarBottom = Math.round(($("topbar")?.getBoundingClientRect().bottom || 0) - phoneRect.top);
     const catsH = categoryBandHeight();
@@ -2819,8 +3247,8 @@ window.TONINO_CONFIG = Object.freeze({
     const sync = () => {
       const menuH = menuNaturalHeight(img, phone.clientWidth) || (paper.offsetHeight | 0);
       if (menuH > 0) lastArtMenuHeight = menuH;
-      if (layer === currentMenu || !currentMenu) applyOrdersSpace(menuH);
-      placeCategoryBand();
+      if (!MENU_FLOW && (layer === currentMenu || !currentMenu)) applyOrdersSpace(menuH);
+      if (!MENU_FLOW) placeCategoryBand();
     };
     if (img && img.complete && img.naturalWidth) sync();
     else if (img) img.addEventListener("load", sync, { once: true });
@@ -2912,7 +3340,7 @@ window.TONINO_CONFIG = Object.freeze({
       button.style.top = `${item.y}%`;
       button.style.setProperty("--pulse-delay", `${(spotIndex % 6) * 0.18}s`);
       button.dataset.key = `${art}|${item.name}`;
-      button.setAttribute("aria-label", `أضف ${item.name}`);
+      button.setAttribute("aria-label", hotspotAddWord() + " " + item.name);
       button.innerHTML = '<span class="qty-badge">0</span>';
       button.addEventListener("click", event => {
         event.stopPropagation();
@@ -2943,6 +3371,7 @@ window.TONINO_CONFIG = Object.freeze({
     return hasDailyBookPage() ? 0 : 0;
   }
   function mountInitial(index) {
+    if (MENU_FLOW) { mountScrollBook(index); return; }
     /* Remount detaches the zoomed <div class="paper"> — release it but keep the chosen level. */
     try { releaseZoomEl(false); } catch (_) {}
     currentIndex = Math.max(0, Math.min(bookPageCount() - 1, index));
@@ -3115,6 +3544,7 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function goTo(index,direction=null) {
     index = Math.max(0,Math.min(bookPageCount()-1,index));
+    if (MENU_FLOW) { scrollFlowTo(index, false); return; }
     if (index === currentIndex) return;
     /* Page turn animates transform on the same layer — release it now, restick after the swap. */
     try { releaseZoomEl(false); } catch (_) {}
@@ -3808,14 +4238,7 @@ window.TONINO_CONFIG = Object.freeze({
       btn.classList.toggle("active", Number(btn.dataset.page) === currentIndex);
     });
     const hint = $("hint");
-    if (hint) {
-      {
-        const b = guestBag();
-        hint.innerHTML = isDailyBookIndex(currentIndex)
-          ? `${b.hintSwipe}<br><span style="color:#ffda7d;font-size:11px">${b.hintDaily}</span>`
-          : `${b.hintSwipe}<br><span style="color:#ffda7d;font-size:11px">${b.hintPlus}</span>`;
-      }
-    }
+    if (hint) { hint.hidden = true; hint.textContent = ""; }
     placeCategoryBand();
     try {
       if (typeof liveCoachPhase !== "undefined" && liveCoachPhase === "plus" && typeof placeLiveCoachPlusRing === "function") {
@@ -4067,6 +4490,7 @@ window.TONINO_CONFIG = Object.freeze({
       return `<div class="order${hasNote ? " has-line-note" : ""}"><button class="order-main" type="button" data-page="${item.page}" data-key="${key}" aria-label="${escapeHtml(shown)}"><span class="quantity">${item.qty}×</span><span class="name">${escapeHtml(shown)}</span><span class="price">${money(item.qty*item.price)}</span></button><div class="order-acts"><button class="order-note-btn${hasNote ? " has-note" : ""}" type="button" data-note-key="${key}" aria-label="${escapeHtml(noteTitle)}: ${escapeHtml(shown)}"><span class="oa-ico" aria-hidden="true">📝</span><span class="oa-lab">${escapeHtml(noteBtn)}</span></button><button class="order-action ${isDec ? "" : "trash"}" type="button" data-key="${key}" aria-label="${escapeHtml(actLab)} ${escapeHtml(shown)}"><span class="oa-ico" aria-hidden="true">${actIco}</span><span class="oa-lab">${escapeHtml(actLab)}</span></button></div>${preview}</div>`;
     }).join("");
     const cloud=$("orderCloud"); cloud.classList.toggle("active",cart.length>0);
+    try { syncStickySendDock(); } catch (_) {}
     /* If the open peek points at a line that vanished, close it quietly. */
     try {
       if (cartPeekKey && !cart.some(it => itemKey(it) === cartPeekKey)) closeCartPeek();
@@ -4897,15 +5321,8 @@ window.TONINO_CONFIG = Object.freeze({
         setBillAvailable(true);
         renderCart();
         updateBadges();
-        const okHint = (typeof guestBag === "function" && guestBag().sentOkBillHint) || "تم الإرسال ✓ — انتظر طلبك";
-        toast(okHint, 3800);
-        const sumBtn = $("summaryButton");
-        if (sumBtn) {
-          sumBtn.classList.remove("bill-pulse");
-          void sumBtn.offsetWidth;
-          sumBtn.classList.add("bill-pulse");
-        }
         try { startOrderTracking({ force: true }); } catch (_) {}
+        try { showSentArrive(); } catch (_) {}
         try {
           const oid = data.orderId != null ? Number(data.orderId) : NaN;
           if (Number.isFinite(oid) && oid > 0) {
@@ -4920,15 +5337,7 @@ window.TONINO_CONFIG = Object.freeze({
             offerIosInstallForPush({ reason: "after-send", delayMs: 1400, force: true });
           }
         } catch (_) {}
-        /* Reclaim fullscreen while we still can; openWindow bill after a beat. */
         try { if (window.__zekiqRestoreFs) window.__zekiqRestoreFs(); } catch (_) {}
-        /* Clear success path: open read-only bill so guest sees what was sent + live track */
-        if (typeof openTableBillSheet === "function") {
-          setTimeout(function () {
-            openTableBillSheet();
-            try { if (window.__zekiqRestoreFs) window.__zekiqRestoreFs(); } catch (_) {}
-          }, 280);
-        }
         return;
       }
       /* Keep the id: the basket is unchanged, so a retry must resolve to the same order. */
@@ -5105,6 +5514,7 @@ window.TONINO_CONFIG = Object.freeze({
   let gesture={active:false,mode:null,x:0,y:0,time:0,dx:0,dy:0,direction:0,target:-1,pointerId:null,swiped:false};
   const viewerEl = $("viewer");
   viewerEl.addEventListener("pointerdown",event=>{
+    if(MENU_FLOW)return;
     if(pinch.active)return;
     /* While the page is held zoomed, one finger pans instead of turning pages. */
     if(zoomActive())return;
@@ -5120,6 +5530,7 @@ window.TONINO_CONFIG = Object.freeze({
     try { viewerEl.setPointerCapture(event.pointerId); } catch (_) {}
   },{passive:true});
   viewerEl.addEventListener("pointermove",event=>{
+    if(MENU_FLOW)return;
     if(pinch.active||!gesture.active)return;
     if(gesture.pointerId!=null && event.pointerId!==gesture.pointerId)return;
     if(turning && !gesture.queueOnly)return;
@@ -5160,6 +5571,7 @@ window.TONINO_CONFIG = Object.freeze({
     applyTurnProgress(progress, direction);
   },{passive:false});
   function endGesture(event){
+    if(MENU_FLOW){ gesture.active=false; return; }
     if(!gesture.active)return;
     if(event && gesture.pointerId!=null && event.pointerId!==gesture.pointerId)return;
     const {dx,dy,direction,target,mode,time,pointerId,queueOnly,swiped}=gesture;
@@ -5256,6 +5668,32 @@ window.TONINO_CONFIG = Object.freeze({
   if (topSendBtn) topSendBtn.addEventListener("click", onSendButtonClick);
   const cloudSendBtnEl = $("cloudSendBtn");
   if (cloudSendBtnEl) cloudSendBtnEl.addEventListener("click", onSendButtonClick);
+  const stickySendBtnEl = $("stickySendBtn");
+  if (stickySendBtnEl) stickySendBtnEl.addEventListener("click", onSendButtonClick);
+  const sentBillBtn = $("sentArriveBill");
+  if (sentBillBtn) sentBillBtn.addEventListener("click", function () {
+    hideSentArrive();
+    if (typeof openTableBillSheet === "function") openTableBillSheet();
+  });
+  const sentMoreBtn = $("sentArriveMore");
+  if (sentMoreBtn) sentMoreBtn.addEventListener("click", function () {
+    hideSentArrive();
+    try { continueOrderingFromTrack(); } catch (_) {}
+  });
+  const nudgeSelf = $("garsonNudgeSelf");
+  if (nudgeSelf) nudgeSelf.addEventListener("click", hideGarsonNudge);
+  const nudgeCall = $("garsonNudgeCall");
+  if (nudgeCall) nudgeCall.addEventListener("click", function () {
+    hideGarsonNudge();
+    void sendServiceCall("waiter");
+  });
+  const helpFab = $("helpCallFab");
+  if (helpFab) helpFab.addEventListener("click", showGarsonNudge);
+  const billWaiter = $("tableBillCallWaiter");
+  if (billWaiter) billWaiter.addEventListener("click", function (e) {
+    e.stopPropagation();
+    showGarsonNudge();
+  });
   /* —— Live order tracking: ONLY after this guest sends (not on menu open) —— */
   let orderTrackTimer = null;
   let orderTrackLastStatus = "";
@@ -6750,7 +7188,8 @@ window.TONINO_CONFIG = Object.freeze({
   document.addEventListener("pointercancel", clearDdWeekPress);
   $("menuScene").addEventListener("click", event => {
     const page = event.target.closest(".dd-book-page");
-    if (!page || page !== currentMenu) return;
+    if (!page) return;
+    if (!MENU_FLOW && page !== currentMenu) return;
     if (event.target.closest(".dd-order")) { addDailyDishToCart(); return; }
     if (event.target.closest(".dd-close")) { closeDailyDishScreen(); return; }
     if (event.target.closest(".dd-nav-prev")) { stepDailyDishDay(-1); return; }
@@ -6840,24 +7279,11 @@ window.TONINO_CONFIG = Object.freeze({
       tip.dataset.phase = "";
     }
     if (send) send.classList.remove("live-coach-send");
+    const sticky = document.getElementById("stickySendBtn");
+    if (sticky) sticky.classList.remove("live-coach-send");
   }
   function placeLiveCoachPlusRing() {
-    const ring = document.getElementById("liveCoachPlusRing");
-    const phone = document.getElementById("phone");
-    const target = findLiveCoachPlusTarget();
-    if (!ring || !phone || !target || liveCoachPhase !== "plus") {
-      if (ring) ring.classList.remove("show");
-      return;
-    }
-    const tr = target.getBoundingClientRect();
-    const pr = phone.getBoundingClientRect();
-    if (tr.width < 4 || tr.height < 4) {
-      ring.classList.remove("show");
-      return;
-    }
-    ring.style.left = (tr.left + tr.width / 2 - pr.left) + "px";
-    ring.style.top = (tr.top + tr.height / 2 - pr.top) + "px";
-    ring.classList.add("show");
+    hideLiveCoachUi();
   }
   function showLiveCoachPlus() {
     if (liveCoachFinished()) return;
@@ -6890,14 +7316,22 @@ window.TONINO_CONFIG = Object.freeze({
       tip.classList.add("show");
     }
     if (send) send.classList.add("live-coach-send");
+    const sticky = $("stickySendBtn");
+    if (sticky) sticky.classList.add("live-coach-send");
   }
   function startLiveCoach() {
-    /* Disabled — teaching stays on the welcome gate only */
     hideLiveCoachUi();
     liveCoachPhase = "";
+  }
+  function showLiveCoachPlus() {
+    hideLiveCoachUi();
+    liveCoachPhase = "";
+  }
+  function onLiveCoachItemAdded() {
+    if (liveCoachFinished()) return;
+    showLiveCoachSend();
     markLiveCoachFinished();
   }
-  function onLiveCoachItemAdded() { /* no-op */ }
   function onLiveCoachSendOpened() {
     hideLiveCoachUi();
     liveCoachPhase = "";
@@ -7024,7 +7458,6 @@ window.TONINO_CONFIG = Object.freeze({
       stopGateVisualLoop();
       hideLiveCoachUi();
       liveCoachPhase = "";
-      markLiveCoachFinished();
       try { ensureArabicPageSet(); applyMenuLangPages(window.__zekiqGuestLang || "tr", { force: true, afterStart: true }); } catch(_){}
       try { ensureDailyBookMounted(); } catch (_) {}
       try { updateGeometry(); } catch(_){}
@@ -7036,7 +7469,7 @@ window.TONINO_CONFIG = Object.freeze({
           flip.style.visibility = "";
         }
       } catch (_) {}
-      window.setTimeout(() => { try { startCatsSwipeCoach(); } catch (_) {} }, 650);
+      window.setTimeout(() => { try { startLiveCoach(); } catch (_) {} }, 480);
     }
     function showGate(){
       root.classList.add("coach-locked");
@@ -7115,22 +7548,32 @@ window.TONINO_CONFIG = Object.freeze({
       ambHoursText: "09:00 – 23:00",
       ambHoursAria: "ساعات العمل من 9 صباحاً حتى 11 ليلاً",
       tableWord: "طاولة",
-      startTitle: "كيف تطلب؟",
+      startTitle: "اطلب بنفسك",
       startHero: "اطلب وأنت مكانك — الطلب يصلك",
-      startSub: "عرض قصير — ثم ابدأ الطلب",
+      startSub: "اختر لغتك ثم ابدأ",
       start1: "اسحب",
       start2: "اضغط +",
       start3: "إرسال",
-      startGo: "فهمت — ابدأ",
+      startGo: "ابدأ الطلب",
       startLoopSwipe: "اسحب",
       startLoopPlus: "اضغط +",
       startLoopSend: "إرسال",
       startDemoSwipe: "اسحب ↑ ↓ أو ← → لقلب الصفحة",
       startDemoPlus: "اضغط زر + الأخضر",
       startDemoSend: "اضغط إرسال",
-      liveCoachPlus: "اضغط + الأخضر",
-      liveCoachSend: "اضغط إرسال",
+      liveCoachPlus: "دوسة هنا → يُضاف",
+      liveCoachSend: "أرسل طلبك من الشريط الأخضر",
       orderBtn: "اطلب",
+      stickySend: (n, money) => "أرسل طلبك — " + n + (n === 1 ? " صنف" : " أصناف") + " · " + money,
+      sentArriveTitle: "طلبك وصل المطبخ",
+      sentArriveSub: "✓ {table} — تابع التجهيز من هنا",
+      sentArriveBill: "متابعة الطلب",
+      sentArriveMore: "أضف صنفاً آخر",
+      garsonNudgeTitle: "يمكنك الطلب بنفسك — أسرع",
+      garsonNudgeSub: "اضغط + على الصورة ثم أرسل من الشريط الأخضر أسفل الشاشة.",
+      garsonNudgeSelf: "حسناً، سأطلب بنفسي",
+      garsonNudgeCall: "نادِ الغارسون رغم ذلك",
+
       orderAgain: "✓ اطلب مرة أخرى",
       sendBtn: "إرسال ✓",
       cloudSendBtn: "إرسال",
@@ -7301,22 +7744,32 @@ window.TONINO_CONFIG = Object.freeze({
       ambHoursText: "09:00 – 23:00",
       ambHoursAria: "Açık 09:00 – 23:00",
       tableWord: "Masa",
-      startTitle: "Nasıl sipariş verilir?",
+      startTitle: "Kendiniz sipariş verin",
       startHero: "Kalkmadan sipariş verin — size gelsin",
-      startSub: "Kısa gösterim — sonra siparişe başla",
+      startSub: "Dilinizi seçin, sonra başlayın",
       start1: "Kaydır",
       start2: "+ bas",
       start3: "Gönder",
-      startGo: "Anladım — başla",
+      startGo: "Siparişe başla",
       startLoopSwipe: "Kaydır",
       startLoopPlus: "+ bas",
       startLoopSend: "Gönder",
       startDemoSwipe: "Sayfayı kaydır ↑ ↓ veya ← →",
       startDemoPlus: "Yeşil + düğmesine bas",
       startDemoSend: "Gönder'e bas",
-      liveCoachPlus: "Yeşil + düğmesine bas",
-      liveCoachSend: "Gönder'e bas",
+      liveCoachPlus: "Dokun → sepete eklenir",
+      liveCoachSend: "Alttaki yeşil çubuktan gönderin",
       orderBtn: "Sipariş ver",
+      stickySend: (n, money) => "Siparişi gönder — " + n + " ürün · " + money,
+      sentArriveTitle: "Siparişiniz mutfağa ulaştı",
+      sentArriveSub: "✓ {table} — hazırlığı buradan izleyin",
+      sentArriveBill: "Siparişi takip et",
+      sentArriveMore: "Başka ürün ekle",
+      garsonNudgeTitle: "Kendiniz sipariş verebilirsiniz — daha hızlı",
+      garsonNudgeSub: "Menüdeki yeşil + ile ekleyin, alttaki yeşil çubuktan gönderin.",
+      garsonNudgeSelf: "Tamam, kendim sipariş veririm",
+      garsonNudgeCall: "Yine de garsonu çağır",
+
       orderAgain: "✓ Tekrar sipariş ver",
       sendBtn: "Gönder ✓",
       cloudSendBtn: "Gönder",
@@ -7487,22 +7940,32 @@ window.TONINO_CONFIG = Object.freeze({
       ambHoursText: "09:00 – 23:00",
       ambHoursAria: "Open 9 AM – 11 PM",
       tableWord: "Table",
-      startTitle: "How to order?",
+      startTitle: "Order yourself",
       startHero: "Order from your seat — it comes to you",
-      startSub: "Quick demo — then start ordering",
+      startSub: "Pick your language, then start",
       start1: "Swipe",
       start2: "Tap +",
       start3: "Send",
-      startGo: "Got it — start",
+      startGo: "Start ordering",
       startLoopSwipe: "Swipe",
       startLoopPlus: "Tap +",
       startLoopSend: "Send",
       startDemoSwipe: "Swipe ↑ ↓ or ← → to turn pages",
       startDemoPlus: "Tap the green +",
       startDemoSend: "Tap Send",
-      liveCoachPlus: "Tap the green +",
-      liveCoachSend: "Tap Send",
+      liveCoachPlus: "Tap here → added",
+      liveCoachSend: "Send from the green bar below",
       orderBtn: "Order",
+      stickySend: (n, money) => "Send your order — " + n + (n === 1 ? " item" : " items") + " · " + money,
+      sentArriveTitle: "Your order reached the kitchen",
+      sentArriveSub: "✓ {table} — track it here",
+      sentArriveBill: "Track my order",
+      sentArriveMore: "Add something else",
+      garsonNudgeTitle: "You can order yourself — faster",
+      garsonNudgeSub: "Tap the green + on the photo, then send from the bar at the bottom.",
+      garsonNudgeSelf: "OK, I'll order myself",
+      garsonNudgeCall: "Call the waiter anyway",
+
       orderAgain: "✓ Order again",
       sendBtn: "Send ✓",
       cloudSendBtn: "Send",
@@ -7770,6 +8233,8 @@ window.TONINO_CONFIG = Object.freeze({
     if (typeof paintFindZoomLabels === "function") {
       try { paintFindZoomLabels(); } catch (_) {}
     }
+    try { paintHotspotAria(); } catch (_) {}
+    try { syncStickySendDock(); } catch (_) {}
   }
   function paintFooterHint(bag) {
     const b = bag || guestBag();
@@ -7780,9 +8245,8 @@ window.TONINO_CONFIG = Object.freeze({
     const onDaily = typeof isDailyBookIndex === "function" && typeof currentIndex !== "undefined"
       ? isDailyBookIndex(currentIndex)
       : false;
-    hint.innerHTML = onDaily
-      ? `${b.hintSwipe}<br><span style="color:#ffda7d;font-size:11px">${b.hintDaily}</span>`
-      : `${b.hintSwipe}<br><span style="color:#ffda7d;font-size:11px">${b.hintPlus}</span>`;
+    hint.innerHTML = "";
+    hint.hidden = true;
     hint.style.direction = document.documentElement.dir === "rtl" ? "rtl" : "ltr";
   }
   function paintDailyDishChrome(bag) {
@@ -7830,7 +8294,7 @@ window.TONINO_CONFIG = Object.freeze({
     }
   }
   function syncGuestLangButtons(lang) {
-    const code = lang === "ar" ? "ar" : "tr";
+    const code = lang === "ar" ? "ar" : lang === "en" ? "en" : "tr";
     document.querySelectorAll("#startLangSwitch button").forEach((btn) => {
       btn.classList.toggle("active", btn.getAttribute("data-lang") === code);
     });
@@ -7976,6 +8440,14 @@ window.TONINO_CONFIG = Object.freeze({
     if (hours) hours.setAttribute("aria-label", bag.ambHoursAria || bag.ambHoursText || "");
     paintStartGate(bag);
     paintDailyDishChrome(bag);
+    try {
+      const waiterBill = document.getElementById("tableBillCallWaiter");
+      if (waiterBill) waiterBill.textContent = (typeof findZoomBag === "function" ? findZoomBag().callChip : null) || bag.callChip || waiterBill.textContent;
+      const helpFab = document.getElementById("helpCallFab");
+      if (helpFab) helpFab.setAttribute("aria-label", (typeof findZoomBag === "function" && findZoomBag().callBtn) || "help");
+      const sticky = document.getElementById("stickySendLabel");
+      if (sticky && cart && cart.length) syncStickySendDock();
+    } catch (_) {}
     try { paintOrderCloudLang(bag); } catch (_) {}
     try { paintOrderTrackMoreLabels(bag); } catch (_) {}
     if (typeof window.applyGuestLanguage === "function") {
@@ -8689,9 +9161,14 @@ window.TONINO_CONFIG = Object.freeze({
   function applyGuestServiceCallSupport(supported) {
     const on = supported === true;
     const chip = document.getElementById("menuCallBtn");
-    if (chip) chip.hidden = !on;
+    if (chip) chip.hidden = true;
     const billBtn = document.getElementById("tableBillCallBill");
     if (billBtn) billBtn.hidden = !on;
+    const billWaiter = document.getElementById("tableBillCallWaiter");
+    if (billWaiter) billWaiter.hidden = !on;
+    const helpFab = document.getElementById("helpCallFab");
+    if (helpFab) helpFab.hidden = !on;
+    document.documentElement.classList.toggle("service-call-on", on);
     /* The strip divider depends on which chips are visible — re-check now that this one flipped. */
     try { placeBandTools(toolsInBand === true); } catch (_) {}
   }
@@ -8918,7 +9395,7 @@ window.TONINO_CONFIG = Object.freeze({
     const zoomBtn = document.getElementById("menuZoomBtn");
     if (zoomBtn) zoomBtn.addEventListener("click", stepZoom);
     const callBtn = document.getElementById("menuCallBtn");
-    if (callBtn) callBtn.addEventListener("click", () => { void sendServiceCall("waiter"); });
+    if (callBtn) callBtn.addEventListener("click", (e) => { e.preventDefault(); showGarsonNudge(); });
     const billCall = document.getElementById("tableBillCallBill");
     if (billCall) {
       billCall.addEventListener("click", async event => {
