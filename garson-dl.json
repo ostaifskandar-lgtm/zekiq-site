@@ -1,11 +1,11 @@
 {
   "fileName": "ToninoStaff.apk",
-  "setupUrl": "https://github.com/ostaifskandar-lgtm/zekiq-site/releases/download/garson-v91/ToninoStaff.apk",
+  "setupUrl": "https://github.com/ostaifskandar-lgtm/zekiq-site/releases/download/garson-v92/ToninoStaff.apk",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/g/",
   "mirrorPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/garson.html",
-  "versionCode": 91,
+  "versionCode": 92,
   "versionName": "3.3",
-  "sizeMb": "96.8",
-  "updatedAt": "2026-09-10T18:31:23.077Z",
-  "releaseTag": "garson-v91"
+  "sizeMb": "99.0",
+  "updatedAt": "2026-09-11T13:54:29.283Z",
+  "releaseTag": "garson-v92"
 }
