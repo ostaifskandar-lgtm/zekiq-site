@@ -1,14 +1,14 @@
 {
   "fileName": "ToninoOwner.apk",
-  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=45",
-  "setupUrlCdn": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=45",
-  "setupUrlPages": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=45",
-  "setupUrlRaw": "https://raw.githubusercontent.com/ostaifskandar-lgtm/zekiq-site/main/downloads/ToninoOwner.apk?v=45",
+  "setupUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=46",
+  "setupUrlCdn": "https://cdn.jsdelivr.net/gh/ostaifskandar-lgtm/zekiq-site@main/downloads/ToninoOwner.apk?v=46",
+  "setupUrlPages": "https://ostaifskandar-lgtm.github.io/zekiq-site/downloads/ToninoOwner.apk?v=46",
+  "setupUrlRaw": "https://raw.githubusercontent.com/ostaifskandar-lgtm/zekiq-site/main/downloads/ToninoOwner.apk?v=46",
   "publicPage": "https://ostaifskandar-lgtm.github.io/zekiq-site/o/index.html",
   "publicPageAlt": "https://ostaifskandar-lgtm.github.io/zekiq-site/owner.html",
   "manifestUrl": "https://ostaifskandar-lgtm.github.io/zekiq-site/guest-api.json",
-  "versionCode": 45,
-  "versionName": "1.0.45",
+  "versionCode": 46,
+  "versionName": "1.0.46",
   "sizeMb": "20.3",
-  "updatedAt": "2026-09-13T13:43:44.8301952Z"
+  "updatedAt": "2026-09-13T14:04:10.3550593Z"
 }
