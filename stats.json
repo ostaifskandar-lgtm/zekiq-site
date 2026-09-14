@@ -2,7 +2,7 @@
   "uniqueDevices": 2,
   "verifiedInstalls": 2,
   "websiteDownloads": 0,
-  "activeDevices30d": 2,
+  "activeDevices30d": 0,
   "pageViewsTotal": 0,
   "pageViewsUnique": 0,
   "pageViewsToday": 0,
@@ -10,5 +10,5 @@
   "pageViewsByPage": {},
   "source": "device_registry",
   "note": "pageViews = website visitors (home/download/garson/phone). installs = registered POS devices.",
-  "updatedAt": "2026-06-21T13:49:44.306Z"
+  "updatedAt": "2026-09-14T17:44:59.712Z"
 }
