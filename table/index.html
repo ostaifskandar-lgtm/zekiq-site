@@ -11,7 +11,7 @@
 <link rel="manifest" href="/table/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/table/icons/icon-180.png">
 <meta name="format-detection" content="telephone=no">
-<title>Tonino QR Menu</title><!-- guest-menu-locked-new-v248 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-natural-v368 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-rate-notify-v372 --><!-- guest-fs-keep-v371 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 --><!-- guest-rate-sheet-v352 --><!-- guest-rate-after-send-v353 --><!-- guest-page-flicker-v354 --><!-- guest-flip-feel-v355 --><!-- guest-flip-hotspot-v356 --><!-- guest-line-note-kb-v357 --><!-- guest-ice-tea-flavor-v358 --><!-- guest-variant-reopen-v359 --><!-- guest-cat-title-glow-v360 --><!-- guest-coffee-no-duble-v361 --><!-- guest-water-temp-v363 --><!-- guest-find-zoom-v364 --><!-- guest-tools-band-v366 --><!-- guest-pages-baked-v365 --><!-- guest-dd-boot-fix-v367 --><!-- guest-live-session-v369 --><!-- guest-web-push-v370 --><!-- guest-ios-push-v373 --><!-- guest-ice-sheet-z-v374 --><!-- guest-direct-order-v375 --><!-- guest-direct-order-v376 --><!-- guest-direct-order-v377 --><!-- guest-direct-order-v378 --><!-- guest-direct-order-v379 --><!-- guest-direct-order-v380 --><!-- guest-direct-order-v381 --><!-- guest-direct-order-v382 --><!-- guest-direct-order-v383 --><!-- guest-direct-order-v384 --><!-- guest-direct-order-v385 -->
+<title>Tonino QR Menu</title><!-- guest-menu-hours-v1 --><!-- guest-menu-locked-new-v248 --><!-- guest-qr-session-v382 --><!-- hotspot-glow-v257 --><!-- turk-coffee-sugar-v256 --><!-- cart-font-v256 --><!-- daily-dish-phone-v311 --><!-- guest-cart-notes-v313 --><!-- guest-noread-coach-v314 --><!-- guest-dd-natural-v368 --><!-- guest-start-demo-v327 --><!-- guest-cats-swipe-v328 --><!-- guest-page-arrows-v332 --><!-- guest-start-hero-v330 --><!-- guest-flip-persist-v333 --><!-- guest-table-bill-v335 --><!-- guest-rate-notify-v372 --><!-- guest-fs-keep-v371 --><!-- guest-quick-soup-v336 --><!-- tunnel-isolate-v275 --><!-- natural-menu-orders-v248 --><!-- order-story-v248 --><!-- table-num-fix-v230 --><!-- quick-jumps-v229 --><!-- start-gate-fs-v228 --><!-- cats-above-menu-v227 --><!-- cats-as-title-v210 --><!-- cashier-send-v1 --><!-- pdf-no-titles-v248 --><!-- guest-send-dept-v341 --><!-- guest-live-cats-v342 --><!-- guest-pinch-pan-v343 --><!-- guest-hide-dd-dayoff-v344 --><!-- guest-bilingual-menu-v345 --><!-- guest-lang-visible-v346 --><!-- guest-lang-ux-v347 --><!-- guest-lang-fix-v348 --><!-- guest-ar-images-v349 --><!-- guest-lang-default-tr-v350 --><!-- guest-order-cloud-lang-v351 --><!-- guest-rate-sheet-v352 --><!-- guest-rate-after-send-v353 --><!-- guest-page-flicker-v354 --><!-- guest-flip-feel-v355 --><!-- guest-flip-hotspot-v356 --><!-- guest-line-note-kb-v357 --><!-- guest-ice-tea-flavor-v358 --><!-- guest-variant-reopen-v359 --><!-- guest-cat-title-glow-v360 --><!-- guest-coffee-no-duble-v361 --><!-- guest-water-temp-v363 --><!-- guest-find-zoom-v364 --><!-- guest-tools-band-v366 --><!-- guest-pages-baked-v365 --><!-- guest-dd-boot-fix-v367 --><!-- guest-live-session-v369 --><!-- guest-web-push-v370 --><!-- guest-ios-push-v373 --><!-- guest-ice-sheet-z-v374 --><!-- guest-direct-order-v375 --><!-- guest-direct-order-v376 --><!-- guest-direct-order-v377 --><!-- guest-direct-order-v378 --><!-- guest-direct-order-v379 --><!-- guest-direct-order-v380 --><!-- guest-direct-order-v381 --><!-- guest-direct-order-v382 --><!-- guest-direct-order-v383 --><!-- guest-direct-order-v384 --><!-- guest-direct-order-v385 --><!-- guest-direct-order-v386 --><!-- guest-direct-order-v387 --><!-- guest-direct-order-v388 -->
 <script>
 /* Same edge-to-edge phone chrome on EVERY Android (Samsung pointer:fine included) */
 (function(){try{
@@ -70,6 +70,14 @@ html.is-phone #phone,html.is-android #phone{
 }
 html[lang="ar"] #startGate{direction:rtl}
 #startGate.show{display:flex}
+#qrVisitLock{
+  display:none;position:fixed;inset:0;z-index:12000;align-items:center;justify-content:center;
+  padding:28px 18px;background:#140c04;color:#f3e6c8;text-align:center;
+}
+#qrVisitLock.show{display:flex}
+#qrVisitLock .qr-lock-card{max-width:340px}
+#qrVisitLock h2{margin:0 0 10px;font-size:22px;font-weight:900;color:#ffda7d}
+#qrVisitLock p{margin:8px 0 0;font-size:16px;line-height:1.55;color:#f3e6c8}
 #startGate .start-card{
   margin:auto;width:min(100%,360px);padding:22px 18px 18px;border:1px solid #d7982e88;border-radius:22px;
   background:linear-gradient(165deg,#2a1c10ee,#17100af2);box-shadow:0 18px 50px #000c
@@ -1540,7 +1548,7 @@ html[lang="tr"] #hint,html[lang="en"] #hint{direction:ltr}#hint em{font-style:no
   position:relative;
 }
 #startGate .start-hero{margin:0 0 4px!important;font-size:clamp(15px,4.2vw,18px)!important}
-#startGate h2{font-size:clamp(17px,4.6vw,21px)!important;margin:0 0 2px!important}
+#startGate h2{font-size:clamp(16px,4.4vw,20px)!important;margin:0 0 2px!important;line-height:1.28!important}
 #startGate .start-sub{font-size:12px!important;margin:0 0 6px!important}
 .start-demo{margin:0 0 6px!important}
 .start-demo-phone{width:min(100%,240px)!important}
@@ -2579,9 +2587,9 @@ html.day-terrace #startGate .start-hero,html.day-terrace #startGate .start-sub{c
         </div>
       </div>
 
-<p class="start-hero" id="startGateHero">Kalkmadan sipariş verin — size gelsin</p>
-      <h2 id="startGateTitle">Kendiniz sipariş verin</h2>
-      <p class="start-sub" id="startGateSub">Dilinizi seçin, sonra başlayın</p>
+<p class="start-hero" id="startGateHero">Siparişiniz masanıza gelir</p>
+      <h2 id="startGateTitle">Kendiniz sipariş verin — masanıza gelir</h2>
+      <p class="start-sub" id="startGateSub">Notunuzu yazabilirsiniz</p>
       <div class="start-demo playing" id="startDemo" aria-hidden="true">
         <div class="start-demo-phone">
           <div class="start-demo-top">
@@ -2624,6 +2632,12 @@ html.day-terrace #startGate .start-hero,html.day-terrace #startGate .start-sub{c
         <li><b>3</b><span data-start-step="3"></span></li>
       </ol>
 <button type="button" id="startGo">Anladım — başla</button>
+    </div>
+  </div>
+  <div id="qrVisitLock" aria-hidden="true">
+    <div class="qr-lock-card">
+      <h2 id="qrVisitLockTitle">امسح QR</h2>
+      <p id="qrVisitLockText">انتهت الجلسة — امسح رمز الطاولة من جديد</p>
     </div>
   </div>
 </div>
@@ -3083,19 +3097,186 @@ window.TONINO_CONFIG = Object.freeze({
     }
     return params;
   }
+  const QR_VISIT_KEY = "zekiqQrVisit";
+  let qrVisit = null;
+  let qrVisitTimer = 0;
+  let qrVisitVisBound = false;
+  function readStoredQrVisit() {
+    try {
+      const raw = sessionStorage.getItem(QR_VISIT_KEY);
+      if (!raw) return null;
+      const j = JSON.parse(raw);
+      if (!j || !j.token || !j.sid) return null;
+      return j;
+    } catch (_) { return null; }
+  }
+  function writeStoredQrVisit(v) {
+    qrVisit = v;
+    try {
+      if (v) sessionStorage.setItem(QR_VISIT_KEY, JSON.stringify(v));
+      else sessionStorage.removeItem(QR_VISIT_KEY);
+    } catch (_) {}
+  }
+  function qrVisitAlive() {
+    const v = qrVisit || readStoredQrVisit();
+    if (!v || !v.sid || !v.token) return null;
+    if (Number(v.exp) <= Date.now()) return null;
+    qrVisit = v;
+    return v;
+  }
+  function stripQrTokenFromAddress() {
+    try {
+      const params = readQueryParams();
+      if (!params.has("t") && !params.has("token")) return;
+      params.delete("t");
+      params.delete("token");
+      const qs = params.toString();
+      history.replaceState({}, "", location.pathname + (qs ? "?" + qs : "") + (location.hash || "").replace(/([?&])t(oken)?=[^&]*/g, ""));
+    } catch (_) {}
+  }
+  function paintQrVisitLock(on, opts) {
+    const el = document.getElementById("qrVisitLock");
+    if (!el) return;
+    if (el.parentNode !== document.body) {
+      try { document.body.appendChild(el); } catch (_) {}
+    }
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || {};
+    const kind = opts && opts.kind;
+    const title = document.getElementById("qrVisitLockTitle");
+    const text = document.getElementById("qrVisitLockText");
+    if (title) {
+      title.textContent = (opts && opts.title)
+        || (kind === "closed" ? (bag.errShopClosed || "المحل مغلق الآن") : (bag.errSession || bag.errScanQr || "امسح QR"));
+    }
+    if (text) {
+      text.textContent = (opts && opts.body)
+        || (kind === "closed" ? (bag.errShopClosedD || "امسح رمز الطاولة بعد الافتتاح") : (bag.errSessionD || bag.errScanQrD || "انتهت الجلسة — امسح رمز الطاولة من جديد"));
+    }
+    el.classList.toggle("show", !!on);
+    el.setAttribute("aria-hidden", on ? "false" : "true");
+    if (on) {
+      const gate = document.getElementById("startGate");
+      if (gate) gate.classList.remove("show");
+    }
+  }
+  function shopClosedLockCopy(data) {
+    const bag = (typeof guestBag === "function" ? guestBag() : null) || {};
+    const openAt = data && data.openAt ? String(data.openAt) : "";
+    const alwaysOpen = !!(data && data.alwaysOpen);
+    const title = bag.errShopClosed || "المحل مغلق الآن";
+    const body = (!alwaysOpen && openAt)
+      ? String(bag.errShopClosedAt || "يفتح الساعة {t}").replace("{t}", openAt)
+      : (bag.errShopClosedD || "امسح رمز الطاولة بعد الافتتاح");
+    return { title, body };
+  }
+  function lockQrVisitClosed(data) {
+    writeStoredQrVisit(null);
+    if (qrVisitTimer) { clearInterval(qrVisitTimer); qrVisitTimer = 0; }
+    const copy = shopClosedLockCopy(data || {});
+    paintQrVisitLock(true, { kind: "closed", title: copy.title, body: copy.body });
+  }
+  async function fetchGuestHours() {
+    try {
+      const apiBase = await resolveApiBase();
+      if (!apiBase) return null;
+      const abort = typeof AbortController === "function" ? new AbortController() : null;
+      const timer = abort ? setTimeout(function () { try { abort.abort(); } catch (_) {} }, 8000) : 0;
+      const res = await fetch(String(apiBase).replace(/\/+$/, "") + "/api/guest/v1/hours", {
+        signal: abort ? abort.signal : undefined,
+      });
+      if (timer) clearTimeout(timer);
+      const data = await res.json().catch(function () { return null; });
+      return data || null;
+    } catch (_) {
+      return null;
+    }
+  }
+  async function enforceGuestHours() {
+    const data = await fetchGuestHours();
+    if (data && data.open === false) {
+      lockQrVisitClosed(data);
+      return false;
+    }
+    return true;
+  }
+  function lockQrVisit() {
+    writeStoredQrVisit(null);
+    if (qrVisitTimer) { clearInterval(qrVisitTimer); qrVisitTimer = 0; }
+    paintQrVisitLock(true);
+  }
+  function startQrVisitTimer() {
+    if (qrVisitTimer) clearInterval(qrVisitTimer);
+    const tick = () => {
+      if (!qrVisitAlive()) { lockQrVisit(); return; }
+    };
+    qrVisitTimer = setInterval(tick, 1000);
+    if (!qrVisitVisBound) {
+      qrVisitVisBound = true;
+      document.addEventListener("visibilitychange", tick);
+    }
+  }
   function guestSession() {
     const params = readQueryParams();
-    const token = (params.get("t") || params.get("token") || "").trim();
+    const live = qrVisitAlive();
+    const token = (params.get("t") || params.get("token") || "").trim() || (live ? String(live.token || "") : "");
     const payload = peekTokenPayload(token);
-    const shop = (params.get("shop") || "").trim() || (payload?.d ? String(payload.d).trim() : "");
-    const api = (params.get("api") || "").trim().replace(/\/+$/, "");
-    const section = (payload?.s && String(payload.s).trim()) || params.get("zone") || params.get("section") || params.get("bolge") || CONFIG.defaultZone || "";
+    const shop = (params.get("shop") || "").trim() || (live && live.shop ? String(live.shop) : "") || (payload?.d ? String(payload.d).trim() : "");
+    const api = (params.get("api") || "").trim().replace(/\/+$/, "") || (live && live.api ? String(live.api) : "");
+    const section = (payload?.s && String(payload.s).trim()) || (live && live.section) || params.get("zone") || params.get("section") || params.get("bolge") || CONFIG.defaultZone || "";
     const fromToken = payload != null && Number.isFinite(Number(payload.t)) ? Number(payload.t) : NaN;
     const fromQuery = Number(params.get("table") || params.get("masa") || "");
+    const fromLive = live && Number.isFinite(Number(live.tableNum)) ? Number(live.tableNum) : NaN;
     const tableNum = Number.isFinite(fromToken) ? fromToken
+      : Number.isFinite(fromLive) ? fromLive
       : Number.isFinite(fromQuery) ? fromQuery
       : (params.get("table") || params.get("masa") || CONFIG.defaultTable);
-    return { token, shop, api, section, tableNum };
+    return { token, shop, api, section, tableNum, sid: live ? String(live.sid || "") : "" };
+  }
+  async function bootQrVisit() {
+    const params = readQueryParams();
+    const fromUrl = (params.get("t") || params.get("token") || "").trim();
+    if (fromUrl) {
+      const apiBase = await resolveApiBase();
+      if (!apiBase) { lockQrVisit(); return false; }
+      try {
+        const abort = typeof AbortController === "function" ? new AbortController() : null;
+        const timer = abort ? setTimeout(function () { try { abort.abort(); } catch (_) {} }, 12000) : 0;
+        const res = await fetch(String(apiBase).replace(/\/+$/, "") + "/api/guest/v1/session", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          signal: abort ? abort.signal : undefined,
+          body: JSON.stringify({ token: fromUrl }),
+        });
+        if (timer) clearTimeout(timer);
+        const data = await res.json().catch(function () { return {}; });
+        if (data && data.error === "shop_closed") { lockQrVisitClosed(data); return false; }
+        if (!res.ok || !data || !data.ok || !data.sid) { lockQrVisit(); return false; }
+        const payload = peekTokenPayload(fromUrl);
+        writeStoredQrVisit({
+          token: fromUrl,
+          sid: String(data.sid),
+          exp: Number(data.exp) || (Date.now() + 15 * 60 * 1000),
+          shop: (params.get("shop") || "").trim() || (payload && payload.d ? String(payload.d) : ""),
+          api: (params.get("api") || "").trim().replace(/\/+$/, ""),
+          section: data.section || (payload && payload.s) || "",
+          tableNum: data.table,
+        });
+        stripQrTokenFromAddress();
+        paintQrVisitLock(false);
+        startQrVisitTimer();
+        return true;
+      } catch (_) {
+        lockQrVisit();
+        return false;
+      }
+    }
+    if (qrVisitAlive()) {
+      paintQrVisitLock(false);
+      startQrVisitTimer();
+      return true;
+    }
+    lockQrVisit();
+    return false;
   }
   let cachedApiBase = "";
   function isDevTunnelHost(h) {
@@ -3130,6 +3311,16 @@ window.TONINO_CONFIG = Object.freeze({
     const pageHost = String(location.hostname || "").toLowerCase();
     /* Named tunnel page = same origin only. Never fall through to GitHub tonino. */
     if (isDevTunnelHost(pageHost) || isCashierTunnelHost(pageHost)) {
+      cachedApiBase = String(location.origin || "").replace(/\/+$/, "");
+      return cachedApiBase;
+    }
+    /* Page already on this POS (LAN / localhost): do not jump to the public tunnel. */
+    if (
+      pageHost === "localhost" ||
+      pageHost === "127.0.0.1" ||
+      pageHost === "[::1]" ||
+      /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(pageHost)
+    ) {
       cachedApiBase = String(location.origin || "").replace(/\/+$/, "");
       return cachedApiBase;
     }
@@ -5345,11 +5536,19 @@ window.TONINO_CONFIG = Object.freeze({
       failed: bag.sendFailed || "لم يصل الطلب — أعد المحاولة أو أخبر الجرسون",
     };
   }
-  function mapSendError(code) {
+  function mapSendError(code, extra) {
     const bag = sendBag();
     if (code === "table_not_active") return bag.noTable;
     if (code === "invalid_token" || code === "token_expired") return bag.badQr;
+    if (code === "session_expired" || code === "session_required" || code === "session_mismatch") {
+      try { lockQrVisit(); } catch (_) {}
+      return (guestBag().errSessionD) || bag.badQr;
+    }
     if (code === "disabled" || code === "table_qr_disabled") return bag.closed;
+    if (code === "shop_closed") {
+      try { lockQrVisitClosed(extra || { error: "shop_closed" }); } catch (_) {}
+      return (guestBag().errShopClosed) || bag.closed;
+    }
     if (code === "rate_limit") return bag.busy;
     if (code === "daily_dish_sold_out") {
       return (guestBag().dailySoldOut) || bag.failed;
@@ -5483,7 +5682,8 @@ window.TONINO_CONFIG = Object.freeze({
     if (!cart.length) { toast(words.empty); return; }
     if (sending) return;
     const session = guestSession();
-    if (!session.token) {
+    if (!session.token || !session.sid || !qrVisitAlive()) {
+      try { lockQrVisit(); } catch (_) {}
       toast(words.scan);
       return;
     }
@@ -5534,6 +5734,7 @@ window.TONINO_CONFIG = Object.freeze({
         signal: abort ? abort.signal : undefined,
         body: JSON.stringify({
           token: session.token,
+          sid: session.sid,
           note: orderNote || undefined,
           sendId: currentSendId(payload),
           items: lines,
@@ -5576,7 +5777,7 @@ window.TONINO_CONFIG = Object.freeze({
         return;
       }
       /* Keep the id: the basket is unchanged, so a retry must resolve to the same order. */
-      toast(mapSendError(data && data.error), 3600);
+      toast(mapSendError(data && data.error, data), 3600);
     } catch (_) {
       toast(navigator.onLine === false ? words.noNet : words.failed, 3600);
     } finally {
@@ -5632,6 +5833,7 @@ window.TONINO_CONFIG = Object.freeze({
     panX: 0,
     panY: 0,
     target: null,
+    page: null,
   };
   function pinchDist(a, b) {
     const dx = a.clientX - b.clientX, dy = a.clientY - b.clientY;
@@ -5640,13 +5842,36 @@ window.TONINO_CONFIG = Object.freeze({
   function pinchMid(a, b) {
     return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
   }
-  function pinchTargetEl() {
-    const page = currentMenu;
+  function pinchPaperFromPage(page) {
     if (!page) return null;
     if (page.classList.contains("dd-book-page")) {
       return page.querySelector(".dd-photo") || page.querySelector(".dd-panel.paper") || page.querySelector(".paper");
     }
     return page.querySelector(".paper");
+  }
+  /* Scroll-spy currentMenu is the last page whose TOP passed the dock — often the page above
+   * the one the guest is actually touching. Pinch must follow the fingers. */
+  function pinchPageAt(midX, midY) {
+    if (!(MENU_FLOW && Number.isFinite(midX) && Number.isFinite(midY))) return currentMenu;
+    const pages = document.querySelectorAll("#menuScene > .menu-page");
+    let inside = null;
+    let nearest = currentMenu;
+    let nearestD = Infinity;
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i];
+      const r = page.getBoundingClientRect();
+      if (r.height < 4) continue;
+      if (midY >= r.top && midY <= r.bottom && midX >= r.left - 12 && midX <= r.right + 12) {
+        inside = page;
+      }
+      const cy = (r.top + r.bottom) / 2;
+      const d = Math.abs(midY - cy);
+      if (d < nearestD) { nearestD = d; nearest = page; }
+    }
+    return inside || nearest || currentMenu;
+  }
+  function pinchTargetEl(midX, midY) {
+    return pinchPaperFromPage(pinchPageAt(midX, midY));
   }
   function applyPinchTransform(el, scale, panX, panY) {
     if (!el) return;
@@ -5665,6 +5890,8 @@ window.TONINO_CONFIG = Object.freeze({
     pinch.scale = 1;
     pinch.panX = 0;
     pinch.panY = 0;
+    if (pinch.page) pinch.page.classList.remove("is-pinching");
+    pinch.page = null;
     if (currentMenu) currentMenu.classList.remove("is-pinching");
     if (!el) return;
     el.classList.add("is-pinch-reset");
@@ -5685,13 +5912,14 @@ window.TONINO_CONFIG = Object.freeze({
     if (turning) return;
     /* Two fingers take over — drop the sticky button zoom so transforms never fight. */
     try { clearZoomLock(false); } catch (_) {}
-    const el = pinchTargetEl();
+    const mid = pinchMid(t0, t1);
+    const page = pinchPageAt(mid.x, mid.y);
+    const el = pinchPaperFromPage(page);
     if (!el) return;
     gesture.active = false;
     if (underMenu && underLogo) {
       try { cancelTurn(gesture.direction || 1); } catch (_) {}
     }
-    const mid = pinchMid(t0, t1);
     const r = el.getBoundingClientRect();
     pinch.active = true;
     pinch.startDist = pinchDist(t0, t1);
@@ -5706,7 +5934,8 @@ window.TONINO_CONFIG = Object.freeze({
     pinch.panX = 0;
     pinch.panY = 0;
     pinch.target = el;
-    if (currentMenu) currentMenu.classList.add("is-pinching");
+    pinch.page = page || null;
+    if (pinch.page) pinch.page.classList.add("is-pinching");
     applyPinchTransform(el, 1, 0, 0);
   }
   $("viewer").addEventListener("touchstart", event => {
@@ -6142,6 +6371,7 @@ window.TONINO_CONFIG = Object.freeze({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           token: token,
+          sid: session.sid || undefined,
           endpoint: sub.endpoint,
           p256dh: keyToB64Url(p256dh),
           auth: keyToB64Url(auth),
@@ -6823,6 +7053,7 @@ window.TONINO_CONFIG = Object.freeze({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           token: token,
+          sid: s.sid || undefined,
           rating: rating,
           message: message,
           kind: kind,
@@ -7060,6 +7291,7 @@ window.TONINO_CONFIG = Object.freeze({
       const base = await resolveApiBase();
       if (!base) return null;
       let url = String(base).replace(/\/+$/, "") + "/api/guest/v1/order-status?t=" + encodeURIComponent(token);
+      if (s.sid) url += "&sid=" + encodeURIComponent(s.sid);
       if (s.shop) url += "&shop=" + encodeURIComponent(s.shop);
       /* Our own order id: lets the cashier answer "paid and closed" once the table is empty. */
       const persisted = readTrackPersist();
@@ -7274,6 +7506,7 @@ window.TONINO_CONFIG = Object.freeze({
       const base = await resolveApiBase();
       if (!base) throw new Error("no_api");
       let url = String(base).replace(/\/+$/, "") + "/api/guest/v1/table-bill?t=" + encodeURIComponent(token);
+      if (s.sid) url += "&sid=" + encodeURIComponent(s.sid);
       if (s.shop) url += "&shop=" + encodeURIComponent(s.shop);
       const res = await fetch(url, { method: "GET", cache: "no-store" });
       const data = await res.json().catch(function () { return null; });
@@ -7323,6 +7556,7 @@ window.TONINO_CONFIG = Object.freeze({
       const base = await resolveApiBase();
       if (!base) return;
       let url = String(base).replace(/\/+$/, "") + "/api/guest/v1/table-bill?t=" + encodeURIComponent(token);
+      if (s.sid) url += "&sid=" + encodeURIComponent(s.sid);
       if (s.shop) url += "&shop=" + encodeURIComponent(s.shop);
       const res = await fetch(url, { method: "GET", cache: "no-store" });
       const data = await res.json().catch(function () { return null; });
@@ -7758,9 +7992,9 @@ window.TONINO_CONFIG = Object.freeze({
       ambHoursText: "09:00 – 23:00",
       ambHoursAria: "ساعات العمل من 9 صباحاً حتى 11 ليلاً",
       tableWord: "طاولة",
-      startTitle: "اطلب بنفسك",
-      startHero: "اطلب وأنت مكانك — الطلب يصلك",
-      startSub: "اختر لغتك ثم ابدأ",
+      startTitle: "اطلب بنفسك — الطلب يصل إلى طاولتك",
+      startHero: "الطلب يصل إلى طاولتك",
+      startSub: "يمكنك كتابة ملاحظاتك",
       start1: "اسحب",
       start2: "اضغط +",
       start3: "إرسال",
@@ -7878,6 +8112,9 @@ window.TONINO_CONFIG = Object.freeze({
       sendNoTable: "الطاولة غير مفتوحة — أخبر الجرسون",
       sendBadQr: "رمز QR قديم — امسح الرمز من الطاولة من جديد",
       sendClosed: "الطلب من الهاتف مغلق حالياً — أخبر الجرسون",
+      errShopClosed: "المحل مغلق الآن",
+      errShopClosedD: "امسح رمز الطاولة بعد الافتتاح",
+      errShopClosedAt: "يفتح الساعة {t}",
       sendBusy: "الطلبات كثيرة الآن — انتظر لحظة وأعد المحاولة",
       sendNoNet: "لا يوجد إنترنت على هاتفك — شغّل الواي فاي أو الداتا",
       sendFailed: "لم يصل الطلب — أعد المحاولة أو أخبر الجرسون",
@@ -7954,9 +8191,9 @@ window.TONINO_CONFIG = Object.freeze({
       ambHoursText: "09:00 – 23:00",
       ambHoursAria: "Açık 09:00 – 23:00",
       tableWord: "Masa",
-      startTitle: "Kendiniz sipariş verin",
-      startHero: "Kalkmadan sipariş verin — size gelsin",
-      startSub: "Dilinizi seçin, sonra başlayın",
+      startTitle: "Kendiniz sipariş verin — masanıza gelir",
+      startHero: "Siparişiniz masanıza gelir",
+      startSub: "Notunuzu yazabilirsiniz",
       start1: "Kaydır",
       start2: "+ bas",
       start3: "Gönder",
@@ -8074,6 +8311,9 @@ window.TONINO_CONFIG = Object.freeze({
       sendNoTable: "Masa henüz açılmadı — garsona söyleyin",
       sendBadQr: "QR eski — masadaki kodu tekrar okutun",
       sendClosed: "Telefondan sipariş şu an kapalı — garsona söyleyin",
+      errShopClosed: "Dükkân şu an kapalı",
+      errShopClosedD: "Açılıştan sonra masadaki QR’ı okutun",
+      errShopClosedAt: "Açılış saati {t}",
       sendBusy: "Şu an yoğun — bir dakika sonra tekrar deneyin",
       sendNoNet: "Telefonunuzda internet yok — wifi veya veriyi açın",
       sendFailed: "Sipariş gitmedi — tekrar deneyin ya da garsona söyleyin",
@@ -8150,9 +8390,9 @@ window.TONINO_CONFIG = Object.freeze({
       ambHoursText: "09:00 – 23:00",
       ambHoursAria: "Open 9 AM – 11 PM",
       tableWord: "Table",
-      startTitle: "Order yourself",
-      startHero: "Order from your seat — it comes to you",
-      startSub: "Pick your language, then start",
+      startTitle: "Order yourself — it comes to your table",
+      startHero: "It comes to your table",
+      startSub: "You can write your notes",
       start1: "Swipe",
       start2: "Tap +",
       start3: "Send",
@@ -8270,6 +8510,9 @@ window.TONINO_CONFIG = Object.freeze({
       sendNoTable: "Table not open yet — tell your waiter",
       sendBadQr: "This QR is out of date — scan the one on your table again",
       sendClosed: "Phone ordering is off right now — tell your waiter",
+      errShopClosed: "The shop is closed now",
+      errShopClosedD: "Scan the table QR after opening time",
+      errShopClosedAt: "Opens at {t}",
       sendBusy: "Busy right now — wait a moment and try again",
       sendNoNet: "No internet on your phone — turn on wifi or data",
       sendFailed: "The order did not go through — try again or tell your waiter",
@@ -9119,6 +9362,15 @@ window.TONINO_CONFIG = Object.freeze({
     });
   })();
   (async function init(){
+    const hoursOk = await enforceGuestHours();
+    if (!hoursOk) return;
+    try {
+      if (!window.__zekiqHoursWatch) {
+        window.__zekiqHoursWatch = setInterval(function () { void enforceGuestHours(); }, 30000);
+      }
+    } catch (_) {}
+    const visitOk = await bootQrVisit();
+    if (!visitOk) return;
     const info=tableInfo();
     const paintTable = (bag) => {
       const word = (bag && bag.tableWord) || (window.__zekiqGuestLang === "ar" ? "طاولة" : "Masa");
@@ -9447,7 +9699,7 @@ window.TONINO_CONFIG = Object.freeze({
     const kind = rawKind === "bill" ? "bill" : "waiter";
     const bag = findZoomBag();
     const session = typeof guestSession === "function" ? guestSession() : null;
-    if (!session || !session.token) { toast(bag.callFail, 3200); return false; }
+    if (!session || !session.token || !session.sid || !qrVisitAlive()) { toast(bag.callFail, 3200); return false; }
     if (callInFlight) return false;
     /* Mashing the chip must not turn into a doorbell prank — the cashier already sees the call. */
     const last = callSentAt[kind];
@@ -9464,7 +9716,7 @@ window.TONINO_CONFIG = Object.freeze({
         method: "POST",
         headers: { "content-type": "application/json" },
         signal: abort ? abort.signal : undefined,
-        body: JSON.stringify({ token: session.token, kind: kind }),
+        body: JSON.stringify({ token: session.token, sid: session.sid, kind: kind }),
       });
       if (timer) clearTimeout(timer);
       let data = {};
