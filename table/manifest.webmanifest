@@ -6,8 +6,8 @@
   "orientation": "portrait",
   "start_url": "./index.html?source=homescreen",
   "scope": "./",
-  "background_color": "#0d0500",
-  "theme_color": "#1e1208",
+  "background_color": "#f9f6ef",
+  "theme_color": "#f9f6ef",
   "lang": "ar",
   "icons": [
     {
