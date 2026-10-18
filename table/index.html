@@ -11146,6 +11146,10 @@ window.TONINO_CONFIG = Object.freeze({
     try { paintVoiceInvite(); } catch (_) {}
     speakVoiceWelcomeOnce();
   }
+  /* The robot is part of the QR page. Hide it only when this cashier saved "off". */
+  try {
+    if (window.__zekiqVoiceWaiter !== false) applyVoiceWaiterKey(true);
+  } catch (_) {}
   function speakVoiceWelcomeOnce() {
     if (window.__zekiqVoiceWelcomed || voiceBotHidden()) return;
     if (!document.documentElement.classList.contains("voice-invite")) return;
