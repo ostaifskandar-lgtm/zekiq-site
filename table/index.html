@@ -1863,7 +1863,7 @@ html.voice-order-open.menu-flow #menuScene{padding-bottom:min(32dvh,240px)!impor
   background:#fffdf8;border-radius:26px;overflow:visible;
   box-shadow:0 14px 32px rgba(40,24,8,.26),0 0 0 1px rgba(212,176,106,.55)
 }
-html.voice-invite #voiceBotInvite{display:flex}
+html.voice-invite #voiceBotInvite{display:flex;z-index:6200}
 #voiceBotInvite .voice-bot,#voiceBotInvite .voice-bubble,#voiceBotHide{pointer-events:auto}
 #voiceBotHide{
   position:absolute;top:8px;inset-inline-end:8px;z-index:2;width:26px;height:26px;border-radius:50%;
@@ -8943,7 +8943,9 @@ window.TONINO_CONFIG = Object.freeze({
       if (liveCoachPhase === "plus") placeLiveCoachPlusRing();
     }, { passive: true });
     const isPhone = root.classList.contains("is-phone") || root.classList.contains("is-android");
-    if (!isPhone || alreadyDone()) unlockMenu();
+    const studioPreview = /(?:[?&])studio=1(?:&|$)/.test(location.search || "");
+    const windowsDesk = /Windows NT/i.test(navigator.userAgent || "") && !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent || "");
+    if (studioPreview || windowsDesk || !isPhone || alreadyDone()) unlockMenu();
     else showGate();
   })();
 
@@ -11134,7 +11136,7 @@ window.TONINO_CONFIG = Object.freeze({
       document.documentElement.classList.remove("voice-invite");
       return;
     }
-    if (!document.documentElement.classList.contains("coach-locked")) showVoiceBot();
+    showVoiceBot();
   }
   function showVoiceBot() {
     if (!voiceWaiterOn() || voiceBotHidden()) return;
@@ -11381,9 +11383,23 @@ window.TONINO_CONFIG = Object.freeze({
       }).catch(function () {
         if (sayEpoch !== window.__zekiqSayEpoch) return;
         voiceAwaitingMouth = false;
-        voiceSayPhone(line, tts, finishTalk, sayEpoch);
+        window.__zekiqMouthRetry = { blob: blob, line: line, tts: tts, finish: finishTalk, epoch: sayEpoch };
       });
     }
+  }
+  function playHeldMouth() {
+    const held = window.__zekiqMouthRetry;
+    if (!held || !held.blob || window.__zekiqMouthRetryBusy) return;
+    window.__zekiqMouthRetry = null;
+    window.__zekiqMouthRetryBusy = true;
+    try { playVoiceWav(held.blob, held.line, held.tts, held.finish, held.epoch); }
+    finally { window.__zekiqMouthRetryBusy = false; }
+  }
+  if (!window.__zekiqMouthRetryBound) {
+    window.__zekiqMouthRetryBound = true;
+    document.addEventListener("pointerdown", function () {
+      try { playHeldMouth(); } catch (_) {}
+    }, true);
   }
   function rememberVoiceWav(line, blob) {
     const text = String(line || "").trim();
