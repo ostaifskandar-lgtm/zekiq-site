@@ -1776,6 +1776,18 @@ html.voice-order-open.menu-flow #menuScene{padding-bottom:min(32dvh,240px)!impor
 .voice-listen p{flex:0 1 auto;min-width:0;margin:0;font-size:14px;font-weight:800;color:#6d5c48;text-align:center}
 #voiceOrderSheet.is-think .voice-listen p{color:#8a5a12}
 #voiceMicBtn,#voiceStopBtn{display:none!important}
+/* guest-voice-hold-v502 — the ear is the finger. Lift sends. The room is not an order. */
+#voiceHoldBtn{
+  -webkit-appearance:none;appearance:none;border:0;width:100%;min-height:56px;border-radius:16px;
+  background:#1f9a32;color:#fff;font-family:inherit;font-weight:900;font-size:16px;line-height:1.25;
+  display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 14px;margin:0;
+  touch-action:none;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none
+}
+#voiceHoldBtn #voiceStatus{color:#fff!important;margin:0;font-size:16px;font-weight:900;text-align:center}
+#voiceHoldBtn .voice-wave i{background:#fff}
+#voiceOrderSheet.is-rec #voiceHoldBtn{background:#c62828}
+#voiceOrderSheet.is-think #voiceHoldBtn{background:#8a5a12}
+.voice-listen{border-top:0;padding-top:4px}
 /* guest-voice-call-v454 — the open sheet is the call. A pause sends. The face shows it is working. */
 #voiceOrderSheet.is-think .voice-wave i{animation:voiceTalk .55s ease-in-out infinite;background:#c4892a}
 #voiceSheetBot{cursor:pointer}
@@ -1792,7 +1804,7 @@ html.voice-order-open.menu-flow #menuScene{padding-bottom:min(32dvh,240px)!impor
 #voiceTranscript{display:none!important}
 #voiceOrderSheet.has-ask{max-height:min(58dvh,460px)}
 #voiceOrderSheet.has-ask #voiceLines{max-height:min(40dvh,300px)}
-#voiceLines{flex:1;min-height:0;max-height:min(28dvh,220px);overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:8px}
+#voiceLines{flex:1;min-height:0;max-height:min(28dvh,220px);overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:8px;padding-bottom:14px;scroll-padding-bottom:14px}
 .voice-line{border:0;border-radius:12px;padding:0;background:transparent}
 .voice-line b{display:block;font-size:14px;color:#2c2116}
 .voice-line span{display:block;font-size:12px;color:#8a7560;margin-top:2px}
@@ -1968,7 +1980,7 @@ html.has-cart{--sticky-send-h:72px}
 html.after-send{--sticky-send-h:108px}
 html.menu-flow #viewer{
   overflow-y:auto!important;overflow-x:hidden!important;
-  touch-action:pan-y pinch-zoom!important;perspective:none!important;
+  touch-action:manipulation!important;perspective:none!important;
   scroll-snap-type:none!important;-webkit-overflow-scrolling:touch;
   scroll-padding-top:calc(var(--orders-h) + var(--quick-h) + var(--cats-h));
   bottom:calc(var(--sticky-send-h) + var(--safe-bottom))!important
@@ -1983,17 +1995,29 @@ html.menu-flow .menu-page{
   position:relative!important;inset:auto!important;flex:0 0 auto;height:auto!important;
   min-height:0;scroll-snap-align:none;
   scroll-margin-top:calc(var(--orders-h) + var(--quick-h) + var(--cats-h));
-  transform:none!important;touch-action:pan-y pinch-zoom!important;
+  transform:none!important;touch-action:manipulation!important;
+  backface-visibility:visible!important;
   will-change:auto!important;overflow:visible!important
 }
-html.menu-flow .menu-page .paper{margin-top:0}
+html.menu-flow .menu-page .paper{margin-top:0;overflow:visible!important;transform:none!important;transform-style:flat!important}
 html.menu-flow .page-nav,
 html.menu-flow #catsSwipeCoach,
 html.menu-flow .amb-flip-coach,
 html.menu-flow #hint,
 html.menu-flow #menuCallBtn{display:none!important}
-html.menu-flow .hotspot{touch-action:manipulation;width:36px;height:36px}
-html.menu-flow .hotspot::before{inset:10px}
+/* guest-ios-tap-v493 — 44px hit, same gold dot. The page no longer clips the finger. */
+html.menu-flow .hotspot{touch-action:manipulation;width:44px;height:44px}
+html.menu-flow .menu-page.dense-spots .hotspot{width:44px;height:44px;touch-action:manipulation}
+html.menu-flow .hotspot::before{inset:14px}
+html.menu-flow .menu-page.dense-spots .hotspot::before{inset:14px}
+html.menu-flow .category,
+html.menu-flow .quick-jump,
+html.menu-flow .order-main,
+html.menu-flow .order-action,
+html.menu-flow .order-note-btn,
+html.menu-flow #stickySendBtn,
+html.menu-flow #categories,
+html.menu-flow #quickRow{touch-action:manipulation}
 html.direct-order .start-demo,
 html.direct-order .start-demo-captions,
 html.direct-order .start-demo-dots{display:none!important}
@@ -2173,6 +2197,8 @@ html.day-terrace .hotspot::before{
   inset:10px;background:radial-gradient(circle at 45% 38%,#d8ffe0 0 28%,#1f9a32 78%,#0d6b22 100%);
   border:1.5px solid #fff;box-shadow:0 1px 4px #0006;animation:none;opacity:1
 }
+html.menu-flow.day-terrace .hotspot{width:44px;height:44px;touch-action:manipulation}
+html.menu-flow.day-terrace .hotspot::before{inset:13px}
 html.day-terrace #stickySendBtn{min-height:58px;font-size:18px;background:#157a28}
 html.day-terrace .sent-arrive-card,html.day-terrace .garson-nudge-card,html.day-terrace #startGate .start-card{
   background:#fff8ea;color:#1a1108;border-color:#c9a227
@@ -2922,8 +2948,10 @@ html:not(.day-terrace) #summaryButton,html:not(.day-terrace) #menuFindBtn.quick-
     <p id="voiceUnmatched"></p>
     <div class="voice-listen" id="voiceLive">
       <button type="button" id="voiceMicBtn" aria-label="microphone">🎤</button>
-      <div class="voice-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <p id="voiceStatus">تكلم</p>
+      <button type="button" id="voiceHoldBtn">
+        <span class="voice-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <span id="voiceStatus">تكلم</span>
+      </button>
       <button type="button" id="voiceStopBtn" aria-label="stop">■</button>
     </div>
     <p id="voiceTranscript"></p>
@@ -5118,7 +5146,7 @@ window.TONINO_CONFIG = Object.freeze({
     /* Book page — closing means flip to first menu art page */
     if (hasDailyBookPage() && PAGES.length) goTo(bookIndexFromArt(0), 1);
   }
-  function commitDailyDishToCart(dessert, drink, customerNote) {
+  function commitDailyDishToCart(dessert, drink, customerNote, qty) {
     const dish = todayDailyDish;
     if (!dish) return;
     if (dailyDishSoldOut || dish.soldOut === true) {
@@ -5133,6 +5161,8 @@ window.TONINO_CONFIG = Object.freeze({
     const tr = String(dish.mainTr || "").trim();
     const main = String(dish.main || "").trim();
     const kitchenMain = tr || (!/[\u0600-\u06FF]/.test(main) ? main : "") || "Günün Yemeği";
+    /* guest-daily-qty-v494 — «dört tane günün menüsü» is four plates, not one. */
+    const count = Math.max(1, Math.min(20, Math.round(Number(qty) || 1)));
     addItem({
       page: DAILY_DISH_PAGE,
       hotspotName: DAILY_DISH_KEY,
@@ -5141,7 +5171,7 @@ window.TONINO_CONFIG = Object.freeze({
       category: "Günün Yemeği",
       price: Number.isFinite(numPrice) && numPrice > 0 ? Math.round(numPrice) : 0,
       note: buildDailyDishNote(dish, dessert, drink, customerNote),
-    });
+    }, count);
     renderDailyDishScreen(currentMenu);
   }
   function finishDailyDishChoices(dessertPick, drinkPick) {
@@ -5425,9 +5455,10 @@ window.TONINO_CONFIG = Object.freeze({
     }
     bump($("cartCount"));
   }
-  function addItem(item) {
+  function addItem(item, qty) {
     const key=itemKey(item), found=cart.find(x=>itemKey(x)===key);
-    found ? found.qty++ : cart.push({...item,qty:1});
+    const n = Math.max(1, Math.min(20, Math.round(Number(qty) || 1)));
+    found ? found.qty += n : cart.push({...item, qty:n});
     saveCart(); renderCart(); updateBadges();
     flashOrderInCart(key);
     if(navigator.vibrate) navigator.vibrate([12, 40, 12, 40, 12]);
@@ -8883,10 +8914,17 @@ window.TONINO_CONFIG = Object.freeze({
     /* Next tap after Android ejected FS (common right after إرسال) — reclaim without a second gate. */
     document.addEventListener(
       "pointerdown",
-      () => {
+      (e) => {
+        /* guest-ios-mouth-v504 — the greeting is spoken before anything else spends this tap. */
+        try {
+          if (typeof iosSpeakHelloFromFinger === "function") {
+            const held = e && e.target && e.target.closest && e.target.closest("#voiceHoldBtn");
+            if (!held) iosSpeakHelloFromFinger();
+          }
+        } catch (_) {}
         fsGestures += 1;
         try { restoreFsNow(); } catch (_) {}
-        if (!notifyAfterFs && fsGestures >= 3) {
+        if (!notifyAfterFs && fsGestures >= 3 && !isIosPhone()) {
           notifyAfterFs = true;
           try { if (typeof askGuestNotifyPermission === "function") askGuestNotifyPermission(); } catch (_) {}
         }
@@ -8950,14 +8988,14 @@ window.TONINO_CONFIG = Object.freeze({
       voiceInvite: "طلب بالصوت",
       voiceInviteHint: "دائماً بجانبك",
       voiceTap: "اضغط للبدء",
-      voiceWelcome: "أهلاً بك في {name}. أنا هنا لخدمتك.",
+      voiceWelcome: "أهلاً. أنا غارسون هالطاولة.", /* guest-waiter-pro-v497 */
       voiceSayOpen: "أهلاً وسهلاً. قل لي ماذا تريد، وأنا أكتبه وأنت تقلّب المنيو.",
       voiceSaid: "أضفت",
       voiceElse: "شيء آخر؟",
       voiceStart: "🎤 أسمعك",
       voiceStop: "■ أوقف",
       voiceListen: "أسمعك",
-      voicePress: "تكلم، وأنا أرد",
+      voicePress: "اضغط وتكلم، ثم ارفع إصبعك",
       voiceNear: "لم يصل الصوت. قرّب الهاتف، الربع متر كحد أقصى",
       voiceWait: "لحظة…",
       voiceWriting: "سمعتك. أكتب، انتظر.",
@@ -9185,14 +9223,14 @@ window.TONINO_CONFIG = Object.freeze({
       voiceInvite: "Sesli sipariş",
       voiceInviteHint: "Her zaman yanınızda",
       voiceTap: "Başlamak için dokun",
-      voiceWelcome: "Hoş geldiniz, {name}. Hizmetinizdeyim.",
+      voiceWelcome: "Hoş geldiniz. Ben masanızın garsonuyum.",
       voiceSayOpen: "Hoş geldiniz. Ne istediğinizi söyleyin, menüye bakarken ben yazayım.",
       voiceSaid: "Ekledim",
       voiceElse: "Başka bir şey?",
       voiceStart: "🎤 Dinliyorum",
       voiceStop: "■ Durdur",
       voiceListen: "Dinliyorum",
-      voicePress: "Konuşun, cevap vereceğim",
+      voicePress: "Basılı tut, parmağını kaldır",
       voiceNear: "Ses gelmedi. Telefonu yaklaştırın, en fazla çeyrek metre",
       voiceWait: "Bir saniye…",
       voiceWriting: "Duydum. Yazıyorum, bekleyin.",
@@ -9420,14 +9458,14 @@ window.TONINO_CONFIG = Object.freeze({
       voiceInvite: "Voice order",
       voiceInviteHint: "Always with you",
       voiceTap: "Tap to start",
-      voiceWelcome: "Welcome to {name}. I'm here to serve you.",
+      voiceWelcome: "Welcome. I'm your table's waiter.",
       voiceSayOpen: "Welcome. Tell me what you'd like, and I'll write it while you browse.",
       voiceSaid: "Added",
       voiceElse: "Anything else?",
       voiceStart: "🎤 Listening",
       voiceStop: "■ Stop",
       voiceListen: "Listening",
-      voicePress: "Speak, I'll answer",
+      voicePress: "Hold to talk, release to send",
       voiceNear: "I didn't catch that. A quarter metre at most",
       voiceWait: "One moment…",
       voiceWriting: "I heard you. Writing, please wait.",
@@ -10081,7 +10119,7 @@ window.TONINO_CONFIG = Object.freeze({
       try {
         const showing = document.documentElement.classList.contains("voice-invite");
         if (showing && !window.__zekiqVoiceWelcomed) speakVoiceWelcomeOnce();
-        else if (showing) {
+        else if (showing && !isIosPhone()) {
           const line = voiceWelcomeLine();
           if (line && line !== window.__zekiqVoiceWelcomedLine) {
             window.__zekiqVoiceWelcomedLine = line;
@@ -10998,12 +11036,16 @@ window.TONINO_CONFIG = Object.freeze({
   let voiceLast = null;
   let voiceHeld = [];
   let voiceHoldListen = false;
+  let voiceFingerDown = false;
+  let voiceHoldStartedAt = 0;
   let voiceCallStream = null;
+  let voiceWarming = false;
   let voiceSpeakUntil = 0;
   let voiceAwaitingMouth = false;
   let voiceMouthAudio = null;
   let voicePhraseAuto = true;
   let voiceAudioCtx = null;
+  let voiceMouthSrc = null;
   let voiceEpoch = 0;
   let voiceLog = [];
   let voiceTalk = [];
@@ -11063,12 +11105,12 @@ window.TONINO_CONFIG = Object.freeze({
     const b = voiceBag();
     const lang = window.__zekiqGuestLang || document.documentElement.lang || "tr";
     const fallback = lang === "ar"
-      ? "أهلاً بك في {name}. أنا هنا لخدمتك."
+      ? "أهلاً. أنا غارسون هالطاولة."
       : lang === "en"
-        ? "Welcome to {name}. I'm here to serve you."
+        ? "Welcome. I'm your table's waiter."
         : lang === "fr"
-          ? "Bienvenue chez {name}. Je suis à votre service."
-          : "Hoş geldiniz, {name}. Hizmetinizdeyim.";
+          ? "Bienvenue. Je suis le garçon de votre table."
+          : "Hoş geldiniz. Ben masanızın garsonuyum.";
     const tpl = b.voiceWelcome || fallback;
     return String(tpl).replace("{name}", guestShopName());
   }
@@ -11109,6 +11151,11 @@ window.TONINO_CONFIG = Object.freeze({
     if (sheet && sheet.classList.contains("show")) return;
     const line = voiceWelcomeLine();
     if (!line) return;
+    /* guest-ios-mouth-v504 — a sentence that starts by itself never leaves the iPhone speaker. */
+    if (isIosPhone()) {
+      window.__zekiqIosPendingLine = line;
+      return;
+    }
     window.__zekiqVoiceWelcomed = true;
     window.__zekiqVoiceWelcomedLine = line;
     try { paintVoiceInvite(); } catch (_) {}
@@ -11119,6 +11166,11 @@ window.TONINO_CONFIG = Object.freeze({
     if (remember) { try { sessionStorage.setItem("zekiq-voice-bot-hide", "1"); } catch (_) {} }
   }
   function stopVoiceMouthAudio() {
+    if (voiceMouthSrc) {
+      try { voiceMouthSrc.onended = null; voiceMouthSrc.stop(); } catch (_) {}
+      try { voiceMouthSrc.disconnect(); } catch (_) {}
+      voiceMouthSrc = null;
+    }
     const audio = voiceMouthAudio;
     voiceMouthAudio = null;
     if (!audio) return;
@@ -11141,14 +11193,16 @@ window.TONINO_CONFIG = Object.freeze({
       if (el) el.classList.toggle("talk", !!on);
     });
   }
-  function releaseVoiceMouth() {
+  function releaseVoiceMouth(cut) {
+    /* guest-ios-mouth-v505 — the same tap must not cut the sound file that just started. */
+    if (isIosPhone() && cut !== true) return;
     voiceAwaitingMouth = false;
     voiceSpeakUntil = 0;
     try { if (voiceSayTimer) clearTimeout(voiceSayTimer); } catch (_) {}
     voiceSayTimer = 0;
     window.__zekiqSayEpoch = (window.__zekiqSayEpoch || 0) + 1;
     stopVoiceMouthAudio();
-    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (_) {}
+    try { if (window.speechSynthesis && !isIosPhone()) window.speechSynthesis.cancel(); } catch (_) {}
     setRobotTalking(false);
   }
   function voiceMouthOpen() {
@@ -11157,7 +11211,7 @@ window.TONINO_CONFIG = Object.freeze({
     if (Date.now() < voiceSpeakUntil) return true;
     /* Windows Chrome leaves speechSynthesis.speaking stuck, which kept the laptop mic closed. */
     try {
-      if (window.speechSynthesis && window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+      if (!isIosPhone() && window.speechSynthesis && window.speechSynthesis.speaking) window.speechSynthesis.cancel();
     } catch (_) {}
     return false;
   }
@@ -11187,9 +11241,15 @@ window.TONINO_CONFIG = Object.freeze({
     if (line) {
       window.__zekiqVoiceWelcomed = true;
       window.__zekiqVoiceWelcomedLine = line;
-      voiceSay(line);
+      if (isIosPhone()) window.__zekiqIosFinger = true;
+      try { voiceSay(line); } finally { window.__zekiqIosFinger = false; }
     }
     try { parkVoiceReady(); } catch (_) {}
+  }
+  function iosMaySpeak() {
+    if (!isIosPhone()) return true;
+    if (window.__zekiqIosFinger || window.__zekiqIosSpeechLive) return true;
+    try { return !!(navigator.userActivation && navigator.userActivation.isActive); } catch (_) { return false; }
   }
   function voiceSayPhone(line, tts, finishTalk, sayEpoch) {
     if (!window.speechSynthesis) {
@@ -11199,23 +11259,101 @@ window.TONINO_CONFIG = Object.freeze({
     const fire = function () {
       if (sayEpoch !== window.__zekiqSayEpoch) return;
       try {
+        openIosSpeaker();
         const u = new SpeechSynthesisUtterance(line);
-        u.lang = tts;
         const voice = pickVoiceForTts(tts);
-        if (voice) u.voice = voice;
+        if (voice) {
+          u.voice = voice;
+          u.lang = voice.lang || tts;
+        } else if (isIosPhone()) {
+          const voices = window.speechSynthesis.getVoices() || [];
+          const any = voices[0];
+          if (any) {
+            u.voice = any;
+            u.lang = any.lang;
+          }
+        } else {
+          u.lang = tts;
+        }
+        u.volume = 1;
         u.rate = String(tts).indexOf("ar") === 0 ? 0.96 : 1;
         u.pitch = 1.05;
-        u.onend = function () { finishTalk(200); };
-        u.onerror = function () { finishTalk(0); };
-        try { window.speechSynthesis.cancel(); } catch (_) {}
+        u.onend = function () {
+          if (window.__zekiqLiveUtter === u) window.__zekiqLiveUtter = null;
+          finishTalk(200);
+        };
+        u.onerror = function (ev) {
+          const reason = ev && ev.error ? String(ev.error) : "";
+          if (reason === "not-allowed" || reason === "synthesis-unavailable") {
+            window.__zekiqIosSaid = false;
+            window.__zekiqIosSpeechLive = false;
+            window.__zekiqVoiceWelcomed = false;
+          }
+          finishTalk(0);
+        };
+        /* guest-ios-mouth-v500 — cancel() on iPhone drops the sentence that was just queued. */
+        /* guest-ios-mouth-v503 — speak in this turn. A timer is silence on iPhone. */
+        /* guest-ios-mouth-v504 — keep the utterance. iPhone drops it the moment the function lets go. */
+        if (!isIosPhone()) {
+          try { window.speechSynthesis.cancel(); } catch (_) {}
+        }
+        window.__zekiqLiveUtter = u;
         window.speechSynthesis.speak(u);
+        if (isIosPhone()) {
+          try { window.speechSynthesis.resume(); } catch (_) {}
+        }
       } catch (_) {
         finishTalk(0);
       }
     };
-    voiceSayKick = setTimeout(fire, 80);
+    if (isIosPhone()) fire();
+    else voiceSayKick = setTimeout(fire, 80);
+  }
+  function playIosWav(blob, line, tts, finishTalk, sayEpoch) {
+    openIosSpeaker();
+    const ctx = unlockVoiceEar();
+    if (!ctx) return false;
+    const start = function () {
+      blob.arrayBuffer().then(function (raw) {
+        if (sayEpoch !== window.__zekiqSayEpoch) return null;
+        return ctx.decodeAudioData(raw.slice(0));
+      }).then(function (decoded) {
+        if (!decoded || sayEpoch !== window.__zekiqSayEpoch) return;
+        stopVoiceMouthAudio();
+        const src = ctx.createBufferSource();
+        src.buffer = decoded;
+        src.connect(ctx.destination);
+        voiceMouthSrc = src;
+        voiceAwaitingMouth = false;
+        const ms = Math.min(20000, Math.ceil((decoded.duration || 4) * 1000) + 500);
+        voiceSpeakUntil = Date.now() + ms;
+        try { if (voiceSayTimer) clearTimeout(voiceSayTimer); } catch (_) {}
+        voiceSayTimer = setTimeout(function () { finishTalk(0); }, ms + 800);
+        src.onended = function () {
+          if (voiceMouthSrc === src) voiceMouthSrc = null;
+          finishTalk(200);
+        };
+        src.start(0);
+      }).catch(function () {
+        if (sayEpoch !== window.__zekiqSayEpoch) return;
+        voiceAwaitingMouth = false;
+        voiceSayPhone(line, tts, finishTalk, sayEpoch);
+      });
+    };
+    if (ctx.state === "suspended") {
+      const resumed = ctx.resume();
+      if (resumed && resumed.then) {
+        resumed.then(start).catch(function () {
+          if (sayEpoch !== window.__zekiqSayEpoch) return;
+          voiceAwaitingMouth = false;
+          voiceSayPhone(line, tts, finishTalk, sayEpoch);
+        });
+      } else start();
+    } else start();
+    return true;
   }
   function playVoiceWav(blob, line, tts, finishTalk, sayEpoch) {
+    if (isIosPhone() && playIosWav(blob, line, tts, finishTalk, sayEpoch)) return;
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
     audio._url = url;
@@ -11289,11 +11427,14 @@ window.TONINO_CONFIG = Object.freeze({
   function voiceSay(text) {
     const line = String(text || "").trim();
     if (!line) return;
+    /* guest-voice-whole-v491 — a sentence still in the ear is sent. The mouth does not throw it. */
+    if (voiceRec && (voiceRec._heard || voiceRec._push)) stopVoiceCapture(false);
+    else if (voiceRec) stopVoiceCapture(true);
     /* guest-voice-seal-v483 — the mouth does not cut a sentence the ear is still holding. */
     try { if (voiceSayTimer) clearTimeout(voiceSayTimer); } catch (_) {}
     try { if (voiceSayKick) clearTimeout(voiceSayKick); } catch (_) {}
     stopVoiceMouthAudio();
-    try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (_) {}
+    try { if (window.speechSynthesis && !isIosPhone()) window.speechSynthesis.cancel(); } catch (_) {}
     const sayEpoch = (window.__zekiqSayEpoch = (window.__zekiqSayEpoch || 0) + 1);
     /* guest-voice-hold-v471 — the clock starts when the sound exists, not when the words arrive. */
     voiceAwaitingMouth = true;
@@ -11331,7 +11472,36 @@ window.TONINO_CONFIG = Object.freeze({
     window.__zekiqReadyWav = null;
     const held = window.__zekiqWavReady && window.__zekiqWavReady[line];
     if (!phoneOnly && held && held.size > 80) {
+      if (isIosPhone()) window.__zekiqIosSaid = true;
       playVoiceWav(held, line, tts, finishTalk, sayEpoch);
+      return;
+    }
+    if (isIosPhone() && !phoneOnly) {
+      /* guest-ios-mouth-v505 — iPhone plays the sound file. Its own reader stays silent. */
+      primeIosMouth();
+      voiceAwaitingMouth = true;
+      try { if (voiceSayTimer) clearTimeout(voiceSayTimer); } catch (_) {}
+      voiceSayTimer = 0;
+      window.__zekiqIosSaid = true;
+      voiceSpeakUntil = Date.now() + 45000;
+      fetchVoiceWav(line).then(function (blob) {
+        if (sayEpoch !== window.__zekiqSayEpoch) return;
+        if (blob && blob.size > 80) {
+          voiceAwaitingMouth = false;
+          playVoiceWav(blob, line, tts, finishTalk, sayEpoch);
+          return;
+        }
+        voiceAwaitingMouth = false;
+        if (!iosMaySpeak()) {
+          window.__zekiqIosPendingLine = line;
+          window.__zekiqIosSaid = false;
+          setRobotTalking(false);
+          voiceSpeakUntil = 0;
+          return;
+        }
+        window.__zekiqIosSpeechLive = true;
+        voiceSayPhone(line, tts, finishTalk, sayEpoch);
+      });
       return;
     }
     if (phoneOnly) {
@@ -11497,8 +11667,11 @@ window.TONINO_CONFIG = Object.freeze({
           ? dailyDishOptionList.apply(null, dailyDishSplitPair(dish.drink, dish.drink2))
           : [];
         const dailyNote = daily.map(function (line) { return String((line && line.notes) || "").trim(); }).filter(Boolean).join(" · ").slice(0, 120);
+        const dailyQty = daily.reduce(function (sum, line) {
+          return sum + Math.max(1, Math.min(20, Math.round(Number(line && line.qty) || 1)));
+        }, 0);
         /* guest-voice-hand-v477 — today's plate keeps the refusal that was spoken with it. */
-        commitDailyDishToCart((desserts && desserts[0]) || "", (drinks && drinks[0]) || "", dailyNote);
+        commitDailyDishToCart((desserts && desserts[0]) || "", (drinks && drinks[0]) || "", dailyNote, dailyQty);
       } catch (_) {}
     }
     return voiceBasketQty() > before ? 1 : 0;
@@ -11530,6 +11703,7 @@ window.TONINO_CONFIG = Object.freeze({
         nameAr: String((x && (x.guestLabel || x.nameAr)) || "").slice(0, 80),
         kind: daily ? "daily" : "item",
         qty: Math.max(1, Math.min(20, Number(x && x.qty) || 1)),
+        notes: String((x && x.note) || "").slice(0, 120),
       };
     }).filter(function (r) { return r.name; });
   }
@@ -11579,6 +11753,19 @@ window.TONINO_CONFIG = Object.freeze({
     const fromAsk = [];
     asks.forEach(function (ask) {
       if (String(ask.phrase || "") === "drop") return;
+      /* guest-sugar-ask-v499 — the open cups travel, not the three sugar buttons. */
+      if (String(ask.phrase || "") === "şeker" && ask.plates && ask.plates.length) {
+        ask.plates.forEach(function (p) {
+          fromAsk.push({
+            menuItemId: Number(p.id) || 0,
+            name: String(p.name || "").slice(0, 80),
+            nameAr: String(p.nameAr || "").slice(0, 80),
+            qty: Math.max(1, Math.min(20, Number(p.qty) || Number(ask.qty) || 1)),
+            notes: "",
+          });
+        });
+        return;
+      }
       (ask.candidates || []).forEach(function (c) {
         fromAsk.push({
           menuItemId: Number(c.id) || 0,
@@ -11646,9 +11833,33 @@ window.TONINO_CONFIG = Object.freeze({
     /* guest-voice-reach-v456 — quarter metre maximum. Music past that stays out. */
     return { speak: 0.07, peak: 0.10, armMs: 360, sendMs: 480 };
   }
+  function openIosSpeaker() {
+    /* guest-ios-mouth-v501 — playback is heard with the ringer switch left as it is. No Settings screen. */
+    if (!isIosPhone()) return;
+    try {
+      const session = navigator.audioSession;
+      if (!session) return;
+      /* guest-ios-mic-v507 — playback silences the microphone. The talk button keeps both. */
+      if (window.__zekiqIosWantMic) {
+        if (session.type !== "play-and-record") session.type = "play-and-record";
+        return;
+      }
+      if (session.type !== "playback") session.type = "playback";
+    } catch (_) {}
+  }
+  function openIosMic() {
+    /* guest-ios-mic-v507 — the finger on the talk button is allowed to record. */
+    if (!isIosPhone()) return;
+    window.__zekiqIosWantMic = true;
+    try {
+      const session = navigator.audioSession;
+      if (session && session.type !== "play-and-record") session.type = "play-and-record";
+    } catch (_) {}
+  }
   function unlockVoiceEar() {
     /* guest-voice-ear-v480 — the ear opens on the tap itself. A wait before this leaves the first sentence unheard. */
     try {
+      openIosSpeaker();
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
       if (!voiceAudioCtx || voiceAudioCtx.state === "closed") voiceAudioCtx = new AC();
@@ -11660,6 +11871,74 @@ window.TONINO_CONFIG = Object.freeze({
     } catch (_) {
       return null;
     }
+  }
+  function primeIosSpeech() {
+    /* guest-ios-mouth-v503 — iPhone only speaks if the finger itself started the reader. A later sentence is then allowed. */
+    /* guest-ios-mouth-v504 — a blank word does not start the reader. */
+    if (!isIosPhone() || !window.speechSynthesis) return;
+    openIosSpeaker();
+    try { window.speechSynthesis.getVoices(); } catch (_) {}
+  }
+  function iosSpeakHelloFromFinger() {
+    /* guest-ios-mouth-v504 — the greeting itself is the first sentence, spoken inside the tap. */
+    if (!isIosPhone() || window.__zekiqVoiceWelcomed || voiceBotHidden()) return;
+    if (!voiceWaiterOn()) return;
+    const line = window.__zekiqIosPendingLine || voiceWelcomeLine();
+    if (!line) return;
+    primeIosMouth();
+    window.__zekiqIosSaid = false;
+    window.__zekiqIosFinger = true;
+    try { voiceSay(line); } finally { window.__zekiqIosFinger = false; }
+    if (!window.__zekiqIosSaid) return;
+    window.__zekiqVoiceWelcomed = true;
+    window.__zekiqVoiceWelcomedLine = line;
+    window.__zekiqIosPendingLine = "";
+  }
+  function primeIosMouth() {
+    /* guest-ios-mouth-v500 — the finger opens the speaker. A wav that arrives later still plays, and the silent switch does not mute it. */
+    if (!isIosPhone()) return;
+    openIosSpeaker();
+    primeIosSpeech();
+    if (window.__zekiqIosSpeechLive) return;
+    const ctx = unlockVoiceEar();
+    if (!ctx) return;
+    try {
+      const buf = ctx.createBuffer(1, 1, 22050);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start(0);
+    } catch (_) {}
+  }
+  function warmVoiceCallStream() {
+    /* guest-ios-mouth-v504 — opening the mic on the same tap cuts the iPhone greeting. The hold button opens it. */
+    if (isIosPhone()) return;
+    /* guest-voice-open-v490 — the first long sentence was spoken while the mic was still opening, so the file looked empty. */
+    unlockVoiceEar();
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+    if (voiceCallStream && voiceCallStream.getTracks().some(function (t) { return t.readyState === "live"; })) return;
+    if (voiceWarming) return;
+    voiceWarming = true;
+    const audio = { echoCancellation: true, noiseSuppression: true, autoGainControl: false, channelCount: 1 };
+    navigator.mediaDevices.getUserMedia({ audio: audio }).then(function (stream) {
+      voiceWarming = false;
+      if (voiceCallStream && voiceCallStream.getTracks().some(function (t) { return t.readyState === "live"; })) {
+        try { stream.getTracks().forEach(function (t) { t.stop(); }); } catch (_) {}
+        return;
+      }
+      voiceCallStream = stream;
+    }).catch(function () {
+      voiceWarming = false;
+      navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: false }
+      }).then(function (stream) {
+        if (voiceCallStream && voiceCallStream.getTracks().some(function (t) { return t.readyState === "live"; })) {
+          try { stream.getTracks().forEach(function (t) { t.stop(); }); } catch (_) {}
+          return;
+        }
+        voiceCallStream = stream;
+      }).catch(function () {});
+    });
   }
   function voiceSheetOpen() {
     const sheet = $("voiceOrderSheet");
@@ -11709,20 +11988,13 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function scheduleVoiceListen() {
     try { if (voiceResumeTimer) clearTimeout(voiceResumeTimer); } catch (_) {}
-    voiceResumeTimer = setTimeout(function () {
-      voiceResumeTimer = 0;
-      if (!voiceSheetOpen()) { parkVoiceReady(); return; }
-      /* guest-voice-long-v482 — the ear stays open while a long sentence is still being written. */
-      if (voiceBusy || voiceRec) return;
-      if (voiceMouthOpen()) { scheduleVoiceListen(); return; }
-      if (voicePosts > 0) {
-        scheduleVoiceListen();
-        return;
-      }
-      clearVoiceThinking();
-      voiceHoldListen = true;
-      void startVoiceCapture();
-    }, 320);
+    voiceResumeTimer = 0;
+    /* guest-voice-long-v482 — the ear stays open while a long sentence is still being written. */
+    /* guest-voice-intent-v492 — the waiter's own voice is not the next sentence. The guest's file is still kept. */
+    /* guest-voice-hold-v502 — a finished answer does not open the ear. The finger does. */
+    if (voiceFingerDown) return;
+    if (voiceBusy || voiceRec || voiceMouthOpen()) return;
+    parkVoiceReady();
   }
   function voiceStarJoke(stars) {
     const lang = window.__zekiqGuestLang || document.documentElement.lang || "tr";
@@ -11833,10 +12105,10 @@ window.TONINO_CONFIG = Object.freeze({
   function voiceAddedLine(line) {
     const lang = voiceMouthCode();
     const shown = voicePlateName(line.name, line.nameAr);
-    if (lang === "ar") return "حاضر، " + shown + ". الإرسال من الأخضر.";
-    if (lang === "en") return "Added " + shown + ". Send it on the green bar.";
-    if (lang === "fr") return "Bien sûr, j'ai ajouté " + shown + ". Envoyez depuis la barre verte.";
-    return shown + " eklendi. Yeşil çubuktan gönderin.";
+    if (lang === "ar") return "حاضر، " + shown + ". لإتمام الشراء ومتابعة الطلب اضغط أرسل الطلب.";
+    if (lang === "en") return "Added " + shown + ". To finish the purchase and track the order, press Send order.";
+    if (lang === "fr") return "Bien sûr, j'ai ajouté " + shown + ". Pour terminer l'achat et suivre la commande, appuyez sur Envoyer.";
+    return shown + " eklendi. Satın almayı bitirmek ve siparişi takip etmek için Siparişi gönder'e basın.";
   }
   function setVoiceHearing(on) {
     const sheet = $("voiceOrderSheet");
@@ -11861,7 +12133,18 @@ window.TONINO_CONFIG = Object.freeze({
     }
   }
   function absorbVoiceTurn(data) {
+    /* guest-voice-wrote-v489 — the answer is on the page, so «أكتب» ends with it. */
     voiceDraft = false;
+    if (voicePosts <= 1) {
+      const sheet = $("voiceOrderSheet");
+      if (sheet) sheet.classList.remove("is-think");
+      ["voiceBotBtn", "voiceSheetBot"].forEach(function (id) {
+        const el = $(id);
+        if (el) el.classList.remove("think");
+      });
+      const wrote = $("voiceStatus");
+      if (wrote && !voiceRec) wrote.textContent = voiceBag().voicePress || voiceBag().voiceListen || "";
+    }
     const replyLine = String((data && data.reply) || "").trim();
     const wav = voiceWavBlob(data);
     window.__zekiqReadyWav = null;
@@ -12041,7 +12324,6 @@ window.TONINO_CONFIG = Object.freeze({
       row.appendChild(text);
       box.appendChild(row);
     }
-    try { box.scrollTop = box.scrollHeight; } catch (_) {}
     (data && data.lines || []).forEach(function (line) {
       const btn = document.createElement("button");
       btn.type = "button";
@@ -12078,14 +12360,49 @@ window.TONINO_CONFIG = Object.freeze({
         const label = voicePlateName(c.name, c.nameAr);
         const only = (ask.candidates || []).length === 1;
         const lang = window.__zekiqGuestLang || "tr";
-        btn.className = only ? "voice-ekle" : "";
-        btn.textContent = dropping
+        btn.className = only && !c.pick ? "voice-ekle" : "";
+        const pickLabel = c.pick ? ((lang === "ar" && c.pickAr) ? c.pickAr : c.pick) : "";
+        btn.textContent = pickLabel
+          ? pickLabel
+          : dropping
           ? (only ? (lang === "ar" ? "احذف" : lang === "en" ? "Remove" : "Sil") : label)
           : only
           ? (lang === "ar" ? "أضف" : lang === "en" ? "Add" : "Ekle")
           : (label + (c.price ? " · " + c.price : ""));
         btn.addEventListener("click", function () {
           const shownPick = (window.__zekiqGuestLang === "ar" && c.nameAr) ? c.nameAr : c.name;
+          var askQty = Math.round(Number(ask && ask.qty) || 1);
+          if (askQty < 1) askQty = 1;
+          if (askQty > 20) askQty = 20;
+          if (String(ask.phrase || "") === "şeker" && c.pick) {
+            const plates = (ask.plates && ask.plates.length) ? ask.plates : [{
+              id: c.id, name: c.name, nameAr: c.nameAr, price: c.price, qty: askQty,
+            }];
+            const note = String(c.pick || "");
+            const rows = plates.map(function (p) {
+              const q = Math.max(1, Math.min(20, Number(p.qty) || askQty || 1));
+              return {
+                menuItemId: Number(p.id) || 0,
+                kind: "item",
+                name: p.name,
+                nameAr: p.nameAr,
+                price: p.price,
+                qty: q,
+                notes: note,
+              };
+            });
+            applyVoiceLinesToCart(rows);
+            rows.forEach(rememberVoiceLine);
+            const shown = rows.map(function (p) {
+              return voicePlateName(p.name, p.nameAr) + " " + ((lang === "ar" && c.pickAr) ? c.pickAr : note);
+            }).join(lang === "ar" ? " و " : ", ");
+            const said = waiterPickLine(shown, rows.length === 1 ? rows[0].qty : 1);
+            pushVoiceTurn("waiter", said);
+            voiceSay(said);
+            if (voiceLast) voiceLast.ask = (voiceLast.ask || []).filter(function (_, j) { return j !== ai; });
+            paintVoiceResult(voiceLast || { lines: [], ask: [], unmatched: [] });
+            return;
+          }
           if (dropping) {
             applyVoiceRemoveFromCart([{ menuItemId: c.id, name: c.name, nameAr: c.nameAr, qty: 20 }]);
             const said = waiterDropLine(shownPick);
@@ -12096,9 +12413,6 @@ window.TONINO_CONFIG = Object.freeze({
             return;
           }
           /* guest-ask-qty-v469 — the spoken count stays until the guest taps a plate */
-          var askQty = Math.round(Number(ask && ask.qty) || 1);
-          if (askQty < 1) askQty = 1;
-          if (askQty > 20) askQty = 20;
           applyVoiceLinesToCart([{
             menuItemId: c.id,
             kind: Number(c.id) === 0 ? "daily_dish" : "item",
@@ -12131,6 +12445,17 @@ window.TONINO_CONFIG = Object.freeze({
     const sheet = $("voiceOrderSheet");
     if (sheet) sheet.classList.toggle("has-ask", !!(data && data.ask && data.ask.length));
     parkVoiceMic();
+    pinVoiceTail();
+  }
+  /* guest-voice-tail-v486 — the newest line is brought to the lip after the chips exist. */
+  function pinVoiceTail() {
+    const box = $("voiceLines");
+    if (!box) return;
+    const go = function () {
+      try { box.scrollTop = box.scrollHeight; } catch (_) {}
+    };
+    go();
+    try { requestAnimationFrame(function () { go(); setTimeout(go, 80); }); } catch (_) { setTimeout(go, 80); }
   }
   function parkVoiceMic() {
     const sheet = $("voiceOrderSheet");
@@ -12145,25 +12470,31 @@ window.TONINO_CONFIG = Object.freeze({
       return;
     }
     try { closeFindSheet(); } catch (_) {}
+    warmVoiceCallStream();
     const sheet = $("voiceOrderSheet");
     if (!sheet) return;
-    unlockVoiceEar();
+    if (!(isIosPhone() && window.__zekiqIosSpeechLive)) {
+      primeIosMouth();
+      unlockVoiceEar();
+    }
     paintVoiceSheetCopy();
     sheet.classList.add("show");
     sheet.setAttribute("aria-hidden", "false");
     document.documentElement.classList.add("voice-order-open");
-    voiceHoldListen = true;
+    voiceHoldListen = false;
+    voiceFingerDown = false;
     releaseVoiceMouth();
     if (!voiceTalk.length) {
       const hello = voiceWelcomeLine();
       pushVoiceTurn("waiter", hello);
-      window.__zekiqVoiceWelcomed = true;
-      window.__zekiqVoiceWelcomedLine = hello;
+      if (!isIosPhone() || window.__zekiqIosSpeechLive) {
+        window.__zekiqVoiceWelcomed = true;
+        window.__zekiqVoiceWelcomedLine = hello;
+      }
     }
     paintVoiceResult(voiceLast || { lines: [], ask: [], unmatched: [] });
     const st0 = $("voiceStatus");
-    if (st0) st0.textContent = voiceBag().voiceListen || "";
-    void startVoiceCapture();
+    if (st0) st0.textContent = voiceBag().voicePress || "";
   }
   function closeVoiceSheet() {
     voiceHoldListen = false;
@@ -12173,6 +12504,7 @@ window.TONINO_CONFIG = Object.freeze({
     voiceResumeTimer = 0;
     stopVoiceCapture(true);
     endVoiceCallStream();
+    window.__zekiqIosWantMic = false;
     voiceHeld = [];
     voiceLog = [];
     voiceRecent = [];
@@ -12186,7 +12518,7 @@ window.TONINO_CONFIG = Object.freeze({
     const chip = $("menuVoiceBtn");
     if (chip) chip.classList.remove("rec");
     setRobotListening(false);
-    releaseVoiceMouth();
+    releaseVoiceMouth(true);
     try { if (window.__zekiqRestoreFs) window.__zekiqRestoreFs(); } catch (_) {}
     showVoiceBot();
   }
@@ -12251,7 +12583,8 @@ window.TONINO_CONFIG = Object.freeze({
     const abort = typeof AbortController === "function" ? new AbortController() : null;
     voicePostAbort = abort;
     let timedOut = false;
-    const timer = abort ? setTimeout(function () { timedOut = true; try { abort.abort(); } catch (_) {} }, 42000) : 0;
+    /* guest-voice-long-v495 — a long sentence needs the ear to finish before the page gives up. */
+    const timer = abort ? setTimeout(function () { timedOut = true; try { abort.abort(); } catch (_) {} }, 70000) : 0;
     const mine = abort;
     try {
       const res = await fetch(String(apiBase).replace(/\/+$/, "") + "/api/guest/v1/voice-order", {
@@ -12373,21 +12706,21 @@ window.TONINO_CONFIG = Object.freeze({
         talk: voiceTalkPayload(),
       });
       if (!data || data.ok !== true) {
-        const line = data && data.error === "rate_limit"
-          ? (b.voiceSlow || b.voiceFail || "")
-          : data && data.error === "no-speech" ? (b.voiceEmpty || "") : (b.voiceFail || "");
+        /* guest-voice-miss-v487 — an empty clip is not "the dish is missing". */
+        if (data && (data.error === "no-speech" || data.error === "rate_limit")) {
+          clearVoiceThinking();
+          if (st) st.textContent = data.error === "rate_limit" ? (b.voiceSlow || b.voicePress || "") : (b.voicePress || "");
+          return;
+        }
+        const line = b.voiceFail || "";
         if (st) st.textContent = line;
-        if (!(data && data.error === "rate_limit")) voiceSayMiss(line);
+        voiceSayMiss(line);
         return;
       }
       if (data.silent) {
-        const guestSpoke = voiceTalk.some(function (t) { return t && t.role === "guest"; });
-        if (!guestSpoke) {
-          voiceSayMiss(b.voiceEmpty || b.voiceNear || "");
-          return;
-        }
-        if (st && !String(data.transcript || "").trim()) st.textContent = b.voiceNear || "";
+        /* The speaker played our hello back. That is not a missed order. */
         clearVoiceThinking();
+        if (st && !voiceRec) st.textContent = b.voicePress || "";
         return;
       }
       absorbVoiceTurn(data);
@@ -12410,13 +12743,16 @@ window.TONINO_CONFIG = Object.freeze({
     const b = voiceBag();
     const sheet = $("voiceOrderSheet");
     if (!sheet || !sheet.classList.contains("show")) return;
-    if (voiceMouthOpen()) return;
+    if (voiceMouthOpen() && !voiceFingerDown) return;
     if (voiceStopping) { voiceStopping = false; if (voiceRec) { try { releaseVoiceHardware(voiceRec); } catch (_) {} voiceRec = null; } }
     if (voiceBusy && voiceBusyAt && Date.now() - voiceBusyAt > 9000) voiceBusy = false;
+    if (!voiceFingerDown) return;
     if (voicePosts > 0 || voiceBusy || voiceRec) return;
     if (typeof qrVisitAlive === "function" && !qrVisitAlive()) {
       toast(b.voiceNeedScan || "", 3200);
       voiceHoldListen = false;
+      voiceFingerDown = false;
+      parkVoiceReady();
       return;
     }
     voiceHoldListen = true;
@@ -12426,6 +12762,11 @@ window.TONINO_CONFIG = Object.freeze({
     if (mime && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try {
         let stream = voiceCallStream && voiceCallStream.getTracks().some(function (t) { return t.readyState === "live"; }) ? voiceCallStream : null;
+        if (!stream && window.__zekiqIosMicPromise) {
+          const pending = window.__zekiqIosMicPromise;
+          window.__zekiqIosMicPromise = null;
+          try { stream = await pending; } catch (_) { stream = null; }
+        }
         if (!stream) {
           try {
             stream = await navigator.mediaDevices.getUserMedia({
@@ -12438,17 +12779,33 @@ window.TONINO_CONFIG = Object.freeze({
           }
           voiceCallStream = stream;
         }
-        if (epoch !== voiceEpoch || !voiceHoldListen) {
+        if (stream) {
+          voiceCallStream = stream;
+          try {
+            stream.getAudioTracks().forEach(function (t) { t.enabled = true; });
+          } catch (_) {}
+        }
+        if (epoch !== voiceEpoch || !voiceHoldListen || !voiceFingerDown) {
           if (!voiceSheetOpen()) endVoiceCallStream();
+          if (!voiceFingerDown) parkVoiceReady();
           return;
         }
+        if (isIosPhone()) releaseVoiceMouth(true);
         voiceChunks = [];
-        const rec = new MediaRecorder(stream, { mimeType: mime });
+        /* guest-ios-mic-v507 — Safari records mp4. An unsupported type must not kill the button. */
+        let rec = null;
+        try {
+          rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+        } catch (err) {
+          if (!isIosPhone()) throw err;
+          rec = new MediaRecorder(stream);
+        }
         rec._epoch = epoch;
         rec._heard = false;
         rec._drop = false;
         rec._peak = 0;
         rec._loudMs = 0;
+        rec._deepAt = 0;
         rec._chunks = [];
         voiceRec = rec;
         rec.ondataavailable = function (ev) {
@@ -12484,9 +12841,11 @@ window.TONINO_CONFIG = Object.freeze({
               parkVoiceReady();
               return;
             }
-            /* Quarter-metre only. A press does not send room noise. */
+            /* Quarter-metre still opens a sentence. Once it is a sentence, it is sent. */
             const gate = voiceHearGate();
-            const closeVoice = rec._heard === true && rec._peak >= gate.peak && rec._loudMs >= gate.sendMs && blob.size >= 200;
+            const armed = rec._heard === true && rec._peak >= gate.peak && rec._loudMs >= gate.sendMs && blob.size >= 200;
+            /* guest-voice-whole-v491 — length and place do not throw the sentence. */
+            const closeVoice = blob.size >= 200 && (armed || rec._heard === true || rec._push === true);
             if (!closeVoice) {
               voiceBusy = false;
               voiceBusyAt = 0;
@@ -12512,19 +12871,44 @@ window.TONINO_CONFIG = Object.freeze({
         };
         const startedAt = Date.now();
         let lastVoiceAt = 0;
+        /* guest-voice-open-v490 — the file starts before the meter. The opening words are not waiting on the graph. */
+        voicePhraseAuto = false;
+        rec.start();
+        setVoiceHearing(true);
+        const chip = $("menuVoiceBtn");
+        if (chip) chip.classList.add("rec");
+        setRobotListening(true);
+        if (st) st.textContent = b.voiceListen || "";
+        const armVoiceMax = function () {
+          voiceTimer = setTimeout(function () {
+            if (voiceRec !== rec) return;
+            /* A long sentence is still one sentence. The clock moves while the voice is in it. */
+            if (rec._heard && lastVoiceAt && Date.now() - lastVoiceAt < (Date.now() - startedAt >= 8000 ? 6000 : 3200) && Date.now() - startedAt < 360000) {
+              armVoiceMax();
+              return;
+            }
+            stopVoiceCapture(false);
+          }, 45000);
+        };
+        armVoiceMax();
         try {
           const ctx = unlockVoiceEar();
           if (ctx) {
             rec._ctx = ctx;
             /* guest-voice-first-v484 — the meter listens on a copy. The recording keeps the sentence. */
-            const meter = typeof stream.clone === "function" ? stream.clone() : stream;
+            /* guest-voice-ear-v496 — a silent copy is not the guest. The live mic is the meter. */
+            let meter = typeof stream.clone === "function" ? stream.clone() : stream;
             rec._meter = meter;
-            const src = ctx.createMediaStreamSource(meter);
+            let src = ctx.createMediaStreamSource(meter);
             rec._src = src;
+            let meterBorn = Date.now();
+            let meterLive = meter === stream;
             const an = ctx.createAnalyser();
-            an.fftSize = 1024;
+            /* guest-voice-pace-v488 — a fast sentence was falling between 120ms reads and looked like silence. */
+            an.fftSize = 2048;
             src.connect(an);
             const buf = new Uint8Array(an.fftSize);
+            let lastPoll = Date.now();
             rec._poll = setInterval(function () {
               if (voiceRec !== rec) return;
               if (ctx.state === "suspended") {
@@ -12532,6 +12916,20 @@ window.TONINO_CONFIG = Object.freeze({
                   const p = ctx.resume();
                   if (p && typeof p.then === "function") p.then(function () {}, function () {});
                 } catch (_) {}
+              }
+              if (!meterLive && Date.now() - meterBorn >= 800 && rec._peak < 0.02) {
+                meterLive = true;
+                try { src.disconnect(); } catch (_) {}
+                try {
+                  if (meter && meter !== stream && meter.getTracks) {
+                    meter.getTracks().forEach(function (t) { try { t.stop(); } catch (_) {} });
+                  }
+                } catch (_) {}
+                meter = stream;
+                rec._meter = stream;
+                src = ctx.createMediaStreamSource(stream);
+                rec._src = src;
+                src.connect(an);
               }
               an.getByteTimeDomainData(buf);
               let sum = 0;
@@ -12541,37 +12939,54 @@ window.TONINO_CONFIG = Object.freeze({
               }
               const rms = Math.sqrt(sum / buf.length);
               const now = Date.now();
+              const step = Math.min(80, Math.max(0, now - lastPoll));
+              lastPoll = now;
               if (rms > rec._peak) rec._peak = rms;
               /* A close voice opens the phrase. Quieter words after it still belong to the same order. */
               const gate = voiceHearGate();
               const speaking = rms >= gate.speak;
               if (speaking) {
-                rec._loudMs += 120;
+                rec._loudMs += step;
                 lastVoiceAt = now;
+                rec._deepAt = 0;
                 if (rec._loudMs >= gate.armMs && rec._peak >= gate.peak) rec._heard = true;
-              } else if (rec._heard && lastVoiceAt && now - lastVoiceAt >= 700 && now - lastVoiceAt >= 1600 && !rec._ending) {
+              } else if (rec._heard && lastVoiceAt && !rec._ending) {
+                /* guest-voice-hold-v502 — a pause while the finger is down stays inside the sentence. */
+                if (voiceFingerDown) return;
+                /* guest-voice-pace-v498 — a closed mouth ends sooner. A breath or a rustle keeps the long wait. */
+                if (rms < gate.speak * 0.5) {
+                  if (!rec._deepAt) rec._deepAt = now;
+                } else {
+                  rec._deepAt = 0;
+                }
+                const longSentence = now - startedAt >= 8000;
+                const deep = rec._deepAt && now - rec._deepAt >= (longSentence ? 4500 : 2000) && now - lastVoiceAt >= 1600;
+                const full = now - lastVoiceAt >= 700 && now - lastVoiceAt >= 1600 && now - lastVoiceAt >= (now - startedAt >= 8000 ? 6000 : 3200);
+                if (!(deep || full)) return;
                 /* guest-voice-full-v464 — a breath stays inside the sentence. Quarter metre still opens it. */
+                /* guest-voice-whole-v491 — the first sentence and the last one wait the same quiet. The file is kept. */
+                /* guest-voice-long-v495 — once the sentence is long, a breath between plates stays inside it. */
                 rec._ending = true;
                 voiceBusy = true;
                 voiceBusyAt = Date.now();
                 markVoiceThinking();
                 stopVoiceCapture(false);
               }
-            }, 120);
+            }, 40);
           }
         } catch (_) {}
-        voicePhraseAuto = false;
-        rec.start();
-        setVoiceHearing(true);
-        const chip = $("menuVoiceBtn");
-        if (chip) chip.classList.add("rec");
-        setRobotListening(true);
-        if (st) st.textContent = b.voiceListen || "";
-        voiceTimer = setTimeout(function () { if (voiceRec === rec) stopVoiceCapture(false); }, 45000);
         return;
       } catch (_) {
+        if (isIosPhone()) {
+          voiceHoldListen = false;
+          voiceFingerDown = false;
+          setRobotListening(false);
+          parkVoiceReady();
+          return;
+        }
         if (st) st.textContent = b.voiceNeedMic || "";
         voiceHoldListen = false;
+        voiceFingerDown = false;
         const chip = $("menuVoiceBtn");
         if (chip) chip.classList.remove("rec");
         setRobotListening(false);
@@ -12628,20 +13043,65 @@ window.TONINO_CONFIG = Object.freeze({
       voiceHoldListen = false;
     }
   }
-  function onVoiceMicClick() {
+  function armVoiceHoldFromFinger() {
+    /* guest-ios-mic-v507 — one finger starts the ear once. A second event from the same press does not restart it. */
+    if (window.__zekiqHoldArm && (voiceFingerDown || voiceRec)) return;
+    window.__zekiqHoldArm = true;
+    if (isIosPhone()) {
+      openIosMic();
+      if (!voiceRec) {
+        voiceFingerDown = false;
+        voiceHoldListen = false;
+      }
+    }
+    if (isIosPhone() && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      const live = voiceCallStream && voiceCallStream.getTracks().some(function (t) { return t.readyState === "live"; });
+      if (!live && !window.__zekiqIosMicPromise) {
+        try { window.__zekiqIosMicPromise = navigator.mediaDevices.getUserMedia({ audio: true }); }
+        catch (err) { window.__zekiqIosMicPromise = Promise.reject(err); }
+      }
+    }
+    beginVoiceHold();
+  }
+  function beginVoiceHold() {
+    if (isIosPhone()) openIosMic();
+    else primeIosMouth();
     unlockVoiceEar();
     if (voiceBusy && voiceBusyAt && Date.now() - voiceBusyAt > 9000) { voiceBusy = false; voiceBusyAt = 0; }
     if (voiceStopping) voiceStopping = false;
-    if (voiceBusy) return;
-    if (voiceRec) {
-      voiceRec._push = true;
-      stopVoiceCapture(false);
-      return;
-    }
-    releaseVoiceMouth();
+    if (voiceFingerDown || voiceBusy || voiceRec) return;
+    voiceFingerDown = true;
+    voiceHoldStartedAt = Date.now();
     voiceHoldListen = true;
     voicePhraseAuto = false;
+    if (!isIosPhone()) releaseVoiceMouth(true);
+    const st = $("voiceStatus");
+    if (st) st.textContent = voiceBag().voiceListen || "";
     void startVoiceCapture();
+  }
+  function endVoiceHold() {
+    window.__zekiqHoldArm = false;
+    if (!voiceFingerDown && !voiceRec) return;
+    const started = voiceHoldStartedAt || Date.now();
+    voiceFingerDown = false;
+    voiceHoldListen = false;
+    const rec = voiceRec;
+    if (!rec) {
+      parkVoiceReady();
+      return;
+    }
+    const tooShort = Date.now() - started < 280 && rec._heard !== true;
+    if (tooShort) {
+      stopVoiceCapture(true);
+      parkVoiceReady();
+      return;
+    }
+    rec._push = true;
+    stopVoiceCapture(false);
+  }
+  function onVoiceMicClick() {
+    primeIosMouth();
+    unlockVoiceEar();
   }
   function onVoiceConfirm() {
     if (!voiceLast || !voiceLast.lines || !voiceLast.lines.length) return;
@@ -12652,10 +13112,78 @@ window.TONINO_CONFIG = Object.freeze({
       unmatched: voiceLast.unmatched || [],
     });
   }
+  function bindIosMenuTaps() {
+    /* guest-ios-tap-v493 — Safari eats the click when a finger lands inside a scroller. */
+    if (!isIosPhone()) return;
+    const root = document.getElementById("phone");
+    if (!root || root.dataset.iosTap === "1") return;
+    root.dataset.iosTap = "1";
+    let sx = 0, sy = 0, t0 = 0, arm = false, scroller = null, scroll0 = 0;
+    let swallowEl = null, swallowUntil = 0;
+    function scrollParent(el) {
+      let n = el;
+      while (n && n !== root) {
+        const s = window.getComputedStyle(n);
+        if (/(auto|scroll)/.test(s.overflowY) || /(auto|scroll)/.test(s.overflowX)) return n;
+        n = n.parentElement;
+      }
+      return null;
+    }
+    root.addEventListener("touchstart", function (e) {
+      primeIosMouth();
+      if (!e.touches || e.touches.length !== 1) { arm = false; return; }
+      const p = e.touches[0];
+      sx = p.clientX; sy = p.clientY; t0 = Date.now(); arm = true;
+      const hit = document.elementFromPoint(p.clientX, p.clientY);
+      scroller = hit ? scrollParent(hit) : null;
+      scroll0 = scroller ? scroller.scrollTop + scroller.scrollLeft : 0;
+    }, { passive: true });
+    root.addEventListener("touchend", function (e) {
+      if (!arm || !e.changedTouches || e.changedTouches.length !== 1) { arm = false; return; }
+      arm = false;
+      const p = e.changedTouches[0];
+      if (Math.abs(p.clientX - sx) > 14 || Math.abs(p.clientY - sy) > 14) return;
+      if (Date.now() - t0 > 700) return;
+      if (scroller && Math.abs((scroller.scrollTop + scroller.scrollLeft) - scroll0) > 8) return;
+      const hit = document.elementFromPoint(p.clientX, p.clientY);
+      if (!hit || !hit.closest) return;
+      if (hit.closest("input, textarea, select")) return;
+      const btn = hit.closest("button, a, [role='button']");
+      if (!btn || btn.disabled || btn.getAttribute("aria-disabled") === "true" || !root.contains(btn)) return;
+      if (e.cancelable) e.preventDefault();
+      swallowEl = btn;
+      swallowUntil = Date.now() + 800;
+      const click = new MouseEvent("click", {
+        bubbles: true, cancelable: true, view: window,
+        clientX: p.clientX, clientY: p.clientY
+      });
+      click._iosPress = true;
+      btn.dispatchEvent(click);
+    }, { passive: false });
+    root.addEventListener("click", function (e) {
+      if (e._iosPress) return;
+      if (!swallowEl || Date.now() > swallowUntil) return;
+      const t = e.target;
+      if (t === swallowEl || (swallowEl.contains && swallowEl.contains(t))) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }, true);
+  }
+  bindIosMenuTaps();
+  try {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.addEventListener("voiceschanged", function () {
+        try { window.speechSynthesis.getVoices(); } catch (_) {}
+      });
+    }
+  } catch (_) {}
   (function wireFindZoom() {
     const findBtn = document.getElementById("menuFindBtn");
     if (findBtn) findBtn.addEventListener("click", openFindSheet);
     const voiceBtn = document.getElementById("menuVoiceBtn");
+    if (voiceBtn) voiceBtn.addEventListener("pointerdown", function () { primeIosMouth(); releaseVoiceMouth(); warmVoiceCallStream(); });
     if (voiceBtn) voiceBtn.addEventListener("click", function () {
       const sheet = document.getElementById("voiceOrderSheet");
       if (sheet && sheet.classList.contains("show")) closeVoiceSheet();
@@ -12665,6 +13193,7 @@ window.TONINO_CONFIG = Object.freeze({
     const botBubble = document.getElementById("voiceBotBubble");
     const botHide = document.getElementById("voiceBotHide");
     if (botBtn) {
+      botBtn.addEventListener("pointerdown", function () { primeIosMouth(); releaseVoiceMouth(); warmVoiceCallStream(); });
       botBtn.addEventListener("click", openVoiceSheet);
       botBtn.addEventListener("keydown", function (event) {
         if (event.key !== "Enter" && event.key !== " ") return;
@@ -12672,6 +13201,7 @@ window.TONINO_CONFIG = Object.freeze({
         openVoiceSheet();
       });
     }
+    if (botBubble) botBubble.addEventListener("pointerdown", function () { primeIosMouth(); releaseVoiceMouth(); warmVoiceCallStream(); });
     if (botBubble) botBubble.addEventListener("click", openVoiceSheet);
     if (botHide) botHide.addEventListener("click", function (event) {
       event.preventDefault();
@@ -12684,16 +13214,61 @@ window.TONINO_CONFIG = Object.freeze({
     if (sheetBot) sheetBot.addEventListener("click", function () {
       unlockVoiceEar();
       if (!voiceMouthOpen() && !voiceBusy) return;
-      releaseVoiceMouth();
+      releaseVoiceMouth(true);
       voiceBusy = false;
       voiceBusyAt = 0;
       try { if (voicePostAbort) voicePostAbort.abort(); } catch (_) {}
       clearVoiceThinking();
-      voiceHoldListen = true;
-      void startVoiceCapture();
+      parkVoiceReady();
     });
     const voiceMic = document.getElementById("voiceMicBtn");
     if (voiceMic) voiceMic.addEventListener("click", onVoiceMicClick);
+    const voiceHold = document.getElementById("voiceHoldBtn");
+    if (voiceHold && voiceHold.dataset.hold !== "1") {
+      voiceHold.dataset.hold = "1";
+      voiceHold.addEventListener("pointerdown", function (event) {
+        if (event.button != null && event.button !== 0) return;
+        if (isIosPhone() && event.pointerType === "mouse") return;
+        /* guest-ios-mouth-v506 — the microphone is asked inside the finger. Speaking does not ask. */
+        /* guest-ios-mic-v507 — ask before this tap is spent. Capturing the pointer cancels the hold on iPhone. */
+        armVoiceHoldFromFinger();
+        if (!isIosPhone() && event.cancelable) event.preventDefault();
+        if (!isIosPhone()) {
+          try { voiceHold.setPointerCapture(event.pointerId); } catch (_) {}
+        }
+      });
+      voiceHold.addEventListener("touchstart", function (event) {
+        if (!isIosPhone()) return;
+        armVoiceHoldFromFinger();
+      }, { passive: true });
+      voiceHold.addEventListener("pointerup", function (event) {
+        if (isIosPhone() && event.pointerType === "mouse") return;
+        if (event.cancelable) event.preventDefault();
+        endVoiceHold();
+      });
+      voiceHold.addEventListener("pointercancel", function (event) {
+        if (isIosPhone() && event.pointerType === "mouse") return;
+        endVoiceHold();
+      });
+      voiceHold.addEventListener("touchend", function (event) {
+        if (!isIosPhone()) return;
+        if (event.cancelable) event.preventDefault();
+        endVoiceHold();
+      }, { passive: false });
+      voiceHold.addEventListener("touchcancel", function () {
+        if (!isIosPhone()) return;
+        endVoiceHold();
+      });
+      voiceHold.addEventListener("contextmenu", function (event) { event.preventDefault(); });
+      window.addEventListener("pointerup", function (event) {
+        if (isIosPhone() && event.pointerType === "mouse") return;
+        endVoiceHold();
+      });
+      window.addEventListener("pointercancel", function (event) {
+        if (isIosPhone() && event.pointerType === "mouse") return;
+        endVoiceHold();
+      });
+    }
     const voiceStop = document.getElementById("voiceStopBtn");
     if (voiceStop) voiceStop.addEventListener("click", function () {
       if (voiceRec) { voiceRec._push = true; stopVoiceCapture(false); }
