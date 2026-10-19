@@ -1753,8 +1753,8 @@ html.menu-flow.voice-waiter-on #flowTools #menuVoiceBtn{
 /* guest-voice-dock-v403 — conversation stays on the menu; the guest keeps paging while talking */
 /* guest-voice-face-v415 — light assistant card: the menu stays visible above it */
 #voiceOrderSheet{
-  position:fixed;z-index:1500;left:10px;right:10px;
-  bottom:calc(var(--sticky-send-h,0px) + var(--safe-bottom,0px) + 8px);
+  position:fixed;z-index:6400;left:10px;right:10px;
+  bottom:calc(var(--vv-bottom, 0px) + var(--sticky-send-h,0px) + var(--safe-bottom,0px) + 8px);
   max-height:min(48dvh,420px);display:none;flex-direction:column;gap:8px;
   background:#fffdf8;color:#2c2116;
   border:0;border-radius:22px;box-shadow:0 18px 44px #00000033;
@@ -1859,11 +1859,13 @@ html.voice-order-open.menu-flow #menuScene{padding-bottom:min(32dvh,240px)!impor
 #voiceBotInvite{
   position:fixed;z-index:1490;left:0;right:0;width:max-content;max-width:calc(100% - 16px);margin-inline:auto;transform:none;
   display:none;align-items:stretch;gap:0;
-  bottom:calc(var(--sticky-send-h,0px) + max(18px, var(--safe-bottom,0px)) + 14px);pointer-events:none;
+  bottom:calc(var(--vv-bottom, 0px) + var(--sticky-send-h,0px) + max(18px, var(--safe-bottom,0px)) + 14px);pointer-events:none;
   background:#fffdf8;border-radius:26px;overflow:visible;
   box-shadow:0 14px 32px rgba(40,24,8,.26),0 0 0 1px rgba(212,176,106,.55)
 }
 html.voice-invite #voiceBotInvite{display:flex;z-index:6200}
+/* guest-voice-off-v508 — a saved off stays off. The card is not painted before the server says on. */
+html:not(.voice-waiter-on) #voiceBotInvite,html:not(.voice-waiter-on) #voiceOrderSheet{display:none!important}
 #voiceBotInvite .voice-bot,#voiceBotInvite .voice-bubble,#voiceBotHide{pointer-events:auto}
 #voiceBotHide{
   position:absolute;top:8px;inset-inline-end:8px;z-index:2;width:26px;height:26px;border-radius:50%;
@@ -8640,6 +8642,8 @@ window.TONINO_CONFIG = Object.freeze({
       const client = Math.round(document.documentElement.clientHeight || 0);
       const vv = window.visualViewport;
       const vvFull = vv ? Math.round((vv.height || 0) + (vv.offsetTop || 0)) : 0;
+      const obscured = vv ? Math.max(0, Math.round(inner - (vv.height || 0) - (vv.offsetTop || 0))) : 0;
+      document.documentElement.style.setProperty("--vv-bottom", (obscured > 160 ? 0 : obscured) + "px");
       let h = Math.max(inner, client, vvFull);
       const kbCover = !!(vv && vv.height && h - vv.height > 80);
       if (kbCover && lastGoodH > h) h = lastGoodH;
@@ -8662,7 +8666,10 @@ window.TONINO_CONFIG = Object.freeze({
     apply();
     window.addEventListener("resize", apply, {passive:true});
     window.addEventListener("orientationchange", () => setTimeout(apply, 180), {passive:true});
-    if (window.visualViewport) visualViewport.addEventListener("resize", apply, {passive:true});
+    if (window.visualViewport) {
+      visualViewport.addEventListener("resize", apply, {passive:true});
+      visualViewport.addEventListener("scroll", apply, {passive:true});
+    }
   })();
 
   /* Start gate: visual loop → tap start → fullscreen. Then live coach on real menu. */
@@ -8838,13 +8845,16 @@ window.TONINO_CONFIG = Object.freeze({
     }
     function requestFs(){
       /* guest-fs-open-v465 — call fullscreen on the document, inside the tap, with no options. */
-      const el = root;
-      const fn = el.requestFullscreen || el.webkitRequestFullscreen || el.webkitRequestFullScreen;
-      if (!fn) return Promise.resolve(false);
-      try{
-        const ret = fn.call(el);
-        return Promise.resolve(ret).then(() => true).catch(() => false);
-      }catch(_){ return Promise.resolve(false); }
+      const el = document.documentElement;
+      const req = el.requestFullscreen || el.webkitRequestFullscreen || el.webkitRequestFullScreen;
+      if (!req) return Promise.resolve(false);
+      try {
+        const out = req.call(el);
+        if (out && typeof out.then === "function") return out.then(function () { return true; }).catch(function () { return false; });
+        return Promise.resolve(true);
+      } catch (_) {
+        return Promise.resolve(false);
+      }
     }
     function unlockMenu(){
       root.classList.remove("coach-locked");
@@ -10135,6 +10145,8 @@ window.TONINO_CONFIG = Object.freeze({
       try { applyVoiceWaiterKey(data.voiceWaiterEnabled === true); } catch (_) {}
     }
     if ("waiterVoice" in data && data.waiterVoice) window.__zekiqWaiterVoice = String(data.waiterVoice);
+    if ("waiterVolume" in data) window.__zekiqVoiceVolume = Number(data.waiterVolume) || 80;
+    if ("waiterPace" in data && data.waiterPace) window.__zekiqVoicePace = String(data.waiterPace);
     /* Throttled inside: keeps the bill button honest when the waiter adds or the cashier closes. */
     void refreshBillAvailability();
   }
@@ -10238,6 +10250,9 @@ window.TONINO_CONFIG = Object.freeze({
       if (res.ok) {
         const data = await res.json();
         if (data && data.ok) {
+          if ("voiceWaiterEnabled" in data) {
+            try { applyVoiceWaiterKey(data.voiceWaiterEnabled === true); } catch (_) {}
+          }
           applyDailyDishPayload(data, apiBase);
           if (todayDailyDish) return;
           if (isTodayDailyDishDayOff()) return;
@@ -10485,6 +10500,7 @@ window.TONINO_CONFIG = Object.freeze({
     const visitOk = await bootQrVisit();
     if (!visitOk) return;
     try { warmVoiceLine(voiceWelcomeLine()); } catch (_) {}
+    try { showVoiceBot(); } catch (_) {}
     const info=tableInfo();
     const paintTable = (bag) => {
       const word = (bag && bag.tableWord) || (window.__zekiqGuestLang === "ar" ? "طاولة" : "Masa");
@@ -11121,7 +11137,7 @@ window.TONINO_CONFIG = Object.freeze({
     const line = $("voiceBotLine");
     const hint = $("voiceBotHint");
     const btn = $("voiceBotBtn");
-    if (line) line.textContent = b.voiceInvite || "Sesli sipariş";
+    if (line) line.textContent = voiceWelcomeLine() || b.voiceInvite || "Sesli sipariş";
     if (hint) hint.textContent = b.voiceTap || "Başlamak için dokun";
     if (btn) btn.setAttribute("aria-label", voiceWelcomeLine());
   }
@@ -11132,6 +11148,9 @@ window.TONINO_CONFIG = Object.freeze({
     window.__zekiqVoiceWaiter = on === true;
     document.documentElement.classList.toggle("voice-waiter-on", on === true);
     if (!on) {
+      try { if (window.__zekiqWelcomeTimer) clearTimeout(window.__zekiqWelcomeTimer); } catch (_) {}
+      window.__zekiqWelcomeTimer = 0;
+      window.__zekiqIosPendingLine = "";
       try { closeVoiceSheet(); } catch (_) {}
       document.documentElement.classList.remove("voice-invite");
       return;
@@ -11146,26 +11165,46 @@ window.TONINO_CONFIG = Object.freeze({
     try { paintVoiceInvite(); } catch (_) {}
     speakVoiceWelcomeOnce();
   }
-  /* The robot is part of the QR page. Hide it only when this cashier saved "off". */
-  try {
-    if (window.__zekiqVoiceWaiter !== false) applyVoiceWaiterKey(true);
-  } catch (_) {}
+  /* The robot stays hidden until this cashier's menu says it is on. */
   function speakVoiceWelcomeOnce() {
-    if (window.__zekiqVoiceWelcomed || voiceBotHidden()) return;
+    if (window.__zekiqVoiceHeard || window.__zekiqWelcomeTimer || voiceBotHidden()) return;
     if (!document.documentElement.classList.contains("voice-invite")) return;
     const sheet = $("voiceOrderSheet");
     if (sheet && sheet.classList.contains("show")) return;
     const line = voiceWelcomeLine();
     if (!line) return;
+    if (!window.__zekiqWelcomeFocus) {
+      window.__zekiqWelcomeFocus = true;
+      window.addEventListener("focus", function () {
+        if (window.__zekiqVoiceHeard) return;
+        window.__zekiqVoiceWelcomed = false;
+        window.__zekiqWelcomeTimer = 0;
+        try { speakVoiceWelcomeOnce(); } catch (_) {}
+      });
+    }
     /* guest-ios-mouth-v504 — a sentence that starts by itself never leaves the iPhone speaker. */
-    if (isIosPhone()) {
+    if (isIosPhone() || isGuestHandset()) {
       window.__zekiqIosPendingLine = line;
       return;
     }
-    window.__zekiqVoiceWelcomed = true;
-    window.__zekiqVoiceWelcomedLine = line;
-    try { paintVoiceInvite(); } catch (_) {}
-    voiceSay(line);
+    /* The page is still opening. A hello that starts now ends before anyone is listening. */
+    window.__zekiqWelcomeTimer = setTimeout(function () {
+      window.__zekiqWelcomeTimer = 0;
+      if (window.__zekiqVoiceHeard || voiceBotHidden()) return;
+      if (document.hidden) {
+        const again = function () {
+          if (document.hidden) return;
+          document.removeEventListener("visibilitychange", again);
+          speakVoiceWelcomeOnce();
+        };
+        document.addEventListener("visibilitychange", again);
+        return;
+      }
+      window.__zekiqVoiceWelcomed = true;
+      window.__zekiqVoiceWelcomedLine = line;
+      try { paintVoiceInvite(); } catch (_) {}
+      voiceSay(line);
+    }, 900);
   }
   function hideVoiceBot(remember) {
     document.documentElement.classList.remove("voice-invite");
@@ -11257,6 +11296,66 @@ window.TONINO_CONFIG = Object.freeze({
     if (window.__zekiqIosFinger || window.__zekiqIosSpeechLive) return true;
     try { return !!(navigator.userActivation && navigator.userActivation.isActive); } catch (_) { return false; }
   }
+  function voiceGain() {
+    const n = Number(window.__zekiqVoiceVolume);
+    if (!isFinite(n)) return 0.8;
+    return Math.max(0.4, Math.min(1, n / 100));
+  }
+  function isGuestHandset() {
+    if (isIosPhone()) return true;
+    const root = document.documentElement;
+    return root.classList.contains("is-phone") || root.classList.contains("is-android");
+  }
+  function voiceHandsetGain() {
+    const base = voiceGain();
+    if (isIosPhone()) return Math.min(2, base * 1.75);
+    if (isGuestHandset()) return Math.min(1.6, base * 1.4);
+    return base;
+  }
+  /** Quiet TTS stays quiet at gain 1. On a phone, lift the peak up to the speaker. */
+  function mouthPlaybackGain(decoded) {
+    let peak = 0;
+    try {
+      const chans = decoded && decoded.numberOfChannels ? decoded.numberOfChannels : 0;
+      const step = Math.max(1, Math.floor(((decoded && decoded.length) || 1) / 8000));
+      for (let c = 0; c < chans; c++) {
+        const data = decoded.getChannelData(c);
+        for (let i = 0; i < data.length; i += step) {
+          const a = data[i] < 0 ? -data[i] : data[i];
+          if (a > peak) peak = a;
+        }
+      }
+    } catch (_) {
+      peak = 0;
+    }
+    if (!(peak > 0.02)) return voiceHandsetGain();
+    const phone = isIosPhone() || isGuestHandset();
+    const ceiling = isIosPhone() ? 0.97 : phone ? 0.95 : Math.max(0.7, voiceGain());
+    const slider = phone ? voiceGain() / 0.8 : 1;
+    const target = Math.min(0.98, ceiling * slider);
+    const cap = isIosPhone() ? 8 : phone ? 6 : 1.6;
+    return Math.min(cap, target / peak);
+  }
+  function voicePace() {
+    const p = window.__zekiqVoicePace;
+    if (p === "calm") return 0.92;
+    if (p === "bright") return 1.06;
+    return 1;
+  }
+  function voiceSpeakLine(line) {
+    /* A written dot stays on the page. Spoken, it is the word نقطة. */
+    var text = String(line || "");
+    var out = "";
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i);
+      var prev = i > 0 ? text.charAt(i - 1) : "";
+      var next = i + 1 < text.length ? text.charAt(i + 1) : "";
+      var decimal = ch === "." && prev >= "0" && prev <= "9" && next >= "0" && next <= "9";
+      if (!decimal && (ch === "." || ch === "。" || ch === "·" || ch === "•" || ch === "۔")) out += " ";
+      else out += ch;
+    }
+    return out.replace(/\s+/g, " ").trim();
+  }
   function voiceSayPhone(line, tts, finishTalk, sayEpoch) {
     if (!window.speechSynthesis) {
       finishTalk(0);
@@ -11266,7 +11365,8 @@ window.TONINO_CONFIG = Object.freeze({
       if (sayEpoch !== window.__zekiqSayEpoch) return;
       try {
         openIosSpeaker();
-        const u = new SpeechSynthesisUtterance(line);
+        openIosLoudMouth();
+        const u = new SpeechSynthesisUtterance(voiceSpeakLine(line));
         const voice = pickVoiceForTts(tts);
         if (voice) {
           u.voice = voice;
@@ -11281,14 +11381,17 @@ window.TONINO_CONFIG = Object.freeze({
         } else {
           u.lang = tts;
         }
-        u.volume = 1;
-        u.rate = String(tts).indexOf("ar") === 0 ? 0.96 : 1;
-        u.pitch = 1.05;
+        u.volume = isGuestHandset() ? 1 : voiceGain();
+        const base = String(tts).indexOf("ar") === 0 ? 0.94 : 0.98;
+        u.rate = Math.max(0.7, Math.min(1.2, base * voicePace()));
+        u.pitch = 1;
         u.onend = function () {
+          restoreIosMicRoute();
           if (window.__zekiqLiveUtter === u) window.__zekiqLiveUtter = null;
           finishTalk(200);
         };
         u.onerror = function (ev) {
+          restoreIosMicRoute();
           const reason = ev && ev.error ? String(ev.error) : "";
           if (reason === "not-allowed" || reason === "synthesis-unavailable") {
             window.__zekiqIosSaid = false;
@@ -11313,10 +11416,21 @@ window.TONINO_CONFIG = Object.freeze({
       }
     };
     if (isIosPhone()) fire();
-    else voiceSayKick = setTimeout(fire, 80);
+    else if (window.speechSynthesis.getVoices && !window.speechSynthesis.getVoices().length) {
+      let spoke = false;
+      const once = function () {
+        if (spoke) return;
+        spoke = true;
+        try { window.speechSynthesis.removeEventListener("voiceschanged", once); } catch (_) {}
+        fire();
+      };
+      try { window.speechSynthesis.addEventListener("voiceschanged", once); } catch (_) {}
+      voiceSayKick = setTimeout(once, 600);
+    } else voiceSayKick = setTimeout(fire, 80);
   }
   function playIosWav(blob, line, tts, finishTalk, sayEpoch) {
     openIosSpeaker();
+    openIosLoudMouth();
     const ctx = unlockVoiceEar();
     if (!ctx) return false;
     const start = function () {
@@ -11328,18 +11442,24 @@ window.TONINO_CONFIG = Object.freeze({
         stopVoiceMouthAudio();
         const src = ctx.createBufferSource();
         src.buffer = decoded;
-        src.connect(ctx.destination);
+        try { src.playbackRate.value = voicePace(); } catch (_) {}
+        const gain = ctx.createGain();
+        gain.gain.value = mouthPlaybackGain(decoded);
+        src.connect(gain);
+        gain.connect(ctx.destination);
         voiceMouthSrc = src;
         voiceAwaitingMouth = false;
         const ms = Math.min(20000, Math.ceil((decoded.duration || 4) * 1000) + 500);
         voiceSpeakUntil = Date.now() + ms;
         try { if (voiceSayTimer) clearTimeout(voiceSayTimer); } catch (_) {}
-        voiceSayTimer = setTimeout(function () { finishTalk(0); }, ms + 800);
+        voiceSayTimer = setTimeout(function () { restoreIosMicRoute(); finishTalk(0); }, ms + 800);
         src.onended = function () {
+          restoreIosMicRoute();
           if (voiceMouthSrc === src) voiceMouthSrc = null;
           finishTalk(200);
         };
         src.start(0);
+        window.__zekiqVoiceHeard = document.hasFocus();
       }).catch(function () {
         if (sayEpoch !== window.__zekiqSayEpoch) return;
         voiceAwaitingMouth = false;
@@ -11359,9 +11479,11 @@ window.TONINO_CONFIG = Object.freeze({
     return true;
   }
   function playVoiceWav(blob, line, tts, finishTalk, sayEpoch) {
-    if (isIosPhone() && playIosWav(blob, line, tts, finishTalk, sayEpoch)) return;
+    if (isGuestHandset() && playIosWav(blob, line, tts, finishTalk, sayEpoch)) return;
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
+    audio.volume = isGuestHandset() ? 1 : voiceGain();
+    try { audio.playbackRate = voicePace(); } catch (_) {}
     audio._url = url;
     voiceMouthAudio = audio;
     audio.onended = function () { finishTalk(200); };
@@ -11383,10 +11505,13 @@ window.TONINO_CONFIG = Object.freeze({
       played.then(function () {
         if (sayEpoch !== window.__zekiqSayEpoch || voiceMouthAudio !== audio) {
           try { audio.pause(); } catch (_) {}
+          return;
         }
+        window.__zekiqVoiceHeard = document.hasFocus();
       }).catch(function () {
         if (sayEpoch !== window.__zekiqSayEpoch) return;
         voiceAwaitingMouth = false;
+        window.__zekiqVoiceWelcomed = false;
         window.__zekiqMouthRetry = { blob: blob, line: line, tts: tts, finish: finishTalk, epoch: sayEpoch };
       });
     }
@@ -11417,11 +11542,19 @@ window.TONINO_CONFIG = Object.freeze({
     if (window.__zekiqWavReady && window.__zekiqWavReady[text]) return Promise.resolve(window.__zekiqWavReady[text]);
     if (window.__zekiqWavWait && window.__zekiqWavWait[text]) return window.__zekiqWavWait[text];
     const session = guestSession();
-    if (!session.token || !session.sid || window.__zekiqWaiterVoice === "phone") return Promise.resolve(null);
+    if (window.__zekiqWaiterVoice === "phone") return Promise.resolve(null);
+    const welcome = String(typeof voiceWelcomeLine === "function" ? voiceWelcomeLine() : "").trim();
+    const helloOnly = !session.token || !session.sid;
+    if (helloOnly && text !== welcome) return Promise.resolve(null);
     if (!window.__zekiqWavWait) window.__zekiqWavWait = {};
     const job = resolveApiBase().then(function (apiBase) {
       if (!apiBase) throw new Error("api");
-      return fetch(String(apiBase).replace(/\/+$/, "") + "/api/guest/v1/voice-audio", {
+      const root = String(apiBase).replace(/\/+$/, "");
+      if (helloOnly) {
+        const lang = /[\u0600-\u06FF]/.test(text) ? "ar" : /Bienvenue/.test(text) ? "fr" : /Welcome\./.test(text) ? "en" : "tr";
+        return fetch(root + "/api/guest/v1/welcome-audio?lang=" + encodeURIComponent(lang));
+      }
+      return fetch(root + "/api/guest/v1/voice-audio", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ token: session.token, sid: session.sid, text: text.slice(0, 320) }),
@@ -11473,6 +11606,9 @@ window.TONINO_CONFIG = Object.freeze({
         setRobotTalking(false);
         stopVoiceMouthAudio();
         scheduleVoiceListen();
+        setTimeout(function () {
+          try { if (voiceSheetOpen() && !voiceMouthOpen()) warmVoiceCallStream(); } catch (_) {}
+        }, Math.max(0, tail || 0) + 40);
       };
     };
     const finishTalk = finishFor(sayEpoch);
@@ -11483,21 +11619,16 @@ window.TONINO_CONFIG = Object.freeze({
     }, 22000);
     const tts = window.__zekiqSpeakLang || (window.__zekiqGuestLang === "ar" ? "ar-SA" : window.__zekiqGuestLang === "en" ? "en-US" : window.__zekiqGuestLang === "fr" ? "fr-FR" : "tr-TR");
     const session = guestSession();
-    const phoneOnly = window.__zekiqWaiterVoice === "phone" || !session.token || !session.sid;
-    /* guest-voice-fast-v458 */
-    /* guest-voice-girl-v460 — Sulafat speaks. The phone reader starts only if that voice does not arrive. */
-    /* guest-voice-now-v462 — the wav travels with the answer, so the mouth starts without a second request. */
-    /* guest-voice-warm-v463 — the hello is fetched with the page, so the first mouth is already in hand. */
-    /* guest-voice-mouth-v470 — the voice is the written sentence. A wav for another sentence is not played. */
-    window.__zekiqReadyWav = null;
+    const wantPhone = window.__zekiqWaiterVoice === "phone";
     const held = window.__zekiqWavReady && window.__zekiqWavReady[line];
-    if (!phoneOnly && held && held.size > 80) {
+    if (!wantPhone && held && held.size > 80) {
       if (isIosPhone()) window.__zekiqIosSaid = true;
       playVoiceWav(held, line, tts, finishTalk, sayEpoch);
       return;
     }
-    if (isIosPhone() && !phoneOnly) {
-      /* guest-ios-mouth-v505 — iPhone plays the sound file. Its own reader stays silent. */
+    const welcomeLine = String(typeof voiceWelcomeLine === "function" ? voiceWelcomeLine() : "").trim();
+    const canFetch = !wantPhone && ((session.token && session.sid) || line === welcomeLine);
+    if (isIosPhone() && canFetch) {
       primeIosMouth();
       voiceAwaitingMouth = true;
       try { if (voiceSayTimer) clearTimeout(voiceSayTimer); } catch (_) {}
@@ -11524,7 +11655,7 @@ window.TONINO_CONFIG = Object.freeze({
       });
       return;
     }
-    if (phoneOnly) {
+    if (!canFetch) {
       voiceAwaitingMouth = false;
       voiceSpeakUntil = Date.now() + 45000;
       try { if (voiceSayTimer) clearTimeout(voiceSayTimer); } catch (_) {}
@@ -11867,6 +11998,21 @@ window.TONINO_CONFIG = Object.freeze({
       if (session.type !== "playback") session.type = "playback";
     } catch (_) {}
   }
+  function openIosLoudMouth() {
+    /* The call route is quiet on iPhone. The answer uses the loud speaker, then the mic route returns. */
+    if (!isIosPhone()) return;
+    try {
+      const session = navigator.audioSession;
+      if (session && session.type !== "playback") session.type = "playback";
+    } catch (_) {}
+  }
+  function restoreIosMicRoute() {
+    if (!isIosPhone() || !window.__zekiqIosWantMic) return;
+    try {
+      const session = navigator.audioSession;
+      if (session && session.type !== "play-and-record") session.type = "play-and-record";
+    } catch (_) {}
+  }
   function openIosMic() {
     /* guest-ios-mic-v507 — the finger on the talk button is allowed to record. */
     if (!isIosPhone()) return;
@@ -11901,18 +12047,24 @@ window.TONINO_CONFIG = Object.freeze({
   }
   function iosSpeakHelloFromFinger() {
     /* guest-ios-mouth-v504 — the greeting itself is the first sentence, spoken inside the tap. */
-    if (!isIosPhone() || window.__zekiqVoiceWelcomed || voiceBotHidden()) return;
+    if (window.__zekiqVoiceWelcomed || voiceBotHidden()) return;
     if (!voiceWaiterOn()) return;
+    if (!isIosPhone() && !isGuestHandset()) return;
     const line = window.__zekiqIosPendingLine || voiceWelcomeLine();
     if (!line) return;
     primeIosMouth();
+    try { unlockVoiceEar(); } catch (_) {}
     window.__zekiqIosSaid = false;
     window.__zekiqIosFinger = true;
     try { voiceSay(line); } finally { window.__zekiqIosFinger = false; }
-    if (!window.__zekiqIosSaid) return;
+    if (isIosPhone() && !window.__zekiqIosSaid) return;
     window.__zekiqVoiceWelcomed = true;
     window.__zekiqVoiceWelcomedLine = line;
     window.__zekiqIosPendingLine = "";
+    try {
+      const shown = $("voiceBotLine");
+      if (shown) shown.textContent = line;
+    } catch (_) {}
   }
   function primeIosMouth() {
     /* guest-ios-mouth-v500 — the finger opens the speaker. A wav that arrives later still plays, and the silent switch does not mute it. */
@@ -11933,6 +12085,8 @@ window.TONINO_CONFIG = Object.freeze({
   function warmVoiceCallStream() {
     /* guest-ios-mouth-v504 — opening the mic on the same tap cuts the iPhone greeting. The hold button opens it. */
     if (isIosPhone()) return;
+    /* A live sentence stays on the loud speaker. Opening the mic now puts the phone back on the call path and the ear hears the speaker. */
+    if (typeof voiceMouthOpen === "function" && voiceMouthOpen()) return;
     /* guest-voice-open-v490 — the first long sentence was spoken while the mic was still opening, so the file looked empty. */
     unlockVoiceEar();
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
@@ -12147,7 +12301,8 @@ window.TONINO_CONFIG = Object.freeze({
       const bin = atob(b64);
       const bytes = new Uint8Array(bin.length);
       for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-      return new Blob([bytes], { type: "audio/wav" });
+      const wav = bytes.length >= 4 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46;
+      return new Blob([bytes], { type: wav ? "audio/wav" : "audio/mpeg" });
     } catch (_) {
       return null;
     }
@@ -12167,6 +12322,9 @@ window.TONINO_CONFIG = Object.freeze({
     }
     const replyLine = String((data && data.reply) || "").trim();
     const wav = voiceWavBlob(data);
+    /* guest-voice-now-v462 — the wav travels with the answer, so the mouth starts without a second request. */
+    /* guest-voice-warm-v463 — the hello is fetched with the page, so the first mouth is already in hand. */
+    /* guest-voice-mouth-v470 — the voice is the written sentence. A wav for another sentence is not played. */
     window.__zekiqReadyWav = null;
     if (wav && replyLine) rememberVoiceWav(replyLine, wav);
     const b = voiceBag();
@@ -12490,6 +12648,12 @@ window.TONINO_CONFIG = Object.freeze({
       return;
     }
     try { closeFindSheet(); } catch (_) {}
+    try {
+      document.documentElement.classList.remove("coach-locked");
+      const gate = document.getElementById("startGate");
+      if (gate) gate.classList.remove("show");
+      if (typeof stopGateVisualLoop === "function") stopGateVisualLoop();
+    } catch (_) {}
     warmVoiceCallStream();
     const sheet = $("voiceOrderSheet");
     if (!sheet) return;
@@ -12503,15 +12667,13 @@ window.TONINO_CONFIG = Object.freeze({
     document.documentElement.classList.add("voice-order-open");
     voiceHoldListen = false;
     voiceFingerDown = false;
-    releaseVoiceMouth();
+    const helloJustStarted = window.__zekiqVoiceWelcomed && !window.__zekiqVoiceHeard;
+    if (!helloJustStarted) releaseVoiceMouth();
     if (!voiceTalk.length) {
       const hello = voiceWelcomeLine();
       pushVoiceTurn("waiter", hello);
-      if (!isIosPhone() || window.__zekiqIosSpeechLive) {
-        window.__zekiqVoiceWelcomed = true;
-        window.__zekiqVoiceWelcomedLine = hello;
-      }
     }
+    if (!helloJustStarted && !window.__zekiqVoiceHeard && !isIosPhone()) voiceSay(voiceWelcomeLine());
     paintVoiceResult(voiceLast || { lines: [], ask: [], unmatched: [] });
     const st0 = $("voiceStatus");
     if (st0) st0.textContent = voiceBag().voicePress || "";
@@ -12763,7 +12925,15 @@ window.TONINO_CONFIG = Object.freeze({
     const b = voiceBag();
     const sheet = $("voiceOrderSheet");
     if (!sheet || !sheet.classList.contains("show")) return;
-    if (voiceMouthOpen() && !voiceFingerDown) return;
+    if (voiceMouthOpen()) {
+      if (!voiceFingerDown) return;
+      const waitEpoch = voiceEpoch;
+      setTimeout(function () {
+        if (waitEpoch !== voiceEpoch || !voiceFingerDown || voiceRec) return;
+        void startVoiceCapture();
+      }, 160);
+      return;
+    }
     if (voiceStopping) { voiceStopping = false; if (voiceRec) { try { releaseVoiceHardware(voiceRec); } catch (_) {} voiceRec = null; } }
     if (voiceBusy && voiceBusyAt && Date.now() - voiceBusyAt > 9000) voiceBusy = false;
     if (!voiceFingerDown) return;
@@ -13213,7 +13383,11 @@ window.TONINO_CONFIG = Object.freeze({
     const botBubble = document.getElementById("voiceBotBubble");
     const botHide = document.getElementById("voiceBotHide");
     if (botBtn) {
-      botBtn.addEventListener("pointerdown", function () { primeIosMouth(); releaseVoiceMouth(); warmVoiceCallStream(); });
+      botBtn.addEventListener("pointerdown", function () {
+        primeIosMouth();
+        if (window.__zekiqVoiceHeard) releaseVoiceMouth();
+        warmVoiceCallStream();
+      });
       botBtn.addEventListener("click", openVoiceSheet);
       botBtn.addEventListener("keydown", function (event) {
         if (event.key !== "Enter" && event.key !== " ") return;
@@ -13221,7 +13395,11 @@ window.TONINO_CONFIG = Object.freeze({
         openVoiceSheet();
       });
     }
-    if (botBubble) botBubble.addEventListener("pointerdown", function () { primeIosMouth(); releaseVoiceMouth(); warmVoiceCallStream(); });
+    if (botBubble) botBubble.addEventListener("pointerdown", function () {
+      primeIosMouth();
+      if (window.__zekiqVoiceHeard) releaseVoiceMouth();
+      warmVoiceCallStream();
+    });
     if (botBubble) botBubble.addEventListener("click", openVoiceSheet);
     if (botHide) botHide.addEventListener("click", function (event) {
       event.preventDefault();
