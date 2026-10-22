@@ -108,3 +108,21 @@ self.addEventListener("notificationclick", event => {
     }
   })());
 });
+
+/* A new QR opened anywhere on this phone tells the table already on screen, so its basket is not left standing. */
+self.addEventListener("fetch", event => {
+  const req = event.request;
+  if (!req || req.mode !== "navigate") return;
+  let url;
+  try { url = new URL(req.url); } catch (_) { return; }
+  const token = (url.searchParams.get("t") || url.searchParams.get("token") || "").trim();
+  if (token.length < 8 || token.length > 2000) return;
+  if (!/\/(?:table|guest)(?:\/|$)/.test(url.pathname)) return;
+  const target = url.pathname + url.search;
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    for (const client of windows) {
+      try { client.postMessage({ zekiqOpenQr: target }); } catch (_) {}
+    }
+  })());
+});
